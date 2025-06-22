@@ -9,25 +9,29 @@ Hoyo Buddy is a feature-rich Discord bot for Hoyoverse gamers that supports mult
 ## Development Commands
 
 ### Package Management
+
 ```bash
 uv sync                    # Install dependencies
 uv sync --frozen --no-dev  # Install production dependencies only
 ```
 
 ### Code Quality
+
 ```bash
 ruff check                 # Lint code
 ruff format               # Format code  
-pyright hoyo_buddy/       # Type checking
+pyright hoyo_buddy/       # Type checking, missing import errors can be ignored
 ```
 
 ### Database Operations
+
 ```bash
 aerich migrate            # Create migrations
 aerich upgrade            # Apply migrations
 ```
 
 ### Running Applications
+
 ```bash
 python run.py             # Main Discord bot
 python run_web_app.py     # Web authentication app
@@ -37,6 +41,7 @@ pm2 start pm2.json        # Production deployment (both apps)
 ## Architecture Overview
 
 ### Core Structure
+
 - **hoyo_buddy/bot/** - Discord bot core (bot.py, command_tree.py, error_handler.py)
 - **hoyo_buddy/cogs/** - Discord.py cogs for command organization
 - **hoyo_buddy/commands/** - Command implementations
@@ -62,6 +67,7 @@ pm2 start pm2.json        # Production deployment (both apps)
 ## Code Standards
 
 ### Python Requirements
+
 - Python 3.11+ with `from __future__ import annotations`
 - Async/await patterns throughout
 - Type hints required (pyright standard mode)
@@ -69,12 +75,14 @@ pm2 start pm2.json        # Production deployment (both apps)
 - Pydantic for data validation
 
 ### Ruff Configuration
+
 - Line length: 100 characters
 - Comprehensive linting with project-specific ignores
 - Required imports: `from __future__ import annotations`
 - Quote annotations enabled for type checking
 
 ### Database Operations
+
 - Tortoise ORM with PostgreSQL
 - Migration-based schema changes with aerich
 - Async operations only
@@ -82,11 +90,13 @@ pm2 start pm2.json        # Production deployment (both apps)
 ## Key Dependencies
 
 ### Core Framework
+
 - `discord.py[speed]>=2.5.0` - Discord API wrapper
 - `tortoise-orm>=0.21.7` - Async ORM
 - `asyncpg>=0.29.0` - PostgreSQL driver
 
 ### Game APIs
+
 - `genshin[auth,sqlite,socks-proxy]` - HoYoLAB API wrapper
 - `enka>=2.4.3` - Player showcase data
 - `hakushin-py>=0.4.4` - Game data API
@@ -95,6 +105,7 @@ pm2 start pm2.json        # Production deployment (both apps)
 - `akasha-py>=0.2.9` - Character leaderboards
 
 ### Utilities
+
 - `loguru>=0.7.2` - Logging
 - `pydantic>=2.8.2` - Data validation
 - `pillow>=10.4.0` - Image processing
@@ -103,21 +114,25 @@ pm2 start pm2.json        # Production deployment (both apps)
 ## Development Notes
 
 ### Asset Management
+
 - `hoyo-buddy-assets/` contains images and fonts for card generation
 - Assets organized by game and feature type
 - Font files support multi-language rendering
 
 ### Error Handling
+
 - Centralized error handling with Sentry integration
 - User-friendly error messages with localization
 - Comprehensive logging with structured output
 
 ### Testing
+
 - Limited test coverage focusing on critical components
 - Quality gates enforced via GitHub Actions
 - Ruff and pyright checks required for CI
 
 ### Production Deployment
+
 - PM2 configuration for process management
 - Separate processes for bot and web authentication app
 - Monitoring and logging integration

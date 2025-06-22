@@ -199,6 +199,7 @@ HOYO_BUDDY_LOCALES: dict[Locale, dict[str, str]] = {
     Locale.turkish: {"name": "Türkçe", "emoji": "🇹🇷"},
     Locale.italian: {"name": "Italiano", "emoji": "🇮🇹"},
     Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
+    Locale.arabic: {"name": "العربية", "emoji": "🇸🇦"},
 }
 
 LOCALE_TO_AMBR_LANG: dict[Locale, ambr.Language] = {

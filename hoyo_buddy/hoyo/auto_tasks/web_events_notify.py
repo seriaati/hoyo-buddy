@@ -5,11 +5,11 @@ import itertools
 from typing import TYPE_CHECKING, ClassVar
 
 import genshin
-from discord import Locale
 from loguru import logger
 
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
 from hoyo_buddy.db.models import HoyoAccount, JSONFile
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 

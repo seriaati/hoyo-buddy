@@ -13,7 +13,7 @@ from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import DefaultEmbed, ErrorEmbed
 from ..emojis import get_game_emoji
-from ..enums import GeetestType
+from ..enums import GeetestType, Locale
 from ..exceptions import (
     BlockedByAutoModError,
     HoyoBuddyError,
@@ -143,9 +143,7 @@ def _get_gpy_error_info(error: ge.GenshinException) -> ErrorInfo:
     return {"title": f"[{error.retcode}] HoYo API Error", "description": error.msg}
 
 
-def get_error_embed(
-    error: Exception, locale: discord.Locale
-) -> tuple[ErrorEmbed | DefaultEmbed, bool]:
+def get_error_embed(error: Exception, locale: Locale) -> tuple[ErrorEmbed | DefaultEmbed, bool]:
     recognized = True
     embed = None
     embed_type: Literal["error", "default"] = "error"

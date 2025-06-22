@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.db import Settings
+from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr
 from hoyo_buddy.ui.hoyo.genshin.build import GIBuildView
@@ -21,7 +22,7 @@ class BuildCommand:
         await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await Settings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
         dark_mode = settings.dark_mode
 
         async with ambr.AmbrAPIClient(locale) as client:

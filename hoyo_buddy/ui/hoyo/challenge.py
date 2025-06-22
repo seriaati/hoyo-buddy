@@ -48,9 +48,10 @@ if TYPE_CHECKING:
 
     import aiohttp
     import genshin
-    from discord import File, Locale, Member, User
+    from discord import File, Member, User
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
 

@@ -13,7 +13,7 @@ from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db import CardSettings, Settings
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, ToggleButton, View
@@ -33,8 +33,9 @@ from .templates import (
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale, Member, User
+    from discord import Member, User
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
     from .view import Character

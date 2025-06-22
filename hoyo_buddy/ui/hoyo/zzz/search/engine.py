@@ -11,8 +11,7 @@ from hoyo_buddy.ui import Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from discord import Locale
-
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 __all__ = ("EngineSearchView",)

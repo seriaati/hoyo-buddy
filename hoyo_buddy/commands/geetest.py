@@ -28,7 +28,7 @@ class GeetestCommand:
         message = await i.original_response()
 
         client = self._account.client
-        client.set_lang(i.locale)
+        client.set_lang(locale)
         mmt = await client.create_mmt()
 
         # Save mmt to db

@@ -8,7 +8,6 @@ import ambr.models
 import enka
 import genshin.models
 from attr import dataclass
-from discord import Locale
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 from hoyo_buddy.embeds import DefaultEmbed
@@ -21,6 +20,8 @@ if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
     from collections.abc import Mapping
+
+    from hoyo_buddy.enums import Locale
 
 
 @dataclass(kw_only=True)

@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from genshin.models import PartialGenshinUserStats, StarRailUserStats
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import HoyolabGICharacter
 
     from ..enums import Game
@@ -31,7 +32,7 @@ class ProfileCommand:
         game: Game,
         account: HoyoAccount | None,
         character_ids: list[str | None],
-        locale: discord.Locale,
+        locale: Locale,
         user: discord.User | discord.Member,
     ) -> None:
         self._uid = uid

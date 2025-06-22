@@ -15,7 +15,7 @@ from ..login_handler import handle_action_ticket, handle_session_mmt
 from ..utils import encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
-    from discord import Locale
+    from hoyo_buddy.enums import Locale
 
     from ..schema import Params
 

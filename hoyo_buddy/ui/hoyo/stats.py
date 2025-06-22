@@ -14,9 +14,9 @@ from hoyo_buddy.utils import blur_uid
 
 if TYPE_CHECKING:
     import genshin
-    from discord import Locale
     from genshin.models import RecordCard
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

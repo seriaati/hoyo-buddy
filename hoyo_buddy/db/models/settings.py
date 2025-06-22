@@ -3,8 +3,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from tortoise import fields
+
+from hoyo_buddy.enums import Locale
 
 from .base import BaseModel
 

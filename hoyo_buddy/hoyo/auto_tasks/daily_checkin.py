@@ -4,7 +4,6 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
-import discord
 import genshin
 from loguru import logger
 
@@ -12,6 +11,7 @@ from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import CONCURRENT_TASK_NUM, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db import HoyoAccount, User
 from hoyo_buddy.db.models import DiscordEmbed
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.utils import error_handler, get_now, sleep
 
 if TYPE_CHECKING:
@@ -77,7 +77,7 @@ class DailyCheckin:
             except Exception as e:
                 with error_handler():
                     if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
-                        locale = account.user.settings.locale or discord.Locale.american_english
+                        locale = account.user.settings.locale or Locale.american_english
                         embed, _ = get_error_embed(e, locale)
                         embed.add_acc_info(account, blur=False)
                         await DiscordEmbed.create(
@@ -105,7 +105,7 @@ class DailyCheckin:
 
     @classmethod
     async def _daily_checkin(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed:
-        locale = account.user.settings.locale or discord.Locale.american_english
+        locale = account.user.settings.locale or Locale.american_english
 
         try:
             client = account.client

@@ -8,9 +8,9 @@ from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     import genshin
-    from discord import Locale
 
     from hoyo_buddy.db.models import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

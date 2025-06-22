@@ -18,7 +18,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db import CustomImage
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
@@ -41,9 +41,10 @@ from .templates import DISABLE_IMAGE
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.db import CardSettings, Settings
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
     from .view import Character

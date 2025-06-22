@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import akasha
-from discord import Locale, app_commands
+from discord import app_commands
 from discord.ext import commands
 from enka.errors import WrongUIDFormatError
 
@@ -13,7 +13,7 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, LeaderboardType
+from hoyo_buddy.enums import Game, LeaderboardType, Locale
 from hoyo_buddy.exceptions import (
     AccountNotFoundError,
     LeaderboardNotFoundError,

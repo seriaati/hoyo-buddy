@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import enka
-from discord import Locale, app_commands
+from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.configs import COMMANDS
@@ -11,7 +11,7 @@ from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible, show_dismissible
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001

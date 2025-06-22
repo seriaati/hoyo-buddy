@@ -6,6 +6,7 @@ import hakushin
 from discord import ButtonStyle
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
@@ -14,9 +15,10 @@ from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from discord import Locale, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

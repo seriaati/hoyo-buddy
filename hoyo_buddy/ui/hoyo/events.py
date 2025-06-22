@@ -8,7 +8,7 @@ from discord.utils import format_dt
 from hoyo_buddy.constants import UTC_8
 from hoyo_buddy.db import HoyoAccount, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
@@ -20,8 +20,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     import genshin
-    from discord import Locale
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

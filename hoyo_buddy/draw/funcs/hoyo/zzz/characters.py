@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import discord
 from discord import utils as dutils
 from genshin.models import ZZZSkillType
 from genshin.models.zzz.character import ZZZFullAgent
@@ -10,6 +9,7 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr
 
 if TYPE_CHECKING:
@@ -33,9 +33,7 @@ def draw_agent_small_card(
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(
-        draw, folder="zzz-characters", dark_mode=dark_mode, locale=discord.Locale(locale)
-    )
+    drawer = Drawer(draw, folder="zzz-characters", dark_mode=dark_mode, locale=Locale(locale))
 
     # Banner icon
     icon = drawer.open_static(agent.banner_icon, size=(880, 458))

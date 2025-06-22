@@ -15,7 +15,7 @@ from hoyo_buddy.l10n import LevelStr, LocaleStr, translator
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale
+    from hoyo_buddy.enums import Locale
 
 __all__ = ("HakushinTranslator",)
 

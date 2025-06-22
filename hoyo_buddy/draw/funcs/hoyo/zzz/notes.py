@@ -3,12 +3,11 @@ from __future__ import annotations
 import bisect
 from typing import TYPE_CHECKING
 
-import discord
 from genshin.models import VideoStoreState, ZZZNotes
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
@@ -32,7 +31,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale_: str, dark_mode: bool) -> BytesIO:
     im = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-notes/{filename}.png")
     draw = ImageDraw.Draw(im)
     drawer = Drawer(
-        draw, folder="zzz-notes", dark_mode=dark_mode, locale=discord.Locale(locale_), sans=True
+        draw, folder="zzz-notes", dark_mode=dark_mode, locale=Locale(locale_), sans=True
     )
 
     # Title

@@ -19,7 +19,7 @@ from loguru import logger
 from seria.utils import read_json, read_yaml
 
 from hoyo_buddy.emojis import INFO
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
@@ -40,7 +40,6 @@ if TYPE_CHECKING:
 
     import hakushin
     from discord.app_commands.translator import TranslationContextTypes
-    from discord.enums import Locale
 
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Literal
 import aiohttp
 import akasha
 import enka
-from discord import File, Locale
+from discord import File
 from genshin.models import ZZZPartialAgent
 from loguru import logger
 
@@ -28,7 +28,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_team_card,
 )
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.exceptions import (
     CardNotReadyError,
     DownloadImageFailedError,

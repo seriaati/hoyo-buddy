@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from enka.gi import FightPropType, Talent
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 if TYPE_CHECKING:

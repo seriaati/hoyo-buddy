@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import GenshinElement
+from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER

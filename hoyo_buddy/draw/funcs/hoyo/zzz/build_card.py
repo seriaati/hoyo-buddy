@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
-import discord
 from discord import utils as dutils
 from genshin.models import ZZZFullAgent, ZZZSkillType
 from genshin.models import ZZZPropertyType as PropType
@@ -11,6 +10,7 @@ from PIL.Image import Transpose
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import BLACK, Drawer
+from hoyo_buddy.enums import Locale
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
@@ -287,7 +287,7 @@ class ZZZAgentCard:
                 max_lines=2,
                 style="black",
                 color=(20, 20, 20),
-                locale=discord.Locale(self._locale),
+                locale=Locale(self._locale),
             )
             bottom = name_tbox[3]
 
@@ -308,7 +308,7 @@ class ZZZAgentCard:
                             stat_positions[i][1] + icon.height // 2,
                         ),
                         anchor="lm",
-                        locale=discord.Locale(self._locale),
+                        locale=Locale(self._locale),
                     )
 
         # Discs

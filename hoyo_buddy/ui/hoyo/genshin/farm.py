@@ -3,14 +3,14 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, User
+from discord import ButtonStyle, Member, User
 
 from hoyo_buddy.constants import UID_TZ_OFFSET, WEEKDAYS
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.draw.main_funcs import draw_farm_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import BELL_OUTLINE, GENSHIN_CITY_EMOJIS
-from hoyo_buddy.enums import GenshinCity
+from hoyo_buddy.enums import GenshinCity, Locale
 from hoyo_buddy.hoyo.farm_data import FarmDataFetcher
 from hoyo_buddy.l10n import EnumStr, LocaleStr, WeekdayStr
 from hoyo_buddy.models import DrawInput

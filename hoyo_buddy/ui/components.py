@@ -8,7 +8,7 @@ from discord.utils import MISSING
 from loguru import logger
 from seria.utils import clean_url, split_list_to_chunks
 
-from hoyo_buddy.db import Settings, get_locale
+from hoyo_buddy.db import get_locale
 
 from .. import emojis
 from ..bot.error_handler import get_error_embed
@@ -19,6 +19,8 @@ from ..l10n import LocaleStr, translator
 if TYPE_CHECKING:
     import io
     from collections.abc import Iterable, Sequence
+
+    from hoyo_buddy.enums import Locale
 
     from ..types import Interaction, User
 
@@ -42,7 +44,7 @@ V_co = TypeVar("V_co", bound="View", covariant=True)
 
 
 class View(discord.ui.View):
-    def __init__(self, *, author: User, locale: discord.Locale) -> None:
+    def __init__(self, *, author: User, locale: Locale) -> None:
         super().__init__(timeout=600)
         self.author = author
         self.locale = locale
@@ -82,12 +84,11 @@ class View(discord.ui.View):
         if self.author is None:
             return True
 
-        settings = await Settings.get_or_none(user_id=i.user.id)
-        locale = settings.locale if settings is not None else i.locale
+        locale = await get_locale(i)
 
         if i.user.id != self.author.id:
             embed = ErrorEmbed(
-                locale or i.locale,
+                locale,
                 title=LocaleStr(key="interaction_failed_title"),
                 description=LocaleStr(key="interaction_failed_description"),
             )
@@ -162,7 +163,7 @@ class View(discord.ui.View):
 class URLButtonView(discord.ui.View):
     def __init__(
         self,
-        locale: discord.Locale,
+        locale: Locale,
         *,
         url: str,
         label: str | LocaleStr | None = None,
@@ -199,7 +200,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         self.view: V_co
 
-    def translate(self, locale: discord.Locale) -> None:
+    def translate(self, locale: Locale) -> None:
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
@@ -383,7 +384,7 @@ class Select(discord.ui.Select, Generic[V_co]):
             self.disabled = True
         self._underlying.options = value  # pyright: ignore [reportAttributeAccessIssue]
 
-    def translate(self, locale: discord.Locale) -> None:
+    def translate(self, locale: Locale) -> None:
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(self.locale_str_placeholder, locale)[:100]
         for option in self.options:
@@ -620,7 +621,7 @@ class Modal(discord.ui.Modal):
             await i.response.defer()
         self.stop()
 
-    def translate(self, locale: discord.Locale) -> None:
+    def translate(self, locale: Locale) -> None:
         self.title = translator.translate(self.locale_str_title, locale, max_length=45)
 
         for item in self.children:

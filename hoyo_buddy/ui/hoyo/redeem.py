@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, User
+from discord import ButtonStyle, Member, User
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.embeds import DefaultEmbed
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from genshin import Game
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

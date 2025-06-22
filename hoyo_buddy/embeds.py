@@ -8,6 +8,8 @@ from seria.utils import shorten
 from .l10n import translator
 
 if TYPE_CHECKING:
+    from hoyo_buddy.enums import Locale
+
     from .db.models import HoyoAccount
     from .l10n import LocaleStr
 
@@ -17,7 +19,7 @@ __all__ = ("DefaultEmbed", "Embed", "ErrorEmbed")
 class Embed(discord.Embed):
     def __init__(
         self,
-        locale: discord.Locale,
+        locale: Locale,
         *,
         color: int | None = None,
         title: LocaleStr | str | None = None,
@@ -79,7 +81,7 @@ class Embed(discord.Embed):
 class DefaultEmbed(Embed):
     def __init__(
         self,
-        locale: discord.Locale,
+        locale: Locale,
         *,
         title: LocaleStr | str | None = None,
         url: str | None = None,
@@ -91,7 +93,7 @@ class DefaultEmbed(Embed):
 class ErrorEmbed(Embed):
     def __init__(
         self,
-        locale: discord.Locale,
+        locale: Locale,
         *,
         title: LocaleStr | str | None = None,
         url: str | None = None,

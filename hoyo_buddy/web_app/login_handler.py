@@ -16,8 +16,9 @@ from ..models import GeetestLoginPayload
 from .utils import decrypt_string, encrypt_string, show_error_banner, show_loading_snack_bar
 
 if TYPE_CHECKING:
-    from discord import Locale
     from genshin.models import ActionTicket, SessionMMT
+
+    from hoyo_buddy.enums import Locale
 
     from .schema import Params
 

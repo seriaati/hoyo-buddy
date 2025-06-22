@@ -10,7 +10,7 @@ from hoyo_buddy import emojis
 from hoyo_buddy.db import AccountNotifSettings, User, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_checkin_card
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Platform
+from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, Reward
 from hoyo_buddy.ui import Button, GoBackButton, ToggleButton, View
@@ -43,7 +43,7 @@ class CheckInUI(View):
         dark_mode: bool,
         *,
         author: discord.User | discord.Member,
-        locale: discord.Locale,
+        locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.account = account

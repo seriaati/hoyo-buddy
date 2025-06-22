@@ -18,8 +18,9 @@ from ..utils import reset_storage, show_error_banner
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale
     from genshin.models import GenshinAccount
+
+    from hoyo_buddy.enums import Locale
 
     from ..schema import Params
 

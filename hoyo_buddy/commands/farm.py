@@ -8,15 +8,13 @@ from hoyo_buddy.db.utils import draw_locale
 from hoyo_buddy.models import DrawInput
 
 from ..embeds import ErrorEmbed
-from ..enums import Game
+from ..enums import Game, Locale
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..l10n import LocaleStr
 from ..ui.hoyo.genshin.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
-    import discord
-
     from ..types import Interaction
 
 
@@ -31,6 +29,7 @@ class FarmCommand:
         interaction: Interaction,
         account: HoyoAccount,
         settings: Settings,
+        locale: Locale,
         query: str | None = None,
         action: Action | None = None,
     ) -> None:
@@ -40,6 +39,7 @@ class FarmCommand:
         self._query = query
         self._settings = settings
         self._action = action
+        self.locale = locale
 
         characters = self._choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
         weapons = self._choices[Game.GENSHIN][ambr.ItemCategory.WEAPONS]
@@ -49,10 +49,6 @@ class FarmCommand:
         self._valid_item_ids = {c.value for c_choices in characters.values() for c in c_choices} | {
             c.value for w_choices in weapons.values() for c in w_choices
         }
-
-    @property
-    def locale(self) -> discord.Locale:
-        return self._settings.locale or self._interaction.locale
 
     def _validate_query(self) -> None:
         if self._query is None:

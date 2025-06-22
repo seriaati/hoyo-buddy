@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import ItemWithDescription, ItemWithTrailing
 
 from ..drawer import (

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 import enka
 import genshin
 import hakushin
-from discord import ButtonStyle, Locale
+from discord import ButtonStyle
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
@@ -41,7 +41,7 @@ from hoyo_buddy.emojis import (
     get_hsr_path_emoji,
     get_zzz_element_emoji,
 )
-from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Platform, ZZZElement
+from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Locale, Platform, ZZZElement
 from hoyo_buddy.exceptions import FeatureNotImplementedError, NoCharsFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
@@ -72,6 +72,7 @@ if TYPE_CHECKING:
     from discord import File, Member, User
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

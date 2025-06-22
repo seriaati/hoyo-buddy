@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import discord
 import genshin
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import seconds_to_time
 
@@ -31,13 +30,10 @@ class ImgTheaterCard:
         self._dark_mode = True  # To write white colored texts
         self._traveler_element = traveler_element
 
-        self._locale = locale
         self._asset_dir = "hoyo-buddy-assets/assets/img-theater"
         self._drawer: Drawer
 
-    @property
-    def locale(self) -> discord.Locale:
-        return discord.Locale(self._locale)
+        self.locale = Locale(locale)
 
     def _open_asset(self, asset: str) -> Image.Image:
         return Drawer.open_image(f"{self._asset_dir}/{asset}")

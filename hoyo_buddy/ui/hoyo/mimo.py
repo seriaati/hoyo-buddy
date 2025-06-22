@@ -4,7 +4,7 @@ import re
 from typing import TYPE_CHECKING, Any
 
 import genshin
-from discord import ButtonStyle, Locale
+from discord import ButtonStyle
 from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy import ui
@@ -20,7 +20,7 @@ from hoyo_buddy.emojis import (
     SHOPPING_CART,
     TASK_LIST,
 )
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import MimoUnavailableError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import GoBackButton

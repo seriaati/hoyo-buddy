@@ -7,7 +7,6 @@ import enka
 import genshin
 import hakushin
 import orjson
-from discord import Locale
 from tortoise import Tortoise
 
 from hoyo_buddy import models
@@ -29,7 +28,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GenshinElement
+from hoyo_buddy.enums import Game, GenshinElement, Locale
 from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep

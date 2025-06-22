@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, DARK_SURFACE, LIGHT_SURFACE, WHITE, Drawer
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.models import DynamicBKInput, UnownedGICharacter
 

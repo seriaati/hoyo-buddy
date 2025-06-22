@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.db import HoyoAccount, Settings
+from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.ui.hoyo.event_calendar import EventCalendarView
 from hoyo_buddy.ui.hoyo.events import EventsView
@@ -18,7 +19,7 @@ class EventsCommand:
         await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await Settings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
 
         user = user or i.user
         account = account or await i.client.get_account(

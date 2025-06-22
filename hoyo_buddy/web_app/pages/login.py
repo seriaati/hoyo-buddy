@@ -11,7 +11,7 @@ from hoyo_buddy.constants import WEB_APP_URLS
 from hoyo_buddy.l10n import LocaleStr, translator
 
 if TYPE_CHECKING:
-    from discord import Locale
+    from hoyo_buddy.enums import Locale
 
 __all__ = ("LoginPage",)
 

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Final, Literal
 
 import akasha
 import ambr
-import discord
 import enka
 import genshin
 import hakushin
@@ -24,6 +23,7 @@ from .enums import (
     GenshinElement,
     HSRElement,
     HSRPath,
+    Locale,
     OpenGameLabel,
     Platform,
 )
@@ -103,189 +103,189 @@ EQUIP_ID_TO_ARTIFACT_POS: dict[str, str] = {
 }
 
 LOCALE_TO_AKASHA_LANG = {
-    discord.Locale.american_english: akasha.Language.ENGLISH,
-    discord.Locale.taiwan_chinese: akasha.Language.CHINESE_TRADITIONAL,
-    discord.Locale.chinese: akasha.Language.CHINESE_SIMPLIFIED,
-    discord.Locale.german: akasha.Language.GERMAN,
-    discord.Locale.spain_spanish: akasha.Language.SPANISH,
-    discord.Locale.french: akasha.Language.FRENCH,
-    discord.Locale.italian: akasha.Language.ITALIAN,
-    discord.Locale.japanese: akasha.Language.JAPANESE,
-    discord.Locale.korean: akasha.Language.KOREAN,
-    discord.Locale.brazil_portuguese: akasha.Language.PORTUGUESE,
-    discord.Locale.russian: akasha.Language.RUSSIAN,
-    discord.Locale.thai: akasha.Language.THAI,
-    discord.Locale.vietnamese: akasha.Language.VIETNAMESE,
-    discord.Locale.turkish: akasha.Language.TURKISH,
-    discord.Locale.ukrainian: akasha.Language.RUSSIAN,
+    Locale.american_english: akasha.Language.ENGLISH,
+    Locale.taiwan_chinese: akasha.Language.CHINESE_TRADITIONAL,
+    Locale.chinese: akasha.Language.CHINESE_SIMPLIFIED,
+    Locale.german: akasha.Language.GERMAN,
+    Locale.spain_spanish: akasha.Language.SPANISH,
+    Locale.french: akasha.Language.FRENCH,
+    Locale.italian: akasha.Language.ITALIAN,
+    Locale.japanese: akasha.Language.JAPANESE,
+    Locale.korean: akasha.Language.KOREAN,
+    Locale.brazil_portuguese: akasha.Language.PORTUGUESE,
+    Locale.russian: akasha.Language.RUSSIAN,
+    Locale.thai: akasha.Language.THAI,
+    Locale.vietnamese: akasha.Language.VIETNAMESE,
+    Locale.turkish: akasha.Language.TURKISH,
+    Locale.ukrainian: akasha.Language.RUSSIAN,
 }
 AKASHA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_AKASHA_LANG.items()}
 
 
-def locale_to_akasha_lang(locale: discord.Locale) -> akasha.Language:
+def locale_to_akasha_lang(locale: Locale) -> akasha.Language:
     return LOCALE_TO_AKASHA_LANG.get(locale, akasha.Language.ENGLISH)
 
 
-LOCALE_TO_HSR_ENKA_LANG: dict[discord.Locale, enka.hsr.Language] = {
-    discord.Locale.taiwan_chinese: enka.hsr.Language.TRADITIONAL_CHINESE,
-    discord.Locale.chinese: enka.hsr.Language.SIMPLIFIED_CHINESE,
-    discord.Locale.german: enka.hsr.Language.GERMAN,
-    discord.Locale.american_english: enka.hsr.Language.ENGLISH,
-    discord.Locale.spain_spanish: enka.hsr.Language.ESPANOL,
-    discord.Locale.french: enka.hsr.Language.FRENCH,
-    discord.Locale.indonesian: enka.hsr.Language.INDOENSIAN,
-    discord.Locale.japanese: enka.hsr.Language.JAPANESE,
-    discord.Locale.korean: enka.hsr.Language.KOREAN,
-    discord.Locale.brazil_portuguese: enka.hsr.Language.PORTUGUESE,
-    discord.Locale.russian: enka.hsr.Language.RUSSIAN,
-    discord.Locale.thai: enka.hsr.Language.THAI,
-    discord.Locale.vietnamese: enka.hsr.Language.VIETNAMESE,
+LOCALE_TO_HSR_ENKA_LANG: dict[Locale, enka.hsr.Language] = {
+    Locale.taiwan_chinese: enka.hsr.Language.TRADITIONAL_CHINESE,
+    Locale.chinese: enka.hsr.Language.SIMPLIFIED_CHINESE,
+    Locale.german: enka.hsr.Language.GERMAN,
+    Locale.american_english: enka.hsr.Language.ENGLISH,
+    Locale.spain_spanish: enka.hsr.Language.ESPANOL,
+    Locale.french: enka.hsr.Language.FRENCH,
+    Locale.indonesian: enka.hsr.Language.INDOENSIAN,
+    Locale.japanese: enka.hsr.Language.JAPANESE,
+    Locale.korean: enka.hsr.Language.KOREAN,
+    Locale.brazil_portuguese: enka.hsr.Language.PORTUGUESE,
+    Locale.russian: enka.hsr.Language.RUSSIAN,
+    Locale.thai: enka.hsr.Language.THAI,
+    Locale.vietnamese: enka.hsr.Language.VIETNAMESE,
 }
 
-LOCALE_TO_HSR_CARD_API_LANG: dict[discord.Locale, str] = {
-    discord.Locale.taiwan_chinese: "cht",
-    discord.Locale.chinese: "cn",
-    discord.Locale.german: "de",
-    discord.Locale.spain_spanish: "es",
-    discord.Locale.french: "fr",
-    discord.Locale.indonesian: "id",
-    discord.Locale.japanese: "jp",
-    discord.Locale.korean: "kr",
-    discord.Locale.brazil_portuguese: "pt",
-    discord.Locale.russian: "ru",
-    discord.Locale.thai: "th",
-    discord.Locale.vietnamese: "vi",
-    discord.Locale.ukrainian: "ru",
+LOCALE_TO_HSR_CARD_API_LANG: dict[Locale, str] = {
+    Locale.taiwan_chinese: "cht",
+    Locale.chinese: "cn",
+    Locale.german: "de",
+    Locale.spain_spanish: "es",
+    Locale.french: "fr",
+    Locale.indonesian: "id",
+    Locale.japanese: "jp",
+    Locale.korean: "kr",
+    Locale.brazil_portuguese: "pt",
+    Locale.russian: "ru",
+    Locale.thai: "th",
+    Locale.vietnamese: "vi",
+    Locale.ukrainian: "ru",
 }
 
 LOCALE_TO_GPY_LANG = {
-    discord.Locale.american_english: "en-us",
-    discord.Locale.taiwan_chinese: "zh-tw",
-    discord.Locale.chinese: "zh-cn",
-    discord.Locale.german: "de-de",
-    discord.Locale.spain_spanish: "es-es",
-    discord.Locale.french: "fr-fr",
-    discord.Locale.indonesian: "id-id",
-    discord.Locale.italian: "it-it",
-    discord.Locale.japanese: "ja-jp",
-    discord.Locale.korean: "ko-kr",
-    discord.Locale.brazil_portuguese: "pt-pt",
-    discord.Locale.thai: "th-th",
-    discord.Locale.vietnamese: "vi-vn",
-    discord.Locale.turkish: "tr-tr",
-    discord.Locale.russian: "ru-ru",
-    discord.Locale.ukrainian: "ru-ru",
+    Locale.american_english: "en-us",
+    Locale.taiwan_chinese: "zh-tw",
+    Locale.chinese: "zh-cn",
+    Locale.german: "de-de",
+    Locale.spain_spanish: "es-es",
+    Locale.french: "fr-fr",
+    Locale.indonesian: "id-id",
+    Locale.italian: "it-it",
+    Locale.japanese: "ja-jp",
+    Locale.korean: "ko-kr",
+    Locale.brazil_portuguese: "pt-pt",
+    Locale.thai: "th-th",
+    Locale.vietnamese: "vi-vn",
+    Locale.turkish: "tr-tr",
+    Locale.russian: "ru-ru",
+    Locale.ukrainian: "ru-ru",
 }
 GPY_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GPY_LANG.items()}
 
 
-def locale_to_gpy_lang(locale: discord.Locale) -> str:
+def locale_to_gpy_lang(locale: Locale) -> str:
     return LOCALE_TO_GPY_LANG.get(locale, "en-us")
 
 
-HOYO_BUDDY_LOCALES: dict[discord.Locale, dict[str, str]] = {
-    discord.Locale.american_english: {"name": "English", "emoji": "🇺🇸"},
-    discord.Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
-    discord.Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
-    discord.Locale.french: {"name": "Français", "emoji": "🇫🇷"},
-    discord.Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
-    discord.Locale.brazil_portuguese: {"name": "Português", "emoji": "🇧🇷"},
-    discord.Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
-    discord.Locale.dutch: {"name": "Nederlands", "emoji": "🇳🇱"},
-    discord.Locale.vietnamese: {"name": "Tiếng Việt", "emoji": "🇻🇳"},
-    discord.Locale.thai: {"name": "ภาษาไทย", "emoji": "🇹🇭"},
-    discord.Locale.spain_spanish: {"name": "Español", "emoji": "🇪🇸"},
-    discord.Locale.korean: {"name": "한국어", "emoji": "🇰🇷"},
-    discord.Locale.turkish: {"name": "Türkçe", "emoji": "🇹🇷"},
-    discord.Locale.italian: {"name": "Italiano", "emoji": "🇮🇹"},
-    discord.Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
+HOYO_BUDDY_LOCALES: dict[Locale, dict[str, str]] = {
+    Locale.american_english: {"name": "English", "emoji": "🇺🇸"},
+    Locale.chinese: {"name": "简体中文", "emoji": "🇨🇳"},
+    Locale.taiwan_chinese: {"name": "繁體中文", "emoji": "🇹🇼"},
+    Locale.french: {"name": "Français", "emoji": "🇫🇷"},
+    Locale.japanese: {"name": "日本語", "emoji": "🇯🇵"},
+    Locale.brazil_portuguese: {"name": "Português", "emoji": "🇧🇷"},
+    Locale.indonesian: {"name": "Bahasa Indonesia", "emoji": "🇮🇩"},
+    Locale.dutch: {"name": "Nederlands", "emoji": "🇳🇱"},
+    Locale.vietnamese: {"name": "Tiếng Việt", "emoji": "🇻🇳"},
+    Locale.thai: {"name": "ภาษาไทย", "emoji": "🇹🇭"},
+    Locale.spain_spanish: {"name": "Español", "emoji": "🇪🇸"},
+    Locale.korean: {"name": "한국어", "emoji": "🇰🇷"},
+    Locale.turkish: {"name": "Türkçe", "emoji": "🇹🇷"},
+    Locale.italian: {"name": "Italiano", "emoji": "🇮🇹"},
+    Locale.russian: {"name": "Русский", "emoji": "🇷🇺"},
 }
 
-LOCALE_TO_AMBR_LANG: dict[discord.Locale, ambr.Language] = {
-    discord.Locale.taiwan_chinese: ambr.Language.CHT,
-    discord.Locale.chinese: ambr.Language.CHS,
-    discord.Locale.german: ambr.Language.DE,
-    discord.Locale.american_english: ambr.Language.EN,
-    discord.Locale.spain_spanish: ambr.Language.ES,
-    discord.Locale.french: ambr.Language.FR,
-    discord.Locale.indonesian: ambr.Language.ID,
-    discord.Locale.japanese: ambr.Language.JP,
-    discord.Locale.korean: ambr.Language.KR,
-    discord.Locale.brazil_portuguese: ambr.Language.PT,
-    discord.Locale.russian: ambr.Language.RU,
-    discord.Locale.ukrainian: ambr.Language.RU,
-    discord.Locale.thai: ambr.Language.TH,
-    discord.Locale.vietnamese: ambr.Language.VI,
-    discord.Locale.italian: ambr.Language.IT,
-    discord.Locale.turkish: ambr.Language.TR,
+LOCALE_TO_AMBR_LANG: dict[Locale, ambr.Language] = {
+    Locale.taiwan_chinese: ambr.Language.CHT,
+    Locale.chinese: ambr.Language.CHS,
+    Locale.german: ambr.Language.DE,
+    Locale.american_english: ambr.Language.EN,
+    Locale.spain_spanish: ambr.Language.ES,
+    Locale.french: ambr.Language.FR,
+    Locale.indonesian: ambr.Language.ID,
+    Locale.japanese: ambr.Language.JP,
+    Locale.korean: ambr.Language.KR,
+    Locale.brazil_portuguese: ambr.Language.PT,
+    Locale.russian: ambr.Language.RU,
+    Locale.ukrainian: ambr.Language.RU,
+    Locale.thai: ambr.Language.TH,
+    Locale.vietnamese: ambr.Language.VI,
+    Locale.italian: ambr.Language.IT,
+    Locale.turkish: ambr.Language.TR,
 }
 
 
-def locale_to_ambr_lang(locale: discord.Locale) -> ambr.Language:
+def locale_to_ambr_lang(locale: Locale) -> ambr.Language:
     return LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN)
 
 
-LOCALE_TO_YATTA_LANG: dict[discord.Locale, yatta.Language] = {
-    discord.Locale.taiwan_chinese: yatta.Language.CHT,
-    discord.Locale.chinese: yatta.Language.CN,
-    discord.Locale.german: yatta.Language.DE,
-    discord.Locale.american_english: yatta.Language.EN,
-    discord.Locale.spain_spanish: yatta.Language.ES,
-    discord.Locale.french: yatta.Language.FR,
-    discord.Locale.indonesian: yatta.Language.ID,
-    discord.Locale.japanese: yatta.Language.JP,
-    discord.Locale.korean: yatta.Language.KR,
-    discord.Locale.brazil_portuguese: yatta.Language.PT,
-    discord.Locale.russian: yatta.Language.RU,
-    discord.Locale.ukrainian: yatta.Language.RU,
-    discord.Locale.thai: yatta.Language.TH,
-    discord.Locale.vietnamese: yatta.Language.VI,
+LOCALE_TO_YATTA_LANG: dict[Locale, yatta.Language] = {
+    Locale.taiwan_chinese: yatta.Language.CHT,
+    Locale.chinese: yatta.Language.CN,
+    Locale.german: yatta.Language.DE,
+    Locale.american_english: yatta.Language.EN,
+    Locale.spain_spanish: yatta.Language.ES,
+    Locale.french: yatta.Language.FR,
+    Locale.indonesian: yatta.Language.ID,
+    Locale.japanese: yatta.Language.JP,
+    Locale.korean: yatta.Language.KR,
+    Locale.brazil_portuguese: yatta.Language.PT,
+    Locale.russian: yatta.Language.RU,
+    Locale.ukrainian: yatta.Language.RU,
+    Locale.thai: yatta.Language.TH,
+    Locale.vietnamese: yatta.Language.VI,
 }
 
-LOCALE_TO_HAKUSHIN_LANG: dict[discord.Locale, hakushin.Language] = {
-    discord.Locale.chinese: hakushin.Language.ZH,
-    discord.Locale.taiwan_chinese: hakushin.Language.ZH,
-    discord.Locale.japanese: hakushin.Language.JA,
-    discord.Locale.korean: hakushin.Language.KO,
-    discord.Locale.american_english: hakushin.Language.EN,
+LOCALE_TO_HAKUSHIN_LANG: dict[Locale, hakushin.Language] = {
+    Locale.chinese: hakushin.Language.ZH,
+    Locale.taiwan_chinese: hakushin.Language.ZH,
+    Locale.japanese: hakushin.Language.JA,
+    Locale.korean: hakushin.Language.KO,
+    Locale.american_english: hakushin.Language.EN,
 }
 
 
-LOCALE_TO_GI_ENKA_LANG: dict[discord.Locale, enka.gi.Language] = {
-    discord.Locale.taiwan_chinese: enka.gi.Language.TRADITIONAL_CHINESE,
-    discord.Locale.chinese: enka.gi.Language.SIMPLIFIED_CHINESE,
-    discord.Locale.german: enka.gi.Language.GERMAN,
-    discord.Locale.american_english: enka.gi.Language.ENGLISH,
-    discord.Locale.spain_spanish: enka.gi.Language.SPANISH,
-    discord.Locale.french: enka.gi.Language.FRENCH,
-    discord.Locale.indonesian: enka.gi.Language.INDONESIAN,
-    discord.Locale.japanese: enka.gi.Language.JAPANESE,
-    discord.Locale.korean: enka.gi.Language.KOREAN,
-    discord.Locale.brazil_portuguese: enka.gi.Language.PORTUGUESE,
-    discord.Locale.russian: enka.gi.Language.RUSSIAN,
-    discord.Locale.ukrainian: enka.gi.Language.RUSSIAN,
-    discord.Locale.thai: enka.gi.Language.THAI,
-    discord.Locale.vietnamese: enka.gi.Language.VIETNAMESE,
-    discord.Locale.italian: enka.gi.Language.ITALIAN,
-    discord.Locale.turkish: enka.gi.Language.TURKISH,
+LOCALE_TO_GI_ENKA_LANG: dict[Locale, enka.gi.Language] = {
+    Locale.taiwan_chinese: enka.gi.Language.TRADITIONAL_CHINESE,
+    Locale.chinese: enka.gi.Language.SIMPLIFIED_CHINESE,
+    Locale.german: enka.gi.Language.GERMAN,
+    Locale.american_english: enka.gi.Language.ENGLISH,
+    Locale.spain_spanish: enka.gi.Language.SPANISH,
+    Locale.french: enka.gi.Language.FRENCH,
+    Locale.indonesian: enka.gi.Language.INDONESIAN,
+    Locale.japanese: enka.gi.Language.JAPANESE,
+    Locale.korean: enka.gi.Language.KOREAN,
+    Locale.brazil_portuguese: enka.gi.Language.PORTUGUESE,
+    Locale.russian: enka.gi.Language.RUSSIAN,
+    Locale.ukrainian: enka.gi.Language.RUSSIAN,
+    Locale.thai: enka.gi.Language.THAI,
+    Locale.vietnamese: enka.gi.Language.VIETNAMESE,
+    Locale.italian: enka.gi.Language.ITALIAN,
+    Locale.turkish: enka.gi.Language.TURKISH,
 }
 
-LOCALE_TO_GI_CARD_API_LANG: dict[discord.Locale, str] = {
-    discord.Locale.taiwan_chinese: "cht",
-    discord.Locale.chinese: "chs",
-    discord.Locale.german: "de",
-    discord.Locale.american_english: "en",
-    discord.Locale.spain_spanish: "es",
-    discord.Locale.french: "fr",
-    discord.Locale.indonesian: "id",
-    discord.Locale.japanese: "jp",
-    discord.Locale.korean: "kr",
-    discord.Locale.brazil_portuguese: "pt",
-    discord.Locale.russian: "ru",
-    discord.Locale.thai: "th",
-    discord.Locale.vietnamese: "vi",
-    discord.Locale.italian: "it",
-    discord.Locale.turkish: "tr",
+LOCALE_TO_GI_CARD_API_LANG: dict[Locale, str] = {
+    Locale.taiwan_chinese: "cht",
+    Locale.chinese: "chs",
+    Locale.german: "de",
+    Locale.american_english: "en",
+    Locale.spain_spanish: "es",
+    Locale.french: "fr",
+    Locale.indonesian: "id",
+    Locale.japanese: "jp",
+    Locale.korean: "kr",
+    Locale.brazil_portuguese: "pt",
+    Locale.russian: "ru",
+    Locale.thai: "th",
+    Locale.vietnamese: "vi",
+    Locale.italian: "it",
+    Locale.turkish: "tr",
 }
 
 HSR_ELEMENT_DMG_PROPS = {
@@ -521,24 +521,24 @@ ZZZ_AVATAR_BATTLE_TEMP_JSON = "zzz_avatar_battle_temp.json"
 
 ZZZ_AGENT_CORE_LEVEL_MAP = {1: "0", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "F"}
 
-LOCALE_TO_ZENLESS_DATA_LANG: dict[discord.Locale, str] = {
-    discord.Locale.taiwan_chinese: "CHT",
-    discord.Locale.german: "DE",
-    discord.Locale.american_english: "EN",
-    discord.Locale.spain_spanish: "ES",
-    discord.Locale.french: "FR",
-    discord.Locale.indonesian: "ID",
-    discord.Locale.japanese: "JA",
-    discord.Locale.korean: "KO",
-    discord.Locale.brazil_portuguese: "PT",
-    discord.Locale.russian: "RU",
-    discord.Locale.thai: "TH",
-    discord.Locale.vietnamese: "VI",
+LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
+    Locale.taiwan_chinese: "CHT",
+    Locale.german: "DE",
+    Locale.american_english: "EN",
+    Locale.spain_spanish: "ES",
+    Locale.french: "FR",
+    Locale.indonesian: "ID",
+    Locale.japanese: "JA",
+    Locale.korean: "KO",
+    Locale.brazil_portuguese: "PT",
+    Locale.russian: "RU",
+    Locale.thai: "TH",
+    Locale.vietnamese: "VI",
 }
 ZENLESS_DATA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ZENLESS_DATA_LANG.items()}
 
 
-def locale_to_zenless_data_lang(locale: discord.Locale) -> str:
+def locale_to_zenless_data_lang(locale: Locale) -> str:
     return LOCALE_TO_ZENLESS_DATA_LANG.get(locale, "EN")
 
 
@@ -563,24 +563,24 @@ STARRAIL_DATA_LANGS = (
     "VI",
 )
 
-LOCALE_TO_STARRAIL_DATA_LANG: dict[discord.Locale, str] = {
-    discord.Locale.chinese: "CHS",
-    discord.Locale.taiwan_chinese: "CHT",
-    discord.Locale.german: "DE",
-    discord.Locale.american_english: "EN",
-    discord.Locale.spain_spanish: "ES",
-    discord.Locale.french: "FR",
-    discord.Locale.indonesian: "ID",
-    discord.Locale.japanese: "JP",
-    discord.Locale.korean: "KR",
-    discord.Locale.brazil_portuguese: "PT",
-    discord.Locale.russian: "RU",
-    discord.Locale.thai: "TH",
-    discord.Locale.vietnamese: "VI",
+LOCALE_TO_STARRAIL_DATA_LANG: dict[Locale, str] = {
+    Locale.chinese: "CHS",
+    Locale.taiwan_chinese: "CHT",
+    Locale.german: "DE",
+    Locale.american_english: "EN",
+    Locale.spain_spanish: "ES",
+    Locale.french: "FR",
+    Locale.indonesian: "ID",
+    Locale.japanese: "JP",
+    Locale.korean: "KR",
+    Locale.brazil_portuguese: "PT",
+    Locale.russian: "RU",
+    Locale.thai: "TH",
+    Locale.vietnamese: "VI",
 }
 
 
-def locale_to_starrail_data_lang(locale: discord.Locale) -> str:
+def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")
 
 
@@ -711,7 +711,7 @@ def is_standard_item(game: Game, item_id: int) -> bool:
     return item_id in STANDARD_ITEMS[game]
 
 
-def locale_to_hakushin_lang(locale: discord.Locale) -> hakushin.Language:
+def locale_to_hakushin_lang(locale: Locale) -> hakushin.Language:
     return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)
 
 
@@ -882,35 +882,35 @@ NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 10848562841987
 
 DOCS_URL = "https://hb-docs.seria.moe{lang}/docs/{page}"
 LOCALE_TO_DOCS_LANG = {
-    discord.Locale.taiwan_chinese: "/zh-Hant",
-    discord.Locale.chinese: "/zh-Hant",  # NOTE: zh-Hans in the future
-    discord.Locale.vietnamese: "/vi",
+    Locale.taiwan_chinese: "/zh-Hant",
+    Locale.chinese: "/zh-Hant",  # NOTE: zh-Hans in the future
+    Locale.vietnamese: "/vi",
 }
 HEADINGS = {
     "how-does-the-email-and-password-login-method-work": {
-        discord.Locale.taiwan_chinese: "電子郵件和密碼登錄方式如何運作",
-        discord.Locale.chinese: "電子郵件和密碼登錄方式如何運作",
-        discord.Locale.vietnamese: "phương-pháp-đăng-nhập-bằng-email-và-mật-khẩu-hoạt-động-như-thế-nào",
+        Locale.taiwan_chinese: "電子郵件和密碼登錄方式如何運作",
+        Locale.chinese: "電子郵件和密碼登錄方式如何運作",
+        Locale.vietnamese: "phương-pháp-đăng-nhập-bằng-email-và-mật-khẩu-hoạt-động-như-thế-nào",
     },
     "i-am-a-console-player": {
-        discord.Locale.taiwan_chinese: "我是主機玩家",
-        discord.Locale.chinese: "我是主機玩家",
-        discord.Locale.vietnamese: "tôi-chới-trên-máy-chơi-game-playstation-và-xbox",
+        Locale.taiwan_chinese: "我是主機玩家",
+        Locale.chinese: "我是主機玩家",
+        Locale.vietnamese: "tôi-chới-trên-máy-chơi-game-playstation-và-xbox",
     },
     "which-login-method-should-i-use": {
-        discord.Locale.taiwan_chinese: "我應該選擇哪種登入方式",
-        discord.Locale.chinese: "我應該選擇哪種登入方式",
-        discord.Locale.vietnamese: "tôi-nên-sử-dụng-phương-thức-đăng-nhập-nào",
+        Locale.taiwan_chinese: "我應該選擇哪種登入方式",
+        Locale.chinese: "我應該選擇哪種登入方式",
+        Locale.vietnamese: "tôi-nên-sử-dụng-phương-thức-đăng-nhập-nào",
     },
     "too-many-requests-error-when-trying-to-add-accounts-using-email--password-method": {
-        discord.Locale.taiwan_chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
-        discord.Locale.chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
-        discord.Locale.vietnamese: "lỗi-quá-nhiều-yêu-cầu-khi-cố-gắng-thêm-tài-khoản-bằng-phương-pháp-email-và-mật-khẩu",
+        Locale.taiwan_chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
+        Locale.chinese: "嘗試使用電子郵件和密碼方法新增帳戶時出現請求過多錯誤",
+        Locale.vietnamese: "lỗi-quá-nhiều-yêu-cầu-khi-cố-gắng-thêm-tài-khoản-bằng-phương-pháp-email-và-mật-khẩu",
     },
 }
 
 
-def get_docs_url(page: str, *, locale: discord.Locale) -> str:
+def get_docs_url(page: str, *, locale: Locale) -> str:
     heading = page.split("#", 1)[1] if "#" in page else ""
     if heading in HEADINGS:
         page = page.replace(heading, HEADINGS[heading].get(locale, heading))

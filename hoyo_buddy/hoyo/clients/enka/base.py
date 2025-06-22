@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import Any
 
-import discord
 import enka
+
+from hoyo_buddy.enums import Locale
 
 type ShowcaseResponse = enka.gi.ShowcaseResponse | enka.hsr.ShowcaseResponse
 
 
 class BaseClient:
-    def __init__(self, locale: discord.Locale = discord.Locale.american_english) -> None:
+    def __init__(self, locale: Locale = Locale.american_english) -> None:
         self._locale = locale
 
     def _update_live_status(

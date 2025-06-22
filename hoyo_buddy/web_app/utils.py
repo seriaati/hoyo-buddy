@@ -19,9 +19,8 @@ from ..l10n import LocaleStr, translator
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale
-
     from hoyo_buddy.db.models import GachaHistory
+    from hoyo_buddy.enums import Locale
 
 
 class LoadingSnackBar(ft.SnackBar):

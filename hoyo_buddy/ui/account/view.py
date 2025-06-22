@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
     import discord
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 
@@ -28,7 +29,7 @@ class AccountManager(View):
         self,
         *,
         author: discord.User | discord.Member | None,
-        locale: discord.Locale,
+        locale: Locale,
         user: User,
         accounts: Sequence[HoyoAccount],
     ) -> None:

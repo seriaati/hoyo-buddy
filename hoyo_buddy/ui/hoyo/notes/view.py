@@ -4,7 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
-from discord import ButtonStyle, File, Locale, Member, User
+from discord import ButtonStyle, File, Member, User
 
 from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import NotesNotify, draw_locale, get_dyk
@@ -20,7 +20,7 @@ from hoyo_buddy.emojis import (
     TRAILBLAZE_POWER,
     get_game_emoji,
 )
-from hoyo_buddy.enums import Game, NotesNotifyType
+from hoyo_buddy.enums import Game, Locale, NotesNotifyType
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr, WeekdayStr
 from hoyo_buddy.models import DrawInput

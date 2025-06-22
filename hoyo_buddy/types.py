@@ -10,7 +10,7 @@ import genshin
 
 from . import models
 from .bot import HoyoBuddy
-from .enums import Game
+from .enums import Game, Locale
 from .hoyo.clients import ambr, hakushin, yatta
 
 Challenge: TypeAlias = (
@@ -64,14 +64,13 @@ ItemCategory: TypeAlias = (
     ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
 )
 AutocompleteChoices: TypeAlias = defaultdict[
-    Game,
-    defaultdict[ItemCategory, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]],
+    Game, defaultdict[ItemCategory, defaultdict[Locale, list[discord.app_commands.Choice[str]]]]
 ]
 BetaAutocompleteChoices: TypeAlias = defaultdict[
-    Game, defaultdict[discord.Locale, list[discord.app_commands.Choice[str]]]
+    Game, defaultdict[Locale, list[discord.app_commands.Choice[str]]]
 ]
 Tasks: TypeAlias = defaultdict[
-    Game, defaultdict[ItemCategory, dict[discord.Locale, asyncio.Task[list[Any]]]]
+    Game, defaultdict[ItemCategory, dict[Locale, asyncio.Task[list[Any]]]]
 ]
 
 type OpenGameRegion = Literal["global", "cn", "vietnam"]

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import hakushin
 
 from hoyo_buddy.constants import locale_to_hakushin_lang
-from hoyo_buddy.db.utils import draw_locale
+from hoyo_buddy.db.utils import draw_locale, get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
@@ -14,9 +14,8 @@ from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui.hoyo.characters import CharactersView
 
 if TYPE_CHECKING:
-    from discord import Locale
-
     from hoyo_buddy.db import HoyoAccount, Settings
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 
@@ -56,7 +55,7 @@ class CharactersCommand:
     async def run(self, i: Interaction) -> None:
         account, settings = self.account, self.settings
         game = account.game
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
 
         if game is Game.GENSHIN:
             await self.run_gi()

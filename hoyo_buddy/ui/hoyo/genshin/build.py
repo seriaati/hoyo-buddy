@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Literal, TypeAlias
 
 import ambr
 import discord
-from discord.enums import Locale
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
@@ -20,9 +19,8 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DoubleBlock, DrawInput, SingleBlock
 
 if TYPE_CHECKING:
-    from discord import Locale
-
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 SynergyTeam: TypeAlias = Sequence[

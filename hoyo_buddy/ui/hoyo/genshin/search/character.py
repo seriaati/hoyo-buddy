@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import hakushin
-from discord import ButtonStyle, Locale, Member, User
+from discord import ButtonStyle, Member, User
 
 from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS, locale_to_hakushin_lang
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     import ambr
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

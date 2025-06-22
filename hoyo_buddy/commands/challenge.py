@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.constants import CHALLENGE_TYPE_GAMES
 from hoyo_buddy.db import HoyoAccount, Settings
+from hoyo_buddy.db.utils import get_locale
 
 from ..ui.hoyo.challenge import ChallengeView
 
@@ -28,7 +29,7 @@ class ChallengeCommand:
             user.id, (CHALLENGE_TYPE_GAMES[challenge_type],)
         )
         settings = await Settings.get(user_id=self._user_id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
 
         view = ChallengeView(
             account, settings.dark_mode, challenge_type, author=i.user, locale=locale

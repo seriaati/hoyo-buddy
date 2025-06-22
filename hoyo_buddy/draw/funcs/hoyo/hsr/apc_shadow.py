@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 

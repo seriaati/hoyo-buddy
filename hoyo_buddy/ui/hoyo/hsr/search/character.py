@@ -7,6 +7,7 @@ import yatta
 from discord import ButtonStyle
 
 from hoyo_buddy.constants import HAKUSHIN_HSR_SKILL_TYPE_NAMES, locale_to_hakushin_lang
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
@@ -14,9 +15,10 @@ from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, 
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
-    from discord import Locale, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

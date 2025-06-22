@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
@@ -11,9 +12,10 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from ambr.models import CardTalent, TCGCardDetail
-    from discord import Locale, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 

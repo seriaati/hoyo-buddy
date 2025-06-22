@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from typing import TYPE_CHECKING
 
-from discord import Locale, app_commands
+from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
@@ -11,7 +11,7 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
 
 from ..commands.farm import Action, FarmCommand
-from ..enums import Game
+from ..enums import Game, Locale
 from ..hoyo.clients.ambr import ItemCategory
 from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from ..l10n import LocaleStr
@@ -63,7 +63,7 @@ class Farm(
         uid = None if account is None else account.uid
 
         view = FarmView(
-            uid, dark_mode=settings.dark_mode, author=i.user, locale=settings.locale or i.locale
+            uid, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
         await view.start(i)
 
@@ -90,7 +90,8 @@ class Farm(
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        command = FarmCommand(i, account_, settings, query, Action.ADD)
+        locale = await get_locale(i)
+        command = FarmCommand(i, account_, settings, locale, query, Action.ADD)
         await command.run()
 
     @app_commands.command(
@@ -116,7 +117,8 @@ class Farm(
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        command = FarmCommand(i, account_, settings, query, Action.REMOVE)
+        locale = await get_locale(i)
+        command = FarmCommand(i, account_, settings, locale, query, Action.REMOVE)
         await command.run()
 
     @app_commands.command(
@@ -133,7 +135,8 @@ class Farm(
     ) -> None:
         account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        command = FarmCommand(i, account_, settings)
+        locale = await get_locale(i)
+        command = FarmCommand(i, account_, settings, locale)
         await command.run()
 
     @farm_view_command.autocomplete("account")

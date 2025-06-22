@@ -20,8 +20,8 @@ if TYPE_CHECKING:
     from types import CoroutineType
 
     import aiohttp
-    from discord import Locale
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
 
 TO_HAKUSHIN_ITEM_CATEGORY: Final[

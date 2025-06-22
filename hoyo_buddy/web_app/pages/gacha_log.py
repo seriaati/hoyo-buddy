@@ -13,9 +13,8 @@ from hoyo_buddy.web_app.utils import get_gacha_names, show_error_banner
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale
-
     from hoyo_buddy.db import GachaHistory
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.web_app.schema import GachaParams
 
 __all__ = ("GachaLogPage",)

@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, Any
 
 import discord.utils as dutils
 import yatta
-from discord import Locale
 from seria.utils import create_bullet_list
 from yatta import Language
 
 from hoyo_buddy.constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_hsr_element_emoji, get_hsr_path_emoji
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr, translator
 
 __all__ = ("ItemCategory", "YattaAPIClient")

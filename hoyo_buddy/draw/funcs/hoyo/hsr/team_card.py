@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import enka
-from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
+from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

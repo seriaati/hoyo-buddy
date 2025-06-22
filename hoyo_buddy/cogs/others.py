@@ -14,6 +14,7 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
+from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.exceptions import NotAnImageError
 
 from ..embeds import DefaultEmbed
@@ -88,7 +89,7 @@ class Others(commands.Cog):
             await guild.chunk()
 
         settings = await UserSettings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
         embed = DefaultEmbed(
             locale=locale,
             title=f"{self.bot.user.name if self.bot.user is not None else 'Hoyo Buddy'} {self.bot.version}",

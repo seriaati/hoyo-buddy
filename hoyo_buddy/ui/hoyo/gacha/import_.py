@@ -16,8 +16,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput, View
 
 if TYPE_CHECKING:
-    from discord import Locale
-
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

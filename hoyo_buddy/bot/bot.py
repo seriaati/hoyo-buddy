@@ -50,7 +50,7 @@ from hoyo_buddy.db import get_locale, models
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Platform
+from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platform
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
@@ -326,7 +326,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             return message, False
 
     def get_error_choice(
-        self, error_message: LocaleStr | str | Exception, locale: discord.Locale
+        self, error_message: LocaleStr | str | Exception, locale: Locale
     ) -> list[app_commands.Choice[str]]:
         if isinstance(error_message, Exception):
             embed, recognized = get_error_embed(error_message, locale)
@@ -347,7 +347,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         return [app_commands.Choice(name=translator.translate(error_message, locale), value="none")]
 
     def get_enum_choices(
-        self, enums: Sequence[StrEnum], locale: discord.Locale, current: str
+        self, enums: Sequence[StrEnum], locale: Locale, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         return [
             discord.app_commands.Choice(name=EnumStr(enum).translate(locale), value=enum.value)
@@ -357,7 +357,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     @staticmethod
     def _get_account_choice_name(
-        account: models.HoyoAccount, locale: discord.Locale, *, is_author: bool, show_id: bool
+        account: models.HoyoAccount, locale: Locale, *, is_author: bool, show_id: bool
     ) -> str:
         account_id_str = f"[{account.id}] " if show_id else ""
         account_display = account if is_author else account.blurred_display
@@ -370,7 +370,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         user: User,
         author_id: int,
         current: str,
-        locale: discord.Locale,
+        locale: Locale,
         *,
         games: Sequence[Game],
         platform: Platform | None = None,
@@ -655,7 +655,7 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         user_id, message_id, gt_type, account_id, locale, channel_id = notif.payload.split(";")
         gt_type = GeetestType(gt_type)
-        locale = discord.Locale(locale)
+        locale = Locale(locale)
 
         message = self.get_partial_messageable(int(channel_id)).get_partial_message(int(message_id))
 

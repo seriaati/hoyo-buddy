@@ -4,12 +4,12 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, TypeVar
 
 import ambr
-from discord import Locale
 from loguru import logger
 
 from hoyo_buddy.constants import UID_TZ_OFFSET
 from hoyo_buddy.db import FarmNotify
 from hoyo_buddy.embeds import DefaultEmbed
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.farm_data import FarmDataFetcher
 from hoyo_buddy.l10n import LocaleStr

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import enka
-from discord import Locale, app_commands
+from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy.commands.configs import COMMANDS
@@ -11,18 +11,17 @@ from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible, show_dismissible
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
-from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import Dismissible
-from hoyo_buddy.types import User  # noqa: TC001
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.types import Interaction
+    from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
+    from hoyo_buddy.types import Interaction, User
 
 
 def gen_character_id_rename(max_: int) -> dict[str, app_commands.locale_str]:

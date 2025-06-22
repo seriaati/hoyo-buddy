@@ -55,10 +55,7 @@ class Hoyo(commands.Cog):
         )
         settings = await Settings.get(user_id=i.user.id)
         view = CheckInUI(
-            account_,
-            dark_mode=settings.dark_mode,
-            author=i.user,
-            locale=settings.locale or i.locale,
+            account_, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
         await view.start(i)
 
@@ -93,7 +90,7 @@ class Hoyo(commands.Cog):
             accounts,
             dark_mode=settings.dark_mode,
             author=i.user,
-            locale=settings.locale or i.locale,
+            locale=await get_locale(i),
         )
         await view.start(i)
 
@@ -117,7 +114,7 @@ class Hoyo(commands.Cog):
         user = user or i.user
         account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
         settings = await Settings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
 
         view = ExplorationView(account_, dark_mode=settings.dark_mode, author=i.user, locale=locale)
         await view.start(i)
@@ -230,7 +227,7 @@ class Hoyo(commands.Cog):
         )
         settings = await Settings.get(user_id=i.user.id)
         view = MimoView(
-            account, dark_mode=settings.dark_mode, author=i.user, locale=settings.locale or i.locale
+            account, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
         await view.start(i)
 
@@ -253,7 +250,7 @@ class Hoyo(commands.Cog):
             (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
             platform=Platform.HOYOLAB,
         )
-        view = WebEventsView(account, author=i.user, locale=i.locale)
+        view = WebEventsView(account, author=i.user, locale=await get_locale(i))
         await view.start(i)
 
         await show_anniversary_dismissible(i)

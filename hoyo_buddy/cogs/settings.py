@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings as UserSettings
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.db.utils import get_locale, show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 
 from ..ui.settings import SettingsUI
@@ -27,9 +27,10 @@ class Settings(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         settings = await UserSettings.get(user_id=i.user.id)
-        view = SettingsUI(author=i.user, locale=settings.locale or i.locale, settings=settings)
+        locale = await get_locale(i)
+        view = SettingsUI(author=i.user, locale=locale, settings=settings)
         await i.followup.send(
-            embed=view.get_embed(), file=view.get_brand_image_file(i.locale), view=view
+            embed=view.get_embed(), file=view.get_brand_image_file(locale), view=view
         )
         view.message = await i.original_response()
 

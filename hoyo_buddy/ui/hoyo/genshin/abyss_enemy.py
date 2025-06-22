@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Locale, Member, User, app_commands
+from discord import ButtonStyle, Member, User, app_commands
 
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from ambr.models import Abyss, AbyssResponse
 
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import ItemWithDescription
     from hoyo_buddy.types import Interaction
 

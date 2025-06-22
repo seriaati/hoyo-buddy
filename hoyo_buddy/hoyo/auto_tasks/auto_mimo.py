@@ -4,7 +4,6 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-import discord
 import genshin
 from loguru import logger
 from seria.utils import create_bullet_list
@@ -14,7 +13,7 @@ from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_P
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import (
     convert_code_to_redeem_url,
@@ -86,7 +85,7 @@ class AutoMimo:
                         cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM
                         and notif_task_type is not None
                     ):
-                        locale = account.user.settings.locale or discord.Locale.american_english
+                        locale = account.user.settings.locale or Locale.american_english
                         embed, _ = get_error_embed(e, locale)
                         embed.add_acc_info(account, blur=False)
                         await DiscordEmbed.create(
@@ -123,7 +122,7 @@ class AutoMimo:
 
     @classmethod
     async def _complete_mimo_tasks(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
-        locale = account.user.settings.locale or discord.Locale.american_english
+        locale = account.user.settings.locale or Locale.american_english
 
         try:
             client = account.client
@@ -173,7 +172,7 @@ class AutoMimo:
 
     @classmethod
     async def _buy_mimo_valuables(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
-        locale = account.user.settings.locale or discord.Locale.american_english
+        locale = account.user.settings.locale or Locale.american_english
 
         try:
             client = account.client
@@ -230,7 +229,7 @@ class AutoMimo:
 
     @classmethod
     async def _draw_lottery(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
-        locale = account.user.settings.locale or discord.Locale.american_english
+        locale = account.user.settings.locale or Locale.american_english
 
         try:
             client = account.client

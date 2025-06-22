@@ -6,18 +6,18 @@ import random
 from typing import TYPE_CHECKING, Any
 
 import hakushin as hakushin_api
-from discord import Locale, app_commands
+from discord import app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
-from hoyo_buddy.db import Settings, get_locale
+from hoyo_buddy.db import get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 
 from ..emojis import PROJECT_AMBER
-from ..enums import BetaItemCategory, Game
+from ..enums import BetaItemCategory, Game, Locale
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
@@ -117,8 +117,7 @@ class Search(commands.Cog):
         except ValueError as e:
             raise InvalidQueryError from e
 
-        settings = await Settings.get(user_id=i.user.id)
-        locale = settings.locale or i.locale
+        locale = await get_locale(i)
 
         is_beta = query in self._beta_id_to_category
         category = self._beta_id_to_category.get(query, category_value)

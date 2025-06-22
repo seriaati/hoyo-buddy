@@ -11,10 +11,8 @@ from hoyo_buddy.utils import blur_uid
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from discord import Locale
-
     from hoyo_buddy.embeds import DefaultEmbed
-    from hoyo_buddy.enums import Game, LeaderboardType
+    from hoyo_buddy.enums import Game, LeaderboardType, Locale
     from hoyo_buddy.types import Interaction, User
 
 

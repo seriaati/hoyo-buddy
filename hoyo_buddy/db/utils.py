@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
-from discord import Locale
 from tortoise.expressions import Q
 
 from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS, PLATFORM_TO_REGION
-from hoyo_buddy.enums import Game, LeaderboardType, Platform
+from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
 from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.models import Dismissible
 from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
@@ -43,9 +42,10 @@ async def get_locale(i: Interaction) -> Locale:
     key = f"{i.user.id}:lang"
     if await cache.exists(key):
         locale = await cache.get(key)
-        return Locale(locale) if locale is not None else i.locale
+        return Locale(locale) if locale is not None else Locale(str(i.locale))
+
     settings = await Settings.get(user_id=i.user.id).only("lang")
-    locale = settings.locale or i.locale
+    locale = settings.locale or Locale(str(i.locale))
     await cache.set(key, locale.value)
     return locale
 

@@ -13,9 +13,8 @@ from hoyo_buddy.ui.paginator import Page, PaginatorView
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from discord import Locale
-
     from hoyo_buddy.embeds import DefaultEmbed
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

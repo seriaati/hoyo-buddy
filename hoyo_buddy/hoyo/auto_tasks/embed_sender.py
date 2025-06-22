@@ -9,6 +9,7 @@ from loguru import logger
 
 from hoyo_buddy.constants import AUTO_TASK_COMMANDS, AUTO_TASK_FEATURE_KEYS
 from hoyo_buddy.db.models import DiscordEmbed, HoyoAccount, Settings
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep
 
@@ -23,7 +24,7 @@ class EmbedSender:
 
     @classmethod
     def _get_error_content(
-        cls, task_type: AutoTaskType, locale: discord.Locale | None, account: HoyoAccount
+        cls, task_type: AutoTaskType, locale: Locale | None, account: HoyoAccount
     ) -> str | None:
         feature_key = AUTO_TASK_FEATURE_KEYS.get(task_type)
         if feature_key is None:
@@ -43,18 +44,18 @@ class EmbedSender:
                 ),
                 command=command,
                 account=account,
-            ).translate(locale or discord.Locale.american_english)
+            ).translate(locale or Locale.american_english)
         return LocaleStr(
             key="auto_task_error_dm_content",
             feature=LocaleStr(key=feature_key),
             command=command,
             account=account,
-        ).translate(locale or discord.Locale.american_english)
+        ).translate(locale or Locale.american_english)
 
     @classmethod
-    async def _get_locale(cls, user_id: int) -> discord.Locale | None:
+    async def _get_locale(cls, user_id: int) -> Locale | None:
         settings = await Settings.get(user_id=user_id).only("lang")
-        return discord.Locale(settings.lang) if settings.lang else None
+        return Locale(settings.lang) if settings.lang else None
 
     @classmethod
     async def _send_embeds(cls, user_id: int, embeds: list[DiscordEmbed]) -> None:

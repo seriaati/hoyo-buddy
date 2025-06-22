@@ -9,7 +9,7 @@ from hoyo_buddy.l10n import LocaleStr
 from ..utils import encrypt_string, show_loading_snack_bar
 
 if TYPE_CHECKING:
-    from discord import Locale
+    from hoyo_buddy.enums import Locale
 
     from ..schema import Params
 

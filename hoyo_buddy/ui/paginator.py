@@ -10,6 +10,8 @@ from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
 from .components import Button, View
 
 if TYPE_CHECKING:
+    from hoyo_buddy.enums import Locale
+
     from ..types import Interaction, User
 
 __all__ = ("Page", "PaginatorView")
@@ -29,7 +31,7 @@ class PaginatorView(View):
         *,
         set_loading_state: bool = False,
         author: User,
-        locale: discord.Locale,
+        locale: Locale,
     ) -> None:
         super().__init__(author=author, locale=locale)
 

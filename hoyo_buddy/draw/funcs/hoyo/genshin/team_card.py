@@ -3,12 +3,11 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING
 
-from discord import Locale
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import GenshinElement
+from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
 
 from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, ELEMENT_COLORS, STATS_ORDER

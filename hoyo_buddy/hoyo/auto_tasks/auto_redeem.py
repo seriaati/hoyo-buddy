@@ -18,7 +18,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.db.models import DiscordEmbed
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import convert_code_to_redeem_url, error_handler, get_now
 
@@ -156,7 +156,7 @@ class AutoRedeem:
             except Exception as e:
                 with error_handler():
                     if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
-                        locale = account.user.settings.locale or discord.Locale.american_english
+                        locale = account.user.settings.locale or Locale.american_english
                         embed, _ = get_error_embed(e, locale)
                         embed.add_acc_info(account, blur=False)
                         await DiscordEmbed.create(
@@ -186,7 +186,7 @@ class AutoRedeem:
     async def _redeem_codes(
         cls, account: HoyoAccount, codes: list[str], *, skip_redeemed: bool
     ) -> DefaultEmbed | ErrorEmbed | None:
-        locale = account.user.settings.locale or discord.Locale.american_english
+        locale = account.user.settings.locale or Locale.american_english
 
         try:
             client = account.client

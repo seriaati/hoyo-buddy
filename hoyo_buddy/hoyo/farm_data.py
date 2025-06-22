@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import Locale
+from hoyo_buddy.enums import Locale
 
 from ..constants import AMBR_CITY_TO_CITY
 from ..models import FarmData

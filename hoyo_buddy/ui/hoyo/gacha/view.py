@@ -23,8 +23,8 @@ from hoyo_buddy.web_app.schema import GachaParams
 
 if TYPE_CHECKING:
     import asyncpg
-    from discord import Locale
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 
 from hoyo_buddy.db import Settings
+from hoyo_buddy.enums import Locale
 
 from ..constants import HOYO_BUDDY_LOCALES
 from ..embeds import DefaultEmbed
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
 
 class SettingsUI(View):
     def __init__(
-        self, *, author: discord.User | discord.Member, locale: discord.Locale, settings: Settings
+        self, *, author: discord.User | discord.Member, locale: Locale, settings: Settings
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.settings = settings
@@ -28,7 +29,7 @@ class SettingsUI(View):
         self.add_item(DYKTolggle(current_toggle=self.settings.enable_dyk))
 
     @staticmethod
-    def get_brand_img_filename(theme: str, locale: discord.Locale) -> str:
+    def get_brand_img_filename(theme: str, locale: Locale) -> str:
         filename = f"hoyo-buddy-assets/assets/brand/{theme}-{locale.value.replace('-', '_')}.png"
         if not pathlib.Path(filename).exists():
             return f"hoyo-buddy-assets/assets/brand/{theme}-en_US.png"
@@ -39,7 +40,7 @@ class SettingsUI(View):
         embed.set_image(url="attachment://brand.png")
         return embed
 
-    def get_brand_image_file(self, interaction_locale: discord.Locale) -> discord.File:
+    def get_brand_image_file(self, interaction_locale: Locale) -> discord.File:
         theme = "DARK" if self.settings.dark_mode else "LIGHT"
         locale = self.settings.locale or interaction_locale
         filename = self.get_brand_img_filename(theme, locale)
@@ -69,12 +70,12 @@ class SettingsUI(View):
 
 
 class LanguageSelector(Select["SettingsUI"]):
-    def __init__(self, current_locale: discord.Locale | None) -> None:
+    def __init__(self, current_locale: Locale | None) -> None:
         options = self._get_options(current_locale)
         super().__init__(options=options)
 
     @staticmethod
-    def _get_options(current_locale: discord.Locale | None) -> list[SelectOption]:
+    def _get_options(current_locale: Locale | None) -> list[SelectOption]:
         options: list[SelectOption] = [
             SelectOption(
                 label=LocaleStr(key="auto_locale_option_label"),
@@ -98,7 +99,7 @@ class LanguageSelector(Select["SettingsUI"]):
 
     async def callback(self, i: Interaction) -> Any:
         selected = self.values[0]
-        self.view.locale = discord.Locale(selected) if selected != "auto" else i.locale
+        self.view.locale = Locale(selected) if selected != "auto" else Locale(str(i.locale))
         self.view.settings.lang = self.values[0] if selected != "auto" else None
         self.options = self._get_options(self.view.settings.locale)
         self.update_options_defaults()

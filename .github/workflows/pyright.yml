@@ -8,6 +8,8 @@ on:
       - 'hoyo_buddy/**.py'
       - 'run.py'
       - 'run_web_app.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '.github/workflows/pyright.yml'
   pull_request:
     branches:
@@ -16,6 +18,8 @@ on:
       - 'hoyo_buddy/**.py'
       - 'run.py'
       - 'run_web_app.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '.github/workflows/pyright.yml'
 
 jobs:

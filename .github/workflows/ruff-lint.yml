@@ -9,6 +9,9 @@ on:
       - 'hoyo_buddy/**.py'
       - 'run.py'
       - 'run_web_app.py'
+      - 'ruff.toml'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '.github/workflows/ruff-lint.yml'
   pull_request:
     branches:
@@ -17,6 +20,9 @@ on:
       - 'hoyo_buddy/**.py'
       - 'run.py'
       - 'run_web_app.py'
+      - 'ruff.toml'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '.github/workflows/ruff-lint.yml'
 
 jobs:

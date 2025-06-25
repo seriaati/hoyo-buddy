@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 __all__ = ("DeviceInfoPage",)
 
-DEVICE_INFO_APK = "https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk"
+DEVICE_INFO_APK = "https://ghproxy.mihomo.me/https://raw.githubusercontent.com/forchannot/get_device_info/main/app/build/outputs/apk/debug/app-debug.apk"
 AAID_OBTAIN_APP = "https://apkpure.com/easy-advertising-id/advertising.id.ccpa.gdpr/downloading"
 
 

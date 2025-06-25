@@ -1,10 +1,26 @@
-name: Pyright
+name: Type check
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hoyo_buddy/**.py'
+      - 'run.py'
+      - 'run_web_app.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/pyright.yml'
   pull_request:
-    types: [opened, synchronize]
+    branches:
+      - main
+    paths:
+      - 'hoyo_buddy/**.py'
+      - 'run.py'
+      - 'run_web_app.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/pyright.yml'
 
 jobs:
   pyright:

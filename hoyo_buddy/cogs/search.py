@@ -87,6 +87,13 @@ class Search(commands.Cog):
             f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"
         )
 
+    @staticmethod
+    def _ensure_query_is_int(query: str) -> None:
+        try:
+            int(query)
+        except ValueError as e:
+            raise InvalidQueryError from e
+
     @app_commands.command(
         name=app_commands.locale_str("search"), description=COMMANDS["search"].description
     )
@@ -144,6 +151,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.NAMECARDS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         namecard_detail = await api.fetch_namecard_detail(int(query))
                         embed = api.get_namecard_embed(namecard_detail)
                         await i.followup.send(embed=embed)
@@ -157,6 +165,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.FOOD:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         food_detail = await api.fetch_food_detail(int(query))
                         embed = api.get_food_embed(food_detail)
                         await i.followup.send(embed=embed)
@@ -164,6 +173,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.MATERIALS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         material_detail = await api.fetch_material_detail(int(query))
                         embed = api.get_material_embed(material_detail)
                         await i.followup.send(embed=embed)
@@ -171,6 +181,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.FURNISHINGS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         furniture_detail = await api.fetch_furniture_detail(int(query))
                         embed = api.get_furniture_embed(furniture_detail)
                         await i.followup.send(
@@ -186,6 +197,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.FURNISHING_SETS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
                         embed = api.get_furniture_set_embed(furniture_set_detail)
                         await i.followup.send(
@@ -201,6 +213,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.LIVING_BEINGS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         monster_detail = await api.fetch_monster_detail(int(query))
                         embed = api.get_monster_embed(monster_detail)
                         await i.followup.send(
@@ -216,6 +229,7 @@ class Search(commands.Cog):
                 case ambr.ItemCategory.BOOKS:
                     async with ambr.AmbrAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         book = await api.fetch_book_detail(int(query))
                         book_volume_ui = gi_search.BookVolumeUI(
                             book, api.lang.value, author=i.user, locale=locale
@@ -223,6 +237,7 @@ class Search(commands.Cog):
                         await book_volume_ui.start(i)
 
                 case ambr.ItemCategory.TCG:
+                    self._ensure_query_is_int(query)
                     tcg_card_ui = gi_search.TCGCardUI(int(query), author=i.user, locale=locale)
                     await tcg_card_ui.start(i)
 
@@ -247,6 +262,7 @@ class Search(commands.Cog):
                 case yatta.ItemCategory.ITEMS:
                     async with yatta.YattaAPIClient(locale) as api:
                         await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
                         item = await api.fetch_item_detail(int(query))
                         embed = api.get_item_embed(item)
                         await i.followup.send(embed=embed)
@@ -268,10 +284,8 @@ class Search(commands.Cog):
                     await relic_set_ui.start(i)
 
                 case yatta.ItemCategory.CHARACTERS:
-                    try:
-                        character_id = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                    self._ensure_query_is_int(query)
+                    character_id = int(query)
 
                     character_ui = hsr_search.CharacterUI(
                         character_id, author=i.user, locale=locale, hakushin=is_beta
@@ -286,18 +300,14 @@ class Search(commands.Cog):
 
             match category:
                 case hakushin.ZZZItemCategory.AGENTS:
-                    try:
-                        agent_id = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                    self._ensure_query_is_int(query)
+                    agent_id = int(query)
 
                     view = zzz_search.AgentSearchView(agent_id, author=i.user, locale=locale)
                     await view.start(i)
                 case hakushin.ZZZItemCategory.BANGBOOS:
-                    try:
-                        bangboo_id = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                    self._ensure_query_is_int(query)
+                    bangboo_id = int(query)
 
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale)
@@ -308,18 +318,14 @@ class Search(commands.Cog):
                     embed = translator.get_bangboo_embed(disc)
                     await i.followup.send(embed=embed)
                 case hakushin.ZZZItemCategory.W_ENGINES:
-                    try:
-                        engine_id = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                    self._ensure_query_is_int(query)
+                    engine_id = int(query)
 
                     view = zzz_search.EngineSearchView(engine_id, author=i.user, locale=locale)
                     await view.start(i)
                 case hakushin.ZZZItemCategory.DRIVE_DISCS:
-                    try:
-                        disc_id = int(query)
-                    except ValueError as e:
-                        raise InvalidQueryError from e
+                    self._ensure_query_is_int(query)
+                    disc_id = int(query)
 
                     await i.response.defer(ephemeral=ephemeral(i))
                     translator = hakushin.HakushinTranslator(locale)

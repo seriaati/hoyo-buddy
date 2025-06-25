@@ -252,7 +252,7 @@ light_cones: Nón Ánh Sáng
 living_beings: Sinh Vật Hoang Dã
 liyue: Liyue
 loading_text: Đang tải...
-make_up_for_checkin_button_label: Điểm Danh bù
+make_up_for_checkin_button_label: Điểm danh bù
 materials: Nguyên Liệu
 memory_of_chaos: Hồi Ức Hỗn Độn
 miyoushe: Miyoushe
@@ -307,8 +307,8 @@ notif_modal.notify_time.label: "Gửi thông báo X giờ trước khi máy ch�
 notif_modal.notify_weekday.label: Ngày trong tuần muốn nhắc
 notif_modal.threshold.label: Nhắc khi đạt ngưỡng
 notification_settings_button_label: Cài đặt thông báo
-notify_on_failure_button_label: Thông báo khi Điểm danh Thất Bại
-notify_on_success_button_label: Thông báo khi Điểm danh Thành công
+notify_on_failure_button_label: Thông báo khi điểm danh thất bại
+notify_on_success_button_label: Thông báo khi điểm danh thành công
 mimo_auto_task_success_notify_toggle_label: Thông báo khi việc tự động hoàn thành nhiệm vụ thành công
 mimo_auto_task_failure_notify_toggle_label: Thông báo khi việc tự động hoàn thành nhiệm vụ thất bại
 mimo_auto_buy_success_notify_toggle_label: Thông báo khi việc tự động mua thành công

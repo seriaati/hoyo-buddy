@@ -1,8 +1,12 @@
-name: Create Release
+name: Create release
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - 'pyproject.toml'
+      - '.github/workflows/release.yml'
 
 jobs:
   create-release:

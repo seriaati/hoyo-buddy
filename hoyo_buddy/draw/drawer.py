@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 from fontTools.ttLib import TTFont
 from loguru import logger
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+import numpy as np
+from sklearn.cluster import KMeans
 
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
@@ -822,3 +824,66 @@ class Drawer:
             img = img.resize((int(width * step), int(height * step)), Image.Resampling.LANCZOS)
 
         return bytes_obj
+
+    @staticmethod
+    def draw_gradient_background(
+        width: int,
+        height: int,
+        color1: tuple[int, int, int],
+        color2: tuple[int, int, int],
+        pos1: tuple[float, float],
+        pos2: tuple[float, float],
+    ) -> Image.Image:
+        """Draw a gradient background from color1 at pos1 to color2 at pos2.
+
+        Args:
+            pos1, pos2: Normalized positions (0.0-1.0) as (x, y) tuples
+        """
+        im = Image.new("RGB", (width, height))
+        draw = ImageDraw.Draw(im)
+
+        # Convert normalized positions to pixel coordinates
+        x1, y1 = pos1[0] * (width - 1), pos1[1] * (height - 1)
+        x2, y2 = pos2[0] * (width - 1), pos2[1] * (height - 1)
+
+        # Calculate gradient vector
+        dx, dy = x2 - x1, y2 - y1
+        gradient_length = (dx**2 + dy**2) ** 0.5
+
+        if gradient_length == 0:
+            return Image.new("RGB", (width, height), color1)
+
+        for y in range(height):
+            for x in range(width):
+                # Project point onto gradient line
+                dot_product = (x - x1) * dx + (y - y1) * dy
+                factor = max(0, min(1, dot_product / (gradient_length**2)))
+
+                # Interpolate color
+                r = int(color1[0] * (1 - factor) + color2[0] * factor)
+                g = int(color1[1] * (1 - factor) + color2[1] * factor)
+                b = int(color1[2] * (1 - factor) + color2[2] * factor)
+
+                draw.point((x, y), fill=(r, g, b))
+
+        return im
+
+    @staticmethod
+    def extract_main_colors(
+        image: Image.Image, n_colors: int = 2, center_crop: float = 0.6
+    ) -> list[tuple[int, int, int]]:
+        w, h = image.size
+        crop_w, crop_h = int(w * center_crop), int(h * center_crop)
+        left = (w - crop_w) // 2
+        top = (h - crop_h) // 2
+        image = image.crop((left, top, left + crop_w, top + crop_h))
+
+        image = image.convert("RGB")
+        image_array = np.array(image)
+        pixels = image_array.reshape(-1, 3)
+
+        kmeans = KMeans(n_clusters=n_colors, random_state=42, n_init=10)
+        kmeans.fit(pixels)
+
+        colors = kmeans.cluster_centers_.astype(int)
+        return [tuple(color) for color in colors]

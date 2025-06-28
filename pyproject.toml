@@ -7,7 +7,6 @@ dependencies = [
   "asyncpg>=0.29.0",
   "asyncpg-listen>=0.0.6",
   "cachetools>=5.5.0",
-  "discord-py[speed]>=2.5.0",
   "fake-useragent>=1.5.1",
   "hakushin-py>=0.4.4",
   "jishaku>=2.5.2",
@@ -35,6 +34,7 @@ dependencies = [
   "prometheus-client>=0.21.1",
   "pydantic-settings>=2.7.1",
   "ambr-py",
+  "discord-py[speed]",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
@@ -53,6 +53,7 @@ hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
+discord-py = { git = "https://github.com/seriaati/discord.py", rev = "b9fa472" }
 
 
 [tool.pyright]

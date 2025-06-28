@@ -4,11 +4,10 @@ import io
 import pathlib
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
+import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
 from PIL import Image, ImageChops, ImageDraw, ImageFont
-import numpy as np
-from sklearn.cluster import KMeans
 
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
@@ -640,8 +639,21 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         image = self.open_image(get_static_img_path(url, folder), size)
-        if mask_color:
-            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
+
+        if opacity < 1.0:
+            if mask_color is not None:
+                image = self.mask_image_with_color(image, mask_color, opacity=opacity)
+            else:
+                data = np.array(image)
+
+                black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
+                data[black_pixels] = [0, 0, 0, 0]
+
+                non_transparent = data[:, :, 3] > 0
+                data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
+
+                image = Image.fromarray(data)
+
         return image
 
     def open_asset(
@@ -834,39 +846,27 @@ class Drawer:
         pos1: tuple[float, float],
         pos2: tuple[float, float],
     ) -> Image.Image:
-        """Draw a gradient background from color1 at pos1 to color2 at pos2.
-
-        Args:
-            pos1, pos2: Normalized positions (0.0-1.0) as (x, y) tuples
-        """
-        im = Image.new("RGB", (width, height))
-        draw = ImageDraw.Draw(im)
-
-        # Convert normalized positions to pixel coordinates
         x1, y1 = pos1[0] * (width - 1), pos1[1] * (height - 1)
         x2, y2 = pos2[0] * (width - 1), pos2[1] * (height - 1)
 
-        # Calculate gradient vector
         dx, dy = x2 - x1, y2 - y1
-        gradient_length = (dx**2 + dy**2) ** 0.5
+        gradient_len_sq = dx**2 + dy**2
 
-        if gradient_length == 0:
+        if gradient_len_sq == 0:
             return Image.new("RGB", (width, height), color1)
 
-        for y in range(height):
-            for x in range(width):
-                # Project point onto gradient line
-                dot_product = (x - x1) * dx + (y - y1) * dy
-                factor = max(0, min(1, dot_product / (gradient_length**2)))
+        y_coords, x_coords = np.mgrid[0:height, 0:width]
+        dot_product = (x_coords - x1) * dx + (y_coords - y1) * dy
+        factor = np.clip(dot_product / gradient_len_sq, 0, 1)
+        factor = factor[..., np.newaxis]
 
-                # Interpolate color
-                r = int(color1[0] * (1 - factor) + color2[0] * factor)
-                g = int(color1[1] * (1 - factor) + color2[1] * factor)
-                b = int(color1[2] * (1 - factor) + color2[2] * factor)
+        c1 = np.array(color1)
+        c2 = np.array(color2)
 
-                draw.point((x, y), fill=(r, g, b))
+        image_array = c1 * (1 - factor) + c2 * factor
+        image_array = image_array.astype(np.uint8)
 
-        return im
+        return Image.fromarray(image_array, "RGB")
 
     @staticmethod
     def extract_main_colors(
@@ -874,16 +874,16 @@ class Drawer:
     ) -> list[tuple[int, int, int]]:
         w, h = image.size
         crop_w, crop_h = int(w * center_crop), int(h * center_crop)
-        left = (w - crop_w) // 2
-        top = (h - crop_h) // 2
+        left, top = (w - crop_w) // 2, (h - crop_h) // 2
         image = image.crop((left, top, left + crop_w, top + crop_h))
-
+        image.thumbnail((100, 100), Image.Resampling.LANCZOS)
         image = image.convert("RGB")
-        image_array = np.array(image)
-        pixels = image_array.reshape(-1, 3)
 
-        kmeans = KMeans(n_clusters=n_colors, random_state=42, n_init=10)
-        kmeans.fit(pixels)
+        quantized_image = image.quantize(colors=n_colors, method=Image.Quantize.MEDIANCUT)
 
-        colors = kmeans.cluster_centers_.astype(int)
-        return [tuple(color) for color in colors]
+        palette = quantized_image.getpalette()
+        if palette is None:
+            logger.warning("Palette is None, returning default colors.")
+            return [(0, 0, 0), (255, 255, 255)]
+
+        return [tuple(palette[i : i + 3]) for i in range(0, n_colors * 3, 3)]  # pyright: ignore[reportReturnType]

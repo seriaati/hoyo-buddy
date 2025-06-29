@@ -640,19 +640,18 @@ class Drawer:
         folder = folder or self.folder
         image = self.open_image(get_static_img_path(url, folder), size)
 
-        if opacity < 1.0:
-            if mask_color is not None:
-                image = self.mask_image_with_color(image, mask_color, opacity=opacity)
-            else:
-                data = np.array(image)
+        if mask_color is not None:
+            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
+        elif opacity < 1.0:
+            data = np.array(image)
 
-                black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
-                data[black_pixels] = [0, 0, 0, 0]
+            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
+            data[black_pixels] = [0, 0, 0, 0]
 
-                non_transparent = data[:, :, 3] > 0
-                data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
+            non_transparent = data[:, :, 3] > 0
+            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
 
-                image = Image.fromarray(data)
+            image = Image.fromarray(data)
 
         return image
 

@@ -818,3 +818,5 @@ hard_challenge_damage_dealt: "Highest Total DMG"
 hard_challenge_enemy_weakness: "Enemy Weakness"
 hard_challenge_advantage: "Weak against"
 hard_challenge_disadvantage: "Strong against"
+hard_challenge_command_desc: Generate Stygian Onslaught card
+hard_challenge: "Stygian Onslaught"

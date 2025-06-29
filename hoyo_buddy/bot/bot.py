@@ -4,6 +4,7 @@ import asyncio
 import concurrent.futures
 import contextlib
 import datetime
+import os
 from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -78,6 +79,12 @@ if TYPE_CHECKING:
 __all__ = ("HoyoBuddy",)
 
 
+def init_worker() -> None:
+    """Initializes the translator in a new process."""
+    logger.info(f"Initializing worker process {os.getpid()}...")
+    translator.load_sync()
+
+
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
 
@@ -108,7 +115,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.pool = pool
-        self.executor = concurrent.futures.ProcessPoolExecutor()
+        self.executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)
         self.config = config
         self.cache = LFUCache()
         self.user_ids: set[int] = set()

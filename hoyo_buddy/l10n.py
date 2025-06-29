@@ -176,6 +176,13 @@ class Translator:
 
         logger.info("Translator loaded")
 
+    def load_sync(self) -> None:
+        try:
+            loop = asyncio.get_running_loop()
+            loop.run_until_complete(self.load())
+        except RuntimeError:
+            asyncio.run(self.load())
+
     async def load_l10n_files(self) -> None:
         for file_path in L10N_PATH.glob("*.yaml"):
             if not file_path.exists():
@@ -291,6 +298,10 @@ class Translator:
         title_case: bool = False,
         max_length: int | None = None,
     ) -> str:
+        if not self.loaded:
+            logger.error("Translator is not loaded, call Translator.load() first")
+            return str(string)
+
         if isinstance(string, str):
             # It's intentional that we don't apply any modifiers when string is not LocaleStr
             return shorten(string, width=max_length, placeholder="...") if max_length else string
@@ -424,4 +435,3 @@ class AppCommandTranslator(app_commands.Translator):
 
 
 translator = Translator()
-asyncio.run(translator.load())

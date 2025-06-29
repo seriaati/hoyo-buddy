@@ -21,6 +21,7 @@ Challenge: TypeAlias = (
     | genshin.models.ImgTheaterData
     | genshin.models.ShiyuDefense
     | genshin.models.DeadlyAssault
+    | genshin.models.HardChallenge
 )
 ChallengeWithLang: TypeAlias = (
     models.StarRailChallenge
@@ -30,6 +31,7 @@ ChallengeWithLang: TypeAlias = (
     | models.ImgTheaterData
     | models.ShiyuDefense
     | models.DeadlyAssault
+    | models.HardChallenge
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow

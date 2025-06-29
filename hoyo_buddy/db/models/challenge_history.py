@@ -100,6 +100,11 @@ class ChallengeHistory(BaseModel):
             start_time = data.begin_time
             end_time = data.end_time
             name = None
+        elif isinstance(data, genshin.models.HardChallenge):
+            season = data.season
+            start_time = season.start_at
+            end_time = season.end_at
+            name = season.name
         else:
             season = next((season for season in data.seasons if season.id == season_id), None)
             if season is None:

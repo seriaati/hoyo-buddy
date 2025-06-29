@@ -83,6 +83,22 @@ class Challenge(
     ) -> None:
         await self.challenge_command(i, ChallengeType.IMG_THEATER, user, account)
 
+    @genshin.command(
+        name=app_commands.locale_str("stygian"),
+        description=COMMANDS["challenge genshin stygian"].description,
+    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
+    async def hard_challenge_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge genshin stygian"].games)
+        ] = None,
+    ) -> None:
+        await self.challenge_command(i, ChallengeType.HARD_CHALLENGE, user, account)
+
     @hsr.command(
         name=app_commands.locale_str("moc"), description=COMMANDS["challenge hsr moc"].description
     )
@@ -164,6 +180,7 @@ class Challenge(
 
     @abyss_command.autocomplete("account")
     @img_theater_command.autocomplete("account")
+    @hard_challenge_command.autocomplete("account")
     @moc_command.autocomplete("account")
     @pf_command.autocomplete("account")
     @apc_shadow_command.autocomplete("account")

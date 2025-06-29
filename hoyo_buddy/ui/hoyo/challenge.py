@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 import discord
 from ambr.utils import remove_html_tags
@@ -9,6 +9,7 @@ from genshin.models import (
     ChallengeBuff,
     DeadlyAssault,
     DeadlyAssaultBuff,
+    HardChallenge,
     ImgTheaterData,
     ShiyuDefense,
     SpiralAbyss,
@@ -19,6 +20,7 @@ from genshin.models import (
     TheaterBuff,
 )
 from genshin.models import Character as GICharacter
+from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
@@ -26,6 +28,7 @@ from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
     draw_assault_card,
+    draw_hard_challenge,
     draw_img_theater_card,
     draw_moc_card,
     draw_pure_fiction_card,
@@ -39,7 +42,7 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
 from hoyo_buddy.ui import Button, Select, SelectOption, ToggleButton, View
-from hoyo_buddy.utils import get_floor_difficulty
+from hoyo_buddy.utils import blur_uid, get_floor_difficulty
 
 if TYPE_CHECKING:
     import asyncio
@@ -53,6 +56,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
+
+ShowUIDChallenge: TypeAlias = ShiyuDefense | DeadlyAssault | HardChallenge
 
 
 class BuffView(View):
@@ -200,7 +205,7 @@ class ChallengeView(View):
         self.season_ids[self.challenge_type] = value
 
     @staticmethod
-    def _get_season_id(challenge: Challenge, previous: bool) -> int:
+    def _get_season_id(challenge: Challenge, *, previous: bool) -> int:
         if isinstance(challenge, SpiralAbyss):
             return challenge.season
         if isinstance(challenge, ImgTheaterData):
@@ -209,9 +214,36 @@ class ChallengeView(View):
             return challenge.schedule_id
         if isinstance(challenge, DeadlyAssault):
             return challenge.id
+        if isinstance(challenge, HardChallenge):
+            return challenge.season.id
 
         index = 1 if previous else 0
         return challenge.seasons[index].id
+
+    async def _fetch_img_theater_raw_data(self, client: genshin.Client) -> None:
+        raw_ = await client.get_imaginarium_theater(self.account.uid, raw=True)
+        datas: list[dict[str, Any]] = raw_.get("data", [])
+        if not datas:
+            raise NoChallengeDataError(ChallengeType.IMG_THEATER)
+
+            # Organize data by start time
+        data_by_date: defaultdict[int, list[dict[str, Any]]] = defaultdict(list)
+        for data in datas:
+            start: int = data["schedule"]["start_time"]
+            data_by_date[start].append(data)
+
+        for datas in data_by_date.values():
+            most_difficult = max(datas, key=lambda d: d["stat"]["difficulty_id"])
+            await self._validate_and_save_challenge_data(
+                most_difficult, previous=False, lang=client.lang
+            )
+
+    async def _fetch_hard_challenge_raw_data(self, client: genshin.Client) -> None:
+        datas = await client.get_stygian_onslaught(self.account.uid, raw=True)
+        for data in datas:
+            if data["schedule"]["schedule_id"] == "0":
+                continue
+            await self._validate_and_save_challenge_data(data, previous=False, lang=client.lang)
 
     async def _fetch_data(self) -> None:
         if self.challenge is not None:
@@ -222,24 +254,14 @@ class ChallengeView(View):
 
         await client.get_record_cards()
 
+        # Special handling for game modes that don't have previous parameters
+
         if self.challenge_type is ChallengeType.IMG_THEATER:
-            raw_ = await client.get_imaginarium_theater(self.account.uid, raw=True)
-            datas: list[dict[str, Any]] = raw_.get("data", [])
-            if not datas:
-                raise NoChallengeDataError(ChallengeType.IMG_THEATER)
+            await self._fetch_img_theater_raw_data(client)
+            return
 
-            # Organize data by start time
-            data_by_date: defaultdict[int, list[dict[str, Any]]] = defaultdict(list)
-            for data in datas:
-                start: int = data["schedule"]["start_time"]
-                data_by_date[start].append(data)
-
-            for datas in data_by_date.values():
-                most_difficult = max(datas, key=lambda d: d["stat"]["difficulty_id"])
-                await self._validate_and_save_challenge_data(
-                    most_difficult, previous=False, lang=client.lang
-                )
-
+        if self.challenge_type is ChallengeType.HARD_CHALLENGE:
+            await self._fetch_hard_challenge_raw_data(client)
             return
 
         for previous in (False, True):
@@ -249,7 +271,11 @@ class ChallengeView(View):
     async def _validate_and_save_challenge_data(
         self, raw: Mapping[str, Any], *, previous: bool, lang: str
     ) -> None:
-        challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
+        try:
+            challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
+        except Exception as e:
+            logger.warning(f"Failed to load challenge data for {self.challenge_type!r}: {e}")
+            return
 
         if (
             self.challenge_type in {ChallengeType.SPIRAL_ABYSS, ChallengeType.IMG_THEATER}
@@ -265,7 +291,7 @@ class ChallengeView(View):
                 self.characters = await client.get_genshin_characters(self.account.uid)
 
         try:
-            season_id = self._get_season_id(challenge, previous)
+            season_id = self._get_season_id(challenge, previous=previous)
         except IndexError:
             # No previous season
             return
@@ -330,7 +356,7 @@ class ChallengeView(View):
         if self.challenge_type is ChallengeType.ASSAULT:
             return await client.get_deadly_assault(self.account.uid, previous=previous, raw=True)
 
-        msg = f"Fetching data for {self.challenge_type!r}"
+        msg = f"Data fetching for {self.challenge_type!r} is not implemented"
         raise NotImplementedError(msg)
 
     def check_challenge_data(self, challenge: Challenge | None) -> None:
@@ -340,12 +366,17 @@ class ChallengeView(View):
             raise exc
         if isinstance(challenge, SpiralAbyss):
             if not challenge.floors:
-                raise NoChallengeDataError(ChallengeType.SPIRAL_ABYSS)
+                raise exc
+        elif isinstance(challenge, HardChallenge):
+            if not challenge.single_player.has_data:
+                raise exc
         elif not challenge.has_data:
             raise exc
 
     def get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
-        if isinstance(challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense | DeadlyAssault):
+        if isinstance(
+            challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense | DeadlyAssault | HardChallenge
+        ):
             msg = f"Can't get season for {self.challenge_type}"
             raise TypeError(msg)
 
@@ -396,6 +427,10 @@ class ChallengeView(View):
             return await draw_assault_card(
                 draw_input, self.challenge, self.uid if self.show_uid else None
             )
+        if isinstance(self.challenge, HardChallenge):
+            return await draw_hard_challenge(
+                draw_input, self.challenge, str(self.uid) if self.show_uid else blur_uid(self.uid)
+            )
         # ShiyuDefense
         return await draw_shiyu_card(
             draw_input, self.challenge, self.agent_ranks, self.uid if self.show_uid else None
@@ -407,7 +442,7 @@ class ChallengeView(View):
         )
         self.add_item(PhaseSelect())
         self.add_item(ViewBuffs())
-        self.add_item(ShowUID(disabled=self.account.game is not Game.ZZZ))
+        self.add_item(ShowUID())
 
     async def update(
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
@@ -449,10 +484,15 @@ class ChallengeView(View):
         self.item_states["challenge_view.view_buffs"] = buff_button.disabled = not isinstance(
             self.challenge, ChallengeWithBuff
         )
-        show_uid_button: ShowUID = self.get_item("show_uid")
-        self.item_states["show_uid"] = show_uid_button.disabled = not isinstance(
-            self.challenge, ShiyuDefense | DeadlyAssault
-        )
+
+        try:
+            show_uid_button: ShowUID = self.get_item("show_uid")
+        except ValueError:
+            pass
+        else:
+            self.item_states["show_uid"] = show_uid_button.disabled = not isinstance(
+                self.challenge, ShowUIDChallenge
+            )
 
     async def start(self, i: Interaction) -> None:
         self._add_items()
@@ -551,10 +591,8 @@ class ViewBuffs(Button[ChallengeView]):
 
 
 class ShowUID(ToggleButton[ChallengeView]):
-    def __init__(self, *, disabled: bool) -> None:
-        super().__init__(
-            False, LocaleStr(key="show_uid"), row=4, disabled=disabled, custom_id="show_uid"
-        )
+    def __init__(self) -> None:
+        super().__init__(False, LocaleStr(key="show_uid"), row=4, custom_id="show_uid")
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)

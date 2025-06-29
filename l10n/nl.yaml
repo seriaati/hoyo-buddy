@@ -712,7 +712,7 @@ rarity_str: "{rarity} ster"
 finished_status_field_name: Status
 unlocks_in_str: "Ontgrendelt over {time}"
 challenge_selector_placeholder: Selecteer een uitdaging...
-upload_cmd_desc: "Upload een afbeelding en neem een link ervan, die gebruikt kan worden als aangepaste afbeelding in /profile"
+upload_cmd_desc: "Upload an image and get a link to it, which can be used in custom image in /profile"
 not_an_image_error_title: Niet een Afbeelding
 not_an_image_error_message: "Het geüploade bestand is geen afbeelding, probeer het opnieuw met een geldig afbeeldingsbestand."
 upload_cmd_image_param_name: afbeelding

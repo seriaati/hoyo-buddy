@@ -807,3 +807,18 @@ async def draw_assault_card(
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
+
+
+async def draw_hard_challenge(
+    draw_input: DrawInput, data: genshin.models.HardChallenge, uid: str
+) -> File:
+    urls: list[str] = []
+    for challenge in data.single_player.challenges:
+        urls.append(challenge.enemy.icon)
+        urls.extend(char.icon for char in challenge.team)
+    await download_images(urls, "hard-challenge", draw_input.session)
+
+    card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale)
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)

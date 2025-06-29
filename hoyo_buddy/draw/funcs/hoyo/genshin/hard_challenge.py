@@ -199,7 +199,9 @@ class HardChallengeCard:
             pill_border = (106, 41, 79)
             text_color = (248, 113, 113)
 
-        tbox = drawer.write(text, size=24, style="medium", position=(0, 0), no_write=True)
+        tbox = drawer.write(
+            text, size=24, style="medium", position=(0, 0), no_write=True, locale=self._locale
+        )
 
         # Create a pill
         x_padding = 30

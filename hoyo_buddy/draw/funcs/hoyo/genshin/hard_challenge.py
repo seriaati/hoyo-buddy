@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
 LIGHT_PURPLE = (196, 181, 253)
-DARK_PURPLE = (104, 55, 156)
 
 
 class HardChallengeCard:
@@ -142,7 +141,7 @@ class HardChallengeCard:
             mask = drawer.open_asset("stat_char_mask.png")
             char_icon = drawer.open_static(char_icon, size=(126, 126), opacity=0.3)
             char_icon = drawer.mask_image_with_image(char_icon, mask)
-            stat_box.alpha_composite(char_icon, (278, 75))
+            stat_box.alpha_composite(char_icon, (306, 75))
 
         im.paste(stat_box, stat_box_pos, stat_box)
 
@@ -160,6 +159,8 @@ class HardChallengeCard:
             color=LIGHT_PURPLE,
             anchor="lm",
             locale=self._locale,
+            max_width=327,
+            dynamic_fontsize=True,
         )
 
         icon = drawer.open_asset("zap.png" if is_strike else "target.png")
@@ -274,6 +275,8 @@ class HardChallengeCard:
             position=(pos[0] + 873, pos[1] + 328),
             color=LIGHT_PURPLE,
             locale=self._locale,
+            max_width=404,
+            dynamic_fontsize=True,
         )
 
         strike = next(

@@ -808,3 +808,15 @@ anniversary_dyk: "Hoyo Buddy 一週年啦！訪問[週年慶網頁](https://one.
 authkey_timeout_title: Authkey 已過期
 authkey_timeout_message: "獲取一個新的抽卡紀錄網址並再試一次"
 invalid_authkey_title: 無效的 Authkey
+hard_challenge_period: "統計週期：{period}"
+hard_challenge_best_record: "最佳紀錄"
+hard_challenge_completion_time: "戰鬥用時"
+hard_challenge_team_composition: "隊伍組成"
+hard_challenge_combat_statistics: "戰鬥數據"
+hard_challenge_strongest_strike: "最強一擊"
+hard_challenge_damage_dealt: "最高總傷害"
+hard_challenge_enemy_weakness: "敵人弱點"
+hard_challenge_advantage: "弱於"
+hard_challenge_disadvantage: "強於"
+hard_challenge_command_desc: 生成幽境危戰卡片
+hard_challenge: "幽境危戰"

@@ -105,6 +105,7 @@ characters.sorter.level: Level
 characters.sorter.path: Path
 characters.sorter.placeholder: Pilih penyortir...
 characters.sorter.rarity: Rarity
+characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Lihat dan filter karakter Genshin Impact kamu
 characters_cmd_hsr_desc: Lihat dan filter karakter Honkai Star Rail kamu
 characters_cmd_zzz_desc: Lihat dan filter agen Zenless Zone Zero kamu
@@ -337,17 +338,15 @@ profile.card_template_select.hb.label: "Template Hoyo Buddy {num}"
 profile.card_template_select.placeholder: Pilih template
 profile.card_template_select.same_author.description: "Dirancang dan diprogram oleh {author}"
 profile.card_template_select.src.label: "Template StarRailCard {num}"
-profile.character_select.cached_data.description: Data cache
-profile.character_select.description: "E{e}S{s} | {d} | In-game showcase"
+profile.character_select.genshin: ""
+profile.character_select.hsr: ""
+profile.character_select.zzz: ""
+profile.character_select.in_game: ""
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.hoyolab.description: "E{e}S{s} | {d} | {platform}"
-profile.character_select.live_data.description: Data real-time
 profile.character_select.placeholder: Pilih karakter
 profile.generate_ai_art.button.label: Buat gambar AI
 profile.generate_ai_art_modal.negative_prompt.label: Perintah Negatif
 profile.generate_ai_art_modal.prompt.label: Perintah
-profile.genshin.character_select.description: "C{c}R{r} | {d}"
-profile.genshin.character_select.hoyolab.description: "C{c}R{r} | {d} | {platform}"
 profile.image_select.custom_image.label: "Gambar Kustom ({num})"
 profile.image_select.default_collection.label: "Koleksi Hoyo Buddy ({num})"
 profile.image_select.none.label: Gambar resmi
@@ -368,6 +367,7 @@ profile_command_game_value_description: UID dari Game
 profile_command_uid_param_description: "UID pemain, ini akan menggantikan parameter akun jika disediakan"
 pt_button.label: Pengingat parametric transformer
 pt_modal.title: Pengaturan Pengingat Parametric Transformer
+pt_notify_embed_desc: ""
 public_account_toggle.label: Setel akun sebagai publik
 pure_fiction: ""
 pyro: Pyro
@@ -500,7 +500,6 @@ ether: ""
 electric: ""
 profile.no_data.title: Tidak ada data player tersedia
 profile.no_data.description: "Percaya atau tidak, tidak ada yang ditampilkan di sini."
-profile.zzz_hoyolab.character_select.description: ""
 characters.filter.specialty.placeholder: ""
 zzz.basic: ""
 zzz.dodge: ""
@@ -552,7 +551,7 @@ dyk_settings_lang: ""
 dyk_settings_theme: ""
 dyk_security: ""
 dyk_github: "Hoyo Buddy adalah open-sourced di [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
-dyk_python: Hoyo Buddy ditulis murni dengan Python
+dyk_python: ""
 dyk_unreleased: ""
 dyk_team_card: Kamu bisa membuat kartu tim di /profile dengan memilih beberapa karakter
 dyk_set_default_acc: ""
@@ -799,3 +798,25 @@ show_ui_button_label: ""
 hide_ui_button_label: ""
 redeem_failure_notify_toggle_label: ""
 redeem_success_notify_toggle_label: ""
+image_file_too_large_error_title: ""
+image_file_too_large_error_message: ""
+api_request_timeout_title: ""
+api_request_timeout_message: ""
+dismissible_one_year_anniversary_title: ""
+dismissible_one_year_anniversary_desc: ""
+anniversary_dyk: ""
+authkey_timeout_title: ""
+authkey_timeout_message: ""
+invalid_authkey_title: ""
+hard_challenge_period: ""
+hard_challenge_best_record: ""
+hard_challenge_completion_time: ""
+hard_challenge_team_composition: ""
+hard_challenge_combat_statistics: ""
+hard_challenge_strongest_strike: ""
+hard_challenge_damage_dealt: ""
+hard_challenge_enemy_weakness: ""
+hard_challenge_advantage: ""
+hard_challenge_disadvantage: ""
+hard_challenge_command_desc: ""
+hard_challenge: ""

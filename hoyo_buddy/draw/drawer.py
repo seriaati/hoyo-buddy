@@ -537,7 +537,7 @@ class Drawer:
         text: LocaleStr | str,
         *,
         size: int,
-        position: tuple[int, int],
+        position: tuple[float, float],
         color: tuple[int, int, int] | None = None,
         style: FontStyle = "regular",
         emphasis: Literal["high", "medium", "low"] = "high",

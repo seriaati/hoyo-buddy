@@ -4,6 +4,7 @@ import io
 import pathlib
 from typing import TYPE_CHECKING, Literal, NamedTuple, TypeAlias
 
+import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
 from PIL import Image, ImageChops, ImageDraw, ImageFont
@@ -638,8 +639,20 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         image = self.open_image(get_static_img_path(url, folder), size)
-        if mask_color:
+
+        if mask_color is not None:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)
+        elif opacity < 1.0:
+            data = np.array(image)
+
+            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
+            data[black_pixels] = [0, 0, 0, 0]
+
+            non_transparent = data[:, :, 3] > 0
+            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
+
+            image = Image.fromarray(data)
+
         return image
 
     def open_asset(
@@ -822,3 +835,54 @@ class Drawer:
             img = img.resize((int(width * step), int(height * step)), Image.Resampling.LANCZOS)
 
         return bytes_obj
+
+    @staticmethod
+    def draw_gradient_background(
+        width: int,
+        height: int,
+        color1: tuple[int, int, int],
+        color2: tuple[int, int, int],
+        pos1: tuple[float, float],
+        pos2: tuple[float, float],
+    ) -> Image.Image:
+        x1, y1 = pos1[0] * (width - 1), pos1[1] * (height - 1)
+        x2, y2 = pos2[0] * (width - 1), pos2[1] * (height - 1)
+
+        dx, dy = x2 - x1, y2 - y1
+        gradient_len_sq = dx**2 + dy**2
+
+        if gradient_len_sq == 0:
+            return Image.new("RGB", (width, height), color1)
+
+        y_coords, x_coords = np.mgrid[0:height, 0:width]
+        dot_product = (x_coords - x1) * dx + (y_coords - y1) * dy
+        factor = np.clip(dot_product / gradient_len_sq, 0, 1)
+        factor = factor[..., np.newaxis]
+
+        c1 = np.array(color1)
+        c2 = np.array(color2)
+
+        image_array = c1 * (1 - factor) + c2 * factor
+        image_array = image_array.astype(np.uint8)
+
+        return Image.fromarray(image_array, "RGB")
+
+    @staticmethod
+    def extract_main_colors(
+        image: Image.Image, n_colors: int = 2, center_crop: float = 0.6
+    ) -> list[tuple[int, int, int]]:
+        w, h = image.size
+        crop_w, crop_h = int(w * center_crop), int(h * center_crop)
+        left, top = (w - crop_w) // 2, (h - crop_h) // 2
+        image = image.crop((left, top, left + crop_w, top + crop_h))
+        image.thumbnail((100, 100), Image.Resampling.LANCZOS)
+        image = image.convert("RGB")
+
+        quantized_image = image.quantize(colors=n_colors, method=Image.Quantize.MEDIANCUT)
+
+        palette = quantized_image.getpalette()
+        if palette is None:
+            logger.warning("Palette is None, returning default colors.")
+            return [(0, 0, 0), (255, 255, 255)]
+
+        return [tuple(palette[i : i + 3]) for i in range(0, n_colors * 3, 3)]  # pyright: ignore[reportReturnType]

@@ -11,6 +11,7 @@ type CommandName = Literal[
     "build genshin",
     "challenge genshin abyss",
     "challenge genshin theater",
+    "challenge genshin stygian",
     "challenge hsr moc",
     "challenge hsr pure-fiction",
     "challenge hsr apc-shadow",
@@ -71,6 +72,12 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         games=(Game.GENSHIN,),
         description=locale_str(
             "Generate Imaginarium Theater card", key="challenge_command_theater_desc"
+        ),
+    ),
+    "challenge genshin stygian": CommandConfig(
+        games=(Game.GENSHIN,),
+        description=locale_str(
+            "Generate Stygian Onslaught card", key="hard_challenge_command_desc"
         ),
     ),
     "challenge hsr moc": CommandConfig(

@@ -128,6 +128,7 @@ class ChallengeType(StrEnum):
     IMG_THEATER = "img_theater_large_block_title"
     SHIYU_DEFENSE = "Shiyu defense"
     ASSAULT = "zzz_deadly_assault"
+    HARD_CHALLENGE = "hard_challenge"
 
 
 class ZZZElement(StrEnum):

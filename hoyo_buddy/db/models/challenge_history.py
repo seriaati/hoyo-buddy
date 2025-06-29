@@ -1,6 +1,7 @@
 # pyright: reportAssignmentType=false
 from __future__ import annotations
 
+import copy
 import pickle
 from typing import TYPE_CHECKING, Any, cast
 
@@ -61,20 +62,25 @@ class ChallengeHistory(BaseModel):
 
     @classmethod
     def load_data(cls, raw: Mapping[str, Any], *, challenge_type: ChallengeType) -> Challenge:
+        # Create a deep copy to prevent Pydantic field validators from modifying the original data
+        raw_copy = copy.deepcopy(raw)
+
         if challenge_type is ChallengeType.SPIRAL_ABYSS:
-            return genshin.models.SpiralAbyss(**raw)
+            return genshin.models.SpiralAbyss(**raw_copy)
         if challenge_type is ChallengeType.IMG_THEATER:
-            return genshin.models.ImgTheaterData(**raw)
+            return genshin.models.ImgTheaterData(**raw_copy)
         if challenge_type is ChallengeType.SHIYU_DEFENSE:
-            return genshin.models.ShiyuDefense(**raw)
+            return genshin.models.ShiyuDefense(**raw_copy)
         if challenge_type is ChallengeType.ASSAULT:
-            return genshin.models.DeadlyAssault(**raw)
+            return genshin.models.DeadlyAssault(**raw_copy)
         if challenge_type is ChallengeType.APC_SHADOW:
-            return genshin.models.StarRailAPCShadow(**raw)
+            return genshin.models.StarRailAPCShadow(**raw_copy)
         if challenge_type is ChallengeType.MOC:
-            return genshin.models.StarRailChallenge(**raw)
+            return genshin.models.StarRailChallenge(**raw_copy)
         if challenge_type is ChallengeType.PURE_FICTION:
-            return genshin.models.StarRailPureFiction(**raw)
+            return genshin.models.StarRailPureFiction(**raw_copy)
+        if challenge_type is ChallengeType.HARD_CHALLENGE:
+            return genshin.models.HardChallenge(**raw_copy)
 
     @classmethod
     async def add_data(
@@ -100,6 +106,11 @@ class ChallengeHistory(BaseModel):
             start_time = data.begin_time
             end_time = data.end_time
             name = None
+        elif isinstance(data, genshin.models.HardChallenge):
+            season = data.season
+            start_time = season.start_at
+            end_time = season.end_at
+            name = season.name
         else:
             season = next((season for season in data.seasons if season.id == season_id), None)
             if season is None:

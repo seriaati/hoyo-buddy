@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import asyncio
-
 import flet as ft
 
-from hoyo_buddy.l10n import translator
+from hoyo_buddy.l10n import translator  # noqa: F401
 from hoyo_buddy.utils import entry_point
 from hoyo_buddy.web_app.app import ClientStorage, WebApp
 
@@ -17,7 +15,6 @@ async def web_app_entry(page: ft.Page) -> None:
 
 if __name__ == "__main__":
     entry_point("logs/web_app.log")
-    asyncio.run(translator.load())
     ft.app(
         web_app_entry,
         port=8645,

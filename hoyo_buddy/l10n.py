@@ -144,6 +144,15 @@ class Translator:
         self._mi18n: dict[tuple[str, Mi18nGame], dict[str, str]] = {}
         self._game_textmaps: dict[tuple[str, Game], dict[str, str]] = {}
 
+    @property
+    def loaded(self) -> bool:
+        return (
+            bool(self._l10n)
+            and bool(self._mi18n)
+            and bool(self._game_textmaps)
+            and bool(self._synced_commands)
+        )
+
     async def __aenter__(self) -> Self:
         await self.load()
         return self
@@ -157,6 +166,9 @@ class Translator:
         pass
 
     async def load(self) -> None:
+        if self.loaded:
+            return
+
         await self.load_l10n_files()
         await self.load_synced_commands_json()
         await self.load_mi18n_files()
@@ -412,3 +424,4 @@ class AppCommandTranslator(app_commands.Translator):
 
 
 translator = Translator()
+asyncio.run(translator.load())

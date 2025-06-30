@@ -6,6 +6,7 @@ import genshin
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
@@ -63,7 +64,7 @@ class HardChallengeCard:
         icon = drawer.open_asset(f"{best_record.icon}.png", size=(100, 100))
         im.paste(icon, (143, 289), icon)
 
-        text = LocaleStr(key="hard_challenge_best_record")
+        text = LocaleStr(key="role_combat_best_record", mi18n_game=Game.GENSHIN)
         drawer.write(
             text,
             size=48,

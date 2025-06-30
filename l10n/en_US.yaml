@@ -809,7 +809,6 @@ authkey_timeout_title: Authkey Timeout
 authkey_timeout_message: "Obtain a new gacha log URL and try again"
 invalid_authkey_title: Invalid Authkey
 hard_challenge_period: "Period: {period}"
-hard_challenge_best_record: "Best Record"
 hard_challenge_completion_time: "Completion Time"
 hard_challenge_team_composition: "Team Composition"
 hard_challenge_combat_statistics: "Combat Statistics"

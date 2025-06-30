@@ -11,6 +11,7 @@ from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 from hoyo_buddy.enums import Locale
+from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     from io import BytesIO
@@ -23,7 +24,7 @@ class ZZZAgentCard4:
         self,
         agent: ZZZFullAgent,
         *,
-        locale: str,
+        locale: Locale,
         image_url: str,
         disc_icons: dict[int, str],
         name_data: AgentNameData | None,
@@ -34,7 +35,7 @@ class ZZZAgentCard4:
         hl_special_stats: bool,
     ) -> None:
         self._agent = agent
-        self._locale = Locale(locale)
+        self._locale = locale
         self._image_url = image_url
         self._disc_icons = disc_icons
         self._name_data = name_data
@@ -211,8 +212,13 @@ class ZZZAgentCard4:
             )
             im.alpha_composite(prop_icon, (1173, 161 + 122 * i))
 
+            text = (
+                LocaleStr(key="aaa_acronym", default=prop.name)
+                if prop.type is PropType.AGENT_ADRENALINE
+                else prop.name
+            )
             drawer.write(
-                prop.name,
+                text,
                 size=62,
                 position=(1286, 198 + 122 * i),
                 anchor="lm",

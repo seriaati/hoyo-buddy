@@ -822,3 +822,4 @@ hard_challenge_command_desc: Generate Stygian Onslaught card
 hard_challenge: "Stygian Onslaught"
 fetching_accounts: Please wait while we are getting your accounts...
 fetching_accounts_stuck: "If you are stuck on this page, please try running the command again or contact us to fix the issue."
+aaa_acronym: AAA

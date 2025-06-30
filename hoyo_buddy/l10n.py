@@ -78,12 +78,14 @@ class LocaleStr:
         mi18n_game: Mi18nGame | None = None,
         data_game: Game | None = None,
         append: str | None = None,
+        default: str | None = None,
         **kwargs: Any,
     ) -> None:
         self.custom_str = custom_str
         self.key = key
         self.translate_ = translate
         self.append = append
+        self.default = default
         self.mi18n_game = mi18n_game
         self.game = data_game
         self.extras: dict[str, Any] = kwargs
@@ -324,7 +326,9 @@ class Translator:
         else:
             translation = self._l10n.get(lang, {}).get(string_key)
 
-        translation = translation or source_string or string.custom_str or string_key
+        translation = (
+            translation or string.default or source_string or string.custom_str or string_key
+        )
 
         with contextlib.suppress(KeyError):
             translation = translation.format(**extras)

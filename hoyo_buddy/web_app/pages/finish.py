@@ -24,7 +24,46 @@ if TYPE_CHECKING:
 
     from ..schema import Params
 
-__all__ = ("FinishPage",)
+__all__ = ("EarlyFinishPage", "FinishPage")
+
+
+class EarlyFinishPage(ft.View):
+    def __init__(self, *, params: Params, locale: Locale) -> None:
+        self._params = params
+        self._locale = locale
+
+        super().__init__(
+            route="/finish",
+            controls=[
+                ft.SafeArea(
+                    ft.Column(
+                        [
+                            ft.Row(
+                                [
+                                    ft.ProgressRing(
+                                        width=16,
+                                        height=16,
+                                        stroke_width=2,
+                                        color=ft.Colors.ON_SURFACE,
+                                    ),
+                                    ft.Text(
+                                        translator.translate(
+                                            LocaleStr(key="fetching_accounts"), locale
+                                        ),
+                                        size=24,
+                                    ),
+                                ]
+                            ),
+                            ft.Text(
+                                translator.translate(
+                                    LocaleStr(key="fetching_accounts_stuck"), locale
+                                )
+                            ),
+                        ]
+                    )
+                )
+            ],
+        )
 
 
 class FinishPage(ft.View):

@@ -100,7 +100,13 @@ class WebApp:
         if view is None:
             return
 
+        self._refresh_page_view(view)
+
+    def _refresh_page_view(self, view: ft.View, app_bar: ft.AppBar | None = None) -> None:
+        page = self._page
         view.scroll = ft.ScrollMode.AUTO
+        if app_bar is not None:
+            view.appbar = app_bar
 
         page.views.clear()
         page.views.append(view)
@@ -278,6 +284,9 @@ class WebApp:
 
         self.close_dialogs()
         self.close_banners()
+
+        view = pages.EarlyFinishPage(params=params, locale=locale)
+        self._refresh_page_view(view, app_bar=self.login_app_bar)
 
         device_id_exists = await page.client_storage.contains_key_async(
             f"hb.{params.user_id}.device_id"

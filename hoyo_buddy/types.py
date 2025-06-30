@@ -89,3 +89,16 @@ type SleepTime = Literal[
     "search_autofill",
     "notes_check",
 ]
+
+type FontStyle = Literal[
+    "light",
+    "regular",
+    "medium",
+    "bold",
+    "black",
+    "light_italic",
+    "regular_italic",
+    "medium_italic",
+    "bold_italic",
+    "black_italic",
+]

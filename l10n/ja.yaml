@@ -807,7 +807,6 @@ authkey_timeout_title: Authkey タイムアウト
 authkey_timeout_message: "新しいガチャログURLを取得して再試行してください"
 invalid_authkey_title: 無効なAuthkey
 hard_challenge_period: "統計周期：{period}"
-hard_challenge_best_record: "最高記録"
 hard_challenge_completion_time: "クリア時間"
 hard_challenge_team_composition: "チーム編成"
 hard_challenge_combat_statistics: "戦闘統計"

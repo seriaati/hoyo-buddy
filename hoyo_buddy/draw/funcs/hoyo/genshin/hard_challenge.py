@@ -12,15 +12,24 @@ if TYPE_CHECKING:
     import io
 
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.types import HardChallengeMode
 
 LIGHT_PURPLE = (196, 181, 253)
 
 
 class HardChallengeCard:
-    def __init__(self, data: genshin.models.HardChallenge, uid: str, locale: Locale) -> None:
+    def __init__(
+        self,
+        data: genshin.models.HardChallenge,
+        uid: str,
+        locale: Locale,
+        *,
+        mode: HardChallengeMode,
+    ) -> None:
         self._data = data
         self._uid = uid
         self._locale = locale
+        self._mode = mode
 
     def _write_period(self, drawer: Drawer) -> None:
         season = self._data.season
@@ -43,9 +52,15 @@ class HardChallengeCard:
         )
 
     def _write_best_record(self, drawer: Drawer, im: Image.Image) -> None:
-        icon = drawer.open_asset(
-            f"{self._data.single_player.best_record.icon}.png", size=(100, 100)
+        best_record = (
+            self._data.single_player.best_record
+            if self._mode == "single"
+            else self._data.multi_player.best_record
         )
+        if best_record is None:
+            return
+
+        icon = drawer.open_asset(f"{best_record.icon}.png", size=(100, 100))
         im.paste(icon, (143, 289), icon)
 
         text = LocaleStr(key="hard_challenge_best_record")
@@ -59,7 +74,7 @@ class HardChallengeCard:
             locale=self._locale,
         )
 
-        second = f"{self._data.single_player.best_record.time_used}s"
+        second = f"{best_record.time_used}s"
         drawer.write(
             second, size=80, style="black", position=(1205, 338), color=(250, 191, 37), anchor="lm"
         )
@@ -69,7 +84,7 @@ class HardChallengeCard:
         drawer: Drawer,
         im: Image.Image,
         pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeSPChallenge,
+        challenge: genshin.models.HardChallengeChallenge,
     ) -> None:
         team_composition = LocaleStr(key="hard_challenge_team_composition")
         tbox = drawer.write(
@@ -128,7 +143,7 @@ class HardChallengeCard:
         drawer: Drawer,
         im: Image.Image,
         pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeSPChallenge,
+        challenge: genshin.models.HardChallengeChallenge,
         char: genshin.models.HardChallengeBestCharacter,
     ) -> None:
         is_strike = char.type is genshin.models.HardChallengeBestCharacterType.STRIKE
@@ -247,7 +262,7 @@ class HardChallengeCard:
         drawer: Drawer,
         im: Image.Image,
         pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeSPChallenge,
+        challenge: genshin.models.HardChallengeChallenge,
     ) -> None:
         text = LocaleStr(key="hard_challenge_enemy_weakness")
         drawer.write(
@@ -267,7 +282,7 @@ class HardChallengeCard:
         drawer: Drawer,
         im: Image.Image,
         pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeSPChallenge,
+        challenge: genshin.models.HardChallengeChallenge,
     ) -> None:
         stats = LocaleStr(key="hard_challenge_combat_statistics")
         drawer.write(
@@ -308,7 +323,7 @@ class HardChallengeCard:
         drawer: Drawer,
         im: Image.Image,
         pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeSPChallenge,
+        challenge: genshin.models.HardChallengeChallenge,
     ) -> None:
         bk = drawer.open_asset("monster_bk.png")
         im.paste(bk, pos, bk)
@@ -371,7 +386,12 @@ class HardChallengeCard:
         self._write_uid(drawer)
         self._write_best_record(drawer, background)
 
-        for i, challenge in enumerate(self._data.single_player.challenges):
+        challenges = (
+            self._data.single_player.challenges
+            if self._mode == "single"
+            else self._data.multi_player.challenges
+        )
+        for i, challenge in enumerate(challenges):
             self._draw_challenge(drawer, background, pos=(77, 492 + i * 1005), challenge=challenge)
 
         return drawer.save_image(background)

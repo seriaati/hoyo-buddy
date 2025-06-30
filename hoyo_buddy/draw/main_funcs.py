@@ -46,6 +46,7 @@ if TYPE_CHECKING:
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.types import HardChallengeMode
 
 
 async def draw_item_list_card(
@@ -810,15 +811,16 @@ async def draw_assault_card(
 
 
 async def draw_hard_challenge(
-    draw_input: DrawInput, data: genshin.models.HardChallenge, uid: str
+    draw_input: DrawInput, data: genshin.models.HardChallenge, uid: str, *, mode: HardChallengeMode
 ) -> File:
     urls: list[str] = []
-    for challenge in data.single_player.challenges:
+    challenges = data.single_player.challenges if mode == "single" else data.multi_player.challenges
+    for challenge in challenges:
         urls.append(challenge.enemy.icon)
         urls.extend(char.icon for char in challenge.team)
     await download_images(urls, "hard-challenge", draw_input.session)
 
-    card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale)
+    card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale, mode=mode)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

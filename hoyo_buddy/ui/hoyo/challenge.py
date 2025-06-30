@@ -40,7 +40,7 @@ from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff
+from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
 from hoyo_buddy.ui import Button, Select, SelectOption, ToggleButton, View
 from hoyo_buddy.utils import blur_uid, get_floor_difficulty
 
@@ -175,6 +175,7 @@ class ChallengeView(View):
         super().__init__(author=author, locale=locale)
 
         self.challenge_type: ChallengeType = challenge_type
+        self.hard_challenge_mode: HardChallengeMode = "single"
         self.account = account
         self.dark_mode = dark_mode
 
@@ -368,7 +369,9 @@ class ChallengeView(View):
             if not challenge.floors:
                 raise exc
         elif isinstance(challenge, HardChallenge):
-            if not challenge.single_player.has_data:
+            if self.hard_challenge_mode == "single" and not challenge.single_player.has_data:
+                raise exc
+            if self.hard_challenge_mode == "multi" and not challenge.multi_player.has_data:
                 raise exc
         elif not challenge.has_data:
             raise exc
@@ -429,7 +432,10 @@ class ChallengeView(View):
             )
         if isinstance(self.challenge, HardChallenge):
             return await draw_hard_challenge(
-                draw_input, self.challenge, str(self.uid) if self.show_uid else blur_uid(self.uid)
+                draw_input,
+                self.challenge,
+                str(self.uid) if self.show_uid else blur_uid(self.uid),
+                mode=self.hard_challenge_mode,
             )
         # ShiyuDefense
         return await draw_shiyu_card(
@@ -441,6 +447,11 @@ class ChallengeView(View):
             ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game], self.challenge_type)
         )
         self.add_item(PhaseSelect())
+
+        if self.challenge_type is ChallengeType.HARD_CHALLENGE:
+            self.add_item(HardChallengeModeSingle())
+            self.add_item(HardChallengeModeMulti())
+
         self.add_item(ViewBuffs())
         self.add_item(ShowUID())
 
@@ -597,5 +608,40 @@ class ShowUID(ToggleButton[ChallengeView]):
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
         self.view.show_uid = self.current_toggle
+        await self.set_loading_state(i)
+        await self.view.update(self, i)
+
+
+class HardChallengeModeSingle(Button[ChallengeView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="hard_challenge_type_1", mi18n_game=Game.GENSHIN),
+            custom_id="hard_challenge_mode_single",
+            style=discord.ButtonStyle.blurple,
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        multi_button: HardChallengeModeMulti = self.view.get_item("hard_challenge_mode_multi")
+        multi_button.style = discord.ButtonStyle.gray
+        self.style = discord.ButtonStyle.blurple
+
+        self.view.hard_challenge_mode = "single"
+        await self.set_loading_state(i)
+        await self.view.update(self, i)
+
+
+class HardChallengeModeMulti(Button[ChallengeView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="hard_challenge_type_2", mi18n_game=Game.GENSHIN),
+            custom_id="hard_challenge_mode_multi",
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        single_button: HardChallengeModeSingle = self.view.get_item("hard_challenge_mode_single")
+        single_button.style = discord.ButtonStyle.gray
+        self.style = discord.ButtonStyle.blurple
+
+        self.view.hard_challenge_mode = "multi"
         await self.set_loading_state(i)
         await self.view.update(self, i)

@@ -809,7 +809,6 @@ authkey_timeout_title: 密钥已过期
 authkey_timeout_message: "获取新抽卡记录链接后重试"
 invalid_authkey_title: 无效密钥
 hard_challenge_period: "统计周期：{period}"
-hard_challenge_best_record: "最佳纪录"
 hard_challenge_completion_time: "战斗用时"
 hard_challenge_team_composition: "使用队伍"
 hard_challenge_combat_statistics: "战斗数据"

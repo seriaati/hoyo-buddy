@@ -23,7 +23,7 @@ def draw_agent_small_card(
     agent: ZZZFullAgent | UnownedZZZCharacter,
     *,
     dark_mode: bool,
-    locale: str,
+    locale: Locale,
     mask: Image.Image,
     card: Image.Image,
     circle: Image.Image,
@@ -33,7 +33,7 @@ def draw_agent_small_card(
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="zzz-characters", dark_mode=dark_mode, locale=Locale(locale))
+    drawer = Drawer(draw, folder="zzz-characters", dark_mode=dark_mode)
 
     # Banner icon
     icon = drawer.open_static(agent.banner_icon, size=(880, 458))
@@ -55,6 +55,7 @@ def draw_agent_small_card(
         style="medium",
         anchor="mm",
         color=WHITE,
+        locale=locale,
     )
 
     # W-engine
@@ -110,7 +111,7 @@ def draw_agent_small_card(
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: str
+    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: Locale
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"

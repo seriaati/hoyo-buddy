@@ -57,6 +57,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
         size=32,
         style="medium",
         position=(112, 487),
+        locale=Locale.american_english
     )
 
     # Scratch card
@@ -113,6 +114,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
         size=32,
         style="medium",
         position=(598, 890),
+        locale=Locale.american_english,
     )
 
     # Bounty commission progress
@@ -131,6 +133,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
         size=32,
         style="medium",
         position=(113, 1300),
+        locale=Locale.american_english,
     )
 
     # Ridy weekly points
@@ -149,6 +152,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
         size=32,
         style="medium",
         position=(598, 1300),
+        locale=Locale.american_english,
     )
 
     return Drawer.save_image(im)

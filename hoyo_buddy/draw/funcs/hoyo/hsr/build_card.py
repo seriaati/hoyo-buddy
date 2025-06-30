@@ -34,7 +34,7 @@ def draw_hsr_build_card(
 
     im = Image.new("RGBA", (2244, 1297), primary)
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode, locale=locale)
+    drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode)
 
     # character image
     character_im = drawer.open_static(image_url)
@@ -66,6 +66,7 @@ def draw_hsr_build_card(
         style="bold",
         anchor="lm",
         max_width=870,
+        locale=locale,
     )
 
     # character level
@@ -245,6 +246,7 @@ def draw_hsr_build_card(
             max_width=max_width,
             max_lines=2,
             anchor="lm",
+            locale=locale,
         )
         text_bottom_pos = textbbox[3]
         text_left_pos = textbbox[0]

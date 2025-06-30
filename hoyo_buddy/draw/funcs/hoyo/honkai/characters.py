@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
 
     import genshin
 
+    from hoyo_buddy.enums import Locale
+
 
 def draw_small_suit_card(
     suit: genshin.models.FullBattlesuit,
@@ -21,11 +22,11 @@ def draw_small_suit_card(
     card: Image.Image,
     mask: Image.Image,
     suit_mask: Image.Image,
-    locale: str,
+    locale: Locale,
 ) -> Image.Image:
     im = card.copy()
     draw = ImageDraw.Draw(im)
-    drawer = Drawer(draw, folder="honkai-characters", locale=Locale(locale), dark_mode=True)
+    drawer = Drawer(draw, folder="honkai-characters", dark_mode=True, locale=locale)
 
     try:
         suit_icon = drawer.open_static(suit.tall_icon.replace(" ", ""), size=(146, 256))
@@ -51,9 +52,9 @@ def draw_small_suit_card(
 
     rarities = {1: "B", 2: "A", 3: "S", 4: "SS", 5: "SSS"}
     rarity_text = LocaleStr(key="honkai_suit_rarity", rarity=rarities[suit.rarity]).translate(
-        Locale(locale)
+        locale
     )
-    level_text = LevelStr(suit.level).translate(Locale(locale))
+    level_text = LevelStr(suit.level).translate(locale)
     drawer.write(
         f"{rarity_text}\n{level_text}",
         size=30,
@@ -67,7 +68,7 @@ def draw_small_suit_card(
 
 
 def draw_big_suit_card(
-    suits: Sequence[genshin.models.FullBattlesuit], locale: str, dark_mode: bool
+    suits: Sequence[genshin.models.FullBattlesuit], locale: Locale, dark_mode: bool
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/honkai-characters"
     theme = "dark" if dark_mode else "light"

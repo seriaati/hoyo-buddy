@@ -191,7 +191,7 @@ class HardChallengeCard:
         )
         im.paste(icon, icon_pos, icon)
         drawer.write(
-            f"{char.value:,}",
+            f"{int(char.value):,}",
             size=64,
             style="bold",
             position=(icon_pos[0], icon_pos[1] + icon.height + 64),

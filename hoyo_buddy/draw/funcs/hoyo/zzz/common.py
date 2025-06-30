@@ -11,6 +11,8 @@ from genshin.models import (
     ZZZSkillType,
 )
 
+from hoyo_buddy.enums import Locale
+
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc and w-engine
     ZZZPropertyType.BASE_ATK: "ATK.png",
@@ -65,8 +67,22 @@ SKILL_ORDER: Final[tuple[ZZZSkillType, ...]] = (
     ZZZSkillType.CORE_SKILL,
 )
 
+PEN_NAME: Final[dict[Locale, str]] = {
+    Locale.american_english: "PEN",
+    Locale.chinese: "穿透值",
+    Locale.taiwan_chinese: "穿透值",
+    Locale.japanese: "貫通値",
+    Locale.korean: "관통 수치",
+    Locale.spain_spanish: "Perforación",
+    Locale.french: "PÉN",
+    Locale.russian: "Пробивание",
+    Locale.vietnamese: "Xuyên Giáp",
+    Locale.german: "Durchschlag",
+    Locale.brazil_portuguese: "Perfuração",
+}
 
-def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty]:
+
+def get_props(agent: ZZZFullAgent, *, locale: Locale | None = None) -> list[ZZZAgentProperty]:
     pen = dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN)
     if pen is None:
         # Calculate flat pen from discs
@@ -76,7 +92,7 @@ def get_props(agent: ZZZFullAgent) -> list[ZZZAgentProperty]:
         )
         pen = ZZZAgentProperty(
             **{  # noqa: PIE804
-                "property_name": "PEN",
+                "property_name": PEN_NAME.get(locale, "PEN") if locale else "PEN",
                 "property_id": 232,
                 "base": str(val),
                 "add": "",

@@ -193,7 +193,7 @@ class ZZZAgentCard4:
         im = self.im
         im.alpha_composite(drawer.open_asset("stats.png"), (1124, 103))
 
-        props = get_props(self._agent)
+        props = get_props(self._agent, locale=self._locale)
         for i, prop in enumerate(props):
             assert isinstance(prop.type, PropType)
 

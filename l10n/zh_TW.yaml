@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Hoyo Buddy 收藏 ({num})"
 profile.image_select.none.label: 官方繪圖
 profile.image_select.placeholder: 選擇一張圖片
 profile.player_info.button.label: 玩家資訊
+profile_gi_embed_ar: 冒險等階
+profile_gi_embed_world_level: 世界等級
 profile.player_info.embed.description: "開拓等級: {level}\n均衡等級: {world_level}\n好友數量: {friend_count}\n光錐: {light_cones}\n角色: {characters}\n成就: {achievements}\n"
-profile.player_info.gi.embed.description: "冒險等階: {adventure_rank}\n深境螺旋: {spiral_abyss}\n成就: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "開拓等級：{level}\n角色：{characters}\n寶箱：{chest}\n混沌回憶：{moc}\n成就：{achievements}\n"
 profile.primary_color.button.label: 變更顏色
 profile.primary_color_modal.color.label: 顏色（十六進制代碼）
@@ -819,3 +820,6 @@ hard_challenge_advantage: "元素優勢"
 hard_challenge_disadvantage: "元素劣勢"
 hard_challenge_command_desc: 生成幽境危戰卡片
 hard_challenge: "幽境危戰"
+fetching_accounts: 請稍等，正在獲取你的帳戶…
+fetching_accounts_stuck: "如果此頁面長時間沒有跳轉，請嘗試重新執行一次指令，或是聯繫我們來解決問題。"
+aaa_acronym: 閃能自動累積

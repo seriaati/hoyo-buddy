@@ -57,7 +57,7 @@ def draw_zzz_notes(notes: ZZZNotes, locale: Locale, dark_mode: bool) -> BytesIO:
         size=32,
         style="medium",
         position=(112, 487),
-        locale=Locale.american_english
+        locale=Locale.american_english,
     )
 
     # Scratch card

@@ -353,7 +353,7 @@ profile.image_select.none.label: 官方绘图
 profile.image_select.placeholder: 选择一张图片
 profile.player_info.button.label: 玩家资料
 profile.player_info.embed.description: "开拓等级：{level}\n均衡等级：{world_level}\n好友数量：{friend_count}\n光锥：{light_cones}\n角色：{characters}\n成就：{achievements}\n"
-profile.player_info.gi.embed.description: "冒险等阶：{adventure_rank}\n深境螺旋：{spiral_abyss}\n成就：{achievements}\n"
+profile.player_info.gi.embed.description: "冒险等阶：{adventure_rank}\n深境螺旋：{spiral_abyss}\n成就总数：{achievements}\n"
 profile.player_info.hoyolab.embed.description: "开拓等级：{level}\n角色：{characters}\n宝箱：{chest}\n混沌回忆：{moc}\n成就：{achievements}\n"
 profile.primary_color.button.label: 更改颜色
 profile.primary_color_modal.color.label: 颜色（十六进制代码）
@@ -784,7 +784,7 @@ web_events_embed_footer: 使用 /web-events 来调整通知
 auto_task_error_dm_content: "由于发生错误，`{account}` 的**{feature}**功能已被**__关闭__**，你可以使用{command} 命令重新启用。\n如果该错误依然存在或者不知道如何去解决，请加入我们的[Discord服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 is_support_custom_image_desc: 支持自定义图片
 is_not_support_custom_image_desc: 不支持自定义图片
-template_preview_header: 范例样式
+template_preview_header: 示例样式
 missing_permissions_error_title: Hoyo Buddy 未获得权限
 missing_permissions_error_message: "Hoyo Buddy 需要以下权限才能正常运行：\n- 发送消息\n- 嵌入链接\n- 附加文件\n- 使用外部表情符号"
 blocked_by_auto_mod_error_title: 此消息已被 AutoMod 拦截
@@ -805,11 +805,10 @@ api_request_timeout_message: 请稍后再试
 dismissible_one_year_anniversary_title: Hoyo Buddy 一周年啦！
 dismissible_one_year_anniversary_desc: "访问[特殊页](https://one.hb.seria.moe)参加周年庆抽奖活动吧！"
 anniversary_dyk: "Hoyo Buddy 一周年啦！访问[特殊页](https://one.hb.seria.moe)参加周年庆抽奖活动吧！"
-authkey_timeout_title: Authkey 超时
-authkey_timeout_message: "获取新的抽卡记录URL后重试"
-invalid_authkey_title: 无效的 Authkey
+authkey_timeout_title: 密钥已过期
+authkey_timeout_message: "获取新抽卡记录链接后重试"
+invalid_authkey_title: 无效密钥
 hard_challenge_period: "统计周期：{period}"
-hard_challenge_best_record: "最佳纪录"
 hard_challenge_completion_time: "战斗用时"
 hard_challenge_team_composition: "使用队伍"
 hard_challenge_combat_statistics: "战斗数据"
@@ -818,5 +817,5 @@ hard_challenge_damage_dealt: "最高总伤害"
 hard_challenge_enemy_weakness: "敌人弱点"
 hard_challenge_advantage: "元素优势"
 hard_challenge_disadvantage: "元素劣势"
-hard_challenge_command_desc: 生成幽静危机卡片
-hard_challenge: "幽静危机"
+hard_challenge_command_desc: 生成幽境危战卡片
+hard_challenge: "幽境危战"

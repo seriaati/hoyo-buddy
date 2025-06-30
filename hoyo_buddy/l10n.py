@@ -165,8 +165,8 @@ class Translator:
     ) -> None:
         pass
 
-    async def load(self) -> None:
-        if self.loaded:
+    async def load(self, *, force: bool = False) -> None:
+        if self.loaded and not force:
             return
 
         await self.load_l10n_files()

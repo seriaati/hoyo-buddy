@@ -185,9 +185,6 @@ class Translator:
 
     async def load_l10n_files(self) -> None:
         for file_path in L10N_PATH.glob("*.yaml"):
-            if not file_path.exists():
-                continue
-
             lang = file_path.stem
             self._l10n[lang] = await read_yaml(file_path.as_posix())
 

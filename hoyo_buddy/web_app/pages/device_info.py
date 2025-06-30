@@ -65,10 +65,12 @@ class DeviceInfoForm(ft.Column):
     def __init__(self, *, params: Params) -> None:
         self._params = params
         self._login_details_ref = ft.Ref[ft.TextField]()
+        self._aaid_ref = ft.Ref[AAIDField]()
 
         super().__init__(
             [
                 DeviceInfoField(ref=self._login_details_ref),
+                AAIDField(ref=self._aaid_ref),
                 ft.Container(self.submit_button, margin=ft.margin.only(top=16)),
             ],
             wrap=True,
@@ -78,26 +80,37 @@ class DeviceInfoForm(ft.Column):
     async def on_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
 
-        device_info = self._login_details_ref.current
-        if not device_info.value:
-            device_info.error_text = "此栏位为必填栏位"
-            device_info.update()
+        device_info_field = self._login_details_ref.current
+        if not device_info_field.value:
+            device_info_field.error_text = "此栏位为必填栏位"
+            device_info_field.update()
             return
 
+        device_info = device_info_field.value.strip()
+
         try:
-            device_info = orjson.loads(device_info.value.strip())
+            device_info_dict = orjson.loads(device_info)
         except orjson.JSONDecodeError:
             show_error_banner(page, message="无效的 JSON 格式")
             return
 
+        aaid_field = self._aaid_ref.current
+        if aaid_field.value:
+            aaid = aaid_field.value.strip()
+            device_info_dict["oaid"] = aaid
+
         show_loading_snack_bar(page, message="正在提交设备信息...")
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
-        device_id = str(uuid.uuid4()).lower()
+        device_id = device_info_dict.get("device_id", str(uuid.uuid4()).lower())
+
         try:
-            device_fp = await client.generate_fp(
-                device_id=device_id,
-                device_board=device_info["deviceBoard"],
-                oaid=device_info["oaid"],
+            device_fp = device_info_dict.get(
+                "device_fp",
+                await client.generate_fp(
+                    device_id=device_id,
+                    device_board=device_info_dict["deviceBoard"],
+                    oaid=device_info_dict["oaid"],
+                ),
             )
         except Exception as exc:
             show_error_banner(page, message=str(exc))
@@ -134,3 +147,13 @@ class DeviceInfoField(ft.TextField):
         control: ft.TextField = e.control
         control.error_text = "此栏位为必填栏位" if not control.value else None
         control.update()
+
+
+class AAIDField(ft.TextField):
+    def __init__(self, *, ref: ft.Ref) -> None:
+        super().__init__(
+            keyboard_type=ft.KeyboardType.TEXT,
+            label="aaid",
+            hint_text="请将复制的 aaid 粘贴到此处",
+            ref=ref,
+        )

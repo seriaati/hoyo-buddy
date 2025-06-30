@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Hoyo Buddy Collection ({num})"
 profile.image_select.none.label: Official art
 profile.image_select.placeholder: Select an image
 profile.player_info.button.label: Player info
+profile_gi_embed_ar: Adventure Rank
+profile_gi_embed_world_level: World Level
 profile.player_info.embed.description: "Trailblaze Level: {level}\nEquilibrium Level: {world_level}\nFriend Count: {friend_count}\nLight Cones: {light_cones}\nCharacters: {characters}\nAchievements: {achievements}\n"
-profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nAchievements: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "Trailblaze Level: {level}\nCharacters: {characters}\nChests: {chest}\nMemory of Chaos: {moc}\nAchievements: {achievements}\n"
 profile.primary_color.button.label: Change color
 profile.primary_color_modal.color.label: Color (hex code)

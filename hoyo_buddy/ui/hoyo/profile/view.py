@@ -223,16 +223,32 @@ class ProfileView(View):
                 embed.set_footer(text=player.signature)
         elif self.genshin_data is not None:
             player = self.genshin_data.player
-            embed = DefaultEmbed(
-                self.locale,
-                title=f"{player.nickname} ({uid_str})",
-                description=LocaleStr(
-                    key="profile.player_info.gi.embed.description",
-                    adventure_rank=player.level,
-                    spiral_abyss=f"{player.abyss_floor}-{player.abyss_level}",
-                    achievements=player.achievements,
-                ),
+            embed = DefaultEmbed(self.locale, title=f"{player.nickname} ({uid_str})")
+
+            embed.add_field(name=LocaleStr(key="profile_gi_embed_ar"), value=str(player.level))
+            embed.add_field(
+                name=LocaleStr(key="profile_gi_embed_world_level"), value=str(player.world_level)
             )
+            embed.add_field(
+                name=LocaleStr(key="achievement_complete_count", mi18n_game=Game.GENSHIN),
+                value=str(player.achievements),
+            )
+            embed.add_field(
+                name=LocaleStr(key="full_fetter_avatar_num", mi18n_game=Game.GENSHIN),
+                value=str(player.max_friendship_character_count),
+            )
+            embed.add_field(
+                name=LocaleStr(key="spriral_abyss", mi18n_game=Game.GENSHIN),
+                value=f"{player.abyss_floor}-{player.abyss_level}",
+            )
+            if player.theater_act is not None:
+                embed.add_field(
+                    name=LocaleStr(key="card_role_combat_name", mi18n_game=Game.GENSHIN),
+                    value=LocaleStr(
+                        key="card_role_combat_value", mi18n_game=Game.GENSHIN, x=player.theater_act
+                    ),
+                )
+
             embed.set_thumbnail(url=player.profile_picture_icon.circle)
             embed.set_image(url=player.namecard.full)
             if player.signature:
@@ -240,16 +256,36 @@ class ProfileView(View):
         elif self.hoyolab_gi_user is not None:
             player = self.hoyolab_gi_user.info
             stats = self.hoyolab_gi_user.stats
-            embed = DefaultEmbed(
-                self.locale,
-                title=f"{player.nickname} ({uid_str})",
-                description=LocaleStr(
-                    key="profile.player_info.gi.embed.description",
-                    adventure_rank=player.level,
-                    spiral_abyss=stats.spiral_abyss,
-                    achievements=stats.achievements,
-                ),
+            embed = DefaultEmbed(self.locale, title=f"{player.nickname} ({uid_str})")
+
+            embed.add_field(name=LocaleStr(key="profile_gi_embed_ar"), value=str(player.level))
+            embed.add_field(
+                name=LocaleStr(key="achievement_complete_count", mi18n_game=Game.GENSHIN),
+                value=str(stats.achievements),
             )
+            embed.add_field(
+                name=LocaleStr(key="full_fetter_avatar_num", mi18n_game=Game.GENSHIN),
+                value=str(stats.max_friendship_characters),
+            )
+            embed.add_field(
+                name=LocaleStr(key="spriral_abyss", mi18n_game=Game.GENSHIN),
+                value=stats.spiral_abyss,
+            )
+            if stats.theater.has_data:
+                embed.add_field(
+                    name=LocaleStr(key="card_role_combat_name", mi18n_game=Game.GENSHIN),
+                    value=LocaleStr(
+                        key="card_role_combat_value",
+                        mi18n_game=Game.GENSHIN,
+                        x=stats.theater.max_act,
+                    ),
+                )
+            if stats.stygian.has_data:
+                embed.add_field(
+                    name=LocaleStr(key="hard_challenge_block_title", mi18n_game=Game.GENSHIN),
+                    value=str(stats.stygian.difficulty),
+                )
+
             embed.set_thumbnail(url=player.in_game_avatar)
         elif self.hoyolab_hsr_user is not None:
             player = self.hoyolab_hsr_user.info

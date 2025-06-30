@@ -64,7 +64,12 @@ class HardChallengeCard:
         icon = drawer.open_asset(f"{best_record.icon}.png", size=(100, 100))
         im.paste(icon, (143, 289), icon)
 
-        text = LocaleStr(key="role_combat_best_record", mi18n_game=Game.GENSHIN)
+        mode_key = "hard_challenge_type_1" if self._mode == "single" else "hard_challenge_type_2"
+        text = LocaleStr(
+            custom_str="{title} ({mode})",
+            title=LocaleStr(key="role_combat_best_record", mi18n_game=Game.GENSHIN),
+            mode=LocaleStr(key=mode_key, mi18n_game=Game.GENSHIN),
+        )
         drawer.write(
             text,
             size=48,

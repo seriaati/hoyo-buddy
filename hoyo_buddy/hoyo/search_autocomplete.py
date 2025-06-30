@@ -273,13 +273,15 @@ class AutocompleteSetup:
 
                 for locale, task in locales.items():
                     items = task.result()
-                    cls._result[game][category][locale] = [
-                        Choice(name=item.name, value=str(item.id))
-                        for item in items
-                        if hasattr(item, "id")
-                        and hasattr(item, "name")
-                        and (hasattr(item, "rarity") and item.rarity is not None)
-                    ]
+                    for item in items:
+                        if not hasattr(item, "id") or not hasattr(item, "name"):
+                            continue
+                        if hasattr(item, "rarity") and item.rarity is None:
+                            continue
+
+                        cls._result[game][category][locale].append(
+                            Choice(name=item.name, value=str(item.id))
+                        )
 
         for game in (Game.GENSHIN, Game.STARRAIL, Game.ZZZ):
             for category in list(TO_HAKUSHIN_ITEM_CATEGORY.keys()) + list(ZZZItemCategory):

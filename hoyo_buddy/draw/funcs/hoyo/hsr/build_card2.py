@@ -277,7 +277,7 @@ class HSRBuildCard2:
 
             drawer.write(
                 value,
-                position=(start_pos[0] + icon_.width + 15, icon_.height // 2 + start_pos[1] - 1),
+                position=(start_pos[0] + icon_.width + 15, icon_.height / 2 + start_pos[1] - 1),
                 size=40,
                 color=self.color1,
                 style="medium",

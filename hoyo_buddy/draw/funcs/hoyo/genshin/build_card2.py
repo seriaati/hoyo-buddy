@@ -350,7 +350,7 @@ class GITempTwoBuildCard:
                     size=42,
                     style="medium",
                     color=color_1,
-                    position=(start_pos[0] + 369, start_pos[1] + 125 + icon.height // 2),
+                    position=(start_pos[0] + 369, start_pos[1] + 125 + icon.height / 2),
                     anchor="rm",
                 )
                 im.alpha_composite(icon, (tbox.left - icon.width - 10, start_pos[1] + 125))

@@ -173,7 +173,7 @@ class ZZZTeamCard:
                 drawer.write(
                     text,
                     size=14,
-                    position=(start_pos[0] + 65 + 20, icon.height // 2 + start_pos[1] + 6),
+                    position=(start_pos[0] + 65 + 20, icon.height / 2 + start_pos[1] + 6),
                     style="bold",
                     anchor="lm",
                 )
@@ -219,7 +219,7 @@ class ZZZTeamCard:
                         drawer.write(
                             text,
                             size=12,
-                            position=(stat_start_pos[0] + 20, icon.height // 2 + stat_start_pos[1]),
+                            position=(stat_start_pos[0] + 20, icon.height / 2 + stat_start_pos[1]),
                             style="bold",
                             anchor="lm",
                             color=color,
@@ -291,7 +291,7 @@ class ZZZTeamCard:
             drawer.write(
                 text,
                 size=20,
-                position=(start_pos[0] + 30, start_pos[1] + icon.height // 2),
+                position=(start_pos[0] + 30, start_pos[1] + icon.height / 2),
                 anchor="lm",
             )
             start_pos = (start_pos[0], start_pos[1] + y_diff)

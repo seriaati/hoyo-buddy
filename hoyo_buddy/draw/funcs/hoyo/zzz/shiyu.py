@@ -162,7 +162,7 @@ class ShiyuDefenseCard:
             drawer.write(
                 frontier.rating,
                 size=110,
-                position=(icon_start_pos[0] + 54, tbox.top + tbox.height // 2),
+                position=(icon_start_pos[0] + 54, tbox.top + tbox.height / 2),
                 color=self.text_color,
                 style="black_italic",
                 anchor="lm",

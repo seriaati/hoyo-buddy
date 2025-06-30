@@ -54,7 +54,7 @@ def draw_farm_card(farm_data: list[FarmData], locale: Locale, dark_mode: bool) -
         drawer.write(
             get_domain_title(data.domain, locale),
             size=48,
-            position=(32, lid.height // 2 + 3),
+            position=(32, lid.height / 2 + 3),
             style="bold",
             color=WHITE,
             anchor="lm",

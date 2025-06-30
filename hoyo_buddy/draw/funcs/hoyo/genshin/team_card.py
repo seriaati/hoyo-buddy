@@ -136,7 +136,7 @@ class GITeamCard:
                 size=25,
                 style="medium",
                 color=color_1,
-                position=(start_pos[0] + 45, start_pos[1] + icon.width // 2),
+                position=(start_pos[0] + 45, start_pos[1] + icon.width / 2),
                 anchor="lm",
             )
             start_pos = (tbox.right + 40, start_pos[1])

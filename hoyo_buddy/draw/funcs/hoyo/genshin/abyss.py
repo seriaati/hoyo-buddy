@@ -69,7 +69,7 @@ class SpiralAbyssCard:
             self.drawer.write(
                 LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value}"),
                 size=48,
-                position=(position[0] + icon.width + 23, position[1] + icon.width // 2),
+                position=(position[0] + icon.width + 23, position[1] + icon.width / 2),
                 anchor="lm",
             )
 

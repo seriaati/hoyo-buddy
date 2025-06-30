@@ -261,7 +261,7 @@ class ZZZAgentCard4:
         drawer.write(
             f"Lv. {engine.level}",
             size=60,
-            position=(2222 + level_flair.width // 2, tbox.bottom + 80 + level_flair.height // 2),
+            position=(2222 + level_flair.width / 2, tbox.bottom + 80 + level_flair.height / 2),
             color=WHITE,
             style="bold",
             anchor="mm",
@@ -297,7 +297,7 @@ class ZZZAgentCard4:
                     size=46,
                     style="medium",
                     color=(20, 20, 20),
-                    position=(position[0] + icon.width + 26, position[1] + icon.height // 2),
+                    position=(position[0] + icon.width + 26, position[1] + icon.height / 2),
                     anchor="lm",
                     locale=self._locale,
                 )

@@ -164,7 +164,7 @@ def draw_genshin_card(
             str(talent.level),
             size=35,
             style="medium",
-            position=(x_pos + talent_icon.width // 2, 748),
+            position=(x_pos + talent_icon.width / 2, 748),
             color=text_color,
             anchor="mm",
         )

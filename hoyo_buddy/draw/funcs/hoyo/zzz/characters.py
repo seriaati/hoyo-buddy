@@ -9,13 +9,13 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import UnownedZZZCharacter
 
 

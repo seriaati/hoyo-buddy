@@ -104,7 +104,7 @@ class HardChallengeCard:
                 str(char.constellation),
                 size=24,
                 style="bold",
-                position=(char_pos[0] + 125 + flair.width // 2, char_pos[1] + flair.height // 2),
+                position=(char_pos[0] + 125 + flair.width / 2, char_pos[1] + flair.height / 2),
                 color=WHITE,
                 anchor="mm",
             )
@@ -221,7 +221,7 @@ class HardChallengeCard:
             text,
             size=24,
             style="medium",
-            position=(pill_width // 2, pill_height // 2),
+            position=(pill_width / 2, pill_height / 2),
             color=text_color,
             anchor="mm",
             locale=self._locale,

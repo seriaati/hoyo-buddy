@@ -111,7 +111,7 @@ class HSRTeamCard:
             drawer.write(
                 str(trace.level),
                 size=26,
-                position=(start_pos[0] + icon.width + 24, start_pos[1] + 2 + icon.height // 2),
+                position=(start_pos[0] + icon.width + 24, start_pos[1] + 2 + icon.height / 2),
                 style="medium",
                 anchor="mm",
             )

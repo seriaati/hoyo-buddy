@@ -107,7 +107,7 @@ class BlockListCard:
             drawer.write(
                 block.bottom_text,
                 size=30,
-                position=(im.width // 2, im.height - self.bottom_height // 2),
+                position=(im.width / 2, im.height - self.bottom_height / 2),
                 color=self.text_color,
                 anchor="mm",
                 style="bold",

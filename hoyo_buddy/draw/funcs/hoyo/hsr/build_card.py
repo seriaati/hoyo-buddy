@@ -85,7 +85,7 @@ def draw_hsr_build_card(
     drawer.write(
         level_str,
         size=64,
-        position=(box_x + width // 2, box_y + height // 2),
+        position=(box_x + width / 2, box_y + height / 2),
         color=BLACK if dark_mode else WHITE,
         style="medium",
         anchor="mm",
@@ -101,7 +101,7 @@ def draw_hsr_build_card(
     drawer.write(
         f"E{character.eidolons_unlocked}",
         size=64,
-        position=(box_x + width // 2, box_y + height // 2),
+        position=(box_x + width / 2, box_y + height / 2),
         color=BLACK if dark_mode else WHITE,
         style="medium",
         anchor="mm",
@@ -262,7 +262,7 @@ def draw_hsr_build_card(
         drawer.write(
             level_str,
             size=36,
-            position=(box_x + width // 2, box_y + height // 2),
+            position=(box_x + width / 2, box_y + height / 2),
             color=BLACK if dark_mode else WHITE,
             anchor="mm",
             style="medium",
@@ -278,7 +278,7 @@ def draw_hsr_build_card(
         drawer.write(
             f"S{cone.superimpose}",
             size=36,
-            position=(box_x + width // 2, box_y + height // 2),
+            position=(box_x + width / 2, box_y + height / 2),
             color=BLACK if dark_mode else WHITE,
             anchor="mm",
             style="medium",
@@ -373,7 +373,7 @@ def draw_hsr_build_card(
             )
             drawer.write(
                 f"+{relic.level}",
-                position=(box_x + level_width // 2, box_y + level_height // 2),
+                position=(box_x + level_width / 2, box_y + level_height / 2),
                 size=24,
                 color=BLACK if dark_mode else WHITE,
                 anchor="mm",

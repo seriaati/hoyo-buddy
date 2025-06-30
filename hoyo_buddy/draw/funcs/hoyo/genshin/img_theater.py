@@ -102,7 +102,7 @@ class ImgTheaterCard:
                 self._drawer.write(
                     LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value}"),
                     size=20,
-                    position=(start_pos[0] + 54, start_pos[1] + icon.height // 2),
+                    position=(start_pos[0] + 54, start_pos[1] + icon.height / 2),
                     anchor="lm",
                 )
             start_pos = (start_pos[0], start_pos[1] + 57)

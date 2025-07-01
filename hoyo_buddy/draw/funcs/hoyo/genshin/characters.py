@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
 
-PC_ICON_OFFSETS = (0, -29)
-PC_ICON_SIZES = (214, 214)
+PC_ICON_OFFSETS = (-65, -32)
+PC_ICON_SIZES = (343, 275)
 WEAPON_ICON_POS = (365, 26)
 WEAPON_ICON_SIZES = (84, 84)
 
@@ -35,7 +35,6 @@ def draw_character_card(
     for character in characters:
         if isinstance(character, UnownedGICharacter):
             talent_str = ""
-            two_digits = False
         else:
             talent_order = talent_orders.get(str(character.id))
             if talent_order is None:
@@ -48,9 +47,8 @@ def draw_character_card(
                 ]
 
             talent_str = " / ".join(str(t.level) if t is not None else "?" for t in talents)  # noqa: RUF001
-            two_digits = any(t.level >= 10 for t in talents if t is not None)
 
-        card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale, two_digits)
+        card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale)
         c_cards[str(character.id)] = card
 
     first_card = next(iter(c_cards.values()), None)
@@ -74,6 +72,7 @@ def draw_character_card(
     background, max_card_num = Drawer.draw_dynamic_background(bk_input)
     draw = ImageDraw.Draw(background)
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode)
+    mask = drawer.open_asset("mask.png")
 
     for index, card in enumerate(c_cards.values()):
         x = (index // max_card_num) * (
@@ -95,20 +94,18 @@ def draw_character_card(
                 icon = drawer.middle_crop(icon, PC_ICON_SIZES)
             else:
                 icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
+                icon = drawer.mask_image_with_image(icon, mask)
             background.paste(icon, pos, icon)
 
     return Drawer.save_image(background)
 
 
 def draw_small_gi_chara_card(
-    talent_str: str,
-    dark_mode: bool,
-    character: GICharacter | UnownedGICharacter,
-    locale: Locale,
-    two_digits: bool,
+    talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale
 ) -> Image.Image:
+    prefix = "dark" if dark_mode else "light"
     im = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/gi-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
+        f"hoyo-buddy-assets/assets/gi-characters/{prefix}_{character.element.title()}.png"
     )
 
     draw = ImageDraw.Draw(im)
@@ -125,14 +122,27 @@ def draw_small_gi_chara_card(
         LevelStr(character.level), size=31, position=(236, 72), locale=locale, style="medium"
     )
 
+    friendship = drawer.open_asset(f"{prefix}_Friendship.png")
+    friendship_pos = (240, 138)
+    im.paste(friendship, friendship_pos, friendship)
+
     friend_tbox = drawer.write(
         str(character.friendship),
         size=24,
-        position=(275 if two_digits else 280, 153),
-        anchor="mm",
+        position=(
+            friendship_pos[0] + friendship.width + 4,
+            friendship_pos[1] + friendship.height // 2,
+        ),
+        anchor="lm",
         style="bold",
     )
-    talent_tbox = drawer.write(talent_str, size=24, position=(380, 153), anchor="mm", style="bold")
+    talent_tbox = drawer.write(
+        talent_str,
+        size=24,
+        position=(457 - 16, friendship_pos[1] + friendship.height // 2),
+        anchor="rm",
+        style="bold",
+    )
 
     size = 4
     space = talent_tbox.left - friend_tbox.right

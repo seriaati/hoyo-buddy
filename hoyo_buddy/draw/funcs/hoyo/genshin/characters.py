@@ -16,9 +16,12 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.enums import Locale
 
+AMBR_ICON_OFFSET = (8, 0)
+AMBR_ICON_SIZE = (186, 186)
 
 PC_ICON_OFFSETS = (-65, -32)
-PC_ICON_SIZES = (343, 275)
+PC_ICON_SIZE = (343, 275)
+
 WEAPON_ICON_POS = (365, 26)
 WEAPON_ICON_SIZES = (84, 84)
 
@@ -86,15 +89,17 @@ def draw_character_card(
         background.paste(card, (x, y), card)
         character_id = list(c_cards.keys())[index]
         pc_icon_url = pc_icons.get(character_id)
+
         if pc_icon_url:
-            offset = PC_ICON_OFFSETS
-            pos = (x + offset[0], y + offset[1])
-            if "ambr" in pc_icon_url:
-                icon = drawer.open_static(pc_icon_url)
-                icon = drawer.middle_crop(icon, PC_ICON_SIZES)
+            if "gi.yatta.moe" in pc_icon_url:
+                offset = AMBR_ICON_OFFSET
+                icon = drawer.open_static(pc_icon_url, size=AMBR_ICON_SIZE)
             else:
-                icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZES)
+                offset = PC_ICON_OFFSETS
+                icon = drawer.open_static(pc_icon_url, size=PC_ICON_SIZE)
                 icon = drawer.mask_image_with_image(icon, mask)
+
+            pos = (x + offset[0], y + offset[1])
             background.paste(icon, pos, icon)
 
     return Drawer.save_image(background)

@@ -193,7 +193,7 @@ class CharactersView(PaginatorView):
                     if str(char.id) in pc_icons:
                         continue
 
-                    ambr_char = next((c for c in ambr_chars if c.id == str(c.id)), None)
+                    ambr_char = next((c for c in ambr_chars if c.id == str(char.id)), None)
                     if ambr_char is None:
                         continue
                     pc_icons[str(char.id)] = ambr_char.icon
@@ -372,11 +372,7 @@ class CharactersView(PaginatorView):
 
     async def _draw_card(self, characters: Sequence[Character]) -> File:
         if self.game is Game.GENSHIN:
-            pc_icons = {
-                str(char.id): char.display_image
-                for char in self.gi_characters
-                if isinstance(char, GICharacter)
-            }
+            pc_icons = await self._get_gi_pc_icons()
 
             async with enka.GenshinClient() as client:
                 talent_orders: dict[str, list[int]] = {

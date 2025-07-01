@@ -231,19 +231,9 @@ async def draw_gi_characters_card(
     characters: Sequence[genshin.models.GenshinDetailCharacter | UnownedGICharacter],
     *,
     pc_icons: dict[str, str],
-    weapon_icons: dict[str, str],
     talent_orders: dict[str, list[int]],
 ) -> File:
-    urls: list[str] = []
-    for c in characters:
-        if isinstance(c, UnownedGICharacter):
-            continue
-
-        weapon_icon = weapon_icons.get(str(c.weapon.id), c.weapon.icon)
-        c.weapon.icon = weapon_icon
-        urls.append(weapon_icon)
-
-    urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
+    urls: list[str] = [c.weapon.icon for c in characters if not isinstance(c, UnownedGICharacter)]
 
     await download_images(urls, "gi-characters", draw_input.session)
     buffer = await draw_input.loop.run_in_executor(

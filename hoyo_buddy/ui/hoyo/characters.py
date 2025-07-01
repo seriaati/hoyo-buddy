@@ -24,7 +24,7 @@ from hoyo_buddy.constants import (
     YATTA_PATH_TO_GPY_PATH,
     contains_traveler_id,
 )
-from hoyo_buddy.db import JSONFile, get_dyk
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
@@ -41,7 +41,7 @@ from hoyo_buddy.emojis import (
     get_hsr_path_emoji,
     get_zzz_element_emoji,
 )
-from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Locale, Platform, ZZZElement
+from hoyo_buddy.enums import Game, GenshinElement, HSRElement, HSRPath, Locale, ZZZElement
 from hoyo_buddy.exceptions import FeatureNotImplementedError, NoCharsFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
@@ -176,39 +176,6 @@ class CharactersView(PaginatorView):
         self.show_owned_only = True
         self.show_max_level_only = False
         self.characters_per_page = 32
-
-    async def _get_gi_pc_icons(self) -> dict[str, str]:
-        pc_icons = await JSONFile.read("pc_icons.json")
-
-        is_missing = any(
-            "https://gi.yatta.moe" in pc_icons.get(str(c.id), "") or str(c.id) not in pc_icons
-            for c in self.gi_characters
-        )
-        if is_missing and self.account.platform is Platform.HOYOLAB:
-            pc_icons = await self.account.client.update_pc_icons()
-
-        is_missing = any(str(c.id) not in pc_icons for c in self.gi_characters)
-        if is_missing:
-            async with AmbrAPIClient() as client:
-                ambr_charas = await client.fetch_characters()
-                for chara in self.gi_characters:
-                    if str(chara.id) in pc_icons:
-                        continue
-
-                    ambr_c = next((c for c in ambr_charas if c.id == str(c.id)), None)
-                    if ambr_c is None:
-                        continue
-                    pc_icons[str(chara.id)] = ambr_c.icon
-
-                await JSONFile.write("pc_icons.json", pc_icons)
-
-        return pc_icons
-
-    async def _get_gi_weapon_icons(self) -> dict[str, str]:
-        async with AmbrAPIClient() as client:
-            weapons = await client.fetch_weapons()
-
-        return {str(w.id): w.icon for w in weapons}
 
     def _apply_gi_filter(
         self, characters: Sequence[GICharacter | UnownedGICharacter]
@@ -381,8 +348,11 @@ class CharactersView(PaginatorView):
 
     async def _draw_card(self, characters: Sequence[Character]) -> File:
         if self.game is Game.GENSHIN:
-            pc_icons = await self._get_gi_pc_icons()
-            weapon_icons = await self._get_gi_weapon_icons()
+            pc_icons = {
+                str(char.id): char.display_image
+                for char in self.gi_characters
+                if isinstance(char, GICharacter)
+            }
 
             async with enka.GenshinClient() as client:
                 talent_orders: dict[str, list[int]] = {
@@ -394,7 +364,6 @@ class CharactersView(PaginatorView):
                 self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
                 pc_icons=pc_icons,
-                weapon_icons=weapon_icons,
                 talent_orders=talent_orders,
             )
         elif self.game is Game.STARRAIL:

@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Bộ sưu tập Hoyo Buddy ({num
 profile.image_select.none.label: Ảnh hoạ Chính Thức
 profile.image_select.placeholder: Hãy chọn ảnh
 profile.player_info.button.label: Thông tin Người chơi
+profile_gi_embed_ar: Hạng Mạo Hiểm
+profile_gi_embed_world_level: Cấp Thế Giới
 profile.player_info.embed.description: "Cấp Khai Phá: {level}\nCấp Cân Bằng: {world_level}\nSố lượng bạn: {friend_count}\nNón Ánh Sáng: {light_cones}\nNhân Vật: {characters}\nThành Tựu: {achievements}\n"
-profile.player_info.gi.embed.description: "Hạng Mạo Hiểm: {adventure_rank}\nLa Hoàn Thâm Cảnh: {spiral_abyss}\nThành Tựu: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "Cấp Khai Phá: {level}\nNhân Vật: {characters}\nChiến Lợi Phẩm: {chest}\nHồi Ức Hỗn Độn: {moc}\nThành Tựu: {achievements}\n"
 profile.primary_color.button.label: Đổi màu
 profile.primary_color_modal.color.label: Màu (hex code)
@@ -811,7 +812,7 @@ invalid_authkey_title: Authkey không hợp lệ
 hard_challenge_period: "Kỳ: {period}"
 hard_challenge_completion_time: "Thời gian hoàn thành"
 hard_challenge_team_composition: "Đội Hình Ra Trận"
-hard_challenge_combat_statistics: "Thống Kê"
+hard_challenge_combat_statistics: "Thống Kê Chiến Đấu"
 hard_challenge_strongest_strike: "Một đòn mạnh nhất"
 hard_challenge_damage_dealt: "Sát thương cao nhất"
 hard_challenge_enemy_weakness: "Điểm Yếu Kẻ Địch"
@@ -819,3 +820,6 @@ hard_challenge_advantage: "Điểm yếu"
 hard_challenge_disadvantage: "Kháng tính"
 hard_challenge_command_desc: Tạo thẻ Ảo Cảnh Hiểm Ác
 hard_challenge: "Ảo Cảnh Hiểm Ác"
+fetching_accounts: "Đang truy vấn tài khoản, vui lòng chờ..."
+fetching_accounts_stuck: "Nếu bạn bị kẹt tại trang này, hãy thử chạy lại lệnh hoặc liên hệ chúng tôi để xử lý lỗi."
+aaa_acronym: Tự Tích Thiểm Năng

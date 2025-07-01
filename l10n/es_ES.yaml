@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Colección Hoyo Buddy ({num})"
 profile.image_select.none.label: Arte oficial
 profile.image_select.placeholder: Selecciona una imagen
 profile.player_info.button.label: Información del jugador
+profile_gi_embed_ar: Rango de Aventura
+profile_gi_embed_world_level: Nivel de Mundo
 profile.player_info.embed.description: "Nivel Trazacaminos: {level}\nNivel de Equilibro: {world_level}\nNúmero de amigos: {friend_count}\nConos de luz: {light_cones}\nPersonajes: {characters}\nLogros: {achievements}\n"
-profile.player_info.gi.embed.description: "Rango de aventura: {adventure_rank}\nEspiral del abismo: {spiral_abyss}\nLogros: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "Nivel Trazacaminos: {level}\nPersonajes: {characters}\nCofres: {chest}\nEvocación caótica: {moc}\nLogros: {achievements}\n"
 profile.primary_color.button.label: Cambiar el color
 profile.primary_color_modal.color.label: Color (hex code)
@@ -819,3 +820,6 @@ hard_challenge_advantage: "Debilidad"
 hard_challenge_disadvantage: "Inmunidad"
 hard_challenge_command_desc: Generar tarjeta de Conflagración Estigia
 hard_challenge: "Conflagración Estigia"
+fetching_accounts: Por favor espera mientras obtenemos tus cuentas...
+fetching_accounts_stuck: "Si estás atascado en esta página, por favor intenta ejecutar el comando de nuevo o contáctanos para solucionar el problema."
+aaa_acronym: Acu. Auto. de Adrenalina

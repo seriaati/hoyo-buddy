@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Hoyo Buddy 系列 ({num})"
 profile.image_select.none.label: 官方绘图
 profile.image_select.placeholder: 选择一张图片
 profile.player_info.button.label: 玩家资料
+profile_gi_embed_ar: 冒险等阶
+profile_gi_embed_world_level: 世界等级
 profile.player_info.embed.description: "开拓等级：{level}\n均衡等级：{world_level}\n好友数量：{friend_count}\n光锥：{light_cones}\n角色：{characters}\n成就：{achievements}\n"
-profile.player_info.gi.embed.description: "冒险等阶：{adventure_rank}\n深境螺旋：{spiral_abyss}\n成就总数：{achievements}\n"
 profile.player_info.hoyolab.embed.description: "开拓等级：{level}\n角色：{characters}\n宝箱：{chest}\n混沌回忆：{moc}\n成就：{achievements}\n"
 profile.primary_color.button.label: 更改颜色
 profile.primary_color_modal.color.label: 颜色（十六进制代码）
@@ -819,3 +820,6 @@ hard_challenge_advantage: "元素优势"
 hard_challenge_disadvantage: "元素劣势"
 hard_challenge_command_desc: 生成幽境危战卡片
 hard_challenge: "幽境危战"
+fetching_accounts: 请稍等，我们正在获取你的账户.......
+fetching_accounts_stuck: "如果你在此页面卡住，请重新运行该命令或者联系我们解决此问题。"
+aaa_acronym: 闪能自动累计

@@ -234,6 +234,7 @@ async def draw_gi_characters_card(
     talent_orders: dict[str, list[int]],
 ) -> File:
     urls: list[str] = [c.weapon.icon for c in characters if not isinstance(c, UnownedGICharacter)]
+    urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
     await download_images(urls, "gi-characters", draw_input.session)
     buffer = await draw_input.loop.run_in_executor(

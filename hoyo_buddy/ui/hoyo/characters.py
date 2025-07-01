@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import itertools
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final, TypeAlias
@@ -25,6 +26,7 @@ from hoyo_buddy.constants import (
     contains_traveler_id,
 )
 from hoyo_buddy.db import get_dyk
+from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
@@ -176,6 +178,28 @@ class CharactersView(PaginatorView):
         self.show_owned_only = True
         self.show_max_level_only = False
         self.characters_per_page = 32
+
+    async def _get_gi_pc_icons(self) -> dict[str, str]:
+        pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
+        pc_icons.update(
+            {str(c.id): c.display_image for c in self.gi_characters if isinstance(c, GICharacter)}
+        )
+
+        is_missing = any(str(c.id) not in pc_icons for c in self.gi_characters)
+        if is_missing:
+            async with AmbrAPIClient() as client:
+                ambr_chars = await client.fetch_characters()
+                for char in self.gi_characters:
+                    if str(char.id) in pc_icons:
+                        continue
+
+                    ambr_char = next((c for c in ambr_chars if c.id == str(c.id)), None)
+                    if ambr_char is None:
+                        continue
+                    pc_icons[str(char.id)] = ambr_char.icon
+
+        asyncio.create_task(JSONFile.write("pc_icons.json", pc_icons))
+        return pc_icons
 
     def _apply_gi_filter(
         self, characters: Sequence[GICharacter | UnownedGICharacter]

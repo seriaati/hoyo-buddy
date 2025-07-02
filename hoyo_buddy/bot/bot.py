@@ -120,6 +120,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
         self.process = psutil.Process()
+        self.enka_hsr_down = False
 
         self.autocomplete_choices: AutocompleteChoices = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))

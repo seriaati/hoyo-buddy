@@ -229,6 +229,12 @@ class Admin(commands.Cog):
         msg = f"Settings for {user_id}:\n```{settings}```"
         await ctx.send(msg)
 
+    @commands.command(name="enka-hsr-down", aliases=["ehd"])
+    async def enka_hsr_down_command(self, ctx: commands.Context) -> Any:
+        self.bot.enka_hsr_down = not self.bot.enka_hsr_down
+        status = "down" if self.bot.enka_hsr_down else "up"
+        await ctx.send(f"Enka HSR is now marked as {status}.")
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

@@ -97,7 +97,7 @@ class Profile(
         if game is Game.GENSHIN:
             view = await command.run_genshin()
         elif game is Game.STARRAIL:
-            view = await command.run_hsr()
+            view = await command.run_hsr(enka_hsr_down=self.bot.enka_hsr_down)
         elif game is Game.ZZZ:
             view = await command.run_zzz()
         else:

@@ -8,13 +8,13 @@ from .base import BaseClient
 
 
 class EnkaHSRClient(BaseClient):
-    async def fetch_showcase(self, uid: int) -> enka.hsr.ShowcaseResponse:
+    async def fetch_showcase(self, uid: int, *, use_backup: bool) -> enka.hsr.ShowcaseResponse:
         async with enka.HSRClient(
             lang=LOCALE_TO_HSR_ENKA_LANG.get(self._locale, enka.hsr.Language.ENGLISH),
             use_enka_icons=False,
             cache=enka.cache.SQLiteCache(),
         ) as client:
-            return await client.fetch_showcase(uid)
+            return await client.fetch_showcase(uid, use_backup=use_backup)
 
     async def fetch_builds(self, owner: enka.Owner) -> dict[str, list[enka.hsr.Build]]:
         async with enka.HSRClient(

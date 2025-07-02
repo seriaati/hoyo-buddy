@@ -87,7 +87,7 @@ class ProfileCommand:
             locale=self._locale,
         )
 
-    async def run_hsr(self) -> ProfileView:
+    async def run_hsr(self, *, enka_hsr_down: bool) -> ProfileView:
         hoyolab_characters: list[HoyolabHSRCharacter] = []
         enka_data: enka.hsr.ShowcaseResponse | None = None
         hoyolab_user: StarRailUserStats | None = None
@@ -96,7 +96,7 @@ class ProfileCommand:
         client = EnkaHSRClient(self._locale)
 
         try:
-            enka_data = await client.fetch_showcase(self._uid)
+            enka_data = await client.fetch_showcase(self._uid, use_backup=enka_hsr_down)
         except enka.errors.EnkaAPIError:
             if self._account is None:
                 # enka fails and no hoyolab account provided, raise error

@@ -146,7 +146,7 @@ class HSRBuildCard2:
                 locale=self.locale,
             ).split("\n")
 
-            start_pos = (786, 1060)
+            start_pos = (786, 1101 if len(lines) == 1 else 1060)
             for line in lines:
                 tbox = drawer.write(
                     line,
@@ -154,7 +154,7 @@ class HSRBuildCard2:
                     style="medium",
                     position=start_pos,
                     gothic=True,
-                    anchor="ra",
+                    anchor="rt",
                     color=self.color1,
                     locale=self.locale,
                 )

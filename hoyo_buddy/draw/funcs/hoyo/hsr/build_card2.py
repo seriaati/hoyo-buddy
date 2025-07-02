@@ -156,6 +156,7 @@ class HSRBuildCard2:
                     gothic=True,
                     anchor="ra",
                     color=self.color1,
+                    locale=self.locale,
                 )
                 start_pos = (start_pos[0], start_pos[1] + tbox.height + 10)
 

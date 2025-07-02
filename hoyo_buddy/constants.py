@@ -459,8 +459,6 @@ ELEMENT_TO_BONUS_PROP_ID: Final[dict[GenshinElement, int]] = {
     GenshinElement.GEO: 45,
 }
 
-STARRAIL_RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master"
-
 HB_GAME_TO_GPY_GAME: dict[Game, genshin.Game] = {
     Game.GENSHIN: genshin.Game.GENSHIN,
     Game.STARRAIL: genshin.Game.STARRAIL,

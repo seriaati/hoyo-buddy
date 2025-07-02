@@ -13,7 +13,6 @@ from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_va
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.l10n import LocaleStr
 
-from .constants import STARRAIL_RES
 from .enums import GeetestType, GenshinElement
 
 if TYPE_CHECKING:
@@ -140,7 +139,7 @@ class LightConeIcon:
 
     @property
     def image(self) -> str:
-        return f"{STARRAIL_RES}/image/light_cone_portrait/{self._id}.png"
+        return f"https://sr.yatta.moe/hsr/assets/UI//equipment/large/{self._id}.png"
 
     @property
     def item(self) -> str:

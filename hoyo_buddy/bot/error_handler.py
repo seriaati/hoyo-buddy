@@ -122,7 +122,7 @@ ENKA_ERRORS: dict[type[enka_errors.EnkaAPIError], ErrorInfo] = {
     },
     enka_errors.APIRequestTimeoutError: {
         "title": LocaleStr(key="api_request_timeout_title"),
-        "description": LocaleStr(key="api_request_timeout_description"),
+        "description": LocaleStr(key="game_maintenance_description"),
     },
 }
 

@@ -570,8 +570,8 @@ speed = [
 
 [[package]]
 name = "enka"
-version = "2.5.7"
-source = { git = "https://github.com/seriaati/enka-py#7fe3572a94787bdf4a170ea90896412556bf7c21" }
+version = "2.5.8"
+source = { git = "https://github.com/seriaati/enka-py#17c3cfb78b1b128a2637b30d70940cd928a32043" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -1649,8 +1649,8 @@ version = "0.25.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
-    { name = "iso8601", marker = "python_full_version < '4.0'" },
-    { name = "pypika-tortoise", marker = "python_full_version < '4.0'" },
+    { name = "iso8601", marker = "python_full_version < '4'" },
+    { name = "pypika-tortoise", marker = "python_full_version < '4'" },
     { name = "pytz" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d7/9b/de966810021fa773fead258efd8deea2bb73bb12479e27f288bd8ceb8763/tortoise_orm-0.25.1.tar.gz", hash = "sha256:4d5bfd13d5750935ffe636a6b25597c5c8f51c47e5b72d7509d712eda1a239fe", size = 128341, upload-time = "2025-06-05T10:43:31.058Z" }

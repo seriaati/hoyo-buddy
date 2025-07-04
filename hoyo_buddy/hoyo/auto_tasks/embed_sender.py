@@ -84,20 +84,21 @@ class EmbedSender:
         async with cls._lock:
             try:
                 cls._bot = bot
+                cnt = await DiscordEmbed.all().count()
+                logger.info(f"Starting {cls.__name__} for {cnt} embeds")
 
-                embeds = await DiscordEmbed.all()
-                if not embeds:
-                    logger.debug("No embeds to send for")
-                    return
+                while True:
+                    embeds = await DiscordEmbed.all().limit(100)
+                    if not embeds:
+                        logger.debug("No embeds to send for")
+                        break
 
-                logger.info(f"Starting {cls.__name__} for {len(embeds)} embeds")
+                    # Organize embeds into a dictionary with user_id as key
+                    embeds_dict: defaultdict[int, list[DiscordEmbed]] = defaultdict(list)
+                    for embed in embeds:
+                        embeds_dict[embed.user_id].append(embed)
 
-                # Organize embeds into a dictionary with user_id as key
-                embeds_dict: defaultdict[int, list[DiscordEmbed]] = defaultdict(list)
-                for embed in embeds:
-                    embeds_dict[embed.user_id].append(embed)
-
-                for user_id, user_embeds in embeds_dict.items():
-                    await cls._send_embeds(user_id, user_embeds)
+                    for user_id, user_embeds in embeds_dict.items():
+                        await cls._send_embeds(user_id, user_embeds)
             except Exception as e:
                 bot.capture_exception(e)

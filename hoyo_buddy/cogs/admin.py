@@ -51,6 +51,7 @@ class Admin(commands.Cog):
     @commands.command(name="reload-translator", aliases=["rtrans"])
     async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
         await translator.load(force=True)
+        await self.bot.start_process_pool()
         await ctx.send(content="Reloaded translator.")
 
     @commands.command(name="update-assets", aliases=["ua"])

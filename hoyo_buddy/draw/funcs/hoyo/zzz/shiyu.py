@@ -40,7 +40,7 @@ class ShiyuDefenseCard:
         except IndexError:
             return None
 
-    def write_stats(self, drawer: Drawer) -> None:
+    def _write_stats(self, drawer: Drawer) -> None:
         if self.uid is not None:
             drawer.write(
                 f"UID: {self.uid}",
@@ -79,7 +79,7 @@ class ShiyuDefenseCard:
             )
 
         stats = {
-            "shiyu_fastest_clear_time": format_time(self.data.fastest_clear_time),
+            "shiyu_fastest_clear_time": format_time(self.data.fastest_clear_time, short=True),
             "shiyu_highest_frontier": LocaleStr(
                 key=f"shiyu_{self.data.max_floor}_frontier"
             ).translate(self.locale),
@@ -107,8 +107,18 @@ class ShiyuDefenseCard:
 
             start_pos = (120, start_pos[1] + 168)
 
-    def draw_frontiers(self, im: Image.Image, drawer: Drawer) -> None:
-        positions = ((1313, 87), (2501, 87), (1313, 838), (2501, 838))
+    def _draw_frontiers(self, im: Image.Image, drawer: Drawer) -> None:
+        has_battle_time = any(
+            node.battle_time is not None
+            for frontier in self.data.floors
+            for node in (frontier.node_1, frontier.node_2)
+        )
+
+        if has_battle_time:
+            positions = ((1313, 64), (2501, 65), (1313, 838), (2501, 838))
+        else:
+            positions = ((1313, 87), (2501, 87), (1313, 838), (2501, 838))
+
         floors = sorted(self.data.floors, key=lambda x: x.index)[-4:]
 
         for floor_index, frontier in enumerate(floors):
@@ -117,7 +127,7 @@ class ShiyuDefenseCard:
             tbox = drawer.write(
                 LocaleStr(key=f"shiyu_{frontier.index}_frontier"),
                 size=90,
-                position=(pos[0], pos[1] + 13),
+                position=(pos[0], pos[1] + (0 if has_battle_time else 13)),
                 color=self.text_color,
                 style="bold",
                 locale=self.locale,
@@ -167,6 +177,30 @@ class ShiyuDefenseCard:
                 style="black_italic",
                 anchor="lm",
             )
+
+            node1_tbox = None
+
+            if frontier.node_1.battle_time is not None:
+                node1_tbox = drawer.write(
+                    format_time(int(frontier.node_1.battle_time.total_seconds()), short=True),
+                    size=36,
+                    position=(pos[0] + 4, tbox.bottom + 10),
+                )
+
+            if frontier.node_2.battle_time is not None and node1_tbox is not None:
+                time_line = drawer.open_asset("time_line.png")
+                im.alpha_composite(
+                    time_line,
+                    (
+                        node1_tbox.right + 21,
+                        int(node1_tbox.top + node1_tbox.height / 2 - time_line.height / 2),
+                    ),
+                )
+                drawer.write(
+                    format_time(int(frontier.node_2.battle_time.total_seconds()), short=True),
+                    size=36,
+                    position=(node1_tbox.right + 21 + time_line.width + 21, tbox.bottom + 10),
+                )
 
             bangboo_block = drawer.open_asset("bangboo_block.png")
             bangboo_level_flair = drawer.open_asset("bangboo_level_flair.png")
@@ -247,7 +281,7 @@ class ShiyuDefenseCard:
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/shiyu/background.png")
         drawer = Drawer(ImageDraw.Draw(im), folder="shiyu", dark_mode=False, sans=True)
-        self.write_stats(drawer)
-        self.draw_frontiers(im, drawer)
+        self._write_stats(drawer)
+        self._draw_frontiers(im, drawer)
 
         return Drawer.save_image(im)

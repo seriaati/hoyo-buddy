@@ -319,10 +319,28 @@ def human_format_number(number: int, decimal_places: int = 1) -> str:
     return f"{n / 10 ** (3 * millidx):.{decimal_places}f}{millnames[millidx]}"
 
 
-def format_time(seconds: int) -> str:
+def format_time(seconds: int, *, short: bool = False) -> str:
+    """Format seconds into a human-readable string.
+
+    Args:
+        seconds: The number of seconds to format.
+        short: If True, format as MMm SSs. Otherwise, format as HHh MMm SSs.
+               If short is False and hours are 0, it will be omitted.
+
+    Returns:
+        The formatted time string.
+    """
+    if short:
+        minutes, seconds = divmod(seconds, 60)
+        return f"{minutes:02d}m {seconds:02d}s"
+
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return f"{hours:02d}h {minutes:02d}m {seconds:02d}s"
+
+    if hours > 0:
+        return f"{hours:02d}h {minutes:02d}m {seconds:02d}s"
+
+    return f"{minutes:02d}m {seconds:02d}s"
 
 
 def format_float(num: float, *, decimals: int = 2) -> str:

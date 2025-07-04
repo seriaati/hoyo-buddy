@@ -1183,7 +1183,7 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "search_autofill": 0.1,
     "checkin": 2.5,
     "notes_check": 1.2,
-    "dm": 0.5,
+    "dm": 0.1,
 }
 
 CONCURRENT_TASK_NUM = 75

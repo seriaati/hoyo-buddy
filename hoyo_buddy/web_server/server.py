@@ -90,7 +90,10 @@ class GeetestWebServer:
 
     async def mmt_endpoint(self, request: web.Request) -> web.Response:
         """Return the mmt of the user."""
-        user_id = request.query["user_id"]
+        user_id = request.query.get("user_id")
+        if user_id is None:
+            raise web.HTTPBadRequest(reason="Missing user_id query parameter")
+
         mmt = await self._get_mmt(int(user_id))
         return web.json_response(mmt)
 

@@ -78,6 +78,8 @@ if TYPE_CHECKING:
 
 __all__ = ("HoyoBuddy",)
 
+POOL_MAX_WORKERS = min(32, (os.cpu_count() or 1) + 4)
+
 
 def init_worker() -> None:
     """Initializes the translator in a new process."""
@@ -163,13 +165,29 @@ class HoyoBuddy(commands.AutoShardedBot):
         prometheus_client.start_http_server(9637)
         logger.info("Prometheus server started on port 9637")
 
+    async def start_process_pool(self) -> None:
+        """Starts the process pool and initializes the translators."""
+        if self.config.env == "dev":
+            logger.info("Skipping process pool initialization in dev environment")
+            return
+
+        tasks = [
+            self.loop.run_in_executor(self.executor, init_worker) for _ in range(POOL_MAX_WORKERS)
+        ]
+        await asyncio.gather(*tasks)
+
     async def setup_hook(self) -> None:
+        await self.start_process_pool()
+
         # Initialize genshin.py sqlite cache
         async with aiosqlite.connect("genshin_py.db") as conn:
             cache = genshin.SQLiteCache(conn)
             await cache.initialize()
 
         await self.tree.set_translator(AppCommandTranslator())
+
+        # Preload translators
+        await translator.load()
 
         for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem

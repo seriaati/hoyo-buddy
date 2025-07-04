@@ -130,6 +130,10 @@ class AutoRedeem:
         async with cls._bot.session.get(
             f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
         ) as resp:
+            if resp.status != 200:
+                logger.error(f"Failed to fetch codes for {game}, status={resp.status}")
+                return []
+
             data = await resp.json()
             return [code["code"] for code in data["codes"]]
 

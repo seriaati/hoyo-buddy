@@ -431,6 +431,7 @@ def init_sentry() -> None:
         environment=CONFIG.env,
         enable_tracing=True,
         release=get_project_version(),
+        _experiments={"enable_logs": True},
     )
 
 

@@ -387,7 +387,10 @@ class GenshinClient(ProxyGenshinClient):
 
         results: list[tuple[str, str, bool]] = []
         for code in codes:
-            if not code or (code in self._account.redeemed_codes and skip_redeemed):
+            if not code or (
+                code.capitalize() in {c.capitalize() for c in self._account.redeemed_codes}
+                and skip_redeemed
+            ):
                 continue
 
             msg, success = await self.redeem_code(code.strip(), locale=locale)

@@ -117,7 +117,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.pool = pool
-        self.executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)
         self.config = config
         self.cache = LFUCache()
         self.user_ids: set[int] = set()
@@ -135,6 +134,13 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False
+
+        if config.env == "dev":
+            self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=POOL_MAX_WORKERS)
+        else:
+            self.executor = concurrent.futures.ProcessPoolExecutor(
+                initializer=init_worker, max_workers=POOL_MAX_WORKERS
+            )
 
     @staticmethod
     def get_command_name(command: app_commands.Command) -> str:

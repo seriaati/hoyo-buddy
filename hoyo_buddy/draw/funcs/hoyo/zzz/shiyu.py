@@ -184,7 +184,8 @@ class ShiyuDefenseCard:
                 node1_tbox = drawer.write(
                     format_time(int(frontier.node_1.battle_time.total_seconds()), short=True),
                     size=36,
-                    position=(pos[0] + 4, tbox.bottom + 10),
+                    position=(pos[0] + 4, (tbox.bottom + pos[1] + 192) / 2),
+                    anchor="lm",
                 )
 
             if frontier.node_2.battle_time is not None and node1_tbox is not None:
@@ -199,7 +200,11 @@ class ShiyuDefenseCard:
                 drawer.write(
                     format_time(int(frontier.node_2.battle_time.total_seconds()), short=True),
                     size=36,
-                    position=(node1_tbox.right + 21 + time_line.width + 21, tbox.bottom + 10),
+                    position=(
+                        node1_tbox.right + 21 + time_line.width + 21,
+                        (tbox.bottom + pos[1] + 192) / 2,
+                    ),
+                    anchor="lm",
                 )
 
             bangboo_block = drawer.open_asset("bangboo_block.png")

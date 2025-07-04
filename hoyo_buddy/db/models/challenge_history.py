@@ -133,5 +133,5 @@ class ChallengeHistory(BaseModel):
             )
         except IntegrityError:
             await cls.filter(uid=uid, season_id=season_id, challenge_type=challenge_type).update(
-                name=name, lang=lang, json_data=raw
+                name=name, lang=lang, json_data=raw, start_time=start_time, end_time=end_time
             )

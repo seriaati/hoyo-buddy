@@ -109,7 +109,7 @@ class ShiyuDefenseCard:
 
     def _draw_frontiers(self, im: Image.Image, drawer: Drawer) -> None:
         has_battle_time = any(
-            node.battle_time is not None
+            hasattr(node, "battle_time") and node.battle_time is not None
             for frontier in self.data.floors
             for node in (frontier.node_1, frontier.node_2)
         )
@@ -180,7 +180,7 @@ class ShiyuDefenseCard:
 
             node1_tbox = None
 
-            if frontier.node_1.battle_time is not None:
+            if hasattr(frontier.node_1, "battle_time") and frontier.node_1.battle_time is not None:
                 node1_tbox = drawer.write(
                     format_time(int(frontier.node_1.battle_time.total_seconds()), short=True),
                     size=36,
@@ -188,7 +188,11 @@ class ShiyuDefenseCard:
                     anchor="lm",
                 )
 
-            if frontier.node_2.battle_time is not None and node1_tbox is not None:
+            if (
+                hasattr(frontier.node_2, "battle_time")
+                and frontier.node_2.battle_time is not None
+                and node1_tbox is not None
+            ):
                 time_line = drawer.open_asset("time_line.png")
                 im.alpha_composite(
                     time_line,

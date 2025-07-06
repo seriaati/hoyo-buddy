@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from textwrap import shorten
 from typing import TYPE_CHECKING, Any
 
 import hakushin

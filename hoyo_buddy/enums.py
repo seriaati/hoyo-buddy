@@ -50,6 +50,16 @@ class NotesNotifyType(IntEnum):
     """ZZZ bounty commissions"""
     RIDU_POINTS = 19
     """ZZZ Ridu weekly points"""
+    TEMPLE_ADVENTURE = 20
+    """ZZZ Suibian Temple adventure"""
+    TEMPLE_CRAFT = 21
+    """ZZZ Suibian Temple crafting"""
+    TEMPLE_SALES = 22
+    """ZZZ Suibian Temple sales"""
+    TEMPLE_SHOP_RESET = 23
+    """ZZZ Suibian Temple shop reset"""
+    TEMPLE_COINS = 24
+    """ZZZ Suibian Temple Omnicoins"""
 
 
 class TalentBoost(IntEnum):

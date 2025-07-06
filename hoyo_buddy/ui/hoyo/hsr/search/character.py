@@ -269,13 +269,88 @@ class CharacterUI(View):
 
         return embed
 
+    def _generate_options(self) -> list[SelectOption]:
+        options: list[SelectOption] = []
+
+        if self._hakushin:
+            options.extend(
+                [
+                    SelectOption(
+                        label=LocaleStr(key="yatta_character_detail_page_label"),
+                        value="0",
+                        default=self.selected_page == 0,
+                    ),
+                    SelectOption(
+                        label=LocaleStr(key="search.agent_page.skills"),
+                        value="1",
+                        default=self.selected_page == 1,
+                    ),
+                    SelectOption(
+                        label=LocaleStr(key="yatta_character_eidolon_page_label"),
+                        value="2",
+                        default=self.selected_page == 2,
+                    ),
+                ]
+            )
+        else:
+            options.append(
+                SelectOption(
+                    label=LocaleStr(key="yatta_character_detail_page_label"),
+                    value="0",
+                    default=self.selected_page == 0,
+                )
+            )
+            if self._main_skill_embeds:
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(key="search.agent_page.skills"),
+                        value="1",
+                        default=self.selected_page == 1,
+                    )
+                )
+            if self._eidolon_embeds:
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(key="yatta_character_eidolon_page_label"),
+                        value="2",
+                        default=self.selected_page == 2,
+                    )
+                )
+            if self._sub_skill_embeds:
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(key="yatta_character_trace_page_label"),
+                        value="3",
+                        default=self.selected_page == 3,
+                    )
+                )
+            if self._story_embeds:
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(key="character_stories_page_label"),
+                        value="4",
+                        default=self.selected_page == 4,
+                    )
+                )
+            if self._voice_embeds:
+                options.append(
+                    SelectOption(
+                        label=LocaleStr(key="character_voices_page_label"),
+                        value="5",
+                        default=self.selected_page == 5,
+                    )
+                )
+
+        return options
+
     async def update(self, i: Interaction) -> None:
         if self._character_detail is None:
             msg = "Character detail not fetched"
             raise RuntimeError(msg)
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected_page, hakushin=self._hakushin))
+        options = self._generate_options()
+        self.add_item(PageSelector(options))
 
         if isinstance(self._character_detail, yatta.CharacterDetail):
             embed = self._build_yatta_ui_embed()
@@ -290,54 +365,7 @@ class CharacterUI(View):
 
 
 class PageSelector(Select["CharacterUI"]):
-    def __init__(self, current: int, *, hakushin: bool) -> None:
-        if hakushin:
-            options = [
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_detail_page_label"),
-                    value="0",
-                    default=current == 0,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
-                    value="2",
-                    default=current == 2,
-                ),
-            ]
-        else:
-            options = [
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_detail_page_label"),
-                    value="0",
-                    default=current == 0,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"), value="1", default=current == 1
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_eidolon_page_label"),
-                    value="2",
-                    default=current == 2,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="yatta_character_trace_page_label"),
-                    value="3",
-                    default=current == 3,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_stories_page_label"),
-                    value="4",
-                    default=current == 4,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_voices_page_label"),
-                    value="5",
-                    default=current == 5,
-                ),
-            ]
+    def __init__(self, options: list[SelectOption]) -> None:
         super().__init__(options=options, row=4)
 
     async def callback(self, i: Interaction) -> Any:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from textwrap import shorten
 from typing import TYPE_CHECKING, Any
 
 import hakushin
@@ -210,6 +211,7 @@ class CharacterUI(View):
                                 label=v.title, value=str(index), default=index == self._voice_index
                             )
                             for index, v in enumerate(self._character_detail.script.voices)
+                            if v.audio is not None
                         ]
                     )
                 )
@@ -324,7 +326,9 @@ class CharacterUI(View):
                         default=self.selected_page == 3,
                     )
                 )
-            if self._story_embeds:
+            if self._story_embeds and not any(
+                embed.description is None for embed in self._story_embeds
+            ):
                 options.append(
                     SelectOption(
                         label=LocaleStr(key="character_stories_page_label"),
@@ -332,7 +336,7 @@ class CharacterUI(View):
                         default=self.selected_page == 4,
                     )
                 )
-            if self._voice_embeds:
+            if self._voice_embeds and not any(embed.title is None for embed in self._voice_embeds):
                 options.append(
                     SelectOption(
                         label=LocaleStr(key="character_voices_page_label"),

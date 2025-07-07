@@ -72,7 +72,7 @@ class BlockListCard:
         card_width += block_padding[0]
         card_height = max(col_heights) + block_padding[1] * 2
 
-        bg_color = (19, 19, 24) if self.dark_mode else (255, 255, 255)
+        bg_color = (19, 19, 24) if self.dark_mode else (227, 227, 227)
         return Image.new("RGBA", (card_width, card_height), bg_color)
 
     def draw_block(self, block: SingleBlock | DoubleBlock) -> Image.Image:
@@ -84,6 +84,9 @@ class BlockListCard:
             im = Drawer.mask_image_with_color(im, Drawer.hex_to_rgb(block.bg_color))
         else:
             im = Drawer.open_image(f"{asset_dir}/{filename}_back.png")
+            im = Drawer.mask_image_with_color(
+                im, (233, 229, 220) if self.dark_mode else (255, 255, 255)
+            )
             front = Drawer.open_image(f"{asset_dir}/{filename}_front.png")
             front = Drawer.mask_image_with_color(front, Drawer.hex_to_rgb(block.bg_color))
             im.alpha_composite(front, (0, 0))

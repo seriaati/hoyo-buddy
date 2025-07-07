@@ -863,8 +863,8 @@ ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
 }
 
 BLOCK_COLORS: dict[bool, dict[int, str]] = {
-    True: {5: "#8a571e", 4: "#624a81", 3: "#3e5574", 2: "#44685d", 1: "#656570"},
-    False: {5: "#b47128", 4: "#8768ac", 3: "#52779b", 2: "#4d766a1", 1: "#77787d"},
+    True: {5: "#9E6D35", 4: "#544A81", 3: "#4F6C92", 2: "#4E7669", 1: "#787881"},
+    False: {5: "#CC8E4A", 4: "#837BCE", 3: "#6C93B9", 2: "#6DA795", 1: "#9B9B9B"},
 }
 
 POST_REPLIES = (

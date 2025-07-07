@@ -16,10 +16,10 @@ Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot 
   
 - [Try it Out](https://one.hb.seria.moe/install)
 - [Official Website](https://hb.seria.moe/)
-- [Is Hoyo Buddy Safe?](https://hb-docs.seria.moe/docs/Account-Security)
-- [Why Hoyo Buddy?](https://hb-docs.seria.moe/docs/Why-Hoyo-Buddy)
+- [Is Hoyo Buddy Safe?](https://docs.hb.seria.moe/docs/Account-Security)
+- [Why Hoyo Buddy?](https://docs.hb.seria.moe/docs/Why-Hoyo-Buddy)
 - [Discord Server](https://link.seria.moe/hb-dc)
-- [Documentation](https://hb-docs.seria.moe/)
+- [Documentation](https://docs.hb.seria.moe/)
 
 ## Quick Introduction
 

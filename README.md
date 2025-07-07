@@ -14,7 +14,7 @@
 
 Hoyo Buddy is a feature rich, easy to use, and beautifully designed Discord bot made for Hoyoverse gamers. It is developed under the [user app](https://support.discord.com/hc/en-us/articles/21334461140375-Using-Apps-on-Discord) standard, so you can use it without inviting it into any Discord servers, and can use it anywhere you want.  
   
-- [Try it Out](https://link.seria.moe/hb-start)
+- [Try it Out](https://one.hb.seria.moe/install)
 - [Official Website](https://hb.seria.moe/)
 - [Is Hoyo Buddy Safe?](https://hb-docs.seria.moe/docs/Account-Security)
 - [Why Hoyo Buddy?](https://hb-docs.seria.moe/docs/Why-Hoyo-Buddy)

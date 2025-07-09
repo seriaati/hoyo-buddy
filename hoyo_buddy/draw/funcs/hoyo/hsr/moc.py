@@ -23,11 +23,28 @@ if TYPE_CHECKING:
 
 class MOCCard:
     def __init__(
-        self, data: StarRailChallenge, season: StarRailChallengeSeason, locale: Locale
+        self,
+        data: StarRailChallenge,
+        season: StarRailChallengeSeason,
+        locale: Locale,
+        uid: int | None,
     ) -> None:
         self._data = data
         self._season = season
         self._locale = locale
+        self._uid = uid
+
+    def _write_uid(self) -> None:
+        if self._uid is None:
+            return
+
+        self._drawer.write(
+            f"UID: {self._uid}",
+            size=24,
+            position=(self._im.width - 23, self._im.height - 43),
+            color=WHITE,
+            anchor="rt",
+        )
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -201,6 +218,7 @@ class MOCCard:
         self._write_max_stars()
         self._write_farthest_stage()
         self._write_battles_fought()
+        self._write_uid()
 
         pos = (83, 492)
         for i, stage in enumerate(floors):

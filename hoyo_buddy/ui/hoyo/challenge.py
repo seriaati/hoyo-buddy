@@ -57,7 +57,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
-ShowUIDChallenge: TypeAlias = ShiyuDefense | DeadlyAssault | HardChallenge
+ShowUIDChallenge: TypeAlias = ShiyuDefense | DeadlyAssault | HardChallenge | StarRailChallenge
 
 
 class BuffView(View):
@@ -409,7 +409,12 @@ class ChallengeView(View):
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_spiral_abyss_card(draw_input, self.challenge, self.characters)
         if isinstance(self.challenge, StarRailChallenge):
-            return await draw_moc_card(draw_input, self.challenge, self.get_season(self.challenge))
+            return await draw_moc_card(
+                draw_input,
+                self.challenge,
+                self.get_season(self.challenge),
+                self.uid if self.show_uid else None,
+            )
         if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
                 draw_input, self.challenge, self.get_season(self.challenge)

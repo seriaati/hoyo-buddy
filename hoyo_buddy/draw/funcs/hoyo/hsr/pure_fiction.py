@@ -23,11 +23,29 @@ if TYPE_CHECKING:
 
 class PureFictionCard:
     def __init__(
-        self, data: StarRailPureFiction, season: StarRailChallengeSeason, locale: Locale
+        self,
+        data: StarRailPureFiction,
+        season: StarRailChallengeSeason,
+        locale: Locale,
+        uid: int | None,
     ) -> None:
         self._data = data
         self._season = season
         self._locale = locale
+        self._uid = uid
+
+    def _write_uid(self) -> None:
+        if self._uid is None:
+            return
+
+        self._drawer.write(
+            f"UID: {self._uid}",
+            size=18,
+            position=(self._im.width - 29, 20),
+            style="bold",
+            color=WHITE,
+            anchor="rt",
+        )
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -191,6 +209,7 @@ class PureFictionCard:
         self._write_max_stars()
         self._write_farthest_stage()
         self._write_battles_fought()
+        self._write_uid()
 
         stages = [f for f in self._data.floors if not f.is_quick_clear]
         stages.reverse()

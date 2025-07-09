@@ -23,11 +23,25 @@ if TYPE_CHECKING:
 
 class APCShadowCard:
     def __init__(
-        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: Locale
+        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: Locale, uid: int | None
     ) -> None:
         self._data = data
         self._season = season
         self._locale = locale
+        self._uid = uid
+    
+    def _write_uid(self) -> None:
+        if self._uid is None:
+            return
+
+        self._drawer.write(
+            f"UID: {self._uid}",
+            size=18,
+            position=(self._im.width - 29, 20),
+            style="bold",
+            color=WHITE,
+            anchor="rt",
+        )
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -190,6 +204,7 @@ class APCShadowCard:
         self._write_max_stars()
         self._write_farthest_stage()
         self._write_times_challenged()
+        self._write_uid()
 
         pos = (83, 482)
         for i, stage in enumerate(stages):

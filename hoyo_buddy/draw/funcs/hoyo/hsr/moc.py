@@ -40,8 +40,9 @@ class MOCCard:
 
         self._drawer.write(
             f"UID: {self._uid}",
-            size=24,
-            position=(self._im.width - 23, self._im.height - 43),
+            size=18,
+            position=(self._im.width - 29, 20),
+            style="bold",
             color=WHITE,
             anchor="rt",
         )

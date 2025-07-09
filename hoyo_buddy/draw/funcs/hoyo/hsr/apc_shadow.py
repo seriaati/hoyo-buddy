@@ -23,13 +23,17 @@ if TYPE_CHECKING:
 
 class APCShadowCard:
     def __init__(
-        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: Locale, uid: int | None
+        self,
+        data: StarRailAPCShadow,
+        season: StarRailChallengeSeason,
+        locale: Locale,
+        uid: int | None,
     ) -> None:
         self._data = data
         self._season = season
         self._locale = locale
         self._uid = uid
-    
+
     def _write_uid(self) -> None:
         if self._uid is None:
             return

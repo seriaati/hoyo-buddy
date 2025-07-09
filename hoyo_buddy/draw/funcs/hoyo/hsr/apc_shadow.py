@@ -128,6 +128,7 @@ class APCShadowCard:
             position=(0, 60),
             color=WHITE,
             style="medium",
+            locale=self._locale,
         )
 
         rightmost = max(name_tbox[2], score_tbox[2])

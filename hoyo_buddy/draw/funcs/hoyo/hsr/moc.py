@@ -177,7 +177,23 @@ class MOCCard:
         return im
 
     def draw(self) -> BytesIO:
-        self._im = Drawer.open_image("hoyo-buddy-assets/assets/moc/moc.png")
+        floors = list(self._data.floors)
+        floors.reverse()
+        battled_floors = [f for f in floors if not f.is_quick_clear]
+
+        is_square = False
+        if len(battled_floors) == 4:
+            filename = "moc_square.png"
+            floors = battled_floors
+            is_square = True
+        elif len(battled_floors) <= 3:
+            filename = "moc_short.png"
+            floors = battled_floors
+        else:
+            filename = "moc.png"
+            floors = floors[-6:]
+
+        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/moc/{filename}")
         self._drawer = Drawer(ImageDraw.Draw(self._im), folder="moc", dark_mode=True)
 
         self._write_title()
@@ -186,15 +202,13 @@ class MOCCard:
         self._write_farthest_stage()
         self._write_battles_fought()
 
-        floors = list(self._data.floors)
-        floors.reverse()
         pos = (83, 492)
-        for i, stage in enumerate(floors[-6:]):
+        for i, stage in enumerate(floors):
             stage_im = self._draw_stage(stage)
             self._im.paste(stage_im, pos, stage_im)
             pos = (pos[0] + 779, pos[1])
 
-            if i == 2:
+            if i == (1 if is_square else 2):
                 pos = (83, 990)
 
         return Drawer.save_image(self._im)

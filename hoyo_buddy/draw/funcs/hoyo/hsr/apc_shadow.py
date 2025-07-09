@@ -22,19 +22,16 @@ if TYPE_CHECKING:
 
 class APCShadowCard:
     def __init__(
-        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: str
+        self, data: StarRailAPCShadow, season: StarRailChallengeSeason, locale: Locale
     ) -> None:
         self._data = data
         self._season = season
-
         self._locale = locale
 
-    @property
-    def locale(self) -> Locale:
-        return Locale(self._locale)
-
     def _write_title(self) -> None:
-        self._drawer.write(self._season.name, size=80, position=(76, 75), style="bold")
+        self._drawer.write(
+            self._season.name, size=80, position=(76, 75), style="bold", locale=self._locale
+        )
 
     def _write_season_time(self) -> None:
         text = f"{self._season.begin_time.datetime.strftime('%Y/%m/%d')} ~ {self._season.end_time.datetime.strftime('%Y/%m/%d')}"
@@ -53,6 +50,7 @@ class APCShadowCard:
             ),
             size=25,
             position=(303, 340),
+            locale=self._locale,
         )
 
     def _write_times_challenged(self) -> None:
@@ -60,6 +58,7 @@ class APCShadowCard:
             LocaleStr(key="apc_shadow.times_challenged", times=self._data.total_battles),
             size=25,
             position=(303, 374),
+            locale=self._locale,
         )
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
@@ -69,9 +68,7 @@ class APCShadowCard:
             block.paste(empty, (28, 28), empty)
             return block
 
-        drawer = Drawer(
-            ImageDraw.Draw(block), folder="apc-shadow", dark_mode=True, locale=self.locale
-        )
+        drawer = Drawer(ImageDraw.Draw(block), folder="apc-shadow", dark_mode=True)
 
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
@@ -83,7 +80,7 @@ class APCShadowCard:
         level_flair_pos = (0, 97)
         block.paste(level_flair, level_flair_pos, level_flair)
         drawer.write(
-            str(chara.level),
+            f"Lv.{chara.level}",
             size=18,
             position=(
                 level_flair_pos[0] + level_flair.width // 2,
@@ -113,10 +110,12 @@ class APCShadowCard:
 
     def _draw_stage(self, stage: APCShadowFloor) -> Image.Image:
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
-        drawer = Drawer(ImageDraw.Draw(im), folder="apc-shadow", dark_mode=True, locale=self.locale)
+        drawer = Drawer(ImageDraw.Draw(im), folder="apc-shadow", dark_mode=True)
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
-        name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
+        name_tbox = drawer.write(
+            stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
+        )
         score_tbox = drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
@@ -141,9 +140,9 @@ class APCShadowCard:
             im.paste(star, pos)
             pos = (pos[0] + 62, pos[1])
 
-        defeated_text = LocaleStr(key="apc_shadow.boss_defeated").translate(self.locale)
-        not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(self.locale)
-        quick_clear_text = LocaleStr(key="moc_quick_clear").translate(self.locale)
+        defeated_text = LocaleStr(key="apc_shadow.boss_defeated").translate(self._locale)
+        not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(self._locale)
+        quick_clear_text = LocaleStr(key="moc_quick_clear").translate(self._locale)
 
         if stage.is_quick_clear:
             text = quick_clear_text
@@ -154,7 +153,9 @@ class APCShadowCard:
         else:
             text = f"{defeated_text} / {not_defeated_text}"
 
-        drawer.write(text, size=25, position=(rightmost + padding + 37, 60), color=WHITE)
+        drawer.write(
+            text, size=25, position=(rightmost + padding + 37, 60), color=WHITE, locale=self._locale
+        )
 
         characters = stage.node_1.avatars + stage.node_2.avatars
 
@@ -175,10 +176,12 @@ class APCShadowCard:
         return im
 
     def draw(self) -> BytesIO:
-        self._im = Drawer.open_image("hoyo-buddy-assets/assets/apc-shadow/apc_shadow.png")
-        self._drawer = Drawer(
-            ImageDraw.Draw(self._im), folder="apc-shadow", locale=self.locale, dark_mode=True
-        )
+        stages = [f for f in self._data.floors if not f.is_quick_clear]
+        stages.reverse()
+
+        filename = "apc_shadow_short.png" if len(stages) <= 2 else "apc_shadow.png"
+        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/apc-shadow/{filename}")
+        self._drawer = Drawer(ImageDraw.Draw(self._im), folder="apc-shadow", dark_mode=True)
 
         self._write_title()
         self._write_season_time()
@@ -186,9 +189,8 @@ class APCShadowCard:
         self._write_farthest_stage()
         self._write_times_challenged()
 
-        self._data.floors.reverse()
         pos = (83, 482)
-        for i, stage in enumerate(self._data.floors):
+        for i, stage in enumerate(stages):
             stage_im = self._draw_stage(stage)
             self._im.paste(stage_im, pos, stage_im)
             pos = (pos[0] + 779, pos[1])

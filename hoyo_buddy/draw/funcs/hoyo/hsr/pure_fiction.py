@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
@@ -19,22 +18,21 @@ if TYPE_CHECKING:
         StarRailPureFiction,
     )
 
+    from hoyo_buddy.enums import Locale
+
 
 class PureFictionCard:
     def __init__(
-        self, data: StarRailPureFiction, season: StarRailChallengeSeason, locale: str
+        self, data: StarRailPureFiction, season: StarRailChallengeSeason, locale: Locale
     ) -> None:
         self._data = data
         self._season = season
-
         self._locale = locale
 
-    @property
-    def locale(self) -> Locale:
-        return Locale(self._locale)
-
     def _write_title(self) -> None:
-        self._drawer.write(self._season.name, size=80, position=(76, 75), style="bold")
+        self._drawer.write(
+            self._season.name, size=80, position=(76, 75), style="bold", locale=self._locale
+        )
 
     def _write_season_time(self) -> None:
         text = f"{self._season.begin_time.datetime.strftime('%Y/%m/%d')} ~ {self._season.end_time.datetime.strftime('%Y/%m/%d')}"
@@ -53,6 +51,7 @@ class PureFictionCard:
             ),
             size=25,
             position=(303, 340),
+            locale=self._locale,
         )
 
     def _write_battles_fought(self) -> None:
@@ -60,6 +59,7 @@ class PureFictionCard:
             LocaleStr(key="moc_card_battles_fought", battles=self._data.total_battles),
             size=25,
             position=(303, 374),
+            locale=self._locale,
         )
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
@@ -69,7 +69,7 @@ class PureFictionCard:
             block.paste(empty, (28, 28), empty)
             return block
 
-        drawer = Drawer(ImageDraw.Draw(block), folder="pf", dark_mode=True, locale=self.locale)
+        drawer = Drawer(ImageDraw.Draw(block), folder="pf", dark_mode=True)
 
         icon = drawer.open_static(chara.icon)
         icon = drawer.resize_crop(icon, (120, 120))
@@ -81,7 +81,7 @@ class PureFictionCard:
         level_flair_pos = (2, 98)
         block.paste(level_flair, level_flair_pos, level_flair)
         drawer.write(
-            str(chara.level),
+            f"Lv.{chara.level}",
             size=18,
             position=(
                 level_flair_pos[0] + level_flair.width // 2,
@@ -111,10 +111,12 @@ class PureFictionCard:
 
     def _draw_stage(self, stage: FictionFloor) -> Image.Image:
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
-        drawer = Drawer(ImageDraw.Draw(im), folder="pf", dark_mode=True, locale=self.locale)
+        drawer = Drawer(ImageDraw.Draw(im), folder="pf", dark_mode=True)
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
-        name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
+        name_tbox = drawer.write(
+            stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
+        )
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(
                 LocaleStr(key="moc_quick_clear"),
@@ -122,6 +124,7 @@ class PureFictionCard:
                 position=(0, 60),
                 color=WHITE,
                 style="medium",
+                locale=self._locale,
             )
         else:
             cycle_tbox = drawer.write(
@@ -130,6 +133,7 @@ class PureFictionCard:
                 position=(0, 60),
                 color=WHITE,
                 style="medium",
+                locale=self._locale,
             )
 
         rightmost = max(name_tbox[2], cycle_tbox[2])
@@ -153,6 +157,7 @@ class PureFictionCard:
             size=25,
             position=(rightmost + padding + 37, 60),
             color=WHITE,
+            locale=self._locale,
         )
 
         characters = stage.node_1.avatars + stage.node_2.avatars
@@ -174,10 +179,12 @@ class PureFictionCard:
         return im
 
     def draw(self) -> BytesIO:
-        self._im = Drawer.open_image("hoyo-buddy-assets/assets/pf/pf.png")
-        self._drawer = Drawer(
-            ImageDraw.Draw(self._im), folder="pf", locale=self.locale, dark_mode=True
-        )
+        stages = [f for f in self._data.floors if not f.is_quick_clear]
+        stages.reverse()
+
+        filename = "pf_short.png" if len(stages) <= 2 else "pf.png"
+        self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/pf/{filename}")
+        self._drawer = Drawer(ImageDraw.Draw(self._im), folder="pf", dark_mode=True)
 
         self._write_title()
         self._write_season_time()
@@ -185,9 +192,11 @@ class PureFictionCard:
         self._write_farthest_stage()
         self._write_battles_fought()
 
-        self._data.floors.reverse()
+        stages = [f for f in self._data.floors if not f.is_quick_clear]
+        stages.reverse()
+
         pos = (83, 482)
-        for i, stage in enumerate(self._data.floors):
+        for i, stage in enumerate(stages):
             stage_im = self._draw_stage(stage)
             self._im.paste(stage_im, pos, stage_im)
             pos = (pos[0] + 779, pos[1])

@@ -3,7 +3,7 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, Literal
 
-from discord import InteractionType, NotFound, app_commands
+from discord import HTTPException, InteractionType, NotFound, app_commands
 
 from hoyo_buddy.db import get_locale
 
@@ -55,6 +55,10 @@ class CommandTree(app_commands.CommandTree):
     async def on_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
         if isinstance(error, app_commands.CheckFailure):
+            return
+
+        # Interaction has already been acknowledged
+        if isinstance(error, HTTPException) and error.code == 40060:
             return
 
         locale = await get_locale(i)

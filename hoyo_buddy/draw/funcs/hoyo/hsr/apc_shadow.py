@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
@@ -18,6 +17,8 @@ if TYPE_CHECKING:
         StarRailAPCShadow,
         StarRailChallengeSeason,
     )
+
+    from hoyo_buddy.enums import Locale
 
 
 class APCShadowCard:

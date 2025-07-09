@@ -126,7 +126,9 @@ class MOCCard:
         drawer = Drawer(ImageDraw.Draw(im), folder="moc", dark_mode=True)
 
         stage_name = get_floor_difficulty(stage.name, self._season.name)
-        name_tbox = drawer.write(stage_name, size=44, position=(0, 0), style="bold", color=WHITE)
+        name_tbox = drawer.write(
+            stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
+        )
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(
                 LocaleStr(key="moc_quick_clear"),
@@ -134,6 +136,7 @@ class MOCCard:
                 position=(0, 60),
                 color=WHITE,
                 style="medium",
+                locale=self._locale,
             )
         else:
             cycle_tbox = drawer.write(

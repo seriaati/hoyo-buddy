@@ -32,7 +32,9 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Install Project
-        run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
+        run: |
+          uv sync --frozen --no-dev
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
       - name: Run Pyright
         uses: jakebailey/pyright-action@v2

@@ -175,6 +175,7 @@ class Schedule(commands.Cog):
                     continue
                 await message.publish()
 
+            game_sent_codes.update(codes_to_send)
             sent_codes[HB_GAME_TO_GPY_GAME[game].value] = list(set(game_sent_codes))
 
         await JSONFile.write("sent_codes.json", sent_codes)

@@ -44,7 +44,13 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platfor
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.utils import capture_exception, fetch_json, get_now, get_project_version
+from hoyo_buddy.utils import (
+    capture_exception,
+    fetch_json,
+    get_now,
+    get_project_version,
+    should_ignore_error,
+)
 
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -559,6 +565,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.JSONFile.write(f"hsr_item_names_{lang}.json", text_map)
 
     async def on_command_error(self, context: commands.Context, e: commands.CommandError) -> None:
+        if should_ignore_error(e):
+            return
+
         await context.send(f"An error occurred: {e}")
         self.capture_exception(e)
 

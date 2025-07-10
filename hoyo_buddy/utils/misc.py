@@ -148,7 +148,8 @@ def should_ignore_error(e: Exception) -> bool:
 
     # 10062: Unknown interaction
     # 10008: Unknown message
-    if isinstance(e, discord.NotFound) and e.code in {10062, 10008, 40060}:  # noqa: SIM103
+    # 40060: Interaction has already been acknowledged
+    if isinstance(e, discord.HTTPException) and e.code in {10062, 10008, 40060}:  # noqa: SIM103
         return True
 
     return False

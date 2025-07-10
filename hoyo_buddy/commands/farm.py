@@ -83,7 +83,7 @@ class FarmCommand:
                 dark_mode=self._settings.dark_mode,
                 locale=draw_locale(self.locale, farm_notify.account),
                 session=i.client.session,
-                filename="farm_notify.png",
+                filename="farm_notify.webp",
                 executor=i.client.executor,
                 loop=i.client.loop,
             ),

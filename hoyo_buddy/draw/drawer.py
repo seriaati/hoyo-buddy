@@ -654,7 +654,7 @@ class Drawer:
         """Save an image to a BytesIO object, resizing it if it exceeds the Discord file size limit."""
         while True:
             bytes_obj = io.BytesIO()
-            img.save(bytes_obj, format="PNG")
+            img.save(bytes_obj, format="WEBP", lossless=True)
             size_in_bytes = bytes_obj.tell()
 
             if size_in_bytes < DC_MAX_FILESIZE:

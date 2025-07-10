@@ -37,7 +37,7 @@ class ExplorationView(ui.View):
         return (
             DefaultEmbed(self.locale)
             .add_acc_info(self.account)
-            .set_image(url="attachment://exploration.png")
+            .set_image(url="attachment://exploration.webp")
         )
 
     @property
@@ -53,7 +53,7 @@ class ExplorationView(ui.View):
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
                 session=bot.session,
-                filename="exploration.png",
+                filename="exploration.webp",
                 executor=bot.executor,
                 loop=bot.loop,
             ),

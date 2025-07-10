@@ -410,7 +410,7 @@ class CharactersView(PaginatorView):
 
     def _get_embed(self, char_num: int) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="characters.embed.title"))
-        embed.set_image(url="attachment://characters.png")
+        embed.set_image(url="attachment://characters.webp")
         embed.add_acc_info(self.account)
 
         if self.game is Game.HONKAI:

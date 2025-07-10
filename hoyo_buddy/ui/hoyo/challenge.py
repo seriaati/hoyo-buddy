@@ -57,7 +57,14 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
 
-ShowUIDChallenge: TypeAlias = ShiyuDefense | DeadlyAssault | HardChallenge
+ShowUIDChallenge: TypeAlias = (
+    ShiyuDefense
+    | DeadlyAssault
+    | HardChallenge
+    | StarRailChallenge
+    | StarRailPureFiction
+    | StarRailAPCShadow
+)
 
 
 class BuffView(View):
@@ -406,17 +413,21 @@ class ChallengeView(View):
             loop=loop,
         )
 
+        uid = self.uid if self.show_uid else None
+
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_spiral_abyss_card(draw_input, self.challenge, self.characters)
         if isinstance(self.challenge, StarRailChallenge):
-            return await draw_moc_card(draw_input, self.challenge, self.get_season(self.challenge))
+            return await draw_moc_card(
+                draw_input, self.challenge, self.get_season(self.challenge), uid
+            )
         if isinstance(self.challenge, StarRailPureFiction):
             return await draw_pure_fiction_card(
-                draw_input, self.challenge, self.get_season(self.challenge)
+                draw_input, self.challenge, self.get_season(self.challenge), uid
             )
         if isinstance(self.challenge, StarRailAPCShadow):
             return await draw_apc_shadow_card(
-                draw_input, self.challenge, self.get_season(self.challenge)
+                draw_input, self.challenge, self.get_season(self.challenge), uid
             )
         if isinstance(self.challenge, ImgTheaterData):
             traveler = next((c for c in self.characters if c.id in TRAVELER_IDS), None)
@@ -427,9 +438,7 @@ class ChallengeView(View):
                 traveler.element if traveler is not None else None,
             )
         if isinstance(self.challenge, DeadlyAssault):
-            return await draw_assault_card(
-                draw_input, self.challenge, self.uid if self.show_uid else None
-            )
+            return await draw_assault_card(draw_input, self.challenge, uid)
         if isinstance(self.challenge, HardChallenge):
             return await draw_hard_challenge(
                 draw_input,
@@ -438,9 +447,7 @@ class ChallengeView(View):
                 mode=self.hard_challenge_mode,
             )
         # ShiyuDefense
-        return await draw_shiyu_card(
-            draw_input, self.challenge, self.agent_ranks, self.uid if self.show_uid else None
-        )
+        return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
 
     def _add_items(self) -> None:
         self.add_item(

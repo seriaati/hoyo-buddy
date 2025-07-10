@@ -329,21 +329,24 @@ async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserS
 
 
 async def draw_moc_card(
-    draw_input: DrawInput, data: StarRailChallenge, season: StarRailChallengeSeason
+    draw_input: DrawInput, data: StarRailChallenge, season: StarRailChallengeSeason, uid: int | None
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
         await download_images(icons, "moc", draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
-        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale).draw
+        draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale, uid).draw
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
 async def draw_pure_fiction_card(
-    draw_input: DrawInput, data: StarRailPureFiction, season: StarRailChallengeSeason
+    draw_input: DrawInput,
+    data: StarRailPureFiction,
+    season: StarRailChallengeSeason,
+    uid: int | None,
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
@@ -351,14 +354,14 @@ async def draw_pure_fiction_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale).draw,
+        funcs.hsr.pure_fiction.PureFictionCard(data, season, draw_input.locale, uid).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
 
 
 async def draw_apc_shadow_card(
-    draw_input: DrawInput, data: StarRailAPCShadow, season: StarRailChallengeSeason
+    draw_input: DrawInput, data: StarRailAPCShadow, season: StarRailChallengeSeason, uid: int | None
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
@@ -366,7 +369,7 @@ async def draw_apc_shadow_card(
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
-        funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale).draw,
+        funcs.hsr.apc_shadow.APCShadowCard(data, season, draw_input.locale, uid).draw,
     )
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

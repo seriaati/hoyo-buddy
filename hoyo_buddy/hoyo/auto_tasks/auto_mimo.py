@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import datetime
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
@@ -11,7 +10,6 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
-from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
@@ -28,6 +26,7 @@ from hoyo_buddy.utils import (
 )
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
 
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)

@@ -10,7 +10,6 @@ from discord.ext import commands, tasks
 from loguru import logger
 from seria.utils import create_bullet_list
 
-from hoyo_buddy.config import Deployment
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
@@ -30,6 +29,7 @@ from ..hoyo.auto_tasks.notes_check import NotesChecker
 from ..utils import convert_code_to_redeem_url, get_now
 
 if TYPE_CHECKING:
+    from hoyo_buddy.config import Deployment
     from hoyo_buddy.types import Interaction
 
     from ..bot import HoyoBuddy

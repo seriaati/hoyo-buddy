@@ -167,6 +167,22 @@ class HoyoBuddy(commands.AutoShardedBot):
         ]
         await asyncio.gather(*tasks)
 
+    async def _load_cogs(self) -> None:
+        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
+            cog_name = Path(filepath).stem
+
+            if not self.config.schedule and cog_name == "schedule":
+                continue
+
+            if not self.config.prometheus and cog_name == "prometheus":
+                continue
+
+            try:
+                await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
+                logger.info(f"Loaded cog {cog_name!r}")
+            except Exception:
+                logger.exception(f"Failed to load cog {cog_name!r}")
+
     async def setup_hook(self) -> None:
         await self.start_process_pool()
 
@@ -180,14 +196,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         # Preload translators
         await translator.load()
 
-        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
-            cog_name = Path(filepath).stem
-            try:
-                await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
-                logger.info(f"Loaded cog {cog_name!r}")
-            except Exception:
-                logger.exception(f"Failed to load cog {cog_name!r}")
-
+        await self._load_cogs()
         await self.load_extension("jishaku")
 
         if self.config.novelai:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -48,7 +48,7 @@ class Config(BaseSettings):
         return self.env == "dev"
 
     @property
-    def cli_args(self) -> dict[str, bool]:
+    def cli_args(self) -> dict[str, Any]:
         return {
             "search": self.search,
             "sentry": self.sentry,
@@ -56,6 +56,7 @@ class Config(BaseSettings):
             "prometheus": self.prometheus,
             "novelai": self.novelai,
             "web_server": self.web_server,
+            "deployment": self.deployment,
         }
 
 

@@ -31,19 +31,6 @@ class Scheduler:
             .update(mimo_all_claimed_time=None)
         )
 
-    async def run_auto_tasks(self) -> None:
-        # Mimo
-        await self.reset_mimo_all_claimed_time()
-        asyncio.create_task(AutoMimoTask.execute())
-        asyncio.create_task(AutoMimoBuy.execute())
-        asyncio.create_task(AutoMimoDraw.execute())
-
-        # Redeem
-        asyncio.create_task(AutoRedeem.execute(self.session))
-
-        # Check-in
-        asyncio.create_task(DailyCheckin.execute())
-
     def start(self) -> None:
         self.scheduler.start()
 

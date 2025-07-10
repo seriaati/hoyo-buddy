@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
@@ -10,6 +11,7 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.db import HoyoAccount
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
@@ -26,7 +28,6 @@ from hoyo_buddy.utils import (
 )
 
 if TYPE_CHECKING:
-    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
 
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
@@ -36,6 +37,15 @@ class AutoMimoMixin(AutoTaskMixin):
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
     _down_games: ClassVar[set[Game]]
     _error_counts: ClassVar[defaultdict[int, int]]
+
+    @staticmethod
+    async def _reset_mimo_all_claimed_time() -> None:
+        utc_now = get_now(datetime.UTC)
+        await (
+            HoyoAccount.filter(mimo_all_claimed_time__isnull=False)
+            .exclude(mimo_all_claimed_time__day=utc_now.day)
+            .update(mimo_all_claimed_time=None)
+        )
 
     @classmethod
     async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
@@ -326,6 +336,8 @@ class AutoMimoTask(AutoMimoMixin):
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
+                await cls._reset_mimo_all_claimed_time()
+
                 # Auto task
                 queue = await cls.build_auto_task_queue(
                     "mimo_task", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
@@ -369,6 +381,8 @@ class AutoMimoBuy(AutoMimoMixin):
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
+                await cls._reset_mimo_all_claimed_time()
+
                 # Auto buy
                 queue = await cls.build_auto_task_queue(
                     "mimo_buy", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
@@ -411,6 +425,8 @@ class AutoMimoDraw(AutoMimoMixin):
                 cls._mimo_game_data = {}
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
+
+                await cls._reset_mimo_all_claimed_time()
 
                 # Auto draw
                 queue = await cls.build_auto_task_queue(

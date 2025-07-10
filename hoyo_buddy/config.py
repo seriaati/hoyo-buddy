@@ -5,6 +5,8 @@ from typing import Literal
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from hoyo_buddy.types import Deployment
+
 type EnvType = Literal["dev", "test", "prod"]
 
 
@@ -36,6 +38,7 @@ class Config(BaseSettings):
     prometheus: bool = False
     novelai: bool = False
     web_server: bool = False
+    deployment: Deployment = "main"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", cli_parse_args=True, cli_implicit_flags=True

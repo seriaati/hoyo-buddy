@@ -103,3 +103,4 @@ type FontStyle = Literal[
     "black_italic",
 ]
 type HardChallengeMode = Literal["single", "multi"]
+type Deployment = Literal["main", "sub"]

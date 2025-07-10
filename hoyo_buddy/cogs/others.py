@@ -20,13 +20,13 @@ from hoyo_buddy.exceptions import NotAnImageError
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
+from ..types import Interaction
 from ..ui import Button, View
 from ..ui.settings import SettingsUI
 from ..utils import ephemeral, get_discord_user_md_link, upload_image
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Others(commands.Cog):

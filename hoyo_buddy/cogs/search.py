@@ -15,6 +15,7 @@ from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakush
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..emojis import PROJECT_AMBER
 from ..enums import BetaItemCategory, Game, Locale
@@ -22,6 +23,7 @@ from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
+from ..types import Interaction
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.hsr import search as hsr_search
@@ -32,7 +34,6 @@ if TYPE_CHECKING:
     from enum import StrEnum
 
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Search(commands.Cog):
@@ -339,6 +340,7 @@ class Search(commands.Cog):
         await show_anniversary_dismissible(i)
 
     @search_command.autocomplete("game_value")
+    @handle_autocomplete_errors
     async def search_command_game_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
@@ -346,6 +348,7 @@ class Search(commands.Cog):
         return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
 
     @search_command.autocomplete("category_value")
+    @handle_autocomplete_errors
     async def search_command_category_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
@@ -361,6 +364,7 @@ class Search(commands.Cog):
         return self.bot.get_enum_choices(categories, locale, current)
 
     @search_command.autocomplete("query")
+    @handle_autocomplete_errors
     async def search_command_query_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

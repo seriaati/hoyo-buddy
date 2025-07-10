@@ -32,7 +32,13 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Install Project
-        run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
+        run: |
+          uv sync --frozen
+          uv pip uninstall uvloop
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
       - name: Run Pyright
-        run: uv run pyright hoyo_buddy/ --outputjson
+        uses: jakebailey/pyright-action@v2
+        with:
+          working-directory: hoyo_buddy/
+          extra-args: '--outputjson'

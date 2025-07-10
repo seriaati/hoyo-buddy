@@ -10,11 +10,11 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, User, get_locale
 from hoyo_buddy.db.utils import show_anniversary_dismissible
 
+from ..types import Interaction
 from ..ui.account.view import AccountManager
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Login(commands.Cog):

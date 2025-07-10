@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 type EnvType = Literal["dev", "test", "prod"]
+type Deployment = Literal["main", "sub"]
 
 
 class Config(BaseSettings):
@@ -35,7 +36,7 @@ class Config(BaseSettings):
     schedule: bool = False
     prometheus: bool = False
     novelai: bool = False
-    web_server: bool = False
+    deployment: Deployment = "main"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", cli_parse_args=True, cli_implicit_flags=True
@@ -46,14 +47,14 @@ class Config(BaseSettings):
         return self.env == "dev"
 
     @property
-    def cli_args(self) -> dict[str, bool]:
+    def cli_args(self) -> dict[str, Any]:
         return {
             "search": self.search,
             "sentry": self.sentry,
             "schedule": self.schedule,
             "prometheus": self.prometheus,
             "novelai": self.novelai,
-            "web_server": self.web_server,
+            "deployment": self.deployment,
         }
 
 

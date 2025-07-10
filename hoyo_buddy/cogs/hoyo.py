@@ -13,21 +13,21 @@ from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import CantRedeemCodeError, InvalidQueryError
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
-from ..types import User  # noqa: TC001
+from ..hoyo.transformers import HoyoAccountTransformer
+from ..types import Interaction, User
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Hoyo(commands.Cog):
@@ -256,6 +256,7 @@ class Hoyo(commands.Cog):
         await show_anniversary_dismissible(i)
 
     @geetest_command.autocomplete("type_")
+    @handle_autocomplete_errors
     async def geetest_type_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -272,6 +273,7 @@ class Hoyo(commands.Cog):
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
     @web_events_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

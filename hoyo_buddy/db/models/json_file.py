@@ -25,14 +25,14 @@ class JSONFile(BaseModel):
                 return default
             return {}
 
-        if int_key:
+        if isinstance(json_file.data, dict) and int_key:
             return {int(key): value for key, value in json_file.data.items()}
         return json_file.data
 
     @staticmethod
     async def write(filename: str, data: Any, *, auto_str_key: bool = True) -> None:
         """Write a JSON file."""
-        if auto_str_key:
+        if isinstance(data, dict) and auto_str_key:
             data = {str(key): value for key, value in data.items()}
 
         json_file = await JSONFile.get_or_none(name=filename)

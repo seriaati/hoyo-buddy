@@ -10,13 +10,14 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.gacha import GachaCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, show_anniversary_dismissible
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..enums import GachaImportSource, Game
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
+from ..hoyo.transformers import HoyoAccountTransformer
+from ..types import Interaction
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Gacha(
@@ -118,6 +119,7 @@ class Gacha(
     @upload.autocomplete("account")
     @view_logs.autocomplete("account")
     @manage_logs.autocomplete("account")
+    @handle_autocomplete_errors
     async def account_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

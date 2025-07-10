@@ -3,12 +3,11 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
-import logging
 import math
 import re
-import sys
 import time
 from contextlib import contextmanager
+from functools import wraps
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
@@ -16,12 +15,8 @@ import discord
 import orjson
 import sentry_sdk
 import toml
+from discord.ext import commands
 from loguru import logger
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
-from sentry_sdk.integrations.asyncio import AsyncioIntegration
-from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
 from seria.utils import clean_url
 
 from hoyo_buddy.config import CONFIG
@@ -35,15 +30,55 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
-from hoyo_buddy.logging import InterceptHandler
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator
+    from collections.abc import Callable, Generator
 
     import genshin
 
     from hoyo_buddy.types import Interaction, SleepTime
+
+__all__ = (
+    "add_to_hoyo_codes",
+    "blur_uid",
+    "capitalize_first_word",
+    "capture_exception",
+    "contains_masked_link",
+    "convert_chara_id_to_ambr_format",
+    "convert_code_to_redeem_url",
+    "convert_to_title_case",
+    "dict_cookie_to_str",
+    "ephemeral",
+    "error_handler",
+    "fetch_json",
+    "format_float",
+    "format_time",
+    "format_timedelta",
+    "get_discord_protocol_url",
+    "get_discord_url",
+    "get_discord_user_link",
+    "get_discord_user_md_link",
+    "get_floor_difficulty",
+    "get_mimo_task_str",
+    "get_mimo_task_url",
+    "get_now",
+    "get_pixiv_proxy_img",
+    "get_project_version",
+    "get_static_img_path",
+    "human_format_number",
+    "is_hb_birthday",
+    "is_image_url",
+    "is_valid_hex_color",
+    "measure_time",
+    "remove_html_tags",
+    "seconds_to_time",
+    "should_ignore_error",
+    "sleep",
+    "test_url_validity",
+    "upload_image",
+    "wrap_task_factory",
+)
 
 
 def get_now(tz: datetime.timezone | None = None) -> datetime.datetime:
@@ -101,14 +136,19 @@ def should_ignore_error(e: Exception) -> bool:
         aiohttp.ClientConnectorError,
         aiohttp.ServerDisconnectedError,
         discord.DiscordServerError,
+        discord.app_commands.CheckFailure,
         StopAsyncIteration,
+        commands.CommandNotFound,
+        commands.TooManyArguments,
+        commands.CheckFailure,
+        commands.MissingRequiredArgument,
     )
     if isinstance(e, errors_to_ignore):
         return True
 
     # 10062: Unknown interaction
     # 10008: Unknown message
-    if isinstance(e, discord.NotFound) and e.code in {10062, 10008}:  # noqa: SIM103
+    if isinstance(e, discord.NotFound) and e.code in {10062, 10008, 40060}:  # noqa: SIM103
         return True
 
     return False
@@ -417,24 +457,6 @@ def get_project_version() -> str:
     return f"v{data['project']['version']}"
 
 
-def init_sentry() -> None:
-    sentry_sdk.init(
-        dsn=CONFIG.sentry_dsn,
-        integrations=[
-            AsyncioIntegration(),
-            LoguruIntegration(
-                level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
-            ),
-        ],
-        disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
-        traces_sample_rate=1.0,
-        environment=CONFIG.env,
-        enable_tracing=True,
-        release=get_project_version(),
-        _experiments={"enable_logs": True},
-    )
-
-
 async def fetch_json(session: aiohttp.ClientSession, url: str) -> Any:
     async with session.get(url) as resp:
         resp.raise_for_status()
@@ -542,30 +564,6 @@ async def add_to_hoyo_codes(
         resp.raise_for_status()
 
 
-def entry_point(log_dir: str) -> None:
-    try:
-        from icecream import install  # noqa: PLC0415
-    except ImportError:
-        pass
-    else:
-        install()
-
-    logger.remove()
-    logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
-    if CONFIG.is_dev:
-        logging.getLogger("tortoise").setLevel(logging.DEBUG)
-    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-    logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")
-
-    logger.info(f"CLI args: {CONFIG.cli_args}")
-
-    if CONFIG.sentry:
-        init_sentry()
-
-    if sys.platform == "win32":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-
 async def sleep(name: SleepTime) -> None:
     try:
         time = SLEEP_TIMES[name]
@@ -582,3 +580,26 @@ def is_hb_birthday() -> bool:
         <= now.date()
         <= HB_BIRTHDAY.replace(year=now.year) + datetime.timedelta(days=7)
     )
+
+
+def capture_exception(e: Exception) -> None:
+    if should_ignore_error(e):
+        return
+
+    if not CONFIG.sentry:
+        logger.exception(e)
+    else:
+        logger.warning(f"Error: {e}, capturing exception")
+        sentry_sdk.capture_exception(e)
+
+
+def handle_autocomplete_errors(func: Callable) -> Callable:
+    @wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> list[discord.app_commands.Choice[str]]:
+        try:
+            return await func(*args, **kwargs)
+        except Exception as e:
+            capture_exception(e)
+            return []
+
+    return wrapper

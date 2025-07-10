@@ -11,13 +11,13 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.enums import Game
-from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
-from hoyo_buddy.types import User  # noqa: TC001
+from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
+from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.types import Interaction
 
 
 class Characters(
@@ -98,6 +98,7 @@ class Characters(
     @hsr_command.autocomplete("account")
     @zzz_command.autocomplete("account")
     @honkai_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def genshin_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

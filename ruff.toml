@@ -88,6 +88,10 @@ runtime-evaluated-base-classes = [
   "pydantic.BaseModel",
   "pydantic_settings.BaseSettings",
 ]
+runtime-evaluated-decorators = [
+  "discord.ext.commands.command",
+  "discord.app_commands.command",
+]
 
 [lint.mccabe]
 max-complexity = 15

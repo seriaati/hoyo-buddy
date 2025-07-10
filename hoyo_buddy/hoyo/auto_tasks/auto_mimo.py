@@ -38,15 +38,6 @@ class AutoMimoMixin(AutoTaskMixin):
     _down_games: ClassVar[set[Game]]
     _error_counts: ClassVar[defaultdict[int, int]]
 
-    @staticmethod
-    async def _reset_mimo_all_claimed_time() -> None:
-        utc_now = get_now(datetime.UTC)
-        await (
-            HoyoAccount.filter(mimo_all_claimed_time__isnull=False)
-            .exclude(mimo_all_claimed_time__day=utc_now.day)
-            .update(mimo_all_claimed_time=None)
-        )
-
     @classmethod
     async def _get_mimo_game_data(cls, client: genshin.Client, game: Game) -> tuple[int, int]:
         try:
@@ -336,8 +327,6 @@ class AutoMimoTask(AutoMimoMixin):
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
-                await cls._reset_mimo_all_claimed_time()
-
                 # Auto task
                 queue = await cls.build_auto_task_queue(
                     "mimo_task", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
@@ -381,8 +370,6 @@ class AutoMimoBuy(AutoMimoMixin):
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
-                await cls._reset_mimo_all_claimed_time()
-
                 # Auto buy
                 queue = await cls.build_auto_task_queue(
                     "mimo_buy", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
@@ -425,8 +412,6 @@ class AutoMimoDraw(AutoMimoMixin):
                 cls._mimo_game_data = {}
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
-
-                await cls._reset_mimo_all_claimed_time()
 
                 # Auto draw
                 queue = await cls.build_auto_task_queue(

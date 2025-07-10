@@ -16,7 +16,6 @@ import enka
 import genshin
 import prometheus_client
 import psutil
-import sentry_sdk
 import tortoise.timezone
 from asyncache import cached
 from cachetools import TTLCache
@@ -55,7 +54,7 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platfor
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.utils import fetch_json, get_now, get_project_version, should_ignore_error
+from hoyo_buddy.utils import capture_exception, fetch_json, get_now, get_project_version
 
 from .cache import LFUCache
 from .command_tree import CommandTree
@@ -327,15 +326,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         return queue
 
     def capture_exception(self, e: Exception) -> None:
-        ignore = should_ignore_error(e)
-        if ignore:
-            return
-
-        if not self.config.sentry:
-            logger.exception(e)
-        else:
-            logger.warning(f"Error: {e}, capturing exception")
-            sentry_sdk.capture_exception(e)
+        capture_exception(e)
 
     async def dm_user(
         self, user_id: int, *, content: str | None = None, **kwargs: Any

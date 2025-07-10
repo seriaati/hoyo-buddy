@@ -582,3 +582,15 @@ def is_hb_birthday() -> bool:
         <= now.date()
         <= HB_BIRTHDAY.replace(year=now.year) + datetime.timedelta(days=7)
     )
+
+
+def capture_exception(e: Exception) -> None:
+    ignore = should_ignore_error(e)
+    if ignore:
+        return
+
+    if not CONFIG.sentry:
+        logger.exception(e)
+    else:
+        logger.warning(f"Error: {e}, capturing exception")
+        sentry_sdk.capture_exception(e)

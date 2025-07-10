@@ -583,7 +583,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.8"
-source = { git = "https://github.com/seriaati/enka-py#e8a8993a1420f555b3dd35a18f27ad4a30b1c73b" }
+source = { git = "https://github.com/seriaati/enka-py#621d87d9abb0414134c23885603f36aa70d16dff" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -736,7 +736,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.14"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#b0245f906bef7cd8c20b439ef99d3101335540b1" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#f70b795df9cc22819f2f20751cce43c95d287942" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },

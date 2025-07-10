@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import tracemalloc
 
 import aiohttp
 import aiohttp.http_websocket
@@ -14,7 +15,6 @@ from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point, wrap_task_factory
 
-import tracemalloc
 tracemalloc.start()
 
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"

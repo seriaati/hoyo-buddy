@@ -3,12 +3,12 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
-from functools import wraps
 import math
 import re
 import time
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Callable
+from functools import wraps
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
 import discord
@@ -33,7 +33,7 @@ from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     import pathlib
-    from collections.abc import Generator
+    from collections.abc import Callable, Generator
 
     import genshin
 

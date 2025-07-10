@@ -558,16 +558,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         for lang, text_map in result.items():
             await models.JSONFile.write(f"hsr_item_names_{lang}.json", text_map)
 
-    async def on_command_error(
-        self, context: commands.Context, exception: commands.CommandError
-    ) -> None:
-        if isinstance(
-            exception, commands.CommandNotFound | commands.TooManyArguments | commands.CheckFailure
-        ):
-            return None
-
-        await context.send(f"An error occurred: {exception}")
-        return await super().on_command_error(context, exception)
+    async def on_command_error(self, context: commands.Context, e: commands.CommandError) -> None:
+        await context.send(f"An error occurred: {e}")
+        self.capture_exception(e)
 
     async def handle_geetest_notify(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
         if isinstance(notif, asyncpg_listen.Timeout) or notif.payload is None:

@@ -54,8 +54,6 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
-        if isinstance(error, app_commands.CheckFailure):
-            return
 
         # Interaction has already been acknowledged
         if isinstance(error, HTTPException) and error.code == 40060:

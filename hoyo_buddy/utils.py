@@ -16,6 +16,7 @@ import discord
 import orjson
 import sentry_sdk
 import toml
+from discord.ext import commands
 from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
@@ -101,7 +102,12 @@ def should_ignore_error(e: Exception) -> bool:
         aiohttp.ClientConnectorError,
         aiohttp.ServerDisconnectedError,
         discord.DiscordServerError,
+        discord.app_commands.CheckFailure,
         StopAsyncIteration,
+        commands.CommandNotFound,
+        commands.TooManyArguments,
+        commands.CheckFailure,
+        commands.MissingRequiredArgument,
     )
     if isinstance(e, errors_to_ignore):
         return True

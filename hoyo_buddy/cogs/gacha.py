@@ -12,11 +12,11 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, show_anniversary_dismissible
 
 from ..enums import GachaImportSource, Game
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
+from ..hoyo.transformers import HoyoAccountTransformer
+from ..types import Interaction
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Gacha(

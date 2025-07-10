@@ -4,12 +4,13 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
-import genshin  # noqa: TC002
+import genshin
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
+from hoyo_buddy.config import Deployment
 from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
@@ -21,8 +22,6 @@ from .search import Search
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
-
-    from hoyo_buddy.config import Deployment
 
     from ..bot import HoyoBuddy
 

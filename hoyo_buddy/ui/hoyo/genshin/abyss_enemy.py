@@ -102,7 +102,7 @@ class AbyssEnemyView(View):
             embed = client.get_abyss_chamber_embed_with_floor_info(
                 floor, self._floor_index, chamber, self._chamber_index, abyss.blessing
             )
-            embed.set_image(url="attachment://enemies.png")
+            embed.set_image(url="attachment://enemies.webp")
 
             items = client.get_abyss_chamber_enemy_items(
                 chamber,
@@ -128,7 +128,7 @@ class AbyssEnemyView(View):
                 dark_mode=self._dark_mode,
                 locale=self.locale,
                 session=i.client.session,
-                filename="enemies.png",
+                filename="enemies.webp",
                 executor=i.client.executor,
                 loop=i.client.loop,
             ),

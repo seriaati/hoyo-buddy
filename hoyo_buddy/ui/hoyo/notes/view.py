@@ -315,7 +315,7 @@ class NotesView(View):
     async def get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
         embed.add_acc_info(self.account)
-        embed.set_image(url="attachment://notes.png")
+        embed.set_image(url="attachment://notes.webp")
 
         if self.account.game is Game.GENSHIN:
             return await self._get_gi_embed(embed)
@@ -653,7 +653,7 @@ class NotesView(View):
                     )
                 )
 
-        return embed.set_image(url="attachment://notes.png").add_acc_info(self.account)
+        return embed.set_image(url="attachment://notes.webp").add_acc_info(self.account)
 
     async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
         self._add_items()
@@ -666,13 +666,13 @@ class NotesView(View):
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
                 session=i.client.session,
-                filename="notes.png",
+                filename="notes.webp",
                 executor=i.client.executor,
                 loop=i.client.loop,
             )
             self.bytes_obj = await self._draw_notes_card(notes, draw_input)
             self.bytes_obj.seek(0)
-            file_ = File(self.bytes_obj, filename="notes.png")
+            file_ = File(self.bytes_obj, filename="notes.webp")
         else:
             file_ = None
 

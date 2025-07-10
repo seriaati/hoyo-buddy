@@ -4,7 +4,6 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
-import aiohttp
 import genshin
 from loguru import logger
 
@@ -17,6 +16,8 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import capture_exception, error_handler, get_now
 
 if TYPE_CHECKING:
+    import aiohttp
+
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 
@@ -30,7 +31,7 @@ class AutoRedeem(AutoTaskMixin):
     _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
-    async def execute(cls, *, skip_redeemed: bool = True) -> None:
+    async def execute(cls, session: aiohttp.ClientSession, *, skip_redeemed: bool = True) -> None:
         """Redeem codes for accounts that have auto redeem enabled."""
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
@@ -43,7 +44,7 @@ class AutoRedeem(AutoTaskMixin):
                 cls._count = 0
                 cls._error_counts = defaultdict(int)
 
-                game_codes = await cls.get_codes()
+                game_codes = await cls.get_codes(session)
                 logger.debug(f"Game codes: {game_codes}")
 
                 queue = await cls.build_auto_task_queue(
@@ -72,20 +73,19 @@ class AutoRedeem(AutoTaskMixin):
                 logger.info(f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f}s")
 
     @staticmethod
-    async def get_codes() -> dict[Game, list[str]]:
+    async def get_codes(session: aiohttp.ClientSession) -> dict[Game, list[str]]:
         result: dict[Game, list[str]] = defaultdict(list)
 
-        async with aiohttp.ClientSession() as session:
-            for game in SUPPORT_GAMES:
-                async with session.get(
-                    f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
-                ) as resp:
-                    if resp.status != 200:
-                        logger.error(f"Failed to fetch codes for {game}, status={resp.status}")
-                        continue
+        for game in SUPPORT_GAMES:
+            async with session.get(
+                f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
+            ) as resp:
+                if resp.status != 200:
+                    logger.error(f"Failed to fetch codes for {game}, status={resp.status}")
+                    continue
 
-                    data = await resp.json()
-                    result[game].extend(code["code"] for code in data["codes"])
+                data = await resp.json()
+                result[game].extend(code["code"] for code in data["codes"])
 
         return result
 

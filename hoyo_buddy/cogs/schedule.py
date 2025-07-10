@@ -147,7 +147,7 @@ class Schedule(commands.Cog):
             return
 
         sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json")
-        game_codes = await AutoRedeem.get_codes()
+        game_codes = await AutoRedeem.get_codes(self.bot.session)
 
         for game, codes in game_codes.items():
             if game not in CODE_CHANNEL_IDS:

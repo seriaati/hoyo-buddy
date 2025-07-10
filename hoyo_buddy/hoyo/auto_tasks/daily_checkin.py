@@ -12,22 +12,21 @@ from hoyo_buddy.constants import CONCURRENT_TASK_NUM, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db import HoyoAccount, User
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.enums import Locale
-from hoyo_buddy.utils import error_handler, get_now, sleep
+from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
+from hoyo_buddy.utils import capture_exception, error_handler, get_now, sleep
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
     from hoyo_buddy.enums import Game
 
 
-class DailyCheckin:
+class DailyCheckin(AutoTaskMixin):
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _count: ClassVar[int]
-    _bot: ClassVar[HoyoBuddy]
     _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy, *, game: Game | None = None) -> None:
+    async def execute(cls, *, game: Game | None = None) -> None:
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -37,12 +36,9 @@ class DailyCheckin:
 
             try:
                 cls._count = 0
-                cls._bot = bot
                 cls._error_counts = defaultdict(int)
 
-                queue = await cls._bot.build_auto_task_queue(
-                    "checkin", games=[game] if game else None
-                )
+                queue = await cls.build_auto_task_queue("checkin", games=[game] if game else None)
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}, {game=}")
                     return
@@ -58,7 +54,7 @@ class DailyCheckin:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
-                bot.capture_exception(e)
+                capture_exception(e)
             else:
                 logger.info(f"{cls.__name__} finished, count={cls._count}")
                 logger.info(
@@ -88,7 +84,7 @@ class DailyCheckin:
                         )
                     else:
                         cls._error_counts[account.id] += 1
-                        cls._bot.capture_exception(e)
+                        capture_exception(e)
                         await queue.put(account)
             else:
                 cls._count += 1

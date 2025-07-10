@@ -4,40 +4,33 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar
 
-import discord
+import aiohttp
 import genshin
 from loguru import logger
-from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import (
-    CODE_CHANNEL_IDS,
-    CONCURRENT_TASK_NUM,
-    HB_GAME_TO_GPY_GAME,
-    MAX_PROXY_ERROR_NUM,
-)
-from hoyo_buddy.db import HoyoAccount, JSONFile
+from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import convert_code_to_redeem_url, error_handler, get_now
+from hoyo_buddy.utils import capture_exception, error_handler, get_now
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 
 
 SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 
 
-class AutoRedeem:
+class AutoRedeem(AutoTaskMixin):
     _count: ClassVar[int]
-    _bot: ClassVar[HoyoBuddy]
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
     _error_counts: ClassVar[defaultdict[int, int]]
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy, *, skip_redeemed: bool = True) -> None:
+    async def execute(cls, *, skip_redeemed: bool = True) -> None:
         """Redeem codes for accounts that have auto redeem enabled."""
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
@@ -48,16 +41,12 @@ class AutoRedeem:
 
             try:
                 cls._count = 0
-                cls._bot = bot
                 cls._error_counts = defaultdict(int)
 
-                game_codes = {game_: await cls._get_codes(game_) for game_ in SUPPORT_GAMES}
+                game_codes = await cls.get_codes()
                 logger.debug(f"Game codes: {game_codes}")
 
-                if not cls._bot.config.is_dev:
-                    asyncio.create_task(cls._send_codes_to_channels(bot, game_codes))
-
-                queue = await cls._bot.build_auto_task_queue(
+                queue = await cls.build_auto_task_queue(
                     "redeem", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
@@ -77,65 +66,28 @@ class AutoRedeem:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
-                bot.capture_exception(e)
+                capture_exception(e)
             else:
                 logger.info(f"{cls.__name__} completed, count={cls._count}")
                 logger.info(f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f}s")
 
-    @classmethod
-    async def _send_codes_to_channels(
-        cls, bot: HoyoBuddy, game_codes: dict[Game, list[str]]
-    ) -> None:
-        guild = await bot.get_or_fetch_guild()
-        if guild is None:
-            logger.warning(f"{cls.__name__} cannot get guild, skipping code sending")
-            return
+    @staticmethod
+    async def get_codes() -> dict[Game, list[str]]:
+        result: dict[Game, list[str]] = defaultdict(list)
 
-        sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json")
+        async with aiohttp.ClientSession() as session:
+            for game in SUPPORT_GAMES:
+                async with session.get(
+                    f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
+                ) as resp:
+                    if resp.status != 200:
+                        logger.error(f"Failed to fetch codes for {game}, status={resp.status}")
+                        continue
 
-        for game, codes in game_codes.items():
-            if game not in CODE_CHANNEL_IDS:
-                continue
+                    data = await resp.json()
+                    result[game].extend(code["code"] for code in data["codes"])
 
-            channel = guild.get_channel(CODE_CHANNEL_IDS[game])
-            if not isinstance(channel, discord.TextChannel):
-                continue
-
-            game_sent_codes = sent_codes.get(HB_GAME_TO_GPY_GAME[game].value, [])
-            codes_to_send: list[str] = []
-            for code in codes:
-                if code in game_sent_codes:
-                    continue
-
-                codes_to_send.append(code)
-                game_sent_codes.append(code)
-
-            if codes_to_send:
-                codes_to_send = [
-                    convert_code_to_redeem_url(code, game=game) for code in codes_to_send
-                ]
-                try:
-                    message = await channel.send(create_bullet_list(codes_to_send))
-                except Exception as e:
-                    bot.capture_exception(e)
-                    continue
-                await message.publish()
-
-            sent_codes[HB_GAME_TO_GPY_GAME[game].value] = list(set(game_sent_codes))
-
-        await JSONFile.write("sent_codes.json", sent_codes)
-
-    @classmethod
-    async def _get_codes(cls, game: Game) -> list[str]:
-        async with cls._bot.session.get(
-            f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
-        ) as resp:
-            if resp.status != 200:
-                logger.error(f"Failed to fetch codes for {game}, status={resp.status}")
-                return []
-
-            data = await resp.json()
-            return [code["code"] for code in data["codes"]]
+        return result
 
     @classmethod
     async def _redeem_code_task(
@@ -171,7 +123,7 @@ class AutoRedeem:
                         )
                     else:
                         cls._error_counts[account.id] += 1
-                        cls._bot.capture_exception(e)
+                        capture_exception(e)
                         await queue.put(account)
             else:
                 logger.debug(f"Setting last time for {account}, now={get_now()}")

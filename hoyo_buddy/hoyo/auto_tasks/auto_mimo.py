@@ -14,8 +14,10 @@ from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import (
+    capture_exception,
     convert_code_to_redeem_url,
     error_handler,
     get_mimo_task_str,
@@ -24,15 +26,13 @@ from hoyo_buddy.utils import (
 )
 
 if TYPE_CHECKING:
-    from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
 
 SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
 
-class AutoMimo:
-    _bot: ClassVar[HoyoBuddy]
+class AutoMimoMixin(AutoTaskMixin):
     _mimo_game_data: ClassVar[dict[Game, tuple[int, int]]]
     _down_games: ClassVar[set[Game]]
     _error_counts: ClassVar[defaultdict[int, int]]
@@ -96,7 +96,7 @@ class AutoMimo:
                         )
                     else:
                         cls._error_counts[account.id] += 1
-                        cls._bot.capture_exception(e)
+                        capture_exception(e)
                         await queue.put(account)
             else:
                 # Set last completion time
@@ -309,11 +309,11 @@ class AutoMimo:
             return embed
 
 
-class AutoMimoTask(AutoMimo):
+class AutoMimoTask(AutoMimoMixin):
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:
+    async def execute(cls) -> None:
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -322,13 +322,12 @@ class AutoMimoTask(AutoMimo):
 
         async with cls._lock:
             try:
-                cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
                 # Auto task
-                queue = await cls._bot.build_auto_task_queue(
+                queue = await cls.build_auto_task_queue(
                     "mimo_task", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
@@ -346,18 +345,18 @@ class AutoMimoTask(AutoMimo):
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
-                bot.capture_exception(e)
+                capture_exception(e)
             else:
                 logger.info(
                     f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
                 )
 
 
-class AutoMimoBuy(AutoMimo):
+class AutoMimoBuy(AutoMimoMixin):
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:
+    async def execute(cls) -> None:
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -366,13 +365,12 @@ class AutoMimoBuy(AutoMimo):
 
         async with cls._lock:
             try:
-                cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
                 # Auto buy
-                queue = await cls._bot.build_auto_task_queue(
+                queue = await cls.build_auto_task_queue(
                     "mimo_buy", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
@@ -390,18 +388,18 @@ class AutoMimoBuy(AutoMimo):
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
-                bot.capture_exception(e)
+                capture_exception(e)
             else:
                 logger.info(
                     f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"
                 )
 
 
-class AutoMimoDraw(AutoMimo):
+class AutoMimoDraw(AutoMimoMixin):
     _lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     @classmethod
-    async def execute(cls, bot: HoyoBuddy) -> None:
+    async def execute(cls) -> None:
         if cls._lock.locked():
             logger.debug(f"{cls.__name__} is already running")
             return
@@ -410,13 +408,12 @@ class AutoMimoDraw(AutoMimo):
 
         async with cls._lock:
             try:
-                cls._bot = bot
                 cls._mimo_game_data = {}
                 cls._down_games = set()
                 cls._error_counts = defaultdict(int)
 
                 # Auto draw
-                queue = await cls._bot.build_auto_task_queue(
+                queue = await cls.build_auto_task_queue(
                     "mimo_draw", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
@@ -434,7 +431,7 @@ class AutoMimoDraw(AutoMimo):
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
-                bot.capture_exception(e)
+                capture_exception(e)
             else:
                 logger.info(
                     f"{cls.__name__} took {asyncio.get_event_loop().time() - start:.2f} seconds"

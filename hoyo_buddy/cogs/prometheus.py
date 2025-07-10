@@ -68,7 +68,7 @@ class PrometheusCog(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
-        if not self.bot.config.prometheus:
+        if self.bot.config.prometheus_port is None:
             return
 
         self.set_metrics_loop.start()
@@ -76,7 +76,7 @@ class PrometheusCog(commands.Cog):
         self.set_metrics_loop_accounts.start()
 
     async def cog_unload(self) -> None:
-        if not self.bot.config.prometheus:
+        if self.bot.config.prometheus_port is None:
             return
 
         self.set_metrics_loop.cancel()

@@ -157,21 +157,15 @@ class Schedule(commands.Cog):
             if not isinstance(channel, discord.TextChannel):
                 continue
 
-            game_sent_codes = sent_codes.get(HB_GAME_TO_GPY_GAME[game].value, [])
-            codes_to_send: list[str] = []
-            for code in codes:
-                if code in game_sent_codes:
-                    continue
-
-                codes_to_send.append(code)
-                game_sent_codes.append(code)
+            game_sent_codes = set(sent_codes.get(HB_GAME_TO_GPY_GAME[game].value, []))
+            codes_to_send = [c for c in codes if c not in game_sent_codes]
 
             if codes_to_send:
-                codes_to_send = [
+                codes_to_send_formatted = [
                     convert_code_to_redeem_url(code, game=game) for code in codes_to_send
                 ]
                 try:
-                    message = await channel.send(create_bullet_list(codes_to_send))
+                    message = await channel.send(create_bullet_list(codes_to_send_formatted))
                 except Exception as e:
                     self.bot.capture_exception(e)
                     continue

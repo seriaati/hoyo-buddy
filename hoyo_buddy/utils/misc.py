@@ -142,6 +142,7 @@ def should_ignore_error(e: Exception) -> bool:
         commands.TooManyArguments,
         commands.CheckFailure,
         commands.MissingRequiredArgument,
+        commands.BadLiteralArgument,
     )
     if isinstance(e, errors_to_ignore):
         return True

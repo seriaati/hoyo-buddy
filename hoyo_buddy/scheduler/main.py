@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+from typing import TYPE_CHECKING
 
-import aiohttp
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
@@ -11,6 +11,9 @@ from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, Auto
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
 from hoyo_buddy.utils import get_now
+
+if TYPE_CHECKING:
+    import aiohttp
 
 
 class Scheduler:
@@ -46,16 +49,3 @@ class Scheduler:
 
     def shutdown(self) -> None:
         self.scheduler.shutdown()
-
-
-async def main() -> None:
-    async with aiohttp.ClientSession() as session:
-        scheduler = Scheduler(session)
-        try:
-            scheduler.start()
-        except KeyboardInterrupt:
-            scheduler.shutdown()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

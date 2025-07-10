@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.draw.mixins import HSRChallengeUIDMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
 
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
 
-class PureFictionCard:
+class PureFictionCard(HSRChallengeUIDMixin):
     def __init__(
         self,
         data: StarRailPureFiction,
@@ -33,19 +34,6 @@ class PureFictionCard:
         self._season = season
         self._locale = locale
         self._uid = uid
-
-    def _write_uid(self) -> None:
-        if self._uid is None:
-            return
-
-        self._drawer.write(
-            f"UID: {self._uid}",
-            size=18,
-            position=(self._im.width - 29, 20),
-            style="bold",
-            color=WHITE,
-            anchor="rt",
-        )
 
     def _write_title(self) -> None:
         self._drawer.write(

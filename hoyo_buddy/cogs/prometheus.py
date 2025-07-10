@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+import prometheus_client
 import psutil
 from discord import Guild, Interaction, InteractionType, app_commands
 from discord.ext import commands, tasks
@@ -68,20 +69,20 @@ class PrometheusCog(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
-        if not self.bot.config.prometheus:
-            return
+        await self.start_prometheus_server()
 
         self.set_metrics_loop.start()
         self.set_metrics_loop_user_installs.start()
         self.set_metrics_loop_accounts.start()
 
     async def cog_unload(self) -> None:
-        if not self.bot.config.prometheus:
-            return
-
         self.set_metrics_loop.cancel()
         self.set_metrics_loop_user_installs.cancel()
         self.set_metrics_loop_accounts.cancel()
+
+    async def start_prometheus_server(self) -> None:
+        prometheus_client.start_http_server(9637)
+        logger.info("Prometheus server started on port 9637")
 
     @tasks.loop(seconds=5)
     async def set_metrics_loop(self) -> None:

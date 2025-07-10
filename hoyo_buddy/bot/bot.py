@@ -13,7 +13,6 @@ import asyncpg_listen
 import discord
 import enka
 import genshin
-import prometheus_client
 import psutil
 from discord import app_commands
 from discord.ext import commands
@@ -157,10 +156,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.activity = discord.CustomActivity(f"{self.version} | hb.seria.moe")
         await self.change_presence(activity=self.activity)
 
-    async def start_prometheus_server(self) -> None:
-        prometheus_client.start_http_server(9637)
-        logger.info("Prometheus server started on port 9637")
-
     async def start_process_pool(self) -> None:
         """Starts the process pool and initializes the translators."""
         if self.config.env == "dev":
@@ -208,9 +203,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task = asyncio.create_task(
             listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
         )
-
-        if self.config.prometheus:
-            await self.start_prometheus_server()
 
         await CARD_DATA.load()
         self.loop.set_exception_handler(self.asyncio_erorr_handler)

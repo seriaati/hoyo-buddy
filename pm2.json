@@ -5,14 +5,14 @@
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus_port 9637 --novelai --deployment main"
+            "args": "--sentry --schedule --search --prometheus --novelai --deployment main"
         },
         {
             "name": "hb-sub",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus_port 9638 --novelai --deployment sub"
+            "args": "--sentry --schedule --search --novelai --deployment sub"
         },
         {
             "name": "hb-app",

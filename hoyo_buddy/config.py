@@ -34,7 +34,7 @@ class Config(BaseSettings):
     search: bool = False
     sentry: bool = False
     schedule: bool = False
-    prometheus_port: int | None = None
+    prometheus: bool = False
     novelai: bool = False
     deployment: Deployment = "main"
 
@@ -52,7 +52,7 @@ class Config(BaseSettings):
             "search": self.search,
             "sentry": self.sentry,
             "schedule": self.schedule,
-            "prometheus_port": self.prometheus_port,
+            "prometheus": self.prometheus,
             "novelai": self.novelai,
             "deployment": self.deployment,
         }

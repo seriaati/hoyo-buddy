@@ -76,9 +76,6 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
-        if not self.bot.config.schedule:
-            return
-
         if self.bot.config.deployment == "main":
             self.run_send_embeds.start()
             self.run_farm_checks.start()
@@ -90,9 +87,6 @@ class Schedule(commands.Cog):
         self.update_assets.start()
 
     async def cog_unload(self) -> None:
-        if not self.bot.config.schedule:
-            return
-
         if self.bot.config.deployment == "main":
             self.run_send_embeds.cancel()
             self.run_farm_checks.cancel()

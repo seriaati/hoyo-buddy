@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import asyncio
 import datetime
 from typing import TYPE_CHECKING
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
@@ -15,23 +13,49 @@ from hoyo_buddy.utils import get_now
 if TYPE_CHECKING:
     import aiohttp
 
+INTERVAL_MIN = 10
+
 
 class Scheduler:
     def __init__(self, session: aiohttp.ClientSession) -> None:
-        self.scheduler = AsyncIOScheduler()
-        self.scheduler.add_job(self.run_auto_tasks, "interval", minutes=10)
+        self.scheduler = AsyncIOScheduler(timezone="UTC")
         self.session = session
 
-    @staticmethod
-    async def reset_mimo_all_claimed_time() -> None:
-        utc_now = get_now(datetime.UTC)
-        await (
-            HoyoAccount.filter(mimo_all_claimed_time__isnull=False)
-            .exclude(mimo_all_claimed_time__day=utc_now.day)
-            .update(mimo_all_claimed_time=None)
+    def add_jobs(self) -> None:
+        self.scheduler.add_job(
+            AutoMimoTask.execute,
+            "interval",
+            minutes=INTERVAL_MIN,
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            AutoMimoBuy.execute,
+            "interval",
+            minutes=INTERVAL_MIN,
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            AutoMimoDraw.execute,
+            "interval",
+            minutes=INTERVAL_MIN,
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            AutoRedeem.execute,
+            "interval",
+            args=(self.session,),
+            minutes=INTERVAL_MIN,
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            DailyCheckin.execute,
+            "interval",
+            minutes=INTERVAL_MIN,
+            next_run_time=get_now(datetime.UTC),
         )
 
     def start(self) -> None:
+        self.add_jobs()
         self.scheduler.start()
 
     def shutdown(self) -> None:

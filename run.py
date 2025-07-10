@@ -7,7 +7,6 @@ import aiohttp
 import aiohttp.http_websocket
 import asyncpg
 import discord
-from fake_useragent import UserAgent
 
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.config import CONFIG
@@ -15,7 +14,10 @@ from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point, wrap_task_factory
 
-ua = UserAgent()
+import tracemalloc
+tracemalloc.start()
+
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 discord.VoiceClient.warn_nacl = False
 
 
@@ -24,7 +26,7 @@ async def main() -> None:
 
     async with (
         asyncpg.create_pool(CONFIG.db_url) as pool,
-        aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
+        aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session,
         Database(),
         translator,
         HoyoBuddy(session=session, pool=pool, config=CONFIG) as bot,

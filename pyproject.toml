@@ -8,7 +8,6 @@ dependencies = [
   "asyncpg-listen>=0.0.6",
   "cachetools>=5.5.0",
   "discord-py[speed]>=2.5.0",
-  "fake-useragent>=1.5.1",
   "hakushin-py>=0.4.4",
   "jishaku>=2.5.2",
   "loguru>=0.7.2",

@@ -78,25 +78,29 @@ class Schedule(commands.Cog):
         if not self.bot.config.schedule:
             return
 
-        self.run_send_embeds.start()
-        self.run_farm_checks.start()
+        if self.bot.config.deployment == "main":
+            self.run_send_embeds.start()
+            self.run_farm_checks.start()
+            self.run_notes_check.start()
+            self.run_web_events_notify.start()
+            self.send_codes_to_channels.start()
+            self.update_supporter_ids.start()
+
         self.update_assets.start()
-        self.run_notes_check.start()
-        self.run_web_events_notify.start()
-        self.send_codes_to_channels.start()
-        self.update_supporter_ids.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
             return
 
-        self.run_send_embeds.cancel()
-        self.run_farm_checks.cancel()
+        if self.bot.config.deployment == "main":
+            self.run_send_embeds.cancel()
+            self.run_farm_checks.cancel()
+            self.run_notes_check.cancel()
+            self.run_web_events_notify.cancel()
+            self.send_codes_to_channels.cancel()
+            self.update_supporter_ids.cancel()
+
         self.update_assets.cancel()
-        self.run_notes_check.cancel()
-        self.run_web_events_notify.cancel()
-        self.send_codes_to_channels.cancel()
-        self.update_supporter_ids.cancel()
 
     @commands.is_owner()
     @commands.command(name="run-task", aliases=["rt"])

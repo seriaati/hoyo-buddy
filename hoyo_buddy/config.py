@@ -36,7 +36,6 @@ class Config(BaseSettings):
     schedule: bool = False
     prometheus: bool = False
     novelai: bool = False
-    web_server: bool = False
     deployment: Deployment = "main"
 
     model_config = SettingsConfigDict(
@@ -55,7 +54,6 @@ class Config(BaseSettings):
             "schedule": self.schedule,
             "prometheus": self.prometheus,
             "novelai": self.novelai,
-            "web_server": self.web_server,
             "deployment": self.deployment,
         }
 

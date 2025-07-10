@@ -14,7 +14,6 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point, wrap_task_factory
-from hoyo_buddy.web_server.server import GeetestWebServer
 
 ua = UserAgent()
 discord.VoiceClient.warn_nacl = False
@@ -33,10 +32,6 @@ async def main() -> None:
         with contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ):
-            if CONFIG.web_server:
-                geetest_server = GeetestWebServer()
-                asyncio.create_task(geetest_server.run())
-
             await bot.start(CONFIG.discord_token)
 
 

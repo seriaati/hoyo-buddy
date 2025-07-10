@@ -5,14 +5,14 @@
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai --web_server --deployment main"
+            "args": "--sentry --schedule --search --prometheus --novelai --deployment main"
         },
         {
             "name": "hb-sub",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai --web_server --deployment sub"
+            "args": "--sentry --schedule --search --prometheus --novelai --deployment sub"
         },
         {
             "name": "hb-app",
@@ -24,6 +24,13 @@
         {
             "name": "hb-scheduler",
             "script": "./run_scheduler.py",
+            "interpreter": "./.venv/bin/python",
+            "interpreter_args": "-OO",
+            "args": "--sentry"
+        },
+        {
+            "name": "hb-web-server",
+            "script": "./run_web_server.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
             "args": "--sentry"

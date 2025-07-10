@@ -150,7 +150,7 @@ class Schedule(commands.Cog):
             logger.warning("Cannot get guild, skipping code sending")
             return
 
-        sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json")
+        sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json", default={})
         game_codes = await AutoRedeem.get_codes(self.bot.session)
 
         for game, codes in game_codes.items():

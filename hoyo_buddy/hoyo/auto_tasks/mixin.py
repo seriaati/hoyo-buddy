@@ -74,7 +74,7 @@ class AutoTaskMixin:
             )
 
         # Supporters have priority
-        supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json")
+        supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
         logger.debug(f"Supporter IDs: {supporter_ids}")
         query_set = (
             models.HoyoAccount.filter(query)

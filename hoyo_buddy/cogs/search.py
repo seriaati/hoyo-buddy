@@ -22,6 +22,7 @@ from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
+from ..types import Interaction
 from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.hsr import search as hsr_search
@@ -32,7 +33,6 @@ if TYPE_CHECKING:
     from enum import StrEnum
 
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Search(commands.Cog):

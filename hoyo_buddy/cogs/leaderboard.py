@@ -20,15 +20,14 @@ from hoyo_buddy.exceptions import (
     NoAccountFoundError,
 )
 from hoyo_buddy.hoyo.clients.ambr import ItemCategory
-from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
+from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.types import User  # noqa: TC001
+from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.types import Interaction
 
 GUILD_ONLY_MAX_MEMBER_COUNT = 100
 GUILD_ONLY_MAX_UID_COUNT = 30

@@ -12,10 +12,10 @@ from hoyo_buddy.db.utils import show_anniversary_dismissible
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.types import Interaction
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
-    from hoyo_buddy.types import Interaction
 
 
 class Build(commands.GroupCog):

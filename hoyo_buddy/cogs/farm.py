@@ -13,13 +13,13 @@ from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
 from ..commands.farm import Action, FarmCommand
 from ..enums import Game, Locale
 from ..hoyo.clients.ambr import ItemCategory
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
+from ..hoyo.transformers import HoyoAccountTransformer
 from ..l10n import LocaleStr
+from ..types import Interaction
 from ..ui.hoyo.genshin.farm import FarmView
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Farm(

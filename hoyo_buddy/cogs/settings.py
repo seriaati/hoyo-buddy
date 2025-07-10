@@ -11,11 +11,11 @@ from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.utils import get_locale, show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 
+from ..types import Interaction
 from ..ui.settings import SettingsUI
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Settings(commands.Cog):

@@ -4,12 +4,13 @@ import asyncio
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
-import genshin  # noqa: TC002
+import genshin
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
 
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
+from hoyo_buddy.config import Deployment
 from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
@@ -34,7 +35,10 @@ class Admin(commands.Cog):
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
-    async def sync_command(self, ctx: commands.Context) -> Any:
+    async def sync_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Syncing commands...")
         try:
             synced_commands = await self.bot.tree.sync()
@@ -49,19 +53,32 @@ class Admin(commands.Cog):
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="reload-translator", aliases=["rtrans"])
-    async def fetch_source_strings_command(self, ctx: commands.Context) -> Any:
+    async def fetch_source_strings_command(
+        self, ctx: commands.Context, deployment: Deployment
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await translator.load(force=True)
         await self.bot.start_process_pool()
         await ctx.send(content="Reloaded translator.")
 
     @commands.command(name="update-assets", aliases=["ua"])
-    async def update_assets_command(self, ctx: commands.Context) -> Any:
+    async def update_assets_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Updating assets...")
         await self.bot.update_assets()
         await message.edit(content="Updated assets.")
 
     @commands.command(name="update-search-autocomplete", aliases=["usa"])
-    async def update_search_autocomplete_command(self, ctx: commands.Context) -> Any:
+    async def update_search_autocomplete_command(
+        self, ctx: commands.Context, deployment: Deployment
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Updating search autocomplete...")
         search_cog = self.bot.get_cog("Search")
 
@@ -70,7 +87,12 @@ class Admin(commands.Cog):
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
-    async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
+    async def add_codes_command(
+        self, ctx: commands.Context, deployment: Deployment, game: genshin.Game, codes: str
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Adding codes...")
         for code in codes.split(","):
             try:
@@ -82,7 +104,12 @@ class Admin(commands.Cog):
         await message.edit(content="Added codes.")
 
     @commands.command(name="get-accounts", aliases=["ga"])
-    async def get_accounts_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+    async def get_accounts_command(
+        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         user_id = user_id or ctx.author.id
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
@@ -98,7 +125,12 @@ class Admin(commands.Cog):
         await ctx.send(msg)
 
     @commands.command(name="get-cookies", aliases=["gc"])
-    async def get_cookies_command(self, ctx: commands.Context, account_id: int) -> Any:
+    async def get_cookies_command(
+        self, ctx: commands.Context, deployment: Deployment, account_id: int
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return None
+
         account = await HoyoAccount.get_or_none(id=account_id)
         if account is None:
             return await ctx.send("Account not found.")
@@ -111,7 +143,10 @@ class Admin(commands.Cog):
         return None
 
     @commands.command(name="stats")
-    async def stats_command(self, ctx: commands.Context) -> Any:
+    async def stats_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         # Account metrics
         accs = await HoyoAccount.all()
         acc_region_count: defaultdict[genshin.Region, int] = defaultdict(int)
@@ -147,7 +182,10 @@ class Admin(commands.Cog):
         await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
 
     @commands.command(name="set-card-settings-game")
-    async def set_card_settings_game(self, ctx: commands.Context) -> Any:
+    async def set_card_settings_game(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await ctx.send("Starting...")
 
         settings = await CardSettings.all()
@@ -161,7 +199,10 @@ class Admin(commands.Cog):
         await ctx.send("Done.")
 
     @commands.command(name="fill-lb")
-    async def fill_lb_command(self, ctx: commands.Context) -> Any:
+    async def fill_lb_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await ctx.send("Filling leaderboard...")
 
         cmd = LeaderboardCommand()
@@ -194,13 +235,21 @@ class Admin(commands.Cog):
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(
-        self, ctx: commands.Context, user_id: int | None = None
+        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
     ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await User.filter(id=user_id or ctx.author.id).update(dismissibles=[])
         await ctx.send("Done.")
 
     @commands.command(name="dismissible-progress", aliases=["dp"])
-    async def dismissible_progress_command(self, ctx: commands.Context) -> Any:
+    async def dismissible_progress_command(
+        self, ctx: commands.Context, deployment: Deployment
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         users = await User.all()
         dismissibles: defaultdict[str, int] = defaultdict(int)
         for user in users:
@@ -211,17 +260,28 @@ class Admin(commands.Cog):
         await ctx.send(f"Dismissibles:\n```{msg}```")
 
     @commands.command(name="update-version", aliases=["uv"])
-    async def update_version_command(self, ctx: commands.Context) -> Any:
+    async def update_version_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await self.bot.update_version_activity()
         await ctx.send("Done.")
 
     @commands.command(name="rcard")
-    async def reload_card_data_command(self, ctx: commands.Context) -> Any:
+    async def reload_card_data_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         await CARD_DATA.load()
         await ctx.send("Card data reloaded.")
 
     @commands.command(name="get-settings", aliases=["gs"])
-    async def get_settings_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+    async def get_settings_command(
+        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
+    ) -> Any:
+        if deployment != self.bot.deployment:
+            return None
+
         user_id = user_id or ctx.author.id
         settings = await Settings.get_or_none(user_id=user_id)
         if settings is None:
@@ -231,7 +291,10 @@ class Admin(commands.Cog):
         await ctx.send(msg)
 
     @commands.command(name="enka-hsr-down", aliases=["ehd"])
-    async def enka_hsr_down_command(self, ctx: commands.Context) -> Any:
+    async def enka_hsr_down_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if deployment != self.bot.deployment:
+            return
+
         self.bot.enka_hsr_down = not self.bot.enka_hsr_down
         status = "down" if self.bot.enka_hsr_down else "up"
         await ctx.send(f"Enka HSR is now marked as {status}.")

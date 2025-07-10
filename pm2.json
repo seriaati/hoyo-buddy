@@ -1,15 +1,29 @@
 {
     "apps": [
         {
-            "name": "hoyo-buddy",
+            "name": "hb-main",
             "script": "./run.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai --web_server"
+            "args": "--sentry --schedule --search --prometheus --novelai --web_server --deployment main"
+        },
+        {
+            "name": "hb-sub",
+            "script": "./run.py",
+            "interpreter": "./.venv/bin/python",
+            "interpreter_args": "-OO",
+            "args": "--sentry --schedule --search --prometheus --novelai --web_server --deployment sub"
         },
         {
             "name": "hb-app",
             "script": "./run_web_app.py",
+            "interpreter": "./.venv/bin/python",
+            "interpreter_args": "-OO",
+            "args": "--sentry"
+        },
+        {
+            "name": "hb-scheduler",
+            "script": "./run_scheduler.py",
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
             "args": "--sentry"

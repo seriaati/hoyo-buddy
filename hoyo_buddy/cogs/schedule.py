@@ -4,20 +4,30 @@ import asyncio
 import datetime
 from typing import TYPE_CHECKING, Any
 
+import discord
 from discord import ui
 from discord.ext import commands, tasks
+from loguru import logger
+from seria.utils import create_bullet_list
 
-from hoyo_buddy.db import HoyoAccount
+from hoyo_buddy.config import Deployment
+from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
-from ..constants import GI_UID_PREFIXES, UTC_8
+from ..constants import (
+    CODE_CHANNEL_IDS,
+    GI_UID_PREFIXES,
+    HB_GAME_TO_GPY_GAME,
+    SUPPORTER_ROLE_ID,
+    UTC_8,
+)
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
 from ..hoyo.auto_tasks.notes_check import NotesChecker
-from ..utils import get_now
+from ..utils import convert_code_to_redeem_url, get_now
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -69,59 +79,37 @@ class Schedule(commands.Cog):
         if not self.bot.config.schedule:
             return
 
-        self.run_auto_tasks.start()
-        self.run_send_embeds.start()
-        self.run_farm_checks.start()
+        if self.bot.config.deployment == "main":
+            self.run_send_embeds.start()
+            self.run_farm_checks.start()
+            self.run_notes_check.start()
+            self.run_web_events_notify.start()
+            self.send_codes_to_channels.start()
+            self.update_supporter_ids.start()
+
         self.update_assets.start()
-        self.run_notes_check.start()
-        self.run_web_events_notify.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
             return
 
-        self.run_auto_tasks.cancel()
-        self.run_send_embeds.cancel()
-        self.run_farm_checks.cancel()
+        if self.bot.config.deployment == "main":
+            self.run_send_embeds.cancel()
+            self.run_farm_checks.cancel()
+            self.run_notes_check.cancel()
+            self.run_web_events_notify.cancel()
+            self.send_codes_to_channels.cancel()
+            self.update_supporter_ids.cancel()
+
         self.update_assets.cancel()
-        self.run_notes_check.cancel()
-        self.run_web_events_notify.cancel()
-
-    async def _reset_mimo_all_claimed_time(self) -> None:
-        utc_now = get_now(datetime.UTC)
-        await (
-            HoyoAccount.filter(mimo_all_claimed_time__isnull=False)
-            .exclude(mimo_all_claimed_time__day=utc_now.day)
-            .update(mimo_all_claimed_time=None)
-        )
-
-    @commands.is_owner()
-    @commands.command(name="task-status", aliases=["ts"])
-    async def task_status(self, ctx: commands.Context) -> None:
-        tasks = (AutoRedeem, AutoMimoTask, AutoMimoBuy, AutoMimoDraw, DailyCheckin, EmbedSender)
-        task_statuses = {task.__name__: task._lock.locked() for task in tasks}
-        msg = "\n".join(f"{task} running: {status}" for task, status in task_statuses.items())
-        msg += f"\nFarmChecker running: {self.bot.farm_check_running}"
-        await ctx.send(msg)
 
     @commands.is_owner()
     @commands.command(name="run-task", aliases=["rt"])
-    async def run_task(self, ctx: commands.Context) -> None:
+    async def run_task(self, ctx: commands.Context, deployment: Deployment) -> None:
+        if deployment != self.bot.deployment:
+            return
+
         await ctx.send("Select a task to run", view=RunTaskView())
-
-    @tasks.loop(minutes=10)
-    async def run_auto_tasks(self) -> None:
-        # Mimo
-        await self._reset_mimo_all_claimed_time()
-        asyncio.create_task(AutoMimoTask.execute(self.bot))
-        asyncio.create_task(AutoMimoBuy.execute(self.bot))
-        asyncio.create_task(AutoMimoDraw.execute(self.bot))
-
-        # Redeem
-        asyncio.create_task(AutoRedeem.execute(self.bot))
-
-        # Check-in
-        asyncio.create_task(DailyCheckin.execute(self.bot))
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
     async def run_farm_checks(self) -> None:
@@ -156,12 +144,95 @@ class Schedule(commands.Cog):
     async def run_web_events_notify(self) -> None:
         await WebEventsNotify.execute(self.bot)
 
-    @run_auto_tasks.before_loop
+    @tasks.loop(minutes=30)
+    async def send_codes_to_channels(self) -> None:
+        if self.bot.config.is_dev:
+            return
+
+        guild = await self.bot.get_or_fetch_guild()
+        if guild is None:
+            logger.warning("Cannot get guild, skipping code sending")
+            return
+
+        sent_codes: dict[str, list[str]] = await JSONFile.read("sent_codes.json", default={})
+        game_codes = await AutoRedeem.get_codes(self.bot.session)
+
+        for game, codes in game_codes.items():
+            if game not in CODE_CHANNEL_IDS:
+                continue
+
+            channel = guild.get_channel(CODE_CHANNEL_IDS[game])
+            if not isinstance(channel, discord.TextChannel):
+                continue
+
+            game_sent_codes = set(sent_codes.get(HB_GAME_TO_GPY_GAME[game].value, []))
+            codes_to_send = [c for c in codes if c not in game_sent_codes]
+
+            if codes_to_send:
+                codes_to_send_formatted = [
+                    convert_code_to_redeem_url(code, game=game) for code in codes_to_send
+                ]
+                try:
+                    message = await channel.send(create_bullet_list(codes_to_send_formatted))
+                except Exception as e:
+                    self.bot.capture_exception(e)
+                    continue
+                await message.publish()
+
+            game_sent_codes.update(codes_to_send)
+            sent_codes[HB_GAME_TO_GPY_GAME[game].value] = list(game_sent_codes)
+
+        await JSONFile.write("sent_codes.json", sent_codes)
+
+    @commands.is_owner()
+    @commands.command(name="send-codes", aliases=["sc"])
+    async def send_codes(self, ctx: commands.Context, deployment: Deployment) -> None:
+        """Send codes to the configured channels."""
+        if deployment != self.bot.deployment:
+            return
+
+        message = await ctx.send("Sending codes to channels...")
+        await self.send_codes_to_channels()
+        await message.edit(content="Codes sent.")
+
+    @tasks.loop(hours=1)
+    async def update_supporter_ids(self) -> None:
+        guild = await self.bot.get_or_fetch_guild()
+        if guild is None:
+            return
+
+        if not guild.chunked:
+            await guild.chunk()
+
+        role_id = SUPPORTER_ROLE_ID
+        supporter_role = discord.utils.get(guild.roles, id=role_id)
+        if supporter_role is None:
+            logger.error(f"Failed to find supporter role with ID {role_id}")
+            return
+
+        supporter_ids = [member.id for member in supporter_role.members]
+        await JSONFile.write("supporter_ids.json", supporter_ids)
+
+    @commands.is_owner()
+    @commands.command(name="update-supporter-ids", aliases=["usi"])
+    async def update_supporter_ids_command(
+        self, ctx: commands.Context, deployment: Deployment
+    ) -> None:
+        """Update the supporter IDs from the configured guild."""
+        if deployment != self.bot.deployment:
+            return
+
+        message = await ctx.send("Updating supporter IDs...")
+        await self.update_supporter_ids()
+        await message.edit(content="Supporter IDs updated.")
+
     @run_farm_checks.before_loop
     @update_assets.before_loop
     @run_notes_check.before_loop
     @run_send_embeds.before_loop
     @run_web_events_notify.before_loop
+    @send_codes_to_channels.before_loop
+    @update_supporter_ids.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 

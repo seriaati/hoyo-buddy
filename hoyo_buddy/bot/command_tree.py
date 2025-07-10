@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Literal
 from discord import HTTPException, InteractionType, NotFound, app_commands
 
 from hoyo_buddy.db import get_locale
+from hoyo_buddy.utils import should_ignore_error
 
 from .error_handler import get_error_embed
 
@@ -54,7 +55,8 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
-        if isinstance(error, app_commands.CheckFailure):
+
+        if should_ignore_error(error):
             return
 
         # Interaction has already been acknowledged

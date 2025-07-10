@@ -19,15 +19,14 @@ from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
 from ..enums import Game, GeetestType, Platform
 from ..exceptions import CantRedeemCodeError, InvalidQueryError
-from ..hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
-from ..types import User  # noqa: TC001
+from ..hoyo.transformers import HoyoAccountTransformer
+from ..types import Interaction, User
 from ..ui.hoyo.checkin import CheckInUI
 from ..ui.hoyo.notes.view import NotesView
 from ..ui.hoyo.redeem import RedeemUI
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
-    from ..types import Interaction
 
 
 class Hoyo(commands.Cog):

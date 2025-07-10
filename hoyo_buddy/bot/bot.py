@@ -97,6 +97,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.session = session
         self.uptime = get_now()
         self.env = config.env
+        self.deployment = config.deployment
         self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
         self.owner_id = 410036441129943050
         self.pool = pool
@@ -564,6 +565,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             exception, commands.CommandNotFound | commands.TooManyArguments | commands.CheckFailure
         ):
             return None
+
+        await context.send(f"An error occurred: {exception}")
         return await super().on_command_error(context, exception)
 
     async def handle_geetest_notify(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:

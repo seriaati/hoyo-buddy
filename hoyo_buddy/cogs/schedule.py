@@ -10,6 +10,7 @@ from discord.ext import commands, tasks
 from loguru import logger
 from seria.utils import create_bullet_list
 
+from hoyo_buddy.config import Deployment
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
@@ -104,7 +105,10 @@ class Schedule(commands.Cog):
 
     @commands.is_owner()
     @commands.command(name="run-task", aliases=["rt"])
-    async def run_task(self, ctx: commands.Context) -> None:
+    async def run_task(self, ctx: commands.Context, deployment: Deployment) -> None:
+        if deployment != self.bot.deployment:
+            return
+
         await ctx.send("Select a task to run", view=RunTaskView())
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
@@ -182,8 +186,11 @@ class Schedule(commands.Cog):
 
     @commands.is_owner()
     @commands.command(name="send-codes", aliases=["sc"])
-    async def send_codes(self, ctx: commands.Context) -> None:
+    async def send_codes(self, ctx: commands.Context, deployment: Deployment) -> None:
         """Send codes to the configured channels."""
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Sending codes to channels...")
         await self.send_codes_to_channels()
         await message.edit(content="Codes sent.")
@@ -208,8 +215,13 @@ class Schedule(commands.Cog):
 
     @commands.is_owner()
     @commands.command(name="update-supporter-ids", aliases=["usi"])
-    async def update_supporter_ids_command(self, ctx: commands.Context) -> None:
+    async def update_supporter_ids_command(
+        self, ctx: commands.Context, deployment: Deployment
+    ) -> None:
         """Update the supporter IDs from the configured guild."""
+        if deployment != self.bot.deployment:
+            return
+
         message = await ctx.send("Updating supporter IDs...")
         await self.update_supporter_ids()
         await message.edit(content="Supporter IDs updated.")

@@ -3,11 +3,12 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+from functools import wraps
 import math
 import re
 import time
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 import aiohttp
 import discord
@@ -582,8 +583,7 @@ def is_hb_birthday() -> bool:
 
 
 def capture_exception(e: Exception) -> None:
-    ignore = should_ignore_error(e)
-    if ignore:
+    if should_ignore_error(e):
         return
 
     if not CONFIG.sentry:
@@ -591,3 +591,15 @@ def capture_exception(e: Exception) -> None:
     else:
         logger.warning(f"Error: {e}, capturing exception")
         sentry_sdk.capture_exception(e)
+
+
+def handle_autocomplete_errors(func: Callable) -> Callable:
+    @wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> list[discord.app_commands.Choice[str]]:
+        try:
+            return await func(*args, **kwargs)
+        except Exception as e:
+            capture_exception(e)
+            return []
+
+    return wrapper

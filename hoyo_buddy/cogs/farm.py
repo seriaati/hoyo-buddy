@@ -9,6 +9,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..commands.farm import Action, FarmCommand
 from ..enums import Game, Locale
@@ -142,18 +143,21 @@ class Farm(
     @farm_view_command.autocomplete("account")
     @farm_add_command.autocomplete("account")
     @farm_reminder_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def account_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current)
 
     @farm_remove_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def account_with_id_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return await self.bot.get_game_account_choices(i, current, show_id=True)
 
     @farm_add_command.autocomplete("query")
+    @handle_autocomplete_errors
     async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         choices = [c for c in self._get_choices(locale) if current.lower() in c.name.lower()]
@@ -161,6 +165,7 @@ class Farm(
         return choices[:25]
 
     @farm_remove_command.autocomplete("query")
+    @handle_autocomplete_errors
     async def user_query_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:

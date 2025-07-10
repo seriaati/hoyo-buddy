@@ -19,6 +19,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import Dismissible
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -223,6 +224,7 @@ class Profile(
     @profile_gi_command.autocomplete("account")
     @profile_hsr_command.autocomplete("account")
     @profile_zzz_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -258,6 +260,7 @@ class Profile(
     @profile_gi_command.autocomplete("character_id2")
     @profile_gi_command.autocomplete("character_id3")
     @profile_gi_command.autocomplete("character_id4")
+    @handle_autocomplete_errors
     async def profile_character1_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -267,6 +270,7 @@ class Profile(
     @profile_hsr_command.autocomplete("character_id2")
     @profile_hsr_command.autocomplete("character_id3")
     @profile_hsr_command.autocomplete("character_id4")
+    @handle_autocomplete_errors
     async def profile_character2_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -275,6 +279,7 @@ class Profile(
     @profile_zzz_command.autocomplete("character_id1")
     @profile_zzz_command.autocomplete("character_id2")
     @profile_zzz_command.autocomplete("character_id3")
+    @handle_autocomplete_errors
     async def profile_character3_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

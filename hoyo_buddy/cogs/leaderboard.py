@@ -25,6 +25,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
@@ -209,6 +210,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         await show_anniversary_dismissible(i)
 
     @akasha_command.autocomplete("character_id")
+    @handle_autocomplete_errors
     async def character_id_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -222,6 +224,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @akasha_command.autocomplete("category_")
+    @handle_autocomplete_errors
     async def category_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -242,6 +245,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @akasha_command.autocomplete("calculation_id")
+    @handle_autocomplete_errors
     async def calculation_id_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -274,6 +278,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @akasha_command.autocomplete("variant")
+    @handle_autocomplete_errors
     async def variant_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -313,12 +318,14 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @lb_view_command.autocomplete("lb")
+    @handle_autocomplete_errors
     async def lb_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         return self.bot.get_enum_choices(list(LeaderboardType), locale, current)
 
     @akasha_command.autocomplete("account")
     @lb_view_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def gi_acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

@@ -13,6 +13,7 @@ from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
@@ -255,6 +256,7 @@ class Hoyo(commands.Cog):
         await show_anniversary_dismissible(i)
 
     @geetest_command.autocomplete("type_")
+    @handle_autocomplete_errors
     async def geetest_type_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
@@ -271,6 +273,7 @@ class Hoyo(commands.Cog):
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
     @web_events_command.autocomplete("account")
+    @handle_autocomplete_errors
     async def acc_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:

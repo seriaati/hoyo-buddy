@@ -767,7 +767,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.4.11"
-source = { git = "https://github.com/seriaati/hakushin-py#ad4ac482da20a7989f0aa9b40b6eae5ed0e22ac8" }
+source = { git = "https://github.com/seriaati/hakushin-py#d717a07662136adb9129ccae1e09e72e2c17a8de" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

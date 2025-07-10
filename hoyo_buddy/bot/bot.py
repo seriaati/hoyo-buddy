@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import contextlib
-import datetime
 import os
 from collections import defaultdict
 from pathlib import Path
@@ -16,29 +15,23 @@ import enka
 import genshin
 import prometheus_client
 import psutil
-import tortoise.timezone
 from asyncache import cached
 from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 from seria.utils import write_json
-from tortoise.expressions import Case, Q, When
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import (
-    AUTO_TASK_INTERVALS,
-    AUTO_TASK_LAST_TIME_FIELDS,
-    AUTO_TASK_TOGGLE_FIELDS,
     GUILD_ID,
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
     STARRAIL_DATA_LANGS,
     SUPPORTER_ROLE_ID,
-    UTC_8,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_AVATAR_BATTLE_TEMP_URL,
@@ -67,13 +60,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
     from hoyo_buddy.config import Config
-    from hoyo_buddy.types import (
-        AutocompleteChoices,
-        AutoTaskType,
-        BetaAutocompleteChoices,
-        Interaction,
-        User,
-    )
+    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
 

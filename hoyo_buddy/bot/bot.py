@@ -15,8 +15,6 @@ import enka
 import genshin
 import prometheus_client
 import psutil
-from asyncache import cached
-from cachetools import TTLCache
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
@@ -31,7 +29,6 @@ from hoyo_buddy.constants import (
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
     STARRAIL_DATA_LANGS,
-    SUPPORTER_ROLE_ID,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_AVATAR_BATTLE_TEMP_URL,
@@ -221,23 +218,6 @@ class HoyoBuddy(commands.AutoShardedBot):
                 logger.error(f"Failed to fetch guild with ID {guild_id}")
                 return None
         return guild
-
-    @cached(TTLCache(maxsize=1, ttl=3600))
-    async def get_supporter_ids(self) -> set[int]:
-        guild = await self.get_or_fetch_guild()
-        if guild is None:
-            return set()
-
-        if not guild.chunked:
-            await guild.chunk()
-
-        role_id = SUPPORTER_ROLE_ID
-        supporter_role = discord.utils.get(guild.roles, id=role_id)
-        if supporter_role is None:
-            logger.error(f"Failed to find supporter role with ID {role_id}")
-            return set()
-
-        return {member.id for member in supporter_role.members}
 
     def capture_exception(self, e: Exception) -> None:
         capture_exception(e)

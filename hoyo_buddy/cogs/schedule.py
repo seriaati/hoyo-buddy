@@ -15,7 +15,13 @@ from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, Auto
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
-from ..constants import CODE_CHANNEL_IDS, GI_UID_PREFIXES, HB_GAME_TO_GPY_GAME, UTC_8
+from ..constants import (
+    CODE_CHANNEL_IDS,
+    GI_UID_PREFIXES,
+    HB_GAME_TO_GPY_GAME,
+    SUPPORTER_ROLE_ID,
+    UTC_8,
+)
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -78,6 +84,7 @@ class Schedule(commands.Cog):
         self.run_notes_check.start()
         self.run_web_events_notify.start()
         self.send_codes_to_channels.start()
+        self.update_supporter_ids.start()
 
     async def cog_unload(self) -> None:
         if not self.bot.config.schedule:
@@ -89,6 +96,7 @@ class Schedule(commands.Cog):
         self.run_notes_check.cancel()
         self.run_web_events_notify.cancel()
         self.send_codes_to_channels.cancel()
+        self.update_supporter_ids.cancel()
 
     @commands.is_owner()
     @commands.command(name="run-task", aliases=["rt"])
@@ -181,12 +189,39 @@ class Schedule(commands.Cog):
         await self.send_codes_to_channels()
         await message.edit(content="Codes sent.")
 
+    @tasks.loop(hours=1)
+    async def update_supporter_ids(self) -> None:
+        guild = await self.bot.get_or_fetch_guild()
+        if guild is None:
+            return
+
+        if not guild.chunked:
+            await guild.chunk()
+
+        role_id = SUPPORTER_ROLE_ID
+        supporter_role = discord.utils.get(guild.roles, id=role_id)
+        if supporter_role is None:
+            logger.error(f"Failed to find supporter role with ID {role_id}")
+            return
+
+        supporter_ids = [member.id for member in supporter_role.members]
+        await JSONFile.write("supporter_ids.json", supporter_ids)
+
+    @commands.is_owner()
+    @commands.command(name="update-supporter-ids", aliases=["usi"])
+    async def update_supporter_ids_command(self, ctx: commands.Context) -> None:
+        """Update the supporter IDs from the configured guild."""
+        message = await ctx.send("Updating supporter IDs...")
+        await self.update_supporter_ids()
+        await message.edit(content="Supporter IDs updated.")
+
     @run_farm_checks.before_loop
     @update_assets.before_loop
     @run_notes_check.before_loop
     @run_send_embeds.before_loop
     @run_web_events_notify.before_loop
     @send_codes_to_channels.before_loop
+    @update_supporter_ids.before_loop
     async def before_loops(self) -> None:
         await self.bot.wait_until_ready()
 

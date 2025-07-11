@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import datetime
+import hashlib
 import math
 import pathlib
 import re
@@ -280,6 +281,10 @@ def get_static_img_path(image_url: str) -> pathlib.Path:
     path = unquote(parsed_url.path)
     path_without_leading_slash = path.lstrip("/")
     full_path = pathlib.Path(parsed_url.netloc) / pathlib.Path(path_without_leading_slash)
+
+    if parsed_url.query:
+        query_hash = hashlib.sha256(parsed_url.query.encode()).hexdigest()[:8]
+        full_path = full_path.with_name(f"{full_path.stem}_{query_hash}{full_path.suffix}")
 
     return STATIC_FOLDER / full_path
 

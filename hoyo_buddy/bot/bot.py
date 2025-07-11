@@ -223,6 +223,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         await CARD_DATA.load()
         self.loop.set_exception_handler(self.asyncio_erorr_handler)
 
+        shards, _gateway_url, _session_limit = await self.http.get_bot_gateway()
+        logger.info(f"Spawning {shards} shards")
+
     async def get_or_fetch_guild(self) -> discord.Guild | None:
         guild_id = GUILD_ID
         guild = self.get_guild(guild_id)

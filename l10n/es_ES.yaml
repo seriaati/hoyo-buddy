@@ -613,8 +613,8 @@ banner_type_standard_channel: Canal Estable
 banner_type_exclusive_channel: Canal Exclusivo
 banner_type_w_engine_channel: Canal Amplificado
 banner_type_bangboo_channel: Canal Bangbú
-banner_type_fgo_character: Salto de Evento de personaje FGO
-banner_type_fgo_light_cone: Salto de Evento de cono de luz FGO
+banner_type_fgo_character: Salto de colaboración de personaje
+banner_type_fgo_light_cone: Salto de colaboración de cono de luz
 cancel_button_label: Cancelar
 gacha_view_filter_size_field_label: Ítems por página
 gacha_view_page_field_label: Página

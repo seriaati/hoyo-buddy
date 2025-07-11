@@ -4,11 +4,13 @@ import asyncio
 import base64
 import datetime
 import math
+import pathlib
 import re
 import time
 from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING, Any
+from urllib.parse import unquote, urlparse
 
 import aiohttp
 import discord
@@ -17,7 +19,6 @@ import sentry_sdk
 import toml
 from discord.ext import commands
 from loguru import logger
-from seria.utils import clean_url
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
@@ -32,7 +33,6 @@ from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
-    import pathlib
     from collections.abc import Callable, Generator
 
     import genshin
@@ -271,15 +271,17 @@ def get_floor_difficulty(floor_name: str, season_name: str) -> str:
     return floor_name.replace(season_name, "").replace(":", "").replace("•", "").strip()
 
 
-def get_static_img_path(image_url: str, folder: str) -> pathlib.Path:
-    image_url = clean_url(image_url)
+def get_static_img_path(image_url: str) -> pathlib.Path:
     if not image_url:
         msg = "Invalid image URL"
         raise ValueError(msg)
 
-    extra_folder = image_url.split("/")[-2]
-    filename = image_url.split("/")[-1]
-    return STATIC_FOLDER / folder / extra_folder / filename
+    parsed_url = urlparse(image_url)
+    path = unquote(parsed_url.path)
+    path_without_leading_slash = path.lstrip("/")
+    full_path = pathlib.Path(parsed_url.netloc) / pathlib.Path(path_without_leading_slash)
+
+    return STATIC_FOLDER / full_path
 
 
 def remove_html_tags(content: str) -> str:

@@ -28,7 +28,7 @@ class Config(BaseSettings):
     sentry_dsn: str | None = None
     db_url: str
     fernet_key: str
-    proxy: str | None = None
+    proxy: str
     redis_url: str | None = None
 
     # Command-line arguments

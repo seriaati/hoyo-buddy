@@ -461,13 +461,11 @@ class Drawer:
         self,
         url: str,
         *,
-        folder: str | None = None,
         size: tuple[int, int] | None = None,
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        folder = folder or self.folder
-        image = self.open_image(get_static_img_path(url, folder), size)
+        image = self.open_image(get_static_img_path(url), size)
 
         if mask_color is not None:
             image = self.mask_image_with_color(image, mask_color, opacity=opacity)

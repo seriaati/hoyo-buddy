@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import atexit
 import contextlib
 import os
 from collections import defaultdict
@@ -43,6 +44,7 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platfor
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
+from hoyo_buddy.redis import image_cache
 from hoyo_buddy.utils import (
     capture_exception,
     fetch_json,
@@ -72,6 +74,14 @@ def init_worker() -> None:
     """Initializes the translator in a new process."""
     logger.info(f"Initializing worker process {os.getpid()}...")
     translator.load_sync()
+
+    atexit.register(cleanup_worker)
+
+
+def cleanup_worker() -> None:
+    logger.info(f"Cleaning up worker process {os.getpid()}...")
+    if image_cache is not None:
+        image_cache.disconnect()
 
 
 class HoyoBuddy(commands.AutoShardedBot):
@@ -159,10 +169,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def start_process_pool(self) -> None:
         """Starts the process pool and initializes the translators."""
-        if self.config.is_dev:
-            logger.info("Skipping process pool initialization in dev environment")
-            return
-
         tasks = [
             self.loop.run_in_executor(self.executor, init_worker) for _ in range(POOL_MAX_WORKERS)
         ]

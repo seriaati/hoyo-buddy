@@ -49,6 +49,9 @@ def entry_point(log_dir: str) -> None:
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
     if CONFIG.is_dev:
         logging.getLogger("tortoise").setLevel(logging.DEBUG)
+    logging.getLogger("discord.app_commands.tree").addFilter(
+        lambda record: "Ignoring exception in autocomplete for" not in record.getMessage()
+    )
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")
 

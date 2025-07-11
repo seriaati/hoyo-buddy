@@ -284,9 +284,7 @@ def get_static_img_path(image_url: str) -> pathlib.Path:
 
     if parsed_url.query:
         query_hash = hashlib.sha256(parsed_url.query.encode()).hexdigest()[:8]
-        name = full_path.name
-        stem, suffix = os.path.splitext(name)
-        new_name = f"{stem}_{query_hash}{suffix}"
+        new_name = f"{full_path.stem}_{query_hash}{full_path.suffix}"
         full_path = full_path.with_name(new_name)
 
     return STATIC_FOLDER / full_path

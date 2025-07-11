@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -1208,3 +1209,5 @@ GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910
 SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 1117992633827082251
 
 HB_BIRTHDAY = datetime.date(2024, 6, 7)
+
+POOL_MAX_WORKERS = min(32, (os.cpu_count() or 1) + 4)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import contextlib
 import tracemalloc
 
@@ -11,6 +12,7 @@ import discord
 
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.config import CONFIG
+from hoyo_buddy.constants import POOL_MAX_WORKERS
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point, wrap_task_factory
@@ -24,15 +26,23 @@ discord.VoiceClient.warn_nacl = False
 async def main() -> None:
     wrap_task_factory()
 
-    async with (
-        asyncpg.create_pool(CONFIG.db_url) as pool,
-        aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session,
-        Database(),
-        translator,
-        HoyoBuddy(session=session, pool=pool, config=CONFIG) as bot,
-    ):
-        with contextlib.suppress(
+    if CONFIG.is_dev:
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    else:
+        executor = concurrent.futures.ProcessPoolExecutor(max_workers=POOL_MAX_WORKERS)
+
+    with (
+        executor,
+        contextlib.suppress(
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
+        ),
+    ):
+        async with (
+            asyncpg.create_pool(CONFIG.db_url) as pool,
+            aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session,
+            Database(),
+            translator,
+            HoyoBuddy(session=session, pool=pool, config=CONFIG, executor=executor) as bot,
         ):
             await bot.start(CONFIG.discord_token)
 

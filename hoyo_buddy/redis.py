@@ -42,7 +42,7 @@ class RedisImageCache:
 
     def disconnect(self) -> None:
         """Disconnect from the Redis server."""
-        self.bg_executor.shutdown(wait=False, cancel_futures=True)
+        self.bg_executor.shutdown(wait=True, cancel_futures=True)
         self.redis.disconnect()
         logger.info(f"Process {os.getpid()} disconnected from Redis.")
 

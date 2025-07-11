@@ -613,6 +613,8 @@ banner_type_standard_channel: Stable Channel
 banner_type_exclusive_channel: Exclusive Channel
 banner_type_w_engine_channel: W-Engine Channel
 banner_type_bangboo_channel: Bangboo Channel
+banner_type_fgo_character: FGO Character Warp
+banner_type_fgo_light_cone: FGO Light Cone Warp
 cancel_button_label: Cancel
 gacha_view_filter_size_field_label: Items per page
 gacha_view_page_field_label: Page

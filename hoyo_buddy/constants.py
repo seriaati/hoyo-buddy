@@ -613,6 +613,8 @@ BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
         12: "banner_type_light_cone_warp",
         1: "banner_type_stellar_warp",
         2: "banner_type_departure_warp",
+        21: "banner_type_fgo_character",
+        22: "banner_type_fgo_light_cone",
     },
     Game.ZZZ: {
         2: "banner_type_exclusive_channel",
@@ -624,13 +626,13 @@ BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
 
 BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {301: "50/50", 302: "50/50", 500: "50/50"},
-    Game.STARRAIL: {11: "50/50", 12: "75/25"},
+    Game.STARRAIL: {11: "50/50", 12: "75/25", 21: "50/50", 22: "75/25"},
     Game.ZZZ: {2: "50/50", 3: "75/25"},
 }
 
 BANNER_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
     Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20},
-    Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50},
+    Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50, 21: 90, 22: 80},
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
 }
 

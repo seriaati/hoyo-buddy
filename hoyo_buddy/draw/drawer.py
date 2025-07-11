@@ -13,6 +13,7 @@ from hoyo_buddy.constants import DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.models import DynamicBKInput, TopPadding
+from hoyo_buddy.redis import image_cache
 from hoyo_buddy.utils import get_static_img_path
 
 from .fonts import *  # noqa: F403
@@ -345,17 +346,26 @@ class Drawer:
     def open_image(
         file_path: pathlib.Path | str, size: tuple[int, int] | None = None
     ) -> Image.Image:
-        try:
-            image = Image.open(file_path)
-        except FileNotFoundError:
-            logger.error(f"File not found: {file_path}")
-            image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
+        image: Image.Image | None = None
 
-        if image.mode != "RGBA":
-            image = image.convert("RGBA")
+        if image_cache is not None:
+            image = image_cache.get(str(file_path))
+
+        if image is None:
+            try:
+                image = Image.open(file_path)
+                if image.mode != "RGBA":
+                    image = image.convert("RGBA")
+            except FileNotFoundError:
+                logger.error(f"File not found: {file_path}")
+                image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
+            else:
+                if image_cache is not None:
+                    image_cache.set_background(str(file_path), image)
+
         if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
-        return image.copy()
+        return image
 
     @staticmethod
     def has_glyph(font: TTFont, char: str) -> bool:

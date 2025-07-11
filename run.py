@@ -27,7 +27,7 @@ async def main() -> None:
     wrap_task_factory()
 
     if CONFIG.is_dev:
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=POOL_MAX_WORKERS)
     else:
         executor = concurrent.futures.ProcessPoolExecutor(max_workers=POOL_MAX_WORKERS)
 

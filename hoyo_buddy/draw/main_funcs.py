@@ -23,6 +23,7 @@ from hoyo_buddy.models import (
     UnownedHSRCharacter,
     UnownedZZZCharacter,
     ZZZDrawData,
+    ZZZEnkaCharacter
 )
 
 from .static import download_images
@@ -514,7 +515,7 @@ async def fetch_zzz_draw_data(
 
 async def draw_zzz_build_card(
     draw_input: DrawInput,
-    agent: ZZZFullAgent,
+    agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
     card_data: dict[str, Any],
     custom_color: str | None,

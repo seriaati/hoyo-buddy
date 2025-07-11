@@ -23,6 +23,10 @@ from hoyo_buddy.constants import (
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
+    ZZZ_RARITY_NUM_TO_RARITY,
+    ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY,
+    ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY,
+    ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
     contains_traveler_id,
     convert_fight_prop,
 )
@@ -252,6 +256,7 @@ class GenshinClient(ProxyGenshinClient):
                 models.HoyolabGITalent(icon=talent.icon, level=talent.level, id=talent.id)
                 for talent in character.skills
             ],
+            # what about this thing here
             artifacts=artifacts,
             friendship_level=character.friendship,
             level=character.level,
@@ -347,6 +352,87 @@ class GenshinClient(ProxyGenshinClient):
                 hakushin.Game.HSR,
             ),
             path=GPY_PATH_TO_EKNA_PATH[c.path],
+        )
+    
+    @staticmethod
+    def convert_zzz_character(
+        agent: enka.zzz.Agent,
+    ) -> models.ZZZEnkaCharacter:
+        """Convert Agent from enka.zzz to ZZZEnkaCharacter that's used for drawing cards."""
+        w_engine = genshin.models.WEngine(
+            id=agent.w_engine.id,
+            level=agent.w_engine.level,
+            name=agent.w_engine.name,
+            icon=agent.w_engine.icon,
+            refinement=agent.w_engine.phase,
+            rarity=ZZZ_RARITY_NUM_TO_RARITY[agent.w_engine.rarity_num],
+            properties=[
+                genshin.models.ZZZProperty(
+                    property_name=agent.w_engine.sub_stat.name,
+                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
+                    base=agent.w_engine.sub_stat.formatted_value
+                )
+            ],
+            main_properties=[
+                genshin.models.ZZZProperty(
+                    property_name=agent.w_engine.main_stat.name,
+                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.main_stat.type],
+                    base=agent.w_engine.main_stat.formatted_value
+                )
+            ],
+            effect_title="",
+            effect_description="",
+            profession=ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY[agent.w_engine.specialty]
+        )
+        discs = [
+            genshin.models.ZZZDisc(
+                id=disc.id,
+                level=disc.level,
+                name=disc.uid,
+                icon="",
+                rarity=ZZZ_RARITY_NUM_TO_RARITY[disc.rarity_num],
+                main_properties=[
+                    genshin.models.ZZZProperty(
+                    property_name=disc.main_stat.name,
+                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[disc.main_stat.type],
+                    base=disc.main_stat.formatted_value
+                )
+                ],
+                properties=[
+                    genshin.models.ZZZProperty(
+                    property_name=property.name,
+                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[property.type],
+                    base=property.formatted_value
+                ) for property in disc.sub_stats
+                ],
+                set_effect=genshin.models.DiscSetEffect(
+                        id=disc.set_id,
+                        name="",
+                        owned_num=0,
+                        two_piece_description="",
+                        four_piece_description=""
+                    ),
+                position=disc.slot,
+
+            )
+            for disc in agent.discs
+        ]
+        skills = [
+            genshin.models.AgentSkill(
+                level=skill.level,
+                type=ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE[skill.type],
+                items=[]
+            )
+            for skill in agent.skills
+        ]
+        return models.ZZZEnkaCharacter(
+            id=agent.id,
+            name=agent.name,
+            level=agent.level,
+            w_engine=w_engine,
+            discs=discs,
+            rank=agent.mindscape,
+            skills=skills
         )
 
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:

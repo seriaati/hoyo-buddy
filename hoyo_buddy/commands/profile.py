@@ -14,7 +14,9 @@ from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
     import discord
-    from genshin.models import PartialGenshinUserStats, StarRailUserStats
+    from genshin.models import PartialGenshinUserStats, StarRailUserStats, ZZZPartialAgent, RecordCard
+
+    from collections.abc import Sequence
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
@@ -133,14 +135,32 @@ class ProfileCommand:
         )
 
     async def run_zzz(self) -> ProfileView:
-        if self._account is None:
-            raise InvalidQueryError
+        enka_data: enka.zzz.ShowcaseResponse | None = None
+        zzz_data: Sequence[ZZZPartialAgent] | None = None
+        zzz_user: RecordCard | None = None
 
-        client = self._account.client
-        client.set_lang(self._locale)
-        zzz_data = await client.get_zzz_agents()
-        record_cards = await client.get_record_cards()
-        zzz_user = next((card for card in record_cards if card.uid == self._account.uid), None)
+        enka_client = enka.zzz.ZZZClient()
+        await enka_client.start()
+        try:
+            enka_data = await enka_client.fetch_showcase(self._uid)
+        except enka.errors.EnkaAPIError:
+            if self._account is None:
+                # enka fails and no hoyolab account provided, raise error
+                raise
+        await enka_client.close()
+
+        if self._account is not None:
+            client = self._account.client
+            client.set_lang(self._locale)
+            try:
+                if enka_data is None:
+                    record_cards = await client.get_record_cards()
+                    zzz_user = next((card for card in record_cards if card.uid == self._account.uid), None)
+                zzz_data = await client.get_zzz_agents()
+            except GenshinException:
+                if enka_data is None:
+                    # enka and hoyolab both failed, raise error
+                    raise
 
         return ProfileView(
             self._uid,
@@ -149,6 +169,7 @@ class ProfileCommand:
             character_ids=self._character_ids,
             account=self._account,
             zzz_data=zzz_data,
+            zzz_enka_data=enka_data,
             zzz_user=zzz_user,
             author=self._user,
             locale=self._locale,

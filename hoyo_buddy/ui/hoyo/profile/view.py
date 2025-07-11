@@ -87,6 +87,7 @@ class ProfileView(View):
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
         zzz_data: Sequence[ZZZPartialAgent] | None = None,
+        zzz_enka_data: enka.zzz.ShowcaseResponse | None = None,
         zzz_user: RecordCard | None = None,
         account: HoyoAccount | None,
         builds: Builds | None = None,
@@ -105,6 +106,7 @@ class ProfileView(View):
         self.genshin_data = genshin_data
         self.zzz_data = zzz_data
         self.zzz_user = zzz_user
+        self.zzz_enka_data = zzz_enka_data
 
         self.uid = uid
         self.game = game

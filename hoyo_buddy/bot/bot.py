@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-import concurrent.futures
+import atexit
 import contextlib
 import os
 from collections import defaultdict
@@ -27,6 +27,7 @@ from hoyo_buddy.constants import (
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
+    POOL_MAX_WORKERS,
     STARRAIL_DATA_LANGS,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
@@ -43,6 +44,7 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platfor
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
+from hoyo_buddy.redis import image_cache
 from hoyo_buddy.utils import (
     capture_exception,
     fetch_json,
@@ -55,6 +57,7 @@ from .cache import LFUCache
 from .command_tree import CommandTree
 
 if TYPE_CHECKING:
+    import concurrent.futures
     from collections.abc import Sequence
     from enum import StrEnum
 
@@ -66,19 +69,32 @@ if TYPE_CHECKING:
 
 __all__ = ("HoyoBuddy",)
 
-POOL_MAX_WORKERS = min(32, (os.cpu_count() or 1) + 4)
-
 
 def init_worker() -> None:
     """Initializes the translator in a new process."""
     logger.info(f"Initializing worker process {os.getpid()}...")
     translator.load_sync()
 
+    atexit.register(cleanup_worker)
+
+
+def cleanup_worker() -> None:
+    logger.info(f"Cleaning up worker process {os.getpid()}...")
+    if image_cache is not None:
+        image_cache.disconnect()
+
 
 class HoyoBuddy(commands.AutoShardedBot):
     owner_id: int
 
-    def __init__(self, *, session: ClientSession, pool: asyncpg.Pool, config: Config) -> None:
+    def __init__(
+        self,
+        *,
+        session: ClientSession,
+        pool: asyncpg.Pool,
+        config: Config,
+        executor: concurrent.futures.Executor,
+    ) -> None:
         self.version = get_project_version()
 
         super().__init__(
@@ -124,12 +140,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False
 
-        if config.env == "dev":
-            self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=POOL_MAX_WORKERS)
-        else:
-            self.executor = concurrent.futures.ProcessPoolExecutor(
-                initializer=init_worker, max_workers=POOL_MAX_WORKERS
-            )
+        self.executor = executor
 
     @staticmethod
     def get_command_name(command: app_commands.Command) -> str:
@@ -158,10 +169,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def start_process_pool(self) -> None:
         """Starts the process pool and initializes the translators."""
-        if self.config.env == "dev":
-            logger.info("Skipping process pool initialization in dev environment")
-            return
-
         tasks = [
             self.loop.run_in_executor(self.executor, init_worker) for _ in range(POOL_MAX_WORKERS)
         ]
@@ -626,7 +633,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
-        self.executor.shutdown(wait=True)
         await super().close()
 
     @property

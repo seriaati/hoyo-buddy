@@ -52,11 +52,7 @@ async def download_image_task(
 
 
 async def download_images(
-    image_urls: Sequence[str],
-    folder: str,
-    session: aiohttp.ClientSession,
-    *,
-    ignore_error: bool = False,
+    image_urls: Sequence[str], session: aiohttp.ClientSession, *, ignore_error: bool = False
 ) -> None:
     tasks: list[asyncio.Task] = []
 
@@ -64,7 +60,7 @@ async def download_images(
         if not image_url:
             continue
 
-        file_path = get_static_img_path(image_url, folder)
+        file_path = get_static_img_path(image_url)
         if file_path.exists():
             continue
         task = asyncio.create_task(

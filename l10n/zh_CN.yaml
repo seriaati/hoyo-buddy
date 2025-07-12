@@ -613,6 +613,8 @@ banner_type_standard_channel: 常驻调频
 banner_type_exclusive_channel: 独家调频
 banner_type_w_engine_channel: 音擎调频
 banner_type_bangboo_channel: 邦布调频
+banner_type_fgo_character: 角色活动跃迁
+banner_type_fgo_light_cone: 光锥活动跃迁
 cancel_button_label: 取消
 gacha_view_filter_size_field_label: 每页物品数
 gacha_view_page_field_label: 页数

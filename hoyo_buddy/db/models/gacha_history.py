@@ -24,6 +24,7 @@ class GachaHistory(BaseModel):
     time = fields.DatetimeField()
     item_id = fields.IntField()
     banner_type = fields.IntField()
+    banner_id: fields.Field[int | None] = fields.IntField(null=True)
     num = fields.IntField()
     num_since_last = fields.IntField()
     """Number of pulls since the last 5 or 4 star pull."""

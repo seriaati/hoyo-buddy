@@ -78,8 +78,7 @@ class ViewGachaLogView(View):
         self.banner_type = banner_type
 
         self.add_item(BannerTypeSelector(account.game, current=self.banner_type))
-        self.web_app_url = self.get_web_app_url()
-        self.add_item(Button(label=LocaleStr(key="gacha_log_view_full"), url=self.web_app_url))
+        self.add_item(GoToWebAppButton(self.get_web_app_url()))
 
     def get_web_app_url(self) -> str:
         params = GachaParams(
@@ -298,5 +297,15 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
         embed = await self.view.get_stats_embed(i.client.pool)
         self.update_options_defaults()
 
-        self.view.web_app_url = self.view.get_web_app_url()
+        button: GoToWebAppButton | None = next(
+            (c for c in self.view.children if isinstance(c, Button) and c.url is not None),
+            None,  # pyright: ignore[reportAssignmentType]
+        )
+        if button is not None:
+            button.url = self.view.get_web_app_url()
         await i.edit_original_response(embed=embed, view=self.view)
+
+
+class GoToWebAppButton(Button[ViewGachaLogView]):
+    def __init__(self, url: str) -> None:
+        super().__init__(label=LocaleStr(key="gacha_log_view_full"), url=url)

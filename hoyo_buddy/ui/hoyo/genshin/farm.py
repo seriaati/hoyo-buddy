@@ -67,7 +67,7 @@ class FarmView(View):
             dark_mode=self._dark_mode,
             locale=self.locale,
             session=i.client.session,
-            filename="farm.png",
+            filename="farm.webp",
             executor=i.client.executor,
             loop=i.client.loop,
         )

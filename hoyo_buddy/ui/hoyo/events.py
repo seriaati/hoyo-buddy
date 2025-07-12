@@ -13,8 +13,9 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, PaginatorSelect, Select, SelectOption, View
-from hoyo_buddy.ui.paginator import Page, PaginatorView
+from hoyo_buddy.ui.paginator import PaginatorView
 from hoyo_buddy.utils import remove_html_tags
+from hoyo_buddy.utils.misc import paginate_content
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -195,9 +196,7 @@ class ViewContentButton(Button[EventsView]):
             self.disabled = True
             return await i.response.edit_message(view=self.view)
 
-        # Split ann content by 2000 characters
-        contents: list[str] = [content[i : i + 2000] for i in range(0, len(content), 2000)]
-        pages = [Page(content=content) for content in contents]
+        pages = paginate_content(content)
         view = PaginatorView(pages, author=i.user, locale=self.view.locale)
         await view.start(i, ephemeral=True, followup=True)
         return None

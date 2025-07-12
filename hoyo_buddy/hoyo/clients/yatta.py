@@ -15,6 +15,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_hsr_element_emoji, get_hsr_path_emoji
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr, translator
+from hoyo_buddy.utils.misc import shorten_preserving_newlines
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 
@@ -275,8 +276,15 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return embed
 
-    def get_character_story_embed(self, story: yatta.CharacterStory) -> DefaultEmbed:
-        return DefaultEmbed(self.locale, title=story.title, description=story.text)
+    def get_character_story_embed(self, story: yatta.CharacterStory) -> tuple[DefaultEmbed, str]:
+        return (
+            DefaultEmbed(
+                self.locale,
+                title=story.title,
+                description=shorten_preserving_newlines(story.text, 300),
+            ),
+            story.text,
+        )
 
     def get_character_voice_embed(
         self, voice: yatta.CharacterVoice, character_id: int

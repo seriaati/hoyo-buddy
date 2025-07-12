@@ -27,7 +27,12 @@ class Embed(discord.Embed):
         description: LocaleStr | str | None = None,
     ) -> None:
         translated_title = translator.translate(title, locale) if title else None
+        if translated_title is not None:
+            translated_title = shorten(translated_title, 256)
+
         translated_description = translator.translate(description, locale) if description else None
+        if translated_description is not None:
+            translated_description = shorten(translated_description, 4096)
 
         super().__init__(
             color=color, title=translated_title, url=url, description=translated_description

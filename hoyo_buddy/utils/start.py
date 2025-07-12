@@ -20,6 +20,10 @@ __all__ = ("entry_point", "init_sentry")
 
 
 def init_sentry() -> None:
+    if CONFIG.sentry_dsn is None:
+        logger.warning("Sentry DSN is not set, skipping Sentry initialization.")
+        return
+
     sentry_sdk.init(
         dsn=CONFIG.sentry_dsn,
         integrations=[

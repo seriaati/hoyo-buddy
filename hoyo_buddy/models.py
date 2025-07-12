@@ -250,7 +250,7 @@ class AgentNameData(BaseModel):
     short_name: str
 
 @dataclass(kw_only=True)
-class ZZZEnkaCharacter(BaseModel):
+class ZZZEnkaCharacter:
     id: int
     name: str
     level: int

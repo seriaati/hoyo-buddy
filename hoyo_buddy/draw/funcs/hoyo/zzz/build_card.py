@@ -17,13 +17,13 @@ from .common import SKILL_ORDER, STAT_ICONS, get_props
 if TYPE_CHECKING:
     from io import BytesIO
 
-    from hoyo_buddy.models import AgentNameData
+    from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 
 
 class ZZZAgentCard:
     def __init__(
         self,
-        agent: ZZZFullAgent,
+        agent: ZZZFullAgent | ZZZEnkaCharacter,
         *,
         locale: str,
         image_url: str,

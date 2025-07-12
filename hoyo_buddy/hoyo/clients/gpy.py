@@ -260,7 +260,6 @@ class GenshinClient(ProxyGenshinClient):
                 models.HoyolabGITalent(icon=talent.icon, level=talent.level, id=talent.id)
                 for talent in character.skills
             ],
-            # what about this thing here
             artifacts=artifacts,
             friendship_level=character.friendship,
             level=character.level,
@@ -404,10 +403,10 @@ class GenshinClient(ProxyGenshinClient):
                 ],
                 properties=[
                     genshin.models.ZZZProperty(
-                    property_name=property.name,
-                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[property.type],
-                    base=property.formatted_value
-                ) for property in disc.sub_stats
+                    property_name=prop.name,
+                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[prop.type],
+                    base=prop.formatted_value
+                ) for prop in disc.sub_stats
                 ],
                 set_effect=genshin.models.DiscSetEffect(
                         id=disc.set_id,

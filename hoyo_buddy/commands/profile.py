@@ -139,15 +139,13 @@ class ProfileCommand:
         zzz_data: Sequence[ZZZPartialAgent] | None = None
         zzz_user: RecordCard | None = None
 
-        enka_client = enka.zzz.ZZZClient()
-        await enka_client.start()
         try:
-            enka_data = await enka_client.fetch_showcase(self._uid)
+            async with enka.zzz.ZZZClient() as enka_client:
+                enka_data = await enka_client.fetch_showcase(self._uid)
         except enka.errors.EnkaAPIError:
             if self._account is None:
                 # enka fails and no hoyolab account provided, raise error
                 raise
-        await enka_client.close()
 
         if self._account is not None:
             client = self._account.client

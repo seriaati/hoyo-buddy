@@ -104,7 +104,7 @@ class ProfileView(View):
 
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
-        self.zzz_data = zzz_data
+        self.zzz_data = zzz_data or []
         self.zzz_user = zzz_user
         self.zzz_enka_data = zzz_enka_data
 
@@ -183,15 +183,26 @@ class ProfileView(View):
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = chara
 
+    def _set_zzz_characters_with_enka(self) -> None:
+        data = self.zzz_enka_data
+        enka_chara_ids: list[str] = []
+        if data is not None:
+            for chara in data.agents:
+                enka_chara_ids.append(str(chara.id))
+                self.characters[str(chara.id)] = chara
+
+        for chara in self.zzz_data:
+            if str(chara.id) not in enka_chara_ids:
+                enka_chara_ids.append(str(chara.id))
+                self.characters[str(chara.id)] = chara
+
     def _set_characters(self) -> None:
         if self.game is Game.STARRAIL:
             self._set_characters_with_enka(Game.STARRAIL)
         elif self.game is Game.GENSHIN:
             self._set_characters_with_enka(Game.GENSHIN)
         elif self.game is Game.ZZZ:
-            assert self.zzz_data is not None
-            for chara in self.zzz_data:
-                self.characters[str(chara.id)] = chara
+            self._set_zzz_characters_with_enka()
 
         for character_id in self._param_character_ids:
             if (

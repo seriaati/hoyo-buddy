@@ -4,9 +4,6 @@ import datetime
 import pathlib
 from typing import TYPE_CHECKING, Final, Literal
 
-import enka.enums
-import enka.enums.zzz
-
 import akasha
 import ambr
 import enka
@@ -592,7 +589,7 @@ LOCALE_TO_STARRAIL_DATA_LANG: dict[Locale, str] = {
 }
 
 ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY = {
-    enka.zzz.StatType.CRIT_DMG_FLAT: genshin.models.ZZZPropertyType.CRIT_RATE,
+    enka.zzz.StatType.CRIT_RATE_FLAT: genshin.models.ZZZPropertyType.CRIT_RATE,
     enka.zzz.StatType.CRIT_DMG_FLAT: genshin.models.ZZZPropertyType.CRIT_DMG,
 
     enka.zzz.StatType.ANOMALY_PRO_FLAT: genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY,

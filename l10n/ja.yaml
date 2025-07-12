@@ -350,8 +350,9 @@ profile.image_select.default_collection.label: "Hoyo Buddy コレクション ({
 profile.image_select.none.label: 公式アート
 profile.image_select.placeholder: 画像を選択
 profile.player_info.button.label: プレイヤー情報
+profile_gi_embed_ar: 冒険ランク
+profile_gi_embed_world_level: 世界ランク
 profile.player_info.embed.description: "開拓レベル：{level}\n均衡レベル：{world_level}\nフレンド数：{friend_count}\n光円錐：{light_cones}\nキャラクター：{characters}\nアチーブメント：{achievements}\n"
-profile.player_info.gi.embed.description: "冒険ランク：{adventure_rank}\n深境螺旋：{spiral_abyss}\nアチーブメント：{achievements}\n"
 profile.player_info.hoyolab.embed.description: "開拓レベル：{level}\nキャラクター：{characters}\n宝箱：{chest}\n混沌の記憶：{moc}\nアチーブメント：{achievements}\n"
 profile.primary_color.button.label: 色を変更
 profile.primary_color_modal.color.label: 色 (16進コード)
@@ -610,6 +611,8 @@ banner_type_standard_channel: 定常チャンネル
 banner_type_exclusive_channel: 限定チャンネル
 banner_type_w_engine_channel: Wエンジンチャンネル
 banner_type_bangboo_channel: ボンプチャンネル
+banner_type_fgo_character: キャラクター・コラボ跳躍
+banner_type_fgo_light_cone: 光円錐・コラボ跳躍
 cancel_button_label: キャンセル
 gacha_view_filter_size_field_label: ページごとのアイテム数
 gacha_view_page_field_label: ページ
@@ -817,3 +820,6 @@ hard_challenge_advantage: "弱点"
 hard_challenge_disadvantage: "有効"
 hard_challenge_command_desc: 幽境の激戦カードを生成
 hard_challenge: "幽境の激戦"
+fetching_accounts: アカウント情報を取得中です。しばらくお待ちください...
+fetching_accounts_stuck: "このページで動作が停止している場合は、コマンドを再実行するか、お問い合わせください。問題を解決いたします。"
+aaa_acronym: アドレナリン回復

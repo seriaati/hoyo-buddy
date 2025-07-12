@@ -111,6 +111,10 @@ async def upload_image(
 ) -> str:
     from hoyo_buddy.exceptions import ImageFileTooLargeError  # noqa: PLC0415
 
+    if CONFIG.img_upload_api_key is None:
+        msg = "Image upload API key is not set"
+        raise ValueError(msg)
+
     api = "https://img.seria.moe/upload"
     data = {"key": CONFIG.img_upload_api_key}
 
@@ -564,6 +568,10 @@ async def add_to_hoyo_codes(
     session: aiohttp.ClientSession, *, code: str, game: genshin.Game
 ) -> None:
     api_key = CONFIG.hoyo_codes_api_key
+    if api_key is None:
+        logger.warning("Hoyo Codes API key is not set, skipping code addition.")
+        return
+
     url = "https://hoyo-codes.seria.moe/codes"
     headers = {"Authorization": f"Bearer {api_key}"}
     data = {"code": code, "game": game.value}

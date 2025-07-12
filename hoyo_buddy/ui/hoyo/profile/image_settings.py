@@ -493,6 +493,10 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
         await self.set_loading_state(i)
 
         client = i.client.nai_client
+        if client is None:
+            msg = "NAI client is not initialized. Please check your configuration."
+            raise ValueError(msg)
+
         bytes_ = await client.generate_image(prompt, negative_prompt)
         url = await upload_image(i.client.session, image=bytes_)
 

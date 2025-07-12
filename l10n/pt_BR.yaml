@@ -350,8 +350,9 @@ profile.image_select.default_collection.label: "Coleção Hoyo Buddy ({num})"
 profile.image_select.none.label: Arte oficial
 profile.image_select.placeholder: Selecione uma imagem
 profile.player_info.button.label: Info do jogador
+profile_gi_embed_ar: Rank de Aventura
+profile_gi_embed_world_level: Nível do Mundo
 profile.player_info.embed.description: "Nível de Desbravamento: {level}\nNível de Equilíbrio: {world_level}\nContagem de Amigos: {friend_count}\nCones de Luz: {light_cones}\nPersonagens: {characters}\nConquistas: {achievements}\n"
-profile.player_info.gi.embed.description: "Rank de Aventura: {adventure_rank}\nAbismo Espiral: {spiral_abyss}\nConquistas: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "Nível de Desbravamento: {level}\nPersonagens: {characters}\nBaús: {chest}\nMemória do Caos: {moc}\nConquistas: {achievements}\n"
 profile.primary_color.button.label: Mudar cor
 profile.primary_color_modal.color.label: Cor (código hex)
@@ -610,6 +611,8 @@ banner_type_standard_channel: Canal Estável
 banner_type_exclusive_channel: Canal Exclusivo
 banner_type_w_engine_channel: Canal de W-Engine
 banner_type_bangboo_channel: Canal de Bangboo
+banner_type_fgo_character: Salto de Colaboração de Personagem
+banner_type_fgo_light_cone: Salto de Colaboração de Cone de Luz
 cancel_button_label: Cancelar
 gacha_view_filter_size_field_label: Itens por página
 gacha_view_page_field_label: Página
@@ -817,3 +820,6 @@ hard_challenge_advantage: "Fraco contra"
 hard_challenge_disadvantage: "Forte contra"
 hard_challenge_command_desc: Gerar cartão do Confronto Abissal
 hard_challenge: "Confronto Abissal"
+fetching_accounts: Aguarde enquanto obtemos suas contas...
+fetching_accounts_stuck: "Se você ficou preso nesta página, tente executar o comando novamente ou entre em contato conosco para corrigir o problema."
+aaa_acronym: AAA

@@ -130,7 +130,7 @@ devtools_instructions_description: "1. Inicia sesión en [HoYoLAB](https://www.h
 dice_cost_embed_field_name: Costo de Dados
 download_image_failed_error_message: "No se pudo descargar la imagen {url} con el código de estado {status}.\nIntenta nuevamente más tarde, prueba con otra imagen o verifica si la URL de la imagen es válida."
 download_image_failed_error_title: Error al descargar la imagen
-edit_nickname_modal_title: Editar nombre de imagen
+edit_nickname_modal_title: Editar nombre de usuario
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verificación requerida
@@ -264,7 +264,7 @@ monday: Lunes
 mondstadt: Mondstadt
 namecards: Tarjetas de presentación
 next_page_option_label: Siguiente página
-nickname_modal_label: Nombre de imagen
+nickname_modal_label: Nombre de usuario
 nickname_modal_placeholder: "Cuenta principal, cuenta de Asia..."
 nihility: Nahilidad
 no_account_found_for_games_error_message: "No tienes una cuenta de uno de los siguientes juegos. Agrega una con </accounts>"
@@ -613,8 +613,6 @@ banner_type_standard_channel: Canal Estable
 banner_type_exclusive_channel: Canal Exclusivo
 banner_type_w_engine_channel: Canal Amplificado
 banner_type_bangboo_channel: Canal Bangbú
-banner_type_fgo_character: Salto de colaboración de personaje
-banner_type_fgo_light_cone: Salto de colaboración de cono de luz
 cancel_button_label: Cancelar
 gacha_view_filter_size_field_label: Ítems por página
 gacha_view_page_field_label: Página

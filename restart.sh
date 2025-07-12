@@ -1,114 +1,54 @@
 #!/bin/bash
 
-# A script to restart two Discord bot instances (hb-main and hb-sub) sequentially,
-# ensuring the first bot is fully online before restarting the second.
+set -e
 
-# --- Configuration ---
-MAIN_BOT_NAME="hb-main"
-SUB_BOT_NAME="hb-sub"
-# Set a timeout in seconds to prevent the script from waiting forever if the bot fails.
-LOG_TIMEOUT=120
+TIMEOUT=120 # seconds
+LOG_FILE="/tmp/pm2_restart_$(date +%s).log"
 
-# --- Colors for better output ---
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+echo "Restarting hb-main..."
 
-# --- Main Bot Restart Logic ---
-echo -e "${BLUE}--- Starting restart process for ${MAIN_BOT_NAME} ---${NC}"
-
-# 1. Restart the main bot
-echo -e "${YELLOW}Restarting ${MAIN_BOT_NAME}...${NC}"
-pm2 restart ${MAIN_BOT_NAME}
-
-# Check if the restart command was successful
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Error: Failed to restart ${MAIN_BOT_NAME}. Aborting.${NC}"
+if ! pm2 restart hb-main; then
+    echo "Error: Failed to restart hb-main"
     exit 1
 fi
 
-echo -e "${YELLOW}Waiting for bot to initialize and report shard count (Timeout: ${LOG_TIMEOUT}s)...${NC}"
+echo "Determining shard count and waiting for last shard connection (timeout: ${TIMEOUT}s)..."
 
-# Initialize variables
-shards_total=0
-shards_connected=0
+timeout $TIMEOUT pm2 logs hb-main --lines 0 >"$LOG_FILE" 2>&1 &
 
-# 2. Monitor new logs to wait for all shards to connect
-# We pipe the output of 'pm2 logs' into a 'while' loop to process it line-by-line.
-# --lines 0: This is the key change. It tails the logs, showing only new lines from this point forward.
-# --raw: This flag removes PM2's prefixes, making the logs easier to parse.
-# The `timeout` command will kill the `pm2 logs` process if it runs for too long.
-timeout ${LOG_TIMEOUT} pm2 logs ${MAIN_BOT_NAME} --raw --lines 0 | while IFS= read -r line; do
-    # Check if we have found the total shard count yet
-    if [[ $shards_total -eq 0 ]]; then
-        # Look for "Spawning X shards" and capture X
-        if [[ "$line" =~ Spawning[[:space:]]([0-9]+)[[:space:]]shards ]]; then
-            shards_total=${BASH_REMATCH[1]}
-            echo -e "${GREEN}Detected a total of ${shards_total} shards to spawn.${NC}"
-            # Print an initial status line that we can overwrite later
-            printf "Connecting shards: [${shards_connected}/${shards_total}]"
-        fi
-    fi
+LOG_PID=$!
 
-    # If we know the total shards, start counting connections
-    if [[ $shards_total -gt 0 ]]; then
-        # Count how many shards have connected
-        if [[ "$line" =~ has[[:space:]]connected[[:space:]]to[[:space:]]Gateway ]]; then
-            # Increment the counter
-            ((shards_connected++))
-            # Update the status line by using \r (carriage return) to move the cursor to the beginning
-            printf "\r${YELLOW}Connecting shards: [${shards_connected}/${shards_total}]${NC}"
-        fi
-    fi
+# Wait for spawning message and determine shard count
+SHARD_COUNT=""
+LAST_SHARD_ID=""
 
-    # Check if all shards are connected
-    if [[ $shards_total -gt 0 && $shards_connected -eq $shards_total ]]; then
-        echo # Move to a new line after the progress indicator
-        echo -e "${GREEN}✔ All ${shards_total} shards for ${MAIN_BOT_NAME} have connected successfully!${NC}"
-        # Exit the log-watching loop. This will also terminate the 'pm2 logs' and 'timeout' processes.
-        # We need to kill the parent `timeout` process to stop gracefully.
-        kill -s TERM $PPID
-        exit 0
-    fi
-done
-
-# Check the exit status of the pipeline.
-# A status of 124 means the 'timeout' command was triggered.
-if [ $? -eq 124 ]; then
-     echo -e "\n${RED}Error: Timed out after ${LOG_TIMEOUT} seconds waiting for shards to connect.${NC}"
-     echo -e "${RED}Please check the bot logs manually with 'pm2 logs ${MAIN_BOT_NAME}'. Aborting.${NC}"
-     exit 1
+# Monitor for spawning message first
+if timeout 30 grep -q "Spawning [0-9]* shards" <(tail -f "$LOG_FILE" 2>/dev/null); then
+    # Extract shard count from the log
+    SHARD_COUNT=$(grep "Spawning [0-9]* shards" "$LOG_FILE" | head -1 | grep -o '[0-9]*')
+    LAST_SHARD_ID=$((SHARD_COUNT - 1))
+    echo "Found $SHARD_COUNT shards, waiting for Shard ID $LAST_SHARD_ID to connect..."
+else
+    echo "Warning: Could not find spawning message, defaulting to Shard ID 8"
+    LAST_SHARD_ID=8
 fi
 
-# Safety check: If the loop finished but we never found the shard count
-if [[ $shards_total -eq 0 ]]; then
-    echo -e "\n${RED}Error: Could not determine shard count for ${MAIN_BOT_NAME}. The log 'Spawning X shards' was not found.${NC}"
-    echo -e "${RED}Please check the bot logs manually. Aborting.${NC}"
+# Monitor for the target message
+if timeout $TIMEOUT grep -q "Shard ID $LAST_SHARD_ID has connected to Gateway" <(tail -f "$LOG_FILE" 2>/dev/null); then
+    echo "Shard ID $LAST_SHARD_ID connected. Restarting hb-sub..."
+    kill $LOG_PID 2>/dev/null || true
+
+    if pm2 restart hb-sub; then
+        echo "Success: All services restarted"
+    else
+        echo "Error: Failed to restart hb-sub"
+        exit 1
+    fi
+else
+    echo "Error: Timeout waiting for Shard ID $LAST_SHARD_ID connection"
+    kill $LOG_PID 2>/dev/null || true
     exit 1
 fi
 
-
-# --- Sub Bot Restart Logic ---
-echo -e "\n${BLUE}--- Starting restart process for ${SUB_BOT_NAME} ---${NC}"
-
-# 3. Restart the sub-bot
-echo -e "${YELLOW}Restarting ${SUB_BOT_NAME}...${NC}"
-pm2 restart ${SUB_BOT_NAME}
-
-# Check if the restart command was successful
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Error: Failed to restart ${SUB_BOT_NAME}.${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}✔ ${SUB_BOT_NAME} has been restarted.${NC}"
-echo -e "\n${GREEN}======================================"
-echo -e "All bot instances restarted successfully."
-echo -e "======================================${NC}"
-
-# You can uncomment the line below if you want to see the logs for the sub-bot after it restarts
-# pm2 logs ${SUB_BOT_NAME}
-
-exit 0
+# Cleanup
+rm -f "$LOG_FILE"

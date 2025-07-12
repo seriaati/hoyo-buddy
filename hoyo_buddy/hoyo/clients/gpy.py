@@ -7,6 +7,7 @@ import enka
 import genshin
 import hakushin
 import orjson
+from loguru import logger
 from tortoise import Tortoise
 
 from hoyo_buddy import models
@@ -67,6 +68,9 @@ class ProxyGenshinClient(genshin.Client):
 
     @use_proxy.setter
     def use_proxy(self, value: bool) -> None:
+        if CONFIG.proxy is None:
+            logger.warning("Proxy is not set in the config, setting use_proxy will have no effect.")
+
         if value and self.region is genshin.Region.OVERSEAS:
             self.proxy = CONFIG.proxy
         else:

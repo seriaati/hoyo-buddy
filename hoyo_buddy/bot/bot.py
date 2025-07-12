@@ -119,7 +119,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.uptime = get_now()
         self.env = config.env
         self.deployment = config.deployment
-        self.nai_client = NAIClient(token=config.nai_token, host_url=config.nai_host_url)
+        self.nai_client: NAIClient | None = None
         self.owner_id = 410036441129943050
         self.pool = pool
         self.config = config
@@ -207,7 +207,15 @@ class HoyoBuddy(commands.AutoShardedBot):
         await self.load_extension("jishaku")
 
         if self.config.novelai:
-            await self.nai_client.init(timeout=120)
+            if self.config.nai_token is None or self.config.nai_host_url is None:
+                logger.warning(
+                    "NovelAI token or host URL is not set, skipping NAI client initialization."
+                )
+            else:
+                self.nai_client = NAIClient(
+                    token=self.config.nai_token, host_url=self.config.nai_host_url
+                )
+                await self.nai_client.init(timeout=120)
 
         users = await models.User.all().only("id")
         for user in users:

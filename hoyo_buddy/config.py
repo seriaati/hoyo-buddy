@@ -16,19 +16,19 @@ class Config(BaseSettings):
     discord_client_secret: str
 
     # AI image generation
-    nai_token: str
-    nai_host_url: str
+    nai_token: str | None = None
+    nai_host_url: str | None = None
 
     # API keys
-    hoyo_codes_api_key: str
-    img_upload_api_key: str
+    hoyo_codes_api_key: str | None = None
+    img_upload_api_key: str | None = None
 
     # Misc
     env: EnvType = "dev"
-    sentry_dsn: str
+    sentry_dsn: str | None = None
     db_url: str
     fernet_key: str
-    proxy: str
+    proxy: str | None = None
     redis_url: str | None = None
 
     # Command-line arguments

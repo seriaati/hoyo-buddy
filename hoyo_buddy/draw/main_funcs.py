@@ -54,7 +54,7 @@ async def draw_item_list_card(
     draw_input: DrawInput, items: list[ItemWithDescription] | list[ItemWithTrailing]
 ) -> File:
     await download_images(
-        [item.icon for item in items if item.icon is not None], "item-list", draw_input.session
+        [item.icon for item in items if item.icon is not None], draw_input.session
     )
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor, funcs.draw_item_list, items, draw_input.dark_mode, draw_input.locale
@@ -64,7 +64,7 @@ async def draw_item_list_card(
 
 
 async def draw_checkin_card(draw_input: DrawInput, rewards: list[Reward]) -> BytesIO:
-    await download_images([r.icon for r in rewards], "check-in", draw_input.session)
+    await download_images([r.icon for r in rewards], draw_input.session)
     return await draw_input.loop.run_in_executor(
         draw_input.executor, funcs.draw_checkin_card, rewards, draw_input.dark_mode
     )
@@ -102,7 +102,7 @@ async def draw_hsr_build_card(
     if template == 2:
         urls.extend(e.icon for e in character.eidolons)
 
-    await download_images(urls, f"hsr-build-card{'2' if template == 2 else ''}", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     if template == 1:
         return await draw_input.loop.run_in_executor(
@@ -131,9 +131,7 @@ async def draw_hsr_build_card(
 
 async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote) -> BytesIO:
     await download_images(
-        [exped.item_url for exped in notes.expeditions],
-        folder="hsr-notes",
-        session=draw_input.session,
+        [exped.item_url for exped in notes.expeditions], session=draw_input.session
     )
     return await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -167,7 +165,7 @@ async def draw_gi_build_card(
                 msg = f"Character {character.id} not found in Amber's database."
                 raise ValueError(msg)
 
-        await download_images(urls, "gi-build-card2", draw_input.session)
+        await download_images(urls, draw_input.session)
         card = funcs.genshin.GITempTwoBuildCard(
             locale=draw_input.locale,
             character=character,
@@ -180,7 +178,7 @@ async def draw_gi_build_card(
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     else:
-        await download_images(urls, "gi-build-card", draw_input.session)
+        await download_images(urls, draw_input.session)
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.draw_genshin_card,
@@ -196,9 +194,7 @@ async def draw_gi_build_card(
 
 async def draw_gi_notes_card(draw_input: DrawInput, notes: genshin.models.Notes) -> BytesIO:
     await download_images(
-        [exped.character_icon for exped in notes.expeditions],
-        folder="gi-notes",
-        session=draw_input.session,
+        [exped.character_icon for exped in notes.expeditions], session=draw_input.session
     )
     return await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -215,7 +211,7 @@ async def draw_farm_card(draw_input: DrawInput, farm_data: list[FarmData]) -> Fi
         + [c.icon for data in farm_data for c in data.characters]
         + [w.icon for data in farm_data for w in data.weapons]
     )
-    await download_images(image_urls, folder="farm", session=draw_input.session)
+    await download_images(image_urls, session=draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.draw_farm_card,
@@ -237,7 +233,7 @@ async def draw_gi_characters_card(
     urls: list[str] = [c.weapon.icon for c in characters if not isinstance(c, UnownedGICharacter)]
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
-    await download_images(urls, "gi-characters", draw_input.session)
+    await download_images(urls, draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.genshin.draw_character_card,
@@ -264,7 +260,7 @@ async def draw_hsr_characters_card(
         urls.append(c.equip.icon)
     urls.extend(pc_icons[str(c.id)] for c in characters if str(c.id) in pc_icons)
 
-    await download_images(urls, "hsr-characters", draw_input.session)
+    await download_images(urls, draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.hsr.draw_character_card,
@@ -305,7 +301,7 @@ async def draw_spiral_abyss_card(
                 abyss.ranks.strongest_strike[0],
             )
         )
-    await download_images(urls, "abyss", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     traveler = next((c for c in characters if c.id in TRAVELER_IDS), None)
     card = funcs.genshin.SpiralAbyssCard(
@@ -334,7 +330,7 @@ async def draw_moc_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_images(icons, "moc", draw_input.session)
+        await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor, funcs.hsr.moc.MOCCard(data, season, draw_input.locale, uid).draw
@@ -351,7 +347,7 @@ async def draw_pure_fiction_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_images(icons, "pf", draw_input.session)
+        await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -366,7 +362,7 @@ async def draw_apc_shadow_card(
 ) -> File:
     for floor in data.floors:
         icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
-        await download_images(icons, "apc-shadow", draw_input.session)
+        await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -402,7 +398,7 @@ async def draw_img_theater_card(
     for act in data.acts:
         icons.extend(character_icons.get(str(chara.id), "") for chara in act.characters)
 
-    await download_images(icons, "img-theater", draw_input.session)
+    await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -540,14 +536,7 @@ async def draw_zzz_build_card(
         urls.append(agent.w_engine.icon)
 
     agent_special_stats = agent_special_stat_map.get(str(agent.id), [])
-
-    if template == 3:
-        folder = "zzz-team-card"
-    elif template == 4:
-        folder = "zzz-build-card4"
-    else:  # 1, 2
-        folder = "zzz-build-card"
-    await download_images(urls, folder, draw_input.session)
+    await download_images(urls, draw_input.session)
 
     if template == 3:
         card = funcs.zzz.ZZZTeamCard(
@@ -602,7 +591,7 @@ async def draw_zzz_characters_card(
         if isinstance(agent, ZZZFullAgent | ZZZEnkaCharacter) and agent.w_engine is not None:
             urls.append(agent.w_engine.icon)
 
-    await download_images(urls, "zzz-characters", draw_input.session)
+    await download_images(urls, draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.zzz.draw_big_agent_card,
@@ -621,7 +610,7 @@ async def draw_honkai_suits_card(draw_input: DrawInput, suits: Sequence[FullBatt
         urls.extend((suit.tall_icon.replace(" ", ""), suit.weapon.icon))
         urls.extend(stig.icon for stig in suit.stigmata)
 
-    await download_images(urls, "honkai-characters", draw_input.session, ignore_error=True)
+    await download_images(urls, draw_input.session, ignore_error=True)
 
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
@@ -649,7 +638,7 @@ async def draw_zzz_team_card(
     urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
     urls.extend(draw_data.disc_icons.values())
-    await download_images(urls, "zzz-team-card", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.zzz.ZZZTeamCard(
         locale=draw_input.locale,
@@ -687,7 +676,7 @@ async def draw_hsr_team_card(
         else:
             urls.extend(stat.icon for stat in character.stats)
 
-    await download_images(urls, "hsr-team-card", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.hsr.HSRTeamCard(
         locale=draw_input.locale,
@@ -710,7 +699,7 @@ async def draw_gi_team_card(
         urls.extend(artifact.icon for artifact in character.artifacts)
         urls.append(character.weapon.icon)
 
-    await download_images(urls, "gi-team-card", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.genshin.GITeamCard(
         locale=draw_input.locale,
@@ -755,7 +744,7 @@ async def draw_shiyu_card(
         for character in floor.node_1.characters + floor.node_2.characters
     ]
     urls.extend(bangboo.icon for bangboo in bangboos)
-    await download_images(urls, "shiyu", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.zzz.ShiyuDefenseCard(shiyu, agent_ranks, uid, locale=draw_input.locale)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -779,7 +768,7 @@ async def draw_block_list_card(
             else:
                 urls.extend((block.icon1, block.icon2))
 
-    await download_images(urls, "block-list", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.block_list.BlockListCard(block_lists, dark_mode=draw_input.dark_mode)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -797,7 +786,7 @@ async def draw_assault_card(
         urls.extend(agent.icon for agent in challenge.agents)
         if challenge.bangboo is not None:
             urls.append(challenge.bangboo.icon)
-    await download_images(urls, "assault", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.zzz.AssaultCard(data, draw_input.locale, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -813,7 +802,7 @@ async def draw_hard_challenge(
     for challenge in challenges:
         urls.append(challenge.enemy.icon)
         urls.extend(char.icon for char in challenge.team)
-    await download_images(urls, "hard-challenge", draw_input.session)
+    await download_images(urls, draw_input.session)
 
     card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale, mode=mode)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)

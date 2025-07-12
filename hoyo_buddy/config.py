@@ -29,6 +29,7 @@ class Config(BaseSettings):
     db_url: str
     fernet_key: str
     proxy: str
+    redis_url: str | None = None
 
     # Command-line arguments
     search: bool = False

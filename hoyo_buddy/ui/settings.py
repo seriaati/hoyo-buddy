@@ -37,14 +37,14 @@ class SettingsUI(View):
 
     def get_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
-        embed.set_image(url="attachment://brand.png")
+        embed.set_image(url="attachment://brand.webp")
         return embed
 
     def get_brand_image_file(self, interaction_locale: Locale) -> discord.File:
         theme = "DARK" if self.settings.dark_mode else "LIGHT"
         locale = self.settings.locale or interaction_locale
         filename = self.get_brand_img_filename(theme, locale)
-        return discord.File(filename, filename="brand.png")
+        return discord.File(filename, filename="brand.webp")
 
     async def update_ui_and_save_settings(self, i: Interaction, *, translate: bool = False) -> None:
         if translate:

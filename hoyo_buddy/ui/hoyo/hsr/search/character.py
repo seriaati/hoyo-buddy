@@ -12,9 +12,8 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
-from hoyo_buddy.ui.paginator import PaginatorView
+from hoyo_buddy.ui.paginator import PaginatorView, paginate_content
 from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.misc import paginate_content
 
 if TYPE_CHECKING:
     from discord import Member, User

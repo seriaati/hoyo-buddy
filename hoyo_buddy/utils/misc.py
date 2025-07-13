@@ -7,7 +7,6 @@ import hashlib
 import math
 import pathlib
 import re
-import textwrap
 import time
 from contextlib import contextmanager
 from functools import wraps
@@ -33,7 +32,6 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
 from hoyo_buddy.enums import Game
-from hoyo_buddy.ui.paginator import Page
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -647,41 +645,3 @@ def shorten_preserving_newlines(text: str, width: int, placeholder: str = "...")
             return paragraph[:max_len].rstrip() + placeholder
 
     return truncated
-
-
-def paginate_content(content: str, *, max_width: int = 2000) -> list[Page]:
-    paragraphs = content.split("\n\n")
-    all_content: list[str] = []
-
-    for paragraph in paragraphs:
-        if paragraph.strip():  # Skip empty paragraphs
-            # Wrap each paragraph while preserving its structure
-            wrapped_paragraph = textwrap.fill(paragraph.replace("\n", " "), width=max_width)
-            all_content.append(wrapped_paragraph)
-
-    # Join paragraphs back with double newlines and split into pages
-    full_content = "\n\n".join(all_content)
-
-    # If content is still too long, split into chunks
-    if len(full_content) <= max_width:
-        return [Page(content=full_content)]
-
-    # Split into chunks while trying to preserve paragraph boundaries
-    chunks = []
-    current_chunk = ""
-
-    for paragraph in all_content:
-        if len(current_chunk) + len(paragraph) + 2 <= max_width:  # +2 for \n\n
-            if current_chunk:
-                current_chunk += "\n\n" + paragraph
-            else:
-                current_chunk = paragraph
-        else:
-            if current_chunk:
-                chunks.append(current_chunk)
-            current_chunk = paragraph
-
-    if current_chunk:
-        chunks.append(current_chunk)
-
-    return [Page(content=chunk) for chunk in chunks]

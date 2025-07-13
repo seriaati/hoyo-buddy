@@ -13,9 +13,8 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, PaginatorSelect, Select, SelectOption, View
-from hoyo_buddy.ui.paginator import PaginatorView
+from hoyo_buddy.ui.paginator import PaginatorView, paginate_content
 from hoyo_buddy.utils import remove_html_tags
-from hoyo_buddy.utils.misc import paginate_content
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

@@ -85,8 +85,6 @@ def cleanup_worker() -> None:
 
 
 class HoyoBuddy(commands.AutoShardedBot):
-    owner_id: int
-
     def __init__(
         self,
         *,
@@ -120,7 +118,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.env = config.env
         self.deployment = config.deployment
         self.nai_client: NAIClient | None = None
-        self.owner_id = 410036441129943050
         self.pool = pool
         self.config = config
         self.cache = LFUCache()

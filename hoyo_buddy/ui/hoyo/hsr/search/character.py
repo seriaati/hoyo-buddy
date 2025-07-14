@@ -12,6 +12,7 @@ from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
+from hoyo_buddy.ui.paginator import PaginatorView, paginate_content
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -44,6 +45,7 @@ class CharacterUI(View):
         self._sub_skill_embeds: list[DefaultEmbed] = []
         self._eidolon_embeds: list[DefaultEmbed] = []
         self._story_embeds: list[DefaultEmbed] = []
+        self._story_texts: list[str] = []
         self._voice_embeds: list[DefaultEmbed] = []
         self._character_embed: DefaultEmbed | None = None
 
@@ -118,7 +120,11 @@ class CharacterUI(View):
                     api.get_character_eidolon_embed(skill) for skill in character_detail.eidolons
                 ]
                 self._story_embeds = [
-                    api.get_character_story_embed(story)
+                    api.get_character_story_embed(story)[0]
+                    for story in character_detail.script.stories
+                ]
+                self._story_texts = [
+                    api.get_character_story_embed(story)[1]
                     for story in character_detail.script.stories
                 ]
                 self._voice_embeds = [
@@ -190,6 +196,7 @@ class CharacterUI(View):
                 )
             case 4:
                 embed = self._story_embeds[self._story_index]
+                self.add_item(ViewStoryContentButton(self._story_texts[self._story_index]))
                 self.add_item(
                     ItemSelector(
                         [
@@ -485,3 +492,16 @@ class VoiceSelector(PaginatorSelect[CharacterUI]):
         self.view._voice_index = int(self.values[0])
         await self.view.update(i)
         return None
+
+
+class ViewStoryContentButton(Button[CharacterUI]):
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            label=LocaleStr(key="events_view_content_label"), style=ButtonStyle.blurple
+        )
+        self.content = content
+
+    async def callback(self, i: Interaction) -> Any:
+        pages = paginate_content(self.content)
+        view = PaginatorView(pages, author=i.user, locale=self.view.locale)
+        await view.start(i, followup=True, ephemeral=True)

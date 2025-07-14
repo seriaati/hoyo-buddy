@@ -97,7 +97,8 @@ class Others(commands.Cog):
         )
 
         # developer
-        owner = i.client.get_user(i.client.owner_id) or await i.client.fetch_user(i.client.owner_id)
+        seria_id = 410036441129943050
+        owner = i.client.get_user(seria_id) or await i.client.fetch_user(seria_id)
         embed.add_field(
             name=LocaleStr(key="about_command.developer"),
             value=get_discord_user_md_link(owner),

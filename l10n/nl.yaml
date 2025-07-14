@@ -148,7 +148,7 @@ error_footer: "Je kunt hulp vinden in onze Discord-server, link in /about"
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
 days: dagen
-exceptions.card_not_ready_error.message: "Als er nieuwe karakters worden uitgebracht, moet ik de kleuren voor hun bouwkaarten opgeven.\nAls je dit bericht enkele dagen na een game-update ziet, laat het me dan weten in de [Discord-Server](https://link.seria.moe/hb-dc) want misschien ben ik het vergeten."
+exceptions.card_not_ready_error.message: "Als er nieuwe karakters worden uitgebracht, moet ik de kleuren voor hun build kaarten opgeven.\nAls je dit bericht enkele dagen na een game-update ziet, laat het me dan weten in de [Discord-Server](https://link.seria.moe/hb-dc) want misschien ben ik het vergeten."
 exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
 exped.embed.description: Eén (of meer) expedities zijn voltooid
 exped_button.label: Expeditie herinnering
@@ -352,8 +352,9 @@ profile.image_select.default_collection.label: "Hoyo Buddy Collectie ({num})"
 profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
 profile.player_info.button.label: Speler info
+profile_gi_embed_ar: Adventure Rank
+profile_gi_embed_world_level: Wereld Niveau
 profile.player_info.embed.description: "Trailblaze Niveau: {level}\nEquilibrium Niveau: {world_level}\nAantal Vrienden: {friend_count}\nLight Cone: {light_cones}\nKarakters: {characters}\nPrestaties: {achievements}\n"
-profile.player_info.gi.embed.description: "Adventure Rank: {adventure_rank}\nSpiral Abyss: {spiral_abyss}\nPrestaties: {achievements}\n"
 profile.player_info.hoyolab.embed.description: "Trailblaze Niveau: {level}\nKarakters: {characters}\nKisten: {chest}\nMemory of Chaos: {moc}\nPrestaties: {achievements}\n"
 profile.primary_color.button.label: Kleur wijzigen
 profile.primary_color_modal.color.label: Kleur (hex code)
@@ -612,6 +613,8 @@ banner_type_standard_channel: Stable Channel
 banner_type_exclusive_channel: Exclusive Channel
 banner_type_w_engine_channel: W-Engine Channel
 banner_type_bangboo_channel: Bangboo Channel
+banner_type_fgo_character: Karakter Collaboration Warp
+banner_type_fgo_light_cone: Light Cone Collaboration Warp
 cancel_button_label: Annuleren
 gacha_view_filter_size_field_label: Items per pagina
 gacha_view_page_field_label: Pagina
@@ -819,3 +822,6 @@ hard_challenge_advantage: "Zwak tegen"
 hard_challenge_disadvantage: "Sterk tegen"
 hard_challenge_command_desc: Genereer Stygian Onslaught kaart
 hard_challenge: "Stygian Onslaught"
+fetching_accounts: Wacht even terwijl we je accounts ophalen...
+fetching_accounts_stuck: "Als je vastloopt op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
+aaa_acronym: AAA

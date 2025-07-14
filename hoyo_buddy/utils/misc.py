@@ -621,3 +621,27 @@ def handle_autocomplete_errors(func: Callable) -> Callable:
             return []
 
     return wrapper
+
+
+def shorten_preserving_newlines(text: str, width: int, placeholder: str = "...") -> str:
+    if len(text) <= width:
+        return text
+
+    # Try to truncate at a paragraph boundary first
+    paragraphs = text.split("\n\n")
+    truncated = ""
+
+    for paragraph in paragraphs:
+        # Check if adding this paragraph would exceed the limit
+        test_text = truncated + ("\n\n" if truncated else "") + paragraph
+        if len(test_text) + len(placeholder) <= width:
+            truncated = test_text
+        else:
+            # If we have some content, use it
+            if truncated:
+                return truncated + placeholder
+            # Otherwise, truncate within the first paragraph
+            max_len = width - len(placeholder)
+            return paragraph[:max_len].rstrip() + placeholder
+
+    return truncated

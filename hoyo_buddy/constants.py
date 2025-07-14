@@ -525,11 +525,7 @@ ZZZ_AVATAR_BATTLE_TEMP_JSON = "zzz_avatar_battle_temp.json"
 
 ZZZ_AGENT_CORE_LEVEL_MAP = {1: "0", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "F"}
 
-ZZZ_RARITY_NUM_TO_RARITY = {
-    4: 'S',
-    3: 'A',
-    2: 'B'
-}
+ZZZ_RARITY_NUM_TO_RARITY = {4: "S", 3: "A", 2: "B"}
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
@@ -592,23 +588,19 @@ LOCALE_TO_STARRAIL_DATA_LANG: dict[Locale, str] = {
 ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY = {
     enka.zzz.StatType.CRIT_RATE_FLAT: genshin.models.ZZZPropertyType.CRIT_RATE,
     enka.zzz.StatType.CRIT_DMG_FLAT: genshin.models.ZZZPropertyType.CRIT_DMG,
-
     enka.zzz.StatType.ANOMALY_PRO_FLAT: genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY,
     enka.zzz.StatType.ANOMALY_MASTERY_PERCENT: genshin.models.ZZZPropertyType.ANOMALY_MASTERY,
     enka.zzz.StatType.ENERGY_REGEN_PERCENT: genshin.models.ZZZPropertyType.ENERGY_REGEN,
     enka.zzz.StatType.IMPACT_PERCENT: genshin.models.ZZZPropertyType.IMPACT,
-
     enka.zzz.StatType.ATK_BASE: genshin.models.ZZZPropertyType.BASE_ATK,
     enka.zzz.StatType.HP_FLAT: genshin.models.ZZZPropertyType.FLAT_HP,
     enka.zzz.StatType.ATK_FLAT: genshin.models.ZZZPropertyType.FLAT_ATK,
     enka.zzz.StatType.DEF_FLAT: genshin.models.ZZZPropertyType.FLAT_DEF,
     enka.zzz.StatType.PEN_FLAT: genshin.models.ZZZPropertyType.FLAT_PEN,
-
     enka.zzz.StatType.HP_PERCENT: genshin.models.ZZZPropertyType.HP_PERCENT,
     enka.zzz.StatType.ATK_PERCENT: genshin.models.ZZZPropertyType.ATK_PERCENT,
     enka.zzz.StatType.DEF_PERCENT: genshin.models.ZZZPropertyType.DEF_PERCENT,
     enka.zzz.StatType.PEN_RATIO_FLAT: genshin.models.ZZZPropertyType.PEN_PERCENT,
-
     enka.zzz.StatType.PHYSICAL_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_PHYSICAL_DMG_BONUS,
     enka.zzz.StatType.FIRE_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_FIRE_DMG_BONUS,
     enka.zzz.StatType.ICE_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ICE_DMG_BONUS,
@@ -622,7 +614,7 @@ ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY = {
     enka.zzz.ProfessionType.ANOMALY: genshin.models.ZZZSpecialty.ANOMALY,
     enka.zzz.ProfessionType.SUPPORT: genshin.models.ZZZSpecialty.SUPPORT,
     enka.zzz.ProfessionType.DEFENSE: genshin.models.ZZZSpecialty.DEFENSE,
-    enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE
+    enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE,
 }
 
 ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
@@ -632,6 +624,16 @@ ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
     enka.zzz.SkillType.SPECIAL_ATK: genshin.models.ZZZSkillType.SPECIAL_ATTACK,
     enka.zzz.SkillType.ULTIMATE: genshin.models.ZZZSkillType.CHAIN_ATTACK,
     enka.zzz.SkillType.CORE_SKILL: genshin.models.ZZZSkillType.CORE_SKILL,
+}
+
+ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
+    enka.zzz.Element.PHYSICAL: genshin.models.ZZZElementType.PHYSICAL,
+    enka.zzz.Element.FIRE: genshin.models.ZZZElementType.FIRE,
+    enka.zzz.Element.ICE: genshin.models.ZZZElementType.ICE,
+    enka.zzz.Element.ELECTRIC: genshin.models.ZZZElementType.ELECTRIC,
+    enka.zzz.Element.ETHER: genshin.models.ZZZElementType.ETHER,
+    enka.zzz.Element.FIRE_FROST: genshin.models.ZZZElementType.ICE,  # Miyabi element
+    enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
 }
 
 

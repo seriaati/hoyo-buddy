@@ -23,7 +23,7 @@ from hoyo_buddy.models import (
     UnownedHSRCharacter,
     UnownedZZZCharacter,
     ZZZDrawData,
-    ZZZEnkaCharacter
+    ZZZEnkaCharacter,
 )
 
 from .static import download_images
@@ -428,7 +428,10 @@ def _get_images_path(template: Literal[1, 2], use_m3_art: bool) -> str:
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter], *, template: Literal[1, 2, 3, 4], use_m3_art: bool = False
+    agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
+    *,
+    template: Literal[1, 2, 3, 4],
+    use_m3_art: bool = False,
 ) -> ZZZDrawData:
     name_datas_path = "zzz_name_data.json"
     name_datas: dict[int, dict[str, str]] = await JSONFile.read(name_datas_path, int_key=True)

@@ -7,7 +7,7 @@ import aiohttp
 import akasha
 import enka
 from discord import File
-from genshin.models import ZZZPartialAgent
+from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from loguru import logger
 
 from hoyo_buddy.constants import (
@@ -35,9 +35,10 @@ from hoyo_buddy.exceptions import (
     FeatureNotImplementedError,
     ThirdPartyCardTempError,
 )
+from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
+from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
@@ -86,7 +87,7 @@ class ProfileView(View):
         hoyolab_gi_user: PartialGenshinUserStats | None = None,
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
-        zzz_data: Sequence[ZZZPartialAgent] | None = None,
+        zzz_data: Sequence[ZZZPartialAgent | ZZZEnkaCharacter] | None = None,
         zzz_enka_data: enka.zzz.ShowcaseResponse | None = None,
         zzz_user: RecordCard | None = None,
         account: HoyoAccount | None,
@@ -189,7 +190,7 @@ class ProfileView(View):
         if data is not None:
             for chara in data.agents:
                 enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = chara
+                self.characters[str(chara.id)] = GenshinClient.convert_zzz_character(chara)
 
         for chara in self.zzz_data:
             if str(chara.id) not in enka_chara_ids:
@@ -264,6 +265,14 @@ class ProfileView(View):
 
             embed.set_thumbnail(url=player.profile_picture_icon.circle)
             embed.set_image(url=player.namecard.full)
+            if player.signature:
+                embed.set_footer(text=player.signature)
+        elif self.zzz_enka_data is not None:
+            player = self.zzz_enka_data.player
+            level_str = LevelStr(player.level).translate(self.locale)
+            embed = DefaultEmbed(
+                self.locale, title=f"{player.nickname} ({uid_str})", description=f"{level_str}"
+            )
             if player.signature:
                 embed.set_footer(text=player.signature)
         elif self.hoyolab_gi_user is not None:
@@ -516,12 +525,18 @@ class ProfileView(View):
         self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
-        assert isinstance(character, ZZZPartialAgent)
-        assert self._account is not None
+        assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
 
-        client = self._account.client
-        client.set_lang(self.locale)
-        agent = await client.get_zzz_agent_info(character.id)
+        # NOTE: This line is for testing new characters' templates
+        character_id = character.id
+        agent: ZZZFullAgent | ZZZEnkaCharacter | None = None
+
+        if self._account is not None:
+            client = self._account.client
+            client.set_lang(self.locale)
+            agent = await client.get_zzz_agent_info(character.id)
+        else:
+            agent = character
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         exc = CardNotReadyError(agent.name)
@@ -637,12 +652,7 @@ class ProfileView(View):
         characters = [self.characters[char_id] for char_id in self.character_ids]
 
         if self.game is Game.ZZZ:
-            assert self._account is not None
-            client = self._account.client
-            client.set_lang(self.locale)
-            agents = [
-                await client.get_zzz_agent_info(int(char_id)) for char_id in self.character_ids
-            ]
+            agents = characters
 
             agent_card_settings = {
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
@@ -716,13 +726,15 @@ class ProfileView(View):
         raise FeatureNotImplementedError(game=self.game)
 
     async def add_default_hl_substats(self, user_id: int) -> None:
-        if self.zzz_data is None:
-            return
+        character_ids: list[int] = []
 
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON
         )
         character_ids = [agent.id for agent in self.zzz_data]
+
+        if self.zzz_enka_data is not None:
+            character_ids.extend([agent.id for agent in self.zzz_enka_data.agents])
 
         for character_id in character_ids:
             card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)

@@ -7,16 +7,20 @@ from genshin import GenshinException
 
 from hoyo_buddy.draw.card_data import CARD_DATA
 
-from ..exceptions import InvalidQueryError
 from ..hoyo.clients.enka.gi import EnkaGIClient
 from ..hoyo.clients.enka.hsr import EnkaHSRClient
 from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
-    import discord
-    from genshin.models import PartialGenshinUserStats, StarRailUserStats, ZZZPartialAgent, RecordCard
-
     from collections.abc import Sequence
+
+    import discord
+    from genshin.models import (
+        PartialGenshinUserStats,
+        RecordCard,
+        StarRailUserStats,
+        ZZZPartialAgent,
+    )
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
@@ -153,7 +157,9 @@ class ProfileCommand:
             try:
                 if enka_data is None:
                     record_cards = await client.get_record_cards()
-                    zzz_user = next((card for card in record_cards if card.uid == self._account.uid), None)
+                    zzz_user = next(
+                        (card for card in record_cards if card.uid == self._account.uid), None
+                    )
                 zzz_data = await client.get_zzz_agents()
             except GenshinException:
                 if enka_data is None:

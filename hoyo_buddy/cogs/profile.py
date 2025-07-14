@@ -207,7 +207,7 @@ class Profile(
         account: app_commands.Transform[
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["profile zzz"].games)
         ] = None,
-        uid: app_commands.Range[str, 9, 10] | None = None,
+        uid: app_commands.Range[str, 8, 10] | None = None,
         character_id1: str | None = None,
         character_id2: str | None = None,
         character_id3: str | None = None,

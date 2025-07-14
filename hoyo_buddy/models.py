@@ -249,11 +249,13 @@ class AgentNameData(BaseModel):
     full_name: str
     short_name: str
 
+
 @dataclass(kw_only=True)
 class ZZZEnkaCharacter:
     id: int
     name: str
     level: int
+    element: genshin.models.ZZZElementType
     w_engine: genshin.models.WEngine
     discs: list[genshin.models.ZZZDisc]
     rank: int
@@ -262,11 +264,12 @@ class ZZZEnkaCharacter:
     @property
     def base_icon_url(self) -> str:
         return "https://act-webstatic.hoyoverse.com/game_record/zzzv2"
-    
+
     @property
     def banner_icon(self) -> str:
         """Example: https://act-webstatic.hoyoverse.com/game_record/zzz/role_vertical_painting/role_vertical_painting_1131.png"""
         return f"{self.base_icon_url}/role_vertical_painting/role_vertical_painting_{self.id}.png"
+
 
 class ZZZDrawData(BaseModel):
     name_data: dict[int, AgentNameData]

@@ -129,7 +129,9 @@ class ZZZTeamCard:
 
         return im
 
-    def _draw_disc_drives(self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_disc_drives(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         start_pos = (926, 21)
         y_diff = 94
         disc_mask = drawer.open_asset("disc_mask.png")
@@ -259,7 +261,9 @@ class ZZZTeamCard:
             drawer.write(text, size=26, position=start_pos, style="bold", anchor="mm")
             start_pos = (669, 214 + 53) if i == 2 else (start_pos[0] + 99, start_pos[1])
 
-    def _draw_w_engine(self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_w_engine(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         engine = agent.w_engine
         assert engine is not None
 
@@ -310,7 +314,9 @@ class ZZZTeamCard:
             text, size=16, position=(849, 140), anchor="mm", style="bold_italic", color=WHITE
         )
 
-    def _draw_stats(self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_stats(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         props = get_props(agent)
         start_pos = (299, 31)
         agent_color = self._agent_colors[agent.id]

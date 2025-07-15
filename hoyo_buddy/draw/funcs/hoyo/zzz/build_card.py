@@ -146,6 +146,7 @@ class ZZZAgentCard:
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Level
+        level_stroke = self._card_data.get("level_stroke", False)
         level_text = f"Lv.{self._agent.level}"
         tbox = drawer.write(
             level_text,
@@ -153,6 +154,8 @@ class ZZZAgentCard:
             size=250,
             color=(41, 41, 41),
             style="black_italic",
+            stroke_color=(255, 255, 255) if level_stroke else None,
+            stroke_width=7 if level_stroke else 0,
         )
 
         # Media rank

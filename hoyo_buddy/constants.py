@@ -30,6 +30,7 @@ from .enums import (
 )
 
 if TYPE_CHECKING:
+    from hoyo_buddy.models import ZZZStat
     from hoyo_buddy.types import AutoTaskType, OpenGameGame, OpenGameRegion, SleepTime
 
 
@@ -525,7 +526,7 @@ ZZZ_AVATAR_BATTLE_TEMP_JSON = "zzz_avatar_battle_temp.json"
 
 ZZZ_AGENT_CORE_LEVEL_MAP = {1: "0", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "F"}
 
-ZZZ_RARITY_NUM_TO_RARITY = {4: "S", 3: "A", 2: "B"}
+ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2: "B"}
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
@@ -606,15 +607,6 @@ ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY = {
     enka.zzz.StatType.ICE_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ICE_DMG_BONUS,
     enka.zzz.StatType.ELECTRIC_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ELECTRIC_DMG_BONUS,
     enka.zzz.StatType.ETHER_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ETHER_DMG_BONUS,
-}
-
-ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY = {
-    enka.zzz.ProfessionType.STUN: genshin.models.ZZZSpecialty.STUN,
-    enka.zzz.ProfessionType.ATTACK: genshin.models.ZZZSpecialty.ATTACK,
-    enka.zzz.ProfessionType.ANOMALY: genshin.models.ZZZSpecialty.ANOMALY,
-    enka.zzz.ProfessionType.SUPPORT: genshin.models.ZZZSpecialty.SUPPORT,
-    enka.zzz.ProfessionType.DEFENSE: genshin.models.ZZZSpecialty.DEFENSE,
-    enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE,
 }
 
 ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
@@ -838,7 +830,7 @@ DISC_SUBSTAT_VALUES: dict[Literal["B", "A", "S"], dict[genshin.models.ZZZPropert
 
 
 def get_disc_substat_roll_num(
-    disc_rarity: Literal["B", "A", "S"], prop: genshin.models.ZZZProperty
+    disc_rarity: Literal["B", "A", "S"], prop: genshin.models.ZZZProperty | ZZZStat
 ) -> int:
     if not isinstance(prop.type, genshin.models.ZZZPropertyType):
         return 0

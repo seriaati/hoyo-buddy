@@ -243,6 +243,7 @@ class UnownedZZZCharacter(BaseModel):
     faction_name: str
     rank: int = 0
     banner_icon: str
+    w_engine: WEngine | None = None
 
 
 class AgentNameData(BaseModel):
@@ -256,11 +257,11 @@ class ZZZEnkaCharacter:
     name: str
     level: int
     element: genshin.models.ZZZElementType
-    w_engine: genshin.models.WEngine | None = None
-    properties: list[genshin.models.ZZZAgentProperty]
-    discs: list[genshin.models.ZZZDisc]
+    w_engine: WEngine | None = None
+    properties: list[ZZZStat]
+    discs: list[ZZZDiscDrive]
     rank: int
-    skills: list[genshin.models.AgentSkill]
+    skills: list[ZZZSkill]
 
     @property
     def base_icon_url(self) -> str:
@@ -268,8 +269,41 @@ class ZZZEnkaCharacter:
 
     @property
     def banner_icon(self) -> str:
-        """Example: https://act-webstatic.hoyoverse.com/game_record/zzz/role_vertical_painting/role_vertical_painting_1131.png"""
+        """Example: https://act-webstatic.hoyoverse.com/game_record/zzzv2/role_vertical_painting/role_vertical_painting_1131.png"""
         return f"{self.base_icon_url}/role_vertical_painting/role_vertical_painting_{self.id}.png"
+
+
+@dataclass(kw_only=True)
+class WEngine:
+    icon: str
+    level: int
+    refinement: int
+    name: str
+    main_properties: list[ZZZStat]
+    properties: list[ZZZStat]
+
+
+@dataclass(kw_only=True)
+class ZZZDiscDrive:
+    id: int
+    level: int
+    main_properties: list[ZZZStat]
+    properties: list[ZZZStat]
+    rarity: Literal["B", "A", "S"]
+    position: int
+
+
+@dataclass(kw_only=True)
+class ZZZStat:
+    name: str
+    type: genshin.models.ZZZPropertyType
+    value: str
+
+
+@dataclass(kw_only=True)
+class ZZZSkill:
+    level: int
+    type: genshin.models.ZZZSkillType
 
 
 class ZZZDrawData(BaseModel):

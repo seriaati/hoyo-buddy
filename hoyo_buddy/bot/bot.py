@@ -17,7 +17,7 @@ import psutil
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
-from seria.utils import write_json  # pyright: ignore[reportMissingImports]
+from seria.utils import write_json
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.commands.configs import COMMANDS

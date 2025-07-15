@@ -26,7 +26,6 @@ from hoyo_buddy.constants import (
     POST_REPLIES,
     ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
     ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
-    ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY,
     ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
     ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY,
     ZZZ_RARITY_NUM_TO_RARITY,
@@ -362,80 +361,62 @@ class GenshinClient(ProxyGenshinClient):
     @staticmethod
     def convert_zzz_character(agent: enka.zzz.Agent) -> models.ZZZEnkaCharacter:
         """Convert Agent from enka.zzz to ZZZEnkaCharacter that's used for drawing cards."""
-        w_engine: genshin.models.WEngine | None = None
+        w_engine: models.WEngine | None = None
         if agent.w_engine is not None:
-            w_engine = genshin.models.WEngine(
-                id=agent.w_engine.id,
-                level=agent.w_engine.level,
-                name=agent.w_engine.name,
+            w_engine = models.WEngine(
                 icon=agent.w_engine.icon,
-                star=agent.w_engine.phase,
-                rarity=ZZZ_RARITY_NUM_TO_RARITY[agent.w_engine.rarity_num],
+                level=agent.w_engine.level,
+                refinement=agent.w_engine.phase,
+                name=agent.w_engine.name,
                 properties=[
-                    genshin.models.ZZZProperty(
-                        property_name=agent.w_engine.sub_stat.name,
-                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
-                        base=agent.w_engine.sub_stat.formatted_value,
+                    models.ZZZStat(
+                        name=agent.w_engine.sub_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
+                        value=agent.w_engine.sub_stat.formatted_value,
                     )
                 ],
                 main_properties=[
-                    genshin.models.ZZZProperty(
-                        property_name=agent.w_engine.main_stat.name,
-                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[
-                            agent.w_engine.main_stat.type
-                        ],
-                        base=agent.w_engine.main_stat.formatted_value,
+                    models.ZZZStat(
+                        name=agent.w_engine.main_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.main_stat.type],
+                        value=agent.w_engine.main_stat.formatted_value,
                     )
                 ],
-                talent_title="",
-                talent_content="",
-                profession=ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY[agent.w_engine.specialty],
             )
         props = [
-            genshin.models.ZZZAgentProperty(
-                property_name=stat.name,
-                property_id=ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY[stat_type],
-                base=stat.formatted_value,
-                add="",
-                final="",
+            models.ZZZStat(
+                name=stat.name,
+                type=ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY[stat_type],
+                value=stat.formatted_value,
             )
             for stat_type, stat in agent.stats.items()
         ]
         discs = [
-            genshin.models.ZZZDisc(
+            models.ZZZDiscDrive(
                 id=disc.id,
                 level=disc.level,
-                name=str(disc.uid),
-                icon="",
-                rarity=ZZZ_RARITY_NUM_TO_RARITY[disc.rarity_num],
                 main_properties=[
-                    genshin.models.ZZZProperty(
-                        property_name=disc.main_stat.name,
-                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[disc.main_stat.type],
-                        base=disc.main_stat.formatted_value,
+                    models.ZZZStat(
+                        name=disc.main_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[disc.main_stat.type],
+                        value=disc.main_stat.formatted_value,
                     )
                 ],
                 properties=[
-                    genshin.models.ZZZProperty(
-                        property_name=prop.name,
-                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[prop.type],
-                        base=prop.formatted_value,
+                    models.ZZZStat(
+                        name=prop.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[prop.type],
+                        value=prop.formatted_value,
                     )
                     for prop in disc.sub_stats
                 ],
-                equip_suit=genshin.models.DiscSetEffect(
-                    suit_id=disc.set_id, name="", own=0, desc1="", desc2=""
-                ),
-                equipment_type=disc.slot,
+                rarity=ZZZ_RARITY_NUM_TO_RARITY[disc.rarity_num],
+                position=disc.slot,
             )
             for disc in agent.discs
         ]
         skills = [
-            genshin.models.AgentSkill(
-                level=skill.level,
-                skill_type=ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE[skill.type],
-                items=[],
-            )
+            models.ZZZSkill(level=skill.level, type=ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE[skill.type])
             for skill in agent.skills
         ]
         return models.ZZZEnkaCharacter(

@@ -30,28 +30,28 @@ class CardData:
         if self._zzz is None:
             msg = "ZZZ card data is not loaded"
             raise ValueError(msg)
-        return self._zzz
+        return self._zzz.copy()
 
     @property
     def zzz2(self) -> dict[str, Any]:
         if self._zzz2 is None:
             msg = "ZZZ temp2 card data is not loaded"
             raise ValueError(msg)
-        return self._zzz2
+        return self._zzz2.copy()
 
     @property
     def gi(self) -> dict[str, Any]:
         if self._gi is None:
             msg = "GI card data is not loaded"
             raise ValueError(msg)
-        return self._gi
+        return self._gi.copy()
 
     @property
     def hsr(self) -> dict[str, Any]:
         if self._hsr is None:
             msg = "HSR card data is not loaded"
             raise ValueError(msg)
-        return self._hsr
+        return self._hsr.copy()
 
 
 CARD_DATA = CardData()

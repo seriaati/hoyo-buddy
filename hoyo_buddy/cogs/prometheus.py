@@ -81,8 +81,15 @@ class PrometheusCog(commands.Cog):
         self.set_metrics_loop_accounts.cancel()
 
     async def start_prometheus_server(self) -> None:
-        prometheus_client.start_http_server(9637)
-        logger.info("Prometheus server started on port 9637")
+        try:
+            prometheus_client.start_http_server(9637)
+        except OSError as e:
+            if e.errno == 98:  # Address already in use
+                logger.warning("Prometheus server is already running on port 9637")
+            else:
+                logger.error(f"Failed to start Prometheus server: {e}")
+        else:
+            logger.info("Prometheus server started on port 9637")
 
     @tasks.loop(seconds=5)
     async def set_metrics_loop(self) -> None:

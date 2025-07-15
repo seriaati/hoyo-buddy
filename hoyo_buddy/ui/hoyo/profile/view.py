@@ -506,31 +506,36 @@ class ProfileView(View):
         assert isinstance(character, ZZZPartialAgent)
         assert self._account is not None
 
-        # NOTE: This line is for testing new characters' templates
-        character_id = character.id
-
         client = self._account.client
         client.set_lang(self.locale)
         agent = await client.get_zzz_agent_info(character.id)
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        exc = CardNotReadyError(agent.name)
+
         if template_num == 2:
-            agent_temp2_data = CARD_DATA.zzz2.copy().get(str(character_id))
+            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
             if agent_temp2_data is None:
-                raise CardNotReadyError(character.name)
+                raise exc
 
             if not agent_temp2_data.get("color"):
-                agent_temp1_data = self._card_data.get(str(character_id))
+                agent_temp1_data = self._card_data.get(str(agent.id))
                 if agent_temp1_data is None:
-                    raise CardNotReadyError(character.name)
+                    raise exc
                 agent_temp2_data["color"] = agent_temp1_data["color"]
             agent_temp_data = agent_temp2_data
         else:
             # 1, 3, 4
-            agent_temp_data = self._card_data.get(str(character_id))
+            agent_temp_data: dict[str, Any] | None = self._card_data.get(str(agent.id))
+
+            if agent_temp_data is not None and agent.outfit_id is not None:
+                agent_outfit_data = self._card_data.get(f"{agent.id}_{agent.outfit_id}")
+                if agent_outfit_data is None:
+                    raise exc
+                agent_temp_data.update(agent_outfit_data)
 
         if agent_temp_data is None:
-            raise CardNotReadyError(character.name)
+            raise exc
 
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON

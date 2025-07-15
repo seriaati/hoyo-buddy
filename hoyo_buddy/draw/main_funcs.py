@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import ambr
 import enka
@@ -420,6 +420,12 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO
     )
 
 
+def _get_images_path(template: Literal[1, 2], use_m3_art: bool) -> str:
+    if template == 2:
+        return "zzz_m3_cinema_art.json" if use_m3_art else "zzz_m6_cinema_art.json"
+    return "zzz_images.json"
+
+
 async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4], use_m3_art: bool = False
 ) -> ZZZDrawData:
@@ -430,13 +436,12 @@ async def fetch_zzz_draw_data(
     disc_icons: dict[int, str] = await JSONFile.read(disc_icons_path, int_key=True)
 
     agent_images: dict[int, str] = {}
-    if template == 2:
-        agent_images_path = "zzz_m3_cinema_art.json" if use_m3_art else "zzz_m2_cinema_art.json"
-    elif template == 1:
-        agent_images_path = "zzz_images.json"
+    if template in {1, 2}:
+        template = cast("Literal[1, 2]", template)
+        agent_images_path = _get_images_path(template, use_m3_art)
+        agent_images = await JSONFile.read(agent_images_path, int_key=True)
     else:  # 3, 4
-        agent_images_path = "zzz_banner_icons.json"
-    agent_images = await JSONFile.read(agent_images_path, int_key=True)
+        agent_images = {agent.id: agent.banner_icon for agent in agents}
 
     fetch_name_data = False
     fetch_disc_icons = False
@@ -445,8 +450,12 @@ async def fetch_zzz_draw_data(
     for agent in agents:
         if agent.id not in name_datas:
             fetch_name_data = True
-        if agent.id not in agent_images:
+
+        if agent.id not in agent_images or (
+            template == 1 and agent.outfit_id is not None and agent.outfit_id not in agent_images
+        ):
             fetch_agent_images = True
+
         for disc in agent.discs:
             if disc.id not in disc_icons:
                 fetch_disc_icons = True
@@ -474,19 +483,21 @@ async def fetch_zzz_draw_data(
             await JSONFile.write(name_datas_path, name_datas)
 
         # Fetch agent images
-        if fetch_agent_images:
+        if fetch_agent_images and template in {1, 2}:
+            template = cast("Literal[1, 2]", template)
             characters = await api.fetch_characters()
+
             if template == 2:
                 agent_images = {
                     char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
                     for char in characters
                 }
-            elif template == 1:
+            else:  # template == 1
                 agent_images = {char.id: char.image for char in characters}
-            else:
-                # 3, 4
-                agent_images = {agent.id: agent.banner_icon for agent in agents}
+                skin_images = {skin.id: skin.image for char in characters for skin in char.skins}
+                agent_images.update(skin_images)
 
+            agent_images_path = _get_images_path(template, use_m3_art)
             await JSONFile.write(agent_images_path, agent_images)
 
         # Fetch disc icons
@@ -524,7 +535,9 @@ async def draw_zzz_build_card(
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 
-    if template in {1, 2}:
+    if template == 1:
+        image = draw_data.agent_images[agent.outfit_id or agent.id]
+    elif template == 2:
         image = draw_data.agent_images[agent.id]
     else:  # 3, 4
         image = custom_image or draw_data.agent_images[agent.id]

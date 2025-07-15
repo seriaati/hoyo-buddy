@@ -4,6 +4,7 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal
 
 import aiohttp
+from numpy import isin
 import akasha
 import enka
 from discord import File
@@ -531,12 +532,15 @@ class ProfileView(View):
         character_id = character.id
         agent: ZZZFullAgent | ZZZEnkaCharacter | None = None
 
-        if self._account is not None:
+        if isinstance(character, ZZZEnkaCharacter):
+            agent = character
+        else:
+            if self._account is None:
+                raise ValueError("Cannot fetch full agent details without a logged-in account.")
+
             client = self._account.client
             client.set_lang(self.locale)
             agent = await client.get_zzz_agent_info(character.id)
-        else:
-            agent = character
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
         exc = CardNotReadyError(agent.name)
@@ -652,7 +656,15 @@ class ProfileView(View):
         characters = [self.characters[char_id] for char_id in self.character_ids]
 
         if self.game is Game.ZZZ:
-            agents = characters
+            agents: list[ZZZFullAgent | ZZZEnkaCharacter] = []
+            for char_id in self.character_ids:
+                if isinstance(self.characters[char_id], ZZZPartialAgent):
+                    assert self._account is not None
+                    client = self._account.client
+                    client.set_lang(self.locale)
+                    agents.append(await client.get_zzz_agent_info(int(char_id)))
+                else:
+                    agents.append(self.characters[char_id])
 
             agent_card_settings = {
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)

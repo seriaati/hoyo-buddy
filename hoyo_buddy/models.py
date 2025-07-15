@@ -256,7 +256,8 @@ class ZZZEnkaCharacter:
     name: str
     level: int
     element: genshin.models.ZZZElementType
-    w_engine: genshin.models.WEngine
+    w_engine: genshin.models.WEngine | None = None
+    properties: list[genshin.models.ZZZAgentProperty]
     discs: list[genshin.models.ZZZDisc]
     rank: int
     skills: list[genshin.models.AgentSkill]

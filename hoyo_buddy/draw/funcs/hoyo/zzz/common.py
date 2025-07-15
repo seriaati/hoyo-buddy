@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from discord import utils as dutils
 from genshin.models import (
@@ -12,6 +12,9 @@ from genshin.models import (
 )
 
 from hoyo_buddy.enums import Locale
+
+if TYPE_CHECKING:
+    from hoyo_buddy.models import ZZZEnkaCharacter
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc and w-engine
@@ -82,7 +85,9 @@ PEN_NAME: Final[dict[Locale, str]] = {
 }
 
 
-def get_props(agent: ZZZFullAgent, *, locale: Locale | None = None) -> list[ZZZAgentProperty]:
+def get_props(
+    agent: ZZZFullAgent | ZZZEnkaCharacter, *, locale: Locale | None = None
+) -> list[ZZZAgentProperty]:
     pen = dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN)
     if pen is None:
         # Calculate flat pen from discs

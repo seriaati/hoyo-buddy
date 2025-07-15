@@ -24,6 +24,7 @@ from hoyo_buddy.constants import (
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
+    ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
     ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
     ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY,
     ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
@@ -361,31 +362,45 @@ class GenshinClient(ProxyGenshinClient):
     @staticmethod
     def convert_zzz_character(agent: enka.zzz.Agent) -> models.ZZZEnkaCharacter:
         """Convert Agent from enka.zzz to ZZZEnkaCharacter that's used for drawing cards."""
-        w_engine = genshin.models.WEngine(
-            id=agent.w_engine.id,
-            level=agent.w_engine.level,
-            name=agent.w_engine.name,
-            icon=agent.w_engine.icon,
-            star=agent.w_engine.phase,
-            rarity=ZZZ_RARITY_NUM_TO_RARITY[agent.w_engine.rarity_num],
-            properties=[
-                genshin.models.ZZZProperty(
-                    property_name=agent.w_engine.sub_stat.name,
-                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
-                    base=agent.w_engine.sub_stat.formatted_value,
-                )
-            ],
-            main_properties=[
-                genshin.models.ZZZProperty(
-                    property_name=agent.w_engine.main_stat.name,
-                    property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.main_stat.type],
-                    base=agent.w_engine.main_stat.formatted_value,
-                )
-            ],
-            talent_title="",
-            talent_content="",
-            profession=ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY[agent.w_engine.specialty],
-        )
+        w_engine: genshin.models.WEngine | None = None
+        if agent.w_engine is not None:
+            w_engine = genshin.models.WEngine(
+                id=agent.w_engine.id,
+                level=agent.w_engine.level,
+                name=agent.w_engine.name,
+                icon=agent.w_engine.icon,
+                star=agent.w_engine.phase,
+                rarity=ZZZ_RARITY_NUM_TO_RARITY[agent.w_engine.rarity_num],
+                properties=[
+                    genshin.models.ZZZProperty(
+                        property_name=agent.w_engine.sub_stat.name,
+                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
+                        base=agent.w_engine.sub_stat.formatted_value,
+                    )
+                ],
+                main_properties=[
+                    genshin.models.ZZZProperty(
+                        property_name=agent.w_engine.main_stat.name,
+                        property_id=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[
+                            agent.w_engine.main_stat.type
+                        ],
+                        base=agent.w_engine.main_stat.formatted_value,
+                    )
+                ],
+                talent_title="",
+                talent_content="",
+                profession=ZZZ_ENKA_PROFESSION_TO_GPY_ZZZSPECIALTY[agent.w_engine.specialty],
+            )
+        props = [
+            genshin.models.ZZZAgentProperty(
+                property_name=stat.name,
+                property_id=ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY[stat_type],
+                base=stat.formatted_value,
+                add="",
+                final="",
+            )
+            for stat_type, stat in agent.stats.items()
+        ]
         discs = [
             genshin.models.ZZZDisc(
                 id=disc.id,
@@ -429,6 +444,7 @@ class GenshinClient(ProxyGenshinClient):
             level=agent.level,
             element=ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE[agent.elements[0]],
             w_engine=w_engine,
+            properties=props,
             discs=discs,
             rank=agent.mindscape,
             skills=skills,

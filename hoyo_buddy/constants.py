@@ -636,6 +636,28 @@ ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
 }
 
+ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
+    enka.zzz.AgentStatType.MAX_HP: genshin.models.ZZZPropertyType.AGENT_HP,
+    enka.zzz.AgentStatType.ATK: genshin.models.ZZZPropertyType.AGENT_ATK,
+    enka.zzz.AgentStatType.DEF: genshin.models.ZZZPropertyType.AGENT_DEF,
+    enka.zzz.AgentStatType.IMPACT: genshin.models.ZZZPropertyType.AGENT_IMPACT,
+    enka.zzz.AgentStatType.CRIT_RATE: genshin.models.ZZZPropertyType.AGENT_CRIT_RATE,
+    enka.zzz.AgentStatType.CRIT_DMG: genshin.models.ZZZPropertyType.AGENT_CRIT_DMG,
+    enka.zzz.AgentStatType.ANOMALY_PROFICIENCY: genshin.models.ZZZPropertyType.ANOMALY_PROFICIENCY,
+    enka.zzz.AgentStatType.ANOMALY_MASTERY: genshin.models.ZZZPropertyType.ANOMALY_MASTERY,
+    enka.zzz.AgentStatType.PEN_RATIO: genshin.models.ZZZPropertyType.AGENT_PEN_RATIO,
+    enka.zzz.AgentStatType.PEN: genshin.models.ZZZPropertyType.AGENT_PEN,
+    enka.zzz.AgentStatType.ENERGY_REGEN: genshin.models.ZZZPropertyType.AGENT_ENERGY_GEN,
+    enka.zzz.AgentStatType.SHEER_FORCE: genshin.models.ZZZPropertyType.AGENT_SHEER_FORCE,
+    enka.zzz.AgentStatType.AAA: genshin.models.ZZZPropertyType.AGENT_ADRENALINE,
+    enka.zzz.AgentStatType.PHYSICAL_DMG_BONUS: genshin.models.ZZZPropertyType.PHYSICAL_DMG_BONUS,
+    enka.zzz.AgentStatType.FIRE_DMG_BONUS: genshin.models.ZZZPropertyType.FIRE_DMG_BONUS,
+    enka.zzz.AgentStatType.ICE_DMG_BONUS: genshin.models.ZZZPropertyType.ICE_DMG_BONUS,
+    enka.zzz.AgentStatType.ELECTRIC_DMG_BONUS: genshin.models.ZZZPropertyType.ELECTRIC_DMG_BONUS,
+    enka.zzz.AgentStatType.ETHER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,
+    enka.zzz.AgentStatType.SHEER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,  # for yi xuan?
+}
+
 
 def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")

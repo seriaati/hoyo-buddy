@@ -429,6 +429,7 @@ class GenshinClient(ProxyGenshinClient):
             discs=discs,
             rank=agent.mindscape,
             skills=skills,
+            outfit_id=agent.skin_id
         )
 
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:

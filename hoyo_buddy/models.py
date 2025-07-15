@@ -261,7 +261,8 @@ class ZZZEnkaCharacter:
     properties: list[ZZZStat]
     discs: list[ZZZDiscDrive]
     rank: int
-    skills: list[ZZZSkill]
+    skills: list[genshin.models.AgentSkill]
+    outfit_id: int | None
 
     @property
     def base_icon_url(self) -> str:

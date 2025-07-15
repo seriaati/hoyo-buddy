@@ -2,11 +2,11 @@ name: Biweekly Release
 
 on:
   schedule:
-    - cron: '0 0 1,15 * *'
+    - cron: "0 0 1,15 * *"
   workflow_dispatch:
 
 jobs:
-  create-release:
+  biweekly-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,6 +18,6 @@ jobs:
         uses: seriaati/update-ver-num@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: Create release
         uses: seriaati/create-release@main

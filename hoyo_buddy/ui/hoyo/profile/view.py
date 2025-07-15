@@ -535,7 +535,8 @@ class ProfileView(View):
             agent = character
         else:
             if self._account is None:
-                raise ValueError
+                msg = "Cannot fetch full agent details without a logged-in account."
+                raise ValueError(msg)
 
             client = self._account.client
             client.set_lang(self.locale)

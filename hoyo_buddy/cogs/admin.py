@@ -186,58 +186,8 @@ class Admin(commands.Cog):
         locale_count = {item["locale"]: item["count"] for item in locale_count_list}
         locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
 
-    @commands.command(name="set-card-settings-game")
-    async def set_card_settings_game(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
-            return
-
-        await ctx.send("Starting...")
-
-        settings = await CardSettings.all()
-        logger.info(f"Checking {len(settings)} settings...")
-
-        for setting in settings:
-            if setting.game is None and len(setting.character_id) == len("10000050"):
-                setting.game = Game.GENSHIN
-                await setting.save(update_fields=("game",))
-
-        await ctx.send("Done.")
-
-    @commands.command(name="fill-lb")
-    async def fill_lb_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
-            return
         user_count = await User.all().count()
 
-        await ctx.send("Filling leaderboard...")
-
-        cmd = LeaderboardCommand()
-        accounts = await HoyoAccount.all()
-
-        game_lb_types = {
-            Game.GENSHIN: (
-                LeaderboardType.ABYSS_DMG,
-                LeaderboardType.THEATER_DMG,
-                LeaderboardType.MAX_FRIENDSHIP,
-                LeaderboardType.CHEST,
-                LeaderboardType.ACHIEVEMENT,
-            ),
-            Game.STARRAIL: (LeaderboardType.CHEST, LeaderboardType.ACHIEVEMENT),
-            Game.ZZZ: (LeaderboardType.ACHIEVEMENT,),
-            Game.HONKAI: (LeaderboardType.ACHIEVEMENT,),
-        }
-
-        for account in accounts:
-            logger.info(f"Updating leaderboard data for {account}")
-            for lb_type in game_lb_types.get(account.game, ()):
-                try:
-                    await cmd.update_lb_data(pool=self.bot.pool, lb_type=lb_type, account=account)
-                except Exception as e:
-                    self.bot.capture_exception(e)
-
-                await asyncio.sleep(0.5)
-
-        await ctx.send("Done.")
         await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
 
     @commands.command(name="reset-dismissible", aliases=["rd"])

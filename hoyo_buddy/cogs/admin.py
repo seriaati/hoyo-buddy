@@ -142,38 +142,49 @@ class Admin(commands.Cog):
             return
 
         # Account metrics
-        accs = await HoyoAccount.all()
-        acc_region_count: defaultdict[genshin.Region, int] = defaultdict(int)
-        acc_game_count: defaultdict[Game, int] = defaultdict(int)
-
-        for acc in accs:
-            acc_region_count[acc.client.region] += 1
-            acc_game_count[acc.game] += 1
-
-        acc_region_msg = "\n".join(
-            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        acc_game_counts_list = (
+            await HoyoAccount.all()
+            .group_by("game")
+            .annotate(count=Count("id"))
+            .values("game", "count")
         )
+        acc_game_count = {item["game"]: item["count"] for item in acc_game_counts_list}
         acc_game_msg = "\n".join(
             [f"{game.name}: {count}" for game, count in acc_game_count.items()]
         )
 
+        acc_region_counts_list = (
+            await HoyoAccount.all()
+            .group_by("region")
+            .annotate(count=Count("id"))
+            .values("region", "count")
+        )
+        acc_region_count = {item["region"]: item["count"] for item in acc_region_counts_list}
+        acc_region_msg = "\n".join(
+            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        )
+
         guild_count = len(self.bot.guilds)
+        account_count = await HoyoAccount.all().count()
+
         await ctx.send(
-            f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```\nTotal accounts: {len(accs)}"
+            f"Guilds: {guild_count}\n"
+            "Accounts by region:\n"
+            f"```{acc_region_msg}```\n"
+            "Accounts by game:\n"
+            f"```{acc_game_msg}```\n"
+            f"Total accounts: {account_count}"
         )
 
         # User metrics
-        users = await User.all()
-        settings = await Settings.all()
-        locale_count: defaultdict[str, int] = defaultdict(int)
-        for setting in settings:
-            if setting.locale is None:
-                continue
-            locale_count[setting.locale.value] += 1
-
-        user_count = len(users)
+        locale_count_list = (
+            await Settings.all()
+            .group_by("locale")
+            .annotate(count=Count("id"))
+            .values("locale", "count")
+        )
+        locale_count = {item["locale"]: item["count"] for item in locale_count_list}
         locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
-        await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
 
     @commands.command(name="set-card-settings-game")
     async def set_card_settings_game(self, ctx: commands.Context, deployment: Deployment) -> Any:
@@ -196,6 +207,7 @@ class Admin(commands.Cog):
     async def fill_lb_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
         if deployment != self.bot.deployment:
             return
+        user_count = await User.all().count()
 
         await ctx.send("Filling leaderboard...")
 
@@ -226,6 +238,7 @@ class Admin(commands.Cog):
                 await asyncio.sleep(0.5)
 
         await ctx.send("Done.")
+        await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(
@@ -242,13 +255,23 @@ class Admin(commands.Cog):
         if self.bot.deployment != "main":
             return
 
-        users = await User.all()
-        dismissibles: defaultdict[str, int] = defaultdict(int)
-        for user in users:
-            for dismissible in user.dismissibles:
-                dismissibles[dismissible] += 1
+        raw_sql = """
+            SELECT
+                element,
+                COUNT(*) AS count
+            FROM
+                "user", -- Note: table name is usually singular
+                jsonb_array_elements_text(dismissibles) AS T(element)
+            GROUP BY
+                element;
+        """
+        conn = Tortoise.get_connection("default")
+        results = await conn.execute_query_dict(raw_sql)
+        dismissible_count = {item["element"]: item["count"] for item in results}
 
-        msg = "\n".join([f"{dismissible}: {count}" for dismissible, count in dismissibles.items()])
+        msg = "\n".join(
+            [f"{dismissible}: {count}" for dismissible, count in dismissible_count.items()]
+        )
         await ctx.send(f"Dismissibles:\n```{msg}```")
 
     @commands.command(name="update-version", aliases=["uv"])

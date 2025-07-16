@@ -184,11 +184,11 @@ class Admin(commands.Cog):
         # User metrics
         locale_count_list = (
             await Settings.all()
-            .group_by("locale")
+            .group_by("lang")
             .annotate(count=Count("id"))
-            .values("locale", "count")
+            .values("lang", "count")
         )
-        locale_count = {item["locale"]: item["count"] for item in locale_count_list}
+        locale_count = {item["lang"]: item["count"] for item in locale_count_list}
         locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
 
         user_count = await User.all().count()

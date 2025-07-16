@@ -553,7 +553,6 @@ dyk_settings_theme: Puedes cambiar entre el tema claro y oscuro usando /settings
 dyk_security: "Tenemos un [artículo](<:docs/Account-Security:>) sobre la seguridad de la cuenta"
 dyk_github: "Hoyo Buddy es de código abierto en [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy está codificado puramente en Python
-dyk_unreleased: Puedes ver contenido no lanzado del juego con /search
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
 title_dyk: "¿Sabías que...?"

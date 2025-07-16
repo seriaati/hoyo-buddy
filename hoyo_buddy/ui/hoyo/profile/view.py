@@ -528,7 +528,7 @@ class ProfileView(View):
         assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
 
         # NOTE: This line is for testing new characters' templates
-        character_id = character.id
+        # character_id = character.id
         agent: ZZZFullAgent | ZZZEnkaCharacter | None = None
 
         if isinstance(character, ZZZEnkaCharacter):

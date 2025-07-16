@@ -261,7 +261,7 @@ class ZZZEnkaCharacter:
     properties: list[ZZZStat]
     discs: list[ZZZDiscDrive]
     rank: int
-    skills: list[genshin.models.AgentSkill]
+    skills: list[ZZZSkill]
     outfit_id: int | None
 
     @property

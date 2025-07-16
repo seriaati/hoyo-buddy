@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.l10n import LevelStr
+from hoyo_buddy.models import ZZZEnkaCharacter
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 
 def draw_agent_small_card(
-    agent: ZZZFullAgent | UnownedZZZCharacter,
+    agent: ZZZFullAgent | ZZZEnkaCharacter | UnownedZZZCharacter,
     *,
     dark_mode: bool,
     locale: Locale,
@@ -60,7 +61,7 @@ def draw_agent_small_card(
 
     # W-engine
     im.paste(engine_block, (588, 45), engine_block)
-    if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
+    if isinstance(agent, ZZZFullAgent | ZZZEnkaCharacter) and agent.w_engine is not None:
         icon = drawer.open_static(agent.w_engine.icon, size=(268, 268))
         im.paste(icon, (593, 49), icon)
 
@@ -76,7 +77,7 @@ def draw_agent_small_card(
 
     # Skill
     im.paste(skill_bar, (457, 362), skill_bar)
-    if isinstance(agent, ZZZFullAgent):
+    if isinstance(agent, ZZZFullAgent | ZZZEnkaCharacter):
         skill_order = (
             ZZZSkillType.BASIC_ATTACK,
             ZZZSkillType.DODGE,
@@ -111,7 +112,9 @@ def draw_agent_small_card(
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZFullAgent | UnownedZZZCharacter], dark_mode: bool, locale: Locale
+    agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter | UnownedZZZCharacter],
+    dark_mode: bool,
+    locale: Locale,
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"

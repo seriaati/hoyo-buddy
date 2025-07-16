@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from genshin.models import ZZZFullAgent
 
-    from hoyo_buddy.models import AgentNameData
+    from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 
 
 class ZZZTeamCard:
@@ -27,7 +27,7 @@ class ZZZTeamCard:
         self,
         *,
         locale: str,
-        agents: Sequence[ZZZFullAgent],
+        agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
         agent_colors: dict[int, str],
         agent_images: dict[int, str],
         name_datas: dict[int, AgentNameData],
@@ -85,7 +85,7 @@ class ZZZTeamCard:
 
         return card
 
-    def _draw_agent_card(self, agent: ZZZFullAgent) -> Image.Image:
+    def _draw_agent_card(self, agent: ZZZFullAgent | ZZZEnkaCharacter) -> Image.Image:
         im = self._draw_card(
             image_url=self._agent_images[agent.id],
             blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id]),
@@ -129,7 +129,9 @@ class ZZZTeamCard:
 
         return im
 
-    def _draw_disc_drives(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_disc_drives(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         start_pos = (926, 21)
         y_diff = 94
         disc_mask = drawer.open_asset("disc_mask.png")
@@ -244,7 +246,7 @@ class ZZZTeamCard:
 
             start_pos = (1132, 21) if i == 2 else (start_pos[0], start_pos[1] + y_diff)
 
-    def _draw_skill_levels(self, agent: ZZZFullAgent, drawer: Drawer) -> None:
+    def _draw_skill_levels(self, agent: ZZZFullAgent | ZZZEnkaCharacter, drawer: Drawer) -> None:
         start_pos = (669, 214)
         for i, skill_type in enumerate(SKILL_ORDER):
             skill = dutils.get(agent.skills, type=skill_type)
@@ -259,7 +261,9 @@ class ZZZTeamCard:
             drawer.write(text, size=26, position=start_pos, style="bold", anchor="mm")
             start_pos = (669, 214 + 53) if i == 2 else (start_pos[0] + 99, start_pos[1])
 
-    def _draw_w_engine(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_w_engine(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         engine = agent.w_engine
         assert engine is not None
 
@@ -310,7 +314,9 @@ class ZZZTeamCard:
             text, size=16, position=(849, 140), anchor="mm", style="bold_italic", color=WHITE
         )
 
-    def _draw_stats(self, agent: ZZZFullAgent, im: Image.Image, drawer: Drawer) -> None:
+    def _draw_stats(
+        self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
+    ) -> None:
         props = get_props(agent)
         start_pos = (299, 31)
         agent_color = self._agent_colors[agent.id]

@@ -23,6 +23,7 @@ from hoyo_buddy.models import (
     UnownedHSRCharacter,
     UnownedZZZCharacter,
     ZZZDrawData,
+    ZZZEnkaCharacter,
 )
 
 from .static import download_images
@@ -427,7 +428,10 @@ def _get_images_path(template: Literal[1, 2], use_m3_art: bool) -> str:
 
 
 async def fetch_zzz_draw_data(
-    agents: Sequence[ZZZFullAgent], *, template: Literal[1, 2, 3, 4], use_m3_art: bool = False
+    agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
+    *,
+    template: Literal[1, 2, 3, 4],
+    use_m3_art: bool = False,
 ) -> ZZZDrawData:
     name_datas_path = "zzz_name_data.json"
     name_datas: dict[int, dict[str, str]] = await JSONFile.read(name_datas_path, int_key=True)
@@ -521,7 +525,7 @@ async def fetch_zzz_draw_data(
 
 async def draw_zzz_build_card(
     draw_input: DrawInput,
-    agent: ZZZFullAgent,
+    agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
     card_data: dict[str, Any],
     custom_color: str | None,
@@ -595,12 +599,12 @@ async def draw_zzz_build_card(
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | UnownedZZZCharacter]
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter | UnownedZZZCharacter]
 ) -> File:
     urls: list[str] = []
     for agent in agents:
         urls.append(agent.banner_icon)
-        if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
+        if isinstance(agent, ZZZFullAgent | ZZZEnkaCharacter) and agent.w_engine is not None:
             urls.append(agent.w_engine.icon)
 
     await download_images(urls, draw_input.session)
@@ -637,7 +641,7 @@ async def draw_honkai_suits_card(draw_input: DrawInput, suits: Sequence[FullBatt
 
 async def draw_zzz_team_card(
     draw_input: DrawInput,
-    agents: Sequence[ZZZFullAgent],
+    agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     agent_colors: dict[int, str],
     agent_custom_images: dict[int, str],
     show_substat_rolls: dict[int, bool],

@@ -24,6 +24,11 @@ from hoyo_buddy.constants import (
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
+    ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
+    ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
+    ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
+    ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY,
+    ZZZ_RARITY_NUM_TO_RARITY,
     contains_traveler_id,
     convert_fight_prop,
 )
@@ -351,6 +356,80 @@ class GenshinClient(ProxyGenshinClient):
                 hakushin.Game.HSR,
             ),
             path=GPY_PATH_TO_EKNA_PATH[c.path],
+        )
+
+    @staticmethod
+    def convert_zzz_character(agent: enka.zzz.Agent) -> models.ZZZEnkaCharacter:
+        """Convert Agent from enka.zzz to ZZZEnkaCharacter that's used for drawing cards."""
+        w_engine: models.WEngine | None = None
+        if agent.w_engine is not None:
+            w_engine = models.WEngine(
+                icon=agent.w_engine.icon,
+                level=agent.w_engine.level,
+                refinement=agent.w_engine.phase,
+                name=agent.w_engine.name,
+                properties=[
+                    models.ZZZStat(
+                        name=agent.w_engine.sub_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
+                        value=agent.w_engine.sub_stat.formatted_value,
+                    )
+                ],
+                main_properties=[
+                    models.ZZZStat(
+                        name=agent.w_engine.main_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.main_stat.type],
+                        value=agent.w_engine.main_stat.formatted_value,
+                    )
+                ],
+            )
+        props = [
+            models.ZZZStat(
+                name=stat.name,
+                type=ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY[stat_type],
+                value=stat.formatted_value,
+            )
+            for stat_type, stat in agent.stats.items()
+        ]
+        discs = [
+            models.ZZZDiscDrive(
+                id=disc.id,
+                level=disc.level,
+                main_properties=[
+                    models.ZZZStat(
+                        name=disc.main_stat.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[disc.main_stat.type],
+                        value=disc.main_stat.formatted_value,
+                    )
+                ],
+                properties=[
+                    models.ZZZStat(
+                        name=prop.name,
+                        type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[prop.type],
+                        value=prop.formatted_value,
+                    )
+                    for prop in disc.sub_stats
+                ],
+                rarity=ZZZ_RARITY_NUM_TO_RARITY[disc.rarity_num],
+                position=disc.slot,
+            )
+            for disc in agent.discs
+        ]
+        skills = [
+            models.ZZZSkill(level=skill.level, type=ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE[skill.type])
+            for skill in agent.skills
+        ]
+        return models.ZZZEnkaCharacter(
+            id=agent.id,
+            name=agent.name,
+            level=agent.level,
+            element=ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE[agent.elements[0]],
+            w_engine=w_engine,
+            properties=props,
+            discs=discs,
+            rank=agent.mindscape,
+            skills=skills,
+            outfit_id=agent.skin_id
         )
 
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:

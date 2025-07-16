@@ -53,6 +53,7 @@ Character: TypeAlias = (
     | enka.hsr.Character
     | genshin.models.ZZZPartialAgent
     | models.HoyolabGICharacter
+    | models.ZZZEnkaCharacter
 )
 HoyolabCharacter: TypeAlias = (
     models.HoyolabHSRCharacter | models.HoyolabGICharacter | genshin.models.ZZZPartialAgent

@@ -50,7 +50,7 @@ async def main() -> None:
 if __name__ == "__main__":
     entry_point("logs/hoyo_buddy.log")
     try:
-        import uvloop  # pyright: ignore[reportMissingImports]
+        import uvloop
     except ImportError:
         asyncio.run(main())
     else:

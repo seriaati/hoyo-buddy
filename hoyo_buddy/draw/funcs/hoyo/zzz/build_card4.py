@@ -16,13 +16,13 @@ from hoyo_buddy.l10n import LocaleStr
 if TYPE_CHECKING:
     from io import BytesIO
 
-    from hoyo_buddy.models import AgentNameData
+    from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 
 
 class ZZZAgentCard4:
     def __init__(
         self,
-        agent: ZZZFullAgent,
+        agent: ZZZFullAgent | ZZZEnkaCharacter,
         *,
         locale: Locale,
         image_url: str,

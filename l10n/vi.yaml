@@ -553,7 +553,6 @@ dyk_settings_theme: Bạn có thể đổi chế độ sáng/tối trong /settin
 dyk_security: "Chúng tôi có một [bài viết](<:docs/Account-Security:>) về bảo mật tài khoản"
 dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy được lập trình hoàn toàn bằng Python
-dyk_unreleased: Bạn có thể xem nôi dung trò chơi chưa ra mắt bằng /search
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 title_dyk: "Bạn có biết?"

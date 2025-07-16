@@ -553,7 +553,6 @@ dyk_settings_theme: Je kunt schakelen tussen licht en donker thema met /settings
 dyk_security: "We hebben een [article](<:docs/Account-Security:>) over accountbeveiliging"
 dyk_github: "Hoyo Buddy is open-sourced op [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy is gecodeerd in pure Python
-dyk_unreleased: Je kunt nog niet uitgebrachte gamecontent bekijken met /search
 dyk_team_card: Je kunt een teamkaart genereren in /profile door meerdere karakters te selecteren
 dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt om alle opdrachten in /accounts uit te voeren
 title_dyk: "Wist je dat?"

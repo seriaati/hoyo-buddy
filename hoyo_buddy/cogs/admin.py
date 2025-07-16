@@ -1,20 +1,18 @@
 from __future__ import annotations
 
 import asyncio
-from collections import defaultdict
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import genshin
 from discord.ext import commands
-from loguru import logger
 from seria.utils import write_json
+from tortoise import Tortoise
+from tortoise.functions import Count
 
-from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.config import Deployment
-from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
+from hoyo_buddy.db import HoyoAccount, Settings, User
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
-from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import add_to_hoyo_codes
 
@@ -36,6 +34,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="sync")
     async def sync_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         message = await ctx.send("Syncing commands...")
@@ -102,11 +101,17 @@ class Admin(commands.Cog):
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(
+        self, ctx: commands.Context, user_id: int | Literal["syrex", "chara"] | None = None
     ) -> Any:
         if self.bot.deployment != "main":
             return
 
         user_id = user_id or ctx.author.id
+        if user_id == "syrex":
+            user_id = 781848166458851328
+        elif user_id == "chara":
+            user_id = 674463869816799243
+
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
             await ctx.send("No accounts found for this user.")

@@ -97,7 +97,9 @@ class Schedule(commands.Cog):
 
         self.update_assets.cancel()
 
-    @commands.is_owner()
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await self.bot.is_owner(ctx.author)
+
     @commands.command(name="run-task", aliases=["rt"])
     async def run_task(self, ctx: commands.Context, deployment: Deployment) -> None:
         if deployment != self.bot.deployment:
@@ -178,7 +180,6 @@ class Schedule(commands.Cog):
 
         await JSONFile.write("sent_codes.json", sent_codes)
 
-    @commands.is_owner()
     @commands.command(name="send-codes", aliases=["sc"])
     async def send_codes(self, ctx: commands.Context, deployment: Deployment) -> None:
         """Send codes to the configured channels."""
@@ -207,7 +208,6 @@ class Schedule(commands.Cog):
         supporter_ids = [member.id for member in supporter_role.members]
         await JSONFile.write("supporter_ids.json", supporter_ids)
 
-    @commands.is_owner()
     @commands.command(name="update-supporter-ids", aliases=["usi"])
     async def update_supporter_ids_command(
         self, ctx: commands.Context, deployment: Deployment

@@ -1,20 +1,18 @@
 from __future__ import annotations
 
 import asyncio
-from collections import defaultdict
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import genshin
 from discord.ext import commands
-from loguru import logger
 from seria.utils import write_json
+from tortoise import Tortoise
+from tortoise.functions import Count
 
-from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.config import Deployment
-from hoyo_buddy.db import CardSettings, HoyoAccount, Settings, User
+from hoyo_buddy.db import HoyoAccount, Settings, User
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
-from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import add_to_hoyo_codes
 
@@ -35,8 +33,8 @@ class Admin(commands.Cog):
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
-    async def sync_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def sync_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         message = await ctx.send("Syncing commands...")
@@ -87,10 +85,8 @@ class Admin(commands.Cog):
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
-    async def add_codes_command(
-        self, ctx: commands.Context, deployment: Deployment, game: genshin.Game, codes: str
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
+        if self.bot.deployment != "main":
             return
 
         message = await ctx.send("Adding codes...")
@@ -105,12 +101,17 @@ class Admin(commands.Cog):
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
+        self, ctx: commands.Context, user_id: int | Literal["syrex", "chara"] | None = None
     ) -> Any:
-        if deployment != self.bot.deployment:
+        if self.bot.deployment != "main":
             return
 
         user_id = user_id or ctx.author.id
+        if user_id == "syrex":
+            user_id = 781848166458851328
+        elif user_id == "chara":
+            user_id = 674463869816799243
+
         accounts = await HoyoAccount.filter(user_id=user_id).all()
         if not accounts:
             await ctx.send("No accounts found for this user.")
@@ -125,10 +126,8 @@ class Admin(commands.Cog):
         await ctx.send(msg)
 
     @commands.command(name="get-cookies", aliases=["gc"])
-    async def get_cookies_command(
-        self, ctx: commands.Context, deployment: Deployment, account_id: int
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def get_cookies_command(self, ctx: commands.Context, account_id: int) -> Any:
+        if self.bot.deployment != "main":
             return None
 
         account = await HoyoAccount.get_or_none(id=account_id)
@@ -143,125 +142,96 @@ class Admin(commands.Cog):
         return None
 
     @commands.command(name="stats")
-    async def stats_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def stats_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         # Account metrics
-        accs = await HoyoAccount.all()
-        acc_region_count: defaultdict[genshin.Region, int] = defaultdict(int)
-        acc_game_count: defaultdict[Game, int] = defaultdict(int)
-
-        for acc in accs:
-            acc_region_count[acc.client.region] += 1
-            acc_game_count[acc.game] += 1
-
-        acc_region_msg = "\n".join(
-            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        acc_game_counts_list = (
+            await HoyoAccount.all()
+            .group_by("game")
+            .annotate(count=Count("id"))
+            .values("game", "count")
         )
+        acc_game_count = {item["game"]: item["count"] for item in acc_game_counts_list}
         acc_game_msg = "\n".join(
             [f"{game.name}: {count}" for game, count in acc_game_count.items()]
         )
 
+        acc_region_counts_list = (
+            await HoyoAccount.all()
+            .group_by("region")
+            .annotate(count=Count("id"))
+            .values("region", "count")
+        )
+        acc_region_count = {item["region"]: item["count"] for item in acc_region_counts_list}
+        acc_region_msg = "\n".join(
+            [f"{region.name}: {count}" for region, count in acc_region_count.items()]
+        )
+
         guild_count = len(self.bot.guilds)
+        account_count = await HoyoAccount.all().count()
+
         await ctx.send(
-            f"Guilds: {guild_count}\nAccounts by region:\n```{acc_region_msg}```\nAccounts by game:\n```{acc_game_msg}```\nTotal accounts: {len(accs)}"
+            f"Guilds: {guild_count}\n"
+            "Accounts by region:\n"
+            f"```{acc_region_msg}```\n"
+            "Accounts by game:\n"
+            f"```{acc_game_msg}```\n"
+            f"Total accounts: {account_count}"
         )
 
         # User metrics
-        users = await User.all()
-        settings = await Settings.all()
-        locale_count: defaultdict[str, int] = defaultdict(int)
-        for setting in settings:
-            if setting.locale is None:
-                continue
-            locale_count[setting.locale.value] += 1
-
-        user_count = len(users)
+        locale_count_list = (
+            await Settings.all()
+            .group_by("locale")
+            .annotate(count=Count("id"))
+            .values("locale", "count")
+        )
+        locale_count = {item["locale"]: item["count"] for item in locale_count_list}
         locale_msg = "\n".join([f"{locale}: {count}" for locale, count in locale_count.items()])
+
+        user_count = await User.all().count()
+
         await ctx.send(f"Users: {user_count}\nLocales:\n```{locale_msg}```")
-
-    @commands.command(name="set-card-settings-game")
-    async def set_card_settings_game(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
-            return
-
-        await ctx.send("Starting...")
-
-        settings = await CardSettings.all()
-        logger.info(f"Checking {len(settings)} settings...")
-
-        for setting in settings:
-            if setting.game is None and len(setting.character_id) == len("10000050"):
-                setting.game = Game.GENSHIN
-                await setting.save(update_fields=("game",))
-
-        await ctx.send("Done.")
-
-    @commands.command(name="fill-lb")
-    async def fill_lb_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
-            return
-
-        await ctx.send("Filling leaderboard...")
-
-        cmd = LeaderboardCommand()
-        accounts = await HoyoAccount.all()
-
-        game_lb_types = {
-            Game.GENSHIN: (
-                LeaderboardType.ABYSS_DMG,
-                LeaderboardType.THEATER_DMG,
-                LeaderboardType.MAX_FRIENDSHIP,
-                LeaderboardType.CHEST,
-                LeaderboardType.ACHIEVEMENT,
-            ),
-            Game.STARRAIL: (LeaderboardType.CHEST, LeaderboardType.ACHIEVEMENT),
-            Game.ZZZ: (LeaderboardType.ACHIEVEMENT,),
-            Game.HONKAI: (LeaderboardType.ACHIEVEMENT,),
-        }
-
-        for account in accounts:
-            logger.info(f"Updating leaderboard data for {account}")
-            for lb_type in game_lb_types.get(account.game, ()):
-                try:
-                    await cmd.update_lb_data(pool=self.bot.pool, lb_type=lb_type, account=account)
-                except Exception as e:
-                    self.bot.capture_exception(e)
-
-                await asyncio.sleep(0.5)
-
-        await ctx.send("Done.")
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
+        self, ctx: commands.Context, user_id: int | None = None
     ) -> Any:
-        if deployment != self.bot.deployment:
+        if self.bot.deployment != "main":
             return
 
         await User.filter(id=user_id or ctx.author.id).update(dismissibles=[])
         await ctx.send("Done.")
 
     @commands.command(name="dismissible-progress", aliases=["dp"])
-    async def dismissible_progress_command(
-        self, ctx: commands.Context, deployment: Deployment
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def dismissible_progress_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
-        users = await User.all()
-        dismissibles: defaultdict[str, int] = defaultdict(int)
-        for user in users:
-            for dismissible in user.dismissibles:
-                dismissibles[dismissible] += 1
+        raw_sql = """
+            SELECT
+                element,
+                COUNT(*) AS count
+            FROM
+                "user", -- Note: table name is usually singular
+                jsonb_array_elements_text(dismissibles) AS T(element)
+            GROUP BY
+                element;
+        """
+        conn = Tortoise.get_connection("default")
+        results = await conn.execute_query_dict(raw_sql)
+        dismissible_count = {item["element"]: item["count"] for item in results}
 
-        msg = "\n".join([f"{dismissible}: {count}" for dismissible, count in dismissibles.items()])
+        msg = "\n".join(
+            [f"{dismissible}: {count}" for dismissible, count in dismissible_count.items()]
+        )
         await ctx.send(f"Dismissibles:\n```{msg}```")
 
     @commands.command(name="update-version", aliases=["uv"])
-    async def update_version_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def update_version_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         await self.bot.update_version_activity()
@@ -276,10 +246,8 @@ class Admin(commands.Cog):
         await ctx.send("Card data reloaded.")
 
     @commands.command(name="get-settings", aliases=["gs"])
-    async def get_settings_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def get_settings_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+        if self.bot.deployment != "main":
             return None
 
         user_id = user_id or ctx.author.id

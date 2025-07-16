@@ -35,8 +35,7 @@ class Admin(commands.Cog):
         return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="sync")
-    async def sync_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def sync_command(self, ctx: commands.Context) -> Any:
             return
 
         message = await ctx.send("Syncing commands...")
@@ -87,10 +86,8 @@ class Admin(commands.Cog):
         await message.edit(content="Search autocomplete update task started.")
 
     @commands.command(name="add-codes", aliases=["ac"])
-    async def add_codes_command(
-        self, ctx: commands.Context, deployment: Deployment, game: genshin.Game, codes: str
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:
+        if self.bot.deployment != "main":
             return
 
         message = await ctx.send("Adding codes...")
@@ -105,9 +102,8 @@ class Admin(commands.Cog):
 
     @commands.command(name="get-accounts", aliases=["ga"])
     async def get_accounts_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
     ) -> Any:
-        if deployment != self.bot.deployment:
+        if self.bot.deployment != "main":
             return
 
         user_id = user_id or ctx.author.id
@@ -125,10 +121,8 @@ class Admin(commands.Cog):
         await ctx.send(msg)
 
     @commands.command(name="get-cookies", aliases=["gc"])
-    async def get_cookies_command(
-        self, ctx: commands.Context, deployment: Deployment, account_id: int
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def get_cookies_command(self, ctx: commands.Context, account_id: int) -> Any:
+        if self.bot.deployment != "main":
             return None
 
         account = await HoyoAccount.get_or_none(id=account_id)
@@ -143,8 +137,8 @@ class Admin(commands.Cog):
         return None
 
     @commands.command(name="stats")
-    async def stats_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def stats_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         # Account metrics
@@ -235,19 +229,17 @@ class Admin(commands.Cog):
 
     @commands.command(name="reset-dismissible", aliases=["rd"])
     async def reset_dismissible_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
+        self, ctx: commands.Context, user_id: int | None = None
     ) -> Any:
-        if deployment != self.bot.deployment:
+        if self.bot.deployment != "main":
             return
 
         await User.filter(id=user_id or ctx.author.id).update(dismissibles=[])
         await ctx.send("Done.")
 
     @commands.command(name="dismissible-progress", aliases=["dp"])
-    async def dismissible_progress_command(
-        self, ctx: commands.Context, deployment: Deployment
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def dismissible_progress_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         users = await User.all()
@@ -260,8 +252,8 @@ class Admin(commands.Cog):
         await ctx.send(f"Dismissibles:\n```{msg}```")
 
     @commands.command(name="update-version", aliases=["uv"])
-    async def update_version_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
-        if deployment != self.bot.deployment:
+    async def update_version_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
             return
 
         await self.bot.update_version_activity()
@@ -276,10 +268,8 @@ class Admin(commands.Cog):
         await ctx.send("Card data reloaded.")
 
     @commands.command(name="get-settings", aliases=["gs"])
-    async def get_settings_command(
-        self, ctx: commands.Context, deployment: Deployment, user_id: int | None = None
-    ) -> Any:
-        if deployment != self.bot.deployment:
+    async def get_settings_command(self, ctx: commands.Context, user_id: int | None = None) -> Any:
+        if self.bot.deployment != "main":
             return None
 
         user_id = user_id or ctx.author.id

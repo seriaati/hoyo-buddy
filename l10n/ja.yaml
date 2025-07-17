@@ -551,7 +551,6 @@ dyk_settings_theme: /settings を使用してライトテーマとダークテ�
 dyk_security: "アカウントのセキュリティに関する [記事](<:docs/Account-Security:>) があります"
 dyk_github: "Hoyo Buddyは [GitHub](<https://github.com/seriaati/hoyo-buddy>) でオープンソース化されています"
 dyk_python: Hoyo Buddyは純粋なPythonで書かれています
-dyk_unreleased: /search で未実装のゲームコンテンツを表示できます
 dyk_team_card: /profile で複数のキャラクターを選択することでチームカードを生成できます
 dyk_set_default_acc: /accounts ですべてのコマンドを実行するために使用されるデフォルトアカウントを設定できます
 title_dyk: "知っていましたか？"

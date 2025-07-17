@@ -62,7 +62,7 @@ class RunTaskView(ui.View):
             self.add_item(RunTaskButton(task))
 
     async def interaction_check(self, i: Interaction) -> bool:
-        return await i.client.is_owner(i.user)
+        return await i.client.is_owner(i.user, original=True)
 
     @ui.button(label="FarmChecker")
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
@@ -98,7 +98,7 @@ class Schedule(commands.Cog):
         self.update_assets.cancel()
 
     async def cog_check(self, ctx: commands.Context) -> bool:
-        return await self.bot.is_owner(ctx.author)
+        return await self.bot.is_owner(ctx.author, original=True)
 
     @commands.command(name="run-task", aliases=["rt"])
     async def run_task(self, ctx: commands.Context, deployment: Deployment) -> None:

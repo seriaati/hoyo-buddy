@@ -643,7 +643,9 @@ class HoyoBuddy(commands.AutoShardedBot):
         """The bot's current RAM usage in MB"""
         return self.process.memory_info().rss / 1024**2
 
-    async def is_owner(self, user: discord.User | discord.Member) -> bool:
-        if self.deployment != "main":
+    async def is_owner(
+        self, user: discord.User | discord.Member, *, original: bool = False
+    ) -> bool:
+        if not original and self.deployment != "main":
             return False
         return await super().is_owner(user)

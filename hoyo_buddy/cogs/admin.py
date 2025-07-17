@@ -30,7 +30,7 @@ class Admin(commands.Cog):
         self._tasks: set[asyncio.Task] = set()
 
     async def cog_check(self, ctx: Context) -> bool:
-        return await self.bot.is_owner(ctx.author)
+        return await self.bot.is_owner(ctx.author, original=True)
 
     @commands.command(name="sync")
     async def sync_command(self, ctx: commands.Context) -> Any:

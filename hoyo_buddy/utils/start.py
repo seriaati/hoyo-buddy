@@ -48,13 +48,6 @@ def init_sentry() -> None:
 
 
 def entry_point(log_dir: str) -> None:
-    try:
-        from icecream import install  # noqa: PLC0415
-    except ImportError:
-        pass
-    else:
-        install()
-
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
     if CONFIG.is_dev:

@@ -26,7 +26,7 @@ from hoyo_buddy.models import (
     ZZZEnkaCharacter,
 )
 
-from .static import download_images
+from .static import ZZZ_V2_GAME_RECORD, download_images
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -751,7 +751,9 @@ async def draw_shiyu_card(
     for floor in shiyu.floors:
         for character in floor.node_1.characters + floor.node_2.characters:
             if not hasattr(character, "icon"):
-                icon = f"https://act-webstatic.hoyoverse.com/game_record/zzzv2/role_square_avatar/role_square_avatar_{character.id}.png"
+                icon = str(
+                    ZZZ_V2_GAME_RECORD / f"role_square_avatar/role_square_avatar_{character.id}.png"
+                )
                 setattr(character, "icon", icon)  # noqa: B010
 
     urls = [

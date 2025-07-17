@@ -4,6 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING
 
 import aiofiles
+from yarl import URL
 
 from ..exceptions import DownloadImageFailedError
 from ..utils import get_static_img_path
@@ -16,9 +17,9 @@ if TYPE_CHECKING:
 
 __all__ = ("download_images",)
 
-ZZZ_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/zzz/"
-NAP_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/nap/"
-ZZZ_V2_GAME_RECORD = "https://act-webstatic.hoyoverse.com/game_record/zzzv2/"
+ZZZ_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/zzz/")
+NAP_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/nap/")
+ZZZ_V2_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/zzzv2/")
 
 
 async def download_image_task(
@@ -30,11 +31,11 @@ async def download_image_task(
 ) -> None:
     async with session.get(image_url) as resp:
         if resp.status != 200:
-            if ZZZ_GAME_RECORD in image_url:
-                image_url = image_url.replace(ZZZ_GAME_RECORD, ZZZ_V2_GAME_RECORD)
+            if str(ZZZ_GAME_RECORD) in image_url:
+                image_url = image_url.replace(str(ZZZ_GAME_RECORD), str(ZZZ_V2_GAME_RECORD))
                 return await download_image_task(image_url, file_path, session)
-            if NAP_GAME_RECORD in image_url:
-                image_url = image_url.replace(NAP_GAME_RECORD, ZZZ_V2_GAME_RECORD)
+            if str(NAP_GAME_RECORD) in image_url:
+                image_url = image_url.replace(str(NAP_GAME_RECORD), str(ZZZ_V2_GAME_RECORD))
                 return await download_image_task(image_url, file_path, session)
 
             if ignore_error:

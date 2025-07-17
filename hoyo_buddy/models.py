@@ -10,6 +10,7 @@ import genshin.models
 from attr import dataclass
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
+from hoyo_buddy.draw.static import ZZZ_V2_GAME_RECORD
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.l10n import LocaleStr
 
@@ -265,13 +266,15 @@ class ZZZEnkaCharacter:
     outfit_id: int | None
 
     @property
-    def base_icon_url(self) -> str:
-        return "https://act-webstatic.hoyoverse.com/game_record/zzzv2"
-
-    @property
     def banner_icon(self) -> str:
-        """Example: https://act-webstatic.hoyoverse.com/game_record/zzzv2/role_vertical_painting/role_vertical_painting_1131.png"""
-        return f"{self.base_icon_url}/role_vertical_painting/role_vertical_painting_{self.id}.png"
+        if self.outfit_id:
+            return str(
+                ZZZ_V2_GAME_RECORD
+                / f"role_vertical_painting/role_vertical_painting_{self.id}_{self.outfit_id}.png"
+            )
+        return str(
+            ZZZ_V2_GAME_RECORD / f"role_vertical_painting/role_vertical_painting_{self.id}.png"
+        )
 
 
 @dataclass(kw_only=True)

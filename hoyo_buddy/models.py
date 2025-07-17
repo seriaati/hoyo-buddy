@@ -243,7 +243,7 @@ class UnownedZZZCharacter(BaseModel):
     faction_name: str
     rank: int = 0
     banner_icon: str
-    w_engine: WEngine | None = None
+    w_engine: None = None
 
 
 class AgentNameData(BaseModel):

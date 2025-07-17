@@ -599,12 +599,12 @@ async def draw_zzz_build_card(
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter | UnownedZZZCharacter]
+    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | UnownedZZZCharacter]
 ) -> File:
     urls: list[str] = []
     for agent in agents:
         urls.append(agent.banner_icon)
-        if isinstance(agent, ZZZFullAgent | ZZZEnkaCharacter) and agent.w_engine is not None:
+        if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
             urls.append(agent.w_engine.icon)
 
     await download_images(urls, draw_input.session)

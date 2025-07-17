@@ -2,18 +2,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import enka
+
+from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Character
 from hoyo_buddy.ui import Select, SelectOption
 
 if TYPE_CHECKING:
-    import enka
-
     from hoyo_buddy.types import Interaction
 
     from ..view import ProfileView
 else:
     ProfileView = None
+
+type Builds = list[enka.gi.Build] | list[enka.hsr.Build] | list[enka.zzz.Build]
+type Build = enka.gi.Build | enka.hsr.Build | enka.zzz.Build | Character
 
 
 class BuildSelect(Select[ProfileView]):
@@ -25,10 +29,10 @@ class BuildSelect(Select[ProfileView]):
             custom_id="profile_build_select",
             row=row,
         )
-        self._builds: dict[str, enka.gi.Build | enka.hsr.Build | Character] = {}
+        self._builds: dict[str, Build] = {}
 
     @property
-    def build(self) -> enka.hsr.Build | enka.gi.Build | Character:
+    def build(self) -> Build:
         selected = self.values[0]
         build = self._builds.get(selected)
 
@@ -37,9 +41,7 @@ class BuildSelect(Select[ProfileView]):
             raise ValueError(msg)
         return build
 
-    def set_options(
-        self, builds: list[enka.gi.Build] | list[enka.hsr.Build], current: Character | None
-    ) -> None:
+    def set_options(self, builds: Builds, current: Character | None) -> None:
         for build in builds:
             self._builds[str(build.id)] = build
 
@@ -86,4 +88,8 @@ class BuildSelect(Select[ProfileView]):
             await self.view.update(i, self, character=build)
             return
 
-        await self.view.update(i, self, character=build.character)
+        character = build.character
+        if isinstance(character, enka.zzz.Agent):
+            character = GenshinClient.convert_zzz_character(character)
+
+        await self.view.update(i, self, character=character)

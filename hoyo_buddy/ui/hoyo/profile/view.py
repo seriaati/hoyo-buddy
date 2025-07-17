@@ -195,17 +195,19 @@ class ProfileView(View, PlayerEmbedMixin):
                 self.characters[str(chara.id)] = chara
 
     def _set_zzz_characters_with_enka(self) -> None:
-        data = self.zzz_data
-        enka_chara_ids: list[str] = []
-        if data is not None:
-            for chara in data.agents:
-                enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = GenshinClient.convert_zzz_character(chara)
+        # Hoyolab characters take precedence over Enka characters
+        hoyolab_char_ids: set[int] = set()
 
-        for chara in self.hoyolab_zzz_characters:
-            if str(chara.id) not in enka_chara_ids:
-                enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = chara
+        for char in self.hoyolab_zzz_characters:
+            hoyolab_char_ids.add(char.id)
+            self.characters[str(char.id)] = char
+
+        if self.zzz_data is None:
+            return
+
+        for char in self.zzz_data.agents:
+            if char.id not in hoyolab_char_ids:
+                self.characters[str(char.id)] = GenshinClient.convert_zzz_character(char)
 
     def _set_characters(self) -> None:
         if self.game is Game.STARRAIL:

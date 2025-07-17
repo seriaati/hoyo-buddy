@@ -300,6 +300,10 @@ class ZZZStat:
     type: genshin.models.ZZZPropertyType
     value: str
 
+    @property
+    def final(self) -> str:
+        return self.value
+
 
 @dataclass(kw_only=True)
 class ZZZSkill:

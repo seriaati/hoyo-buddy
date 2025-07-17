@@ -146,7 +146,7 @@ class ProfileCommand:
         hoyolab_user: StarRailUserStats | None = None
         builds = None
 
-        async with enka.HSRClient(cache=self._enka_cache) as client:
+        async with enka.HSRClient(cache=self._enka_cache, use_enka_icons=False) as client:
             enka_data, builds = await self.fetch_enka_data(
                 client, self._uid, enka_hsr_down=enka_hsr_down
             )

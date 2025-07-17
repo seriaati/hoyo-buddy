@@ -37,14 +37,15 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.icons import get_game_icon
-from hoyo_buddy.l10n import LevelStr, LocaleStr
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
+from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
-from hoyo_buddy.utils import blur_uid, format_float, human_format_number
+from hoyo_buddy.utils import format_float, human_format_number
 
 from .card_settings import get_card_settings
 from .image_settings import get_default_art, get_default_collection, get_team_image
@@ -73,23 +74,26 @@ GI_CARD_ENDPOINTS = {
 }
 
 
-class ProfileView(View):
+class ProfileView(View, PlayerEmbedMixin):
     def __init__(
         self,
         uid: int,
         game: Game,
         card_data: dict[str, Any],
         *,
-        character_ids: list[str],
+        # Hoyolab data
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
         hoyolab_hsr_user: StarRailUserStats | None = None,
         hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
         hoyolab_gi_user: PartialGenshinUserStats | None = None,
+        hoyolab_zzz_user: RecordCard | None = None,
+        hoyolab_zzz_characters: Sequence[ZZZPartialAgent | ZZZEnkaCharacter] | None = None,
+        # Enka data
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
-        zzz_data: Sequence[ZZZPartialAgent | ZZZEnkaCharacter] | None = None,
-        zzz_enka_data: enka.zzz.ShowcaseResponse | None = None,
-        zzz_user: RecordCard | None = None,
+        zzz_data: enka.zzz.ShowcaseResponse | None = None,
+        # Misc
+        character_ids: list[str],
         account: HoyoAccount | None,
         builds: Builds | None = None,
         owner: enka.Owner | None = None,
@@ -98,16 +102,20 @@ class ProfileView(View):
     ) -> None:
         super().__init__(author=author, locale=locale)
 
+        # Hoyolab data
         self.hoyolab_hsr_characters = hoyolab_hsr_characters or []
         self.hoyolab_hsr_user = hoyolab_hsr_user
+
         self.hoyolab_gi_characters = hoyolab_gi_characters or []
         self.hoyolab_gi_user = hoyolab_gi_user
 
+        self.hoyolab_zzz_user = hoyolab_zzz_user
+        self.hoyolab_zzz_characters = hoyolab_zzz_characters or []
+
+        # Enka data
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
-        self.zzz_data = zzz_data or []
-        self.zzz_user = zzz_user
-        self.zzz_enka_data = zzz_enka_data
+        self.zzz_data = zzz_data
 
         self.uid = uid
         self.game = game
@@ -177,6 +185,8 @@ class ProfileView(View):
         for builds in self._builds.values():
             character = builds[0].character
             if str(character.id) not in enka_chara_ids:
+                if isinstance(character, enka.zzz.Agent):
+                    character = GenshinClient.convert_zzz_character(character)
                 self.characters[str(character.id)] = character
 
         for chara in hoyolab_characters:
@@ -185,14 +195,14 @@ class ProfileView(View):
                 self.characters[str(chara.id)] = chara
 
     def _set_zzz_characters_with_enka(self) -> None:
-        data = self.zzz_enka_data
+        data = self.zzz_data
         enka_chara_ids: list[str] = []
         if data is not None:
             for chara in data.agents:
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = GenshinClient.convert_zzz_character(chara)
 
-        for chara in self.zzz_data:
+        for chara in self.hoyolab_zzz_characters:
             if str(chara.id) not in enka_chara_ids:
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = chara
@@ -243,6 +253,7 @@ class ProfileView(View):
                     characters,
                     self.genshin_data,
                     self.starrail_data,
+                    self.zzz_data,
                     self._account,
                     self.character_ids,
                     row=2,
@@ -615,10 +626,10 @@ class ProfileView(View):
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON
         )
-        character_ids = [agent.id for agent in self.zzz_data]
+        character_ids = [agent.id for agent in self.hoyolab_zzz_characters]
 
-        if self.zzz_enka_data is not None:
-            character_ids.extend([agent.id for agent in self.zzz_enka_data.agents])
+        if self.zzz_data is not None:
+            character_ids.extend([agent.id for agent in self.zzz_data.agents])
 
         for character_id in character_ids:
             card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)

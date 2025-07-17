@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
 
 import enka
 from genshin import GenshinException
@@ -26,9 +26,12 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import HoyolabGICharacter
+    from hoyo_buddy.types import Builds
 
     from ..enums import Game
     from ..models import HoyolabHSRCharacter
+
+type EnkaData = enka.gi.ShowcaseResponse | enka.hsr.ShowcaseResponse | enka.zzz.ShowcaseResponse
 
 
 class ProfileCommand:
@@ -56,6 +59,49 @@ class ProfileCommand:
         else:
             self._enka_cache = enka.cache.RedisCache(redis_url)
 
+    @overload
+    async def fetch_enka_data(
+        self, client: enka.GenshinClient, uid: int, *, enka_hsr_down: bool = ...
+    ) -> tuple[enka.gi.ShowcaseResponse | None, dict[str, list[enka.gi.Build]] | None]: ...
+    @overload
+    async def fetch_enka_data(
+        self, client: enka.HSRClient, uid: int, *, enka_hsr_down: bool = ...
+    ) -> tuple[enka.hsr.ShowcaseResponse | None, dict[str, list[enka.hsr.Build]] | None]: ...
+    @overload
+    async def fetch_enka_data(
+        self, client: enka.ZZZClient, uid: int, *, enka_hsr_down: bool = ...
+    ) -> tuple[enka.zzz.ShowcaseResponse | None, dict[str, list[enka.zzz.Build]] | None]: ...
+    async def fetch_enka_data(
+        self,
+        client: enka.GenshinClient | enka.HSRClient | enka.ZZZClient,
+        uid: int,
+        *,
+        enka_hsr_down: bool = False,
+    ) -> tuple[EnkaData | None, Builds | None]:
+        try:
+            if isinstance(client, enka.HSRClient):
+                enka_data = await client.fetch_showcase(uid, use_backup=enka_hsr_down)
+            else:
+                enka_data = await client.fetch_showcase(uid)
+        except enka.errors.AssetKeyError:
+            await client.update_assets()
+            if isinstance(client, enka.HSRClient):
+                enka_data = await client.fetch_showcase(uid, use_backup=enka_hsr_down)
+            else:
+                enka_data = await client.fetch_showcase(uid)
+        except enka.errors.EnkaAPIError:
+            if self._account is None:
+                # enka fails and no hoyolab account provided, raise error
+                raise
+            enka_data = None
+
+        if enka_data is not None and enka_data.owner is not None:
+            builds = await client.fetch_builds(enka_data.owner)
+        else:
+            builds = None
+
+        return enka_data, builds
+
     async def run_genshin(self) -> ProfileView:
         hoyolab_characters: list[HoyolabGICharacter] = []
         enka_data: enka.gi.ShowcaseResponse | None = None
@@ -64,19 +110,8 @@ class ProfileCommand:
 
         lang = LOCALE_TO_GI_ENKA_LANG.get(self._locale, enka.gi.Language.ENGLISH)
 
-        async with enka.gi.GenshinClient(lang, cache=self._enka_cache) as client:
-            try:
-                enka_data = await client.fetch_showcase(self._uid)
-            except enka.errors.AssetKeyError:
-                await client.update_assets()
-                enka_data = await client.fetch_showcase(self._uid)
-            except enka.errors.EnkaAPIError:
-                if self._account is None:
-                    # enka fails and no hoyolab account provided, raise error
-                    raise
-
-            if enka_data is not None and enka_data.owner is not None:
-                builds = await client.fetch_builds(enka_data.owner)
+        async with enka.GenshinClient(lang, cache=self._enka_cache) as client:
+            enka_data, builds = await self.fetch_enka_data(client, self._uid)
 
         if self._account is not None:
             client = self._account.client
@@ -111,19 +146,10 @@ class ProfileCommand:
         hoyolab_user: StarRailUserStats | None = None
         builds = None
 
-        async with enka.hsr.HSRClient(cache=self._enka_cache) as client:
-            try:
-                enka_data = await client.fetch_showcase(self._uid, use_backup=enka_hsr_down)
-            except enka.errors.AssetKeyError:
-                await client.update_assets()
-                enka_data = await client.fetch_showcase(self._uid, use_backup=enka_hsr_down)
-            except enka.errors.EnkaAPIError:
-                if self._account is None:
-                    # enka fails and no hoyolab account provided, raise error
-                    raise
-
-            if enka_data is not None and enka_data.owner is not None:
-                builds = await client.fetch_builds(enka_data.owner)
+        async with enka.HSRClient(cache=self._enka_cache) as client:
+            enka_data, builds = await self.fetch_enka_data(
+                client, self._uid, enka_hsr_down=enka_hsr_down
+            )
 
         if self._account is not None:
             client = self._account.client
@@ -159,19 +185,8 @@ class ProfileCommand:
         zzz_user: RecordCard | None = None
         builds = None
 
-        async with enka.zzz.ZZZClient(cache=self._enka_cache) as client:
-            try:
-                enka_data = await client.fetch_showcase(self._uid)
-            except enka.errors.AssetKeyError:
-                await client.update_assets()
-                enka_data = await client.fetch_showcase(self._uid)
-            except enka.errors.EnkaAPIError:
-                if self._account is None:
-                    # enka fails and no hoyolab account provided, raise error
-                    raise
-
-            if enka_data is not None and enka_data.owner is not None:
-                builds = await client.fetch_builds(enka_data.owner)
+        async with enka.ZZZClient(cache=self._enka_cache) as client:
+            enka_data, builds = await self.fetch_enka_data(client, self._uid)
 
         if self._account is not None:
             client = self._account.client

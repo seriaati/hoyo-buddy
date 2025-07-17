@@ -44,9 +44,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 version = "1.16.8"
 
-[tool.uv]
-dev-dependencies = []
-
 [tool.uv.sources]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
@@ -54,7 +51,6 @@ hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
-
 
 [tool.pyright]
 enableTypeIgnoreComments = false
@@ -70,3 +66,7 @@ typeCheckingMode = "standard"
 location = "./migrations"
 src_folder = "./."
 tortoise_orm = "hoyo_buddy.db.config.DB_CONFIG"
+
+[dependency-groups]
+lint = ["ruff>=0.12.3"]
+type-check = ["pyright[nodejs]>=1.1.403"]

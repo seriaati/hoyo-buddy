@@ -11,6 +11,7 @@ from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.loguru import LoggingLevels, LoguruIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.logging import InterceptHandler
@@ -32,7 +33,12 @@ def init_sentry() -> None:
                 level=LoggingLevels.INFO.value, event_level=LoggingLevels.ERROR.value
             ),
         ],
-        disabled_integrations=[AsyncPGIntegration(), AioHttpIntegration(), LoggingIntegration()],
+        disabled_integrations=[
+            AsyncPGIntegration(),
+            AioHttpIntegration(),
+            LoggingIntegration(),
+            RedisIntegration(),
+        ],
         traces_sample_rate=1.0,
         environment=CONFIG.env,
         enable_tracing=True,

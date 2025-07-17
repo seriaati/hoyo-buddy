@@ -411,8 +411,6 @@ class ProfileView(View, PlayerEmbedMixin):
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
 
-        # NOTE: This line is for testing new characters' templates
-        # character_id = character.id
         agent: ZZZFullAgent | ZZZEnkaCharacter | None = None
 
         if isinstance(character, ZZZEnkaCharacter):

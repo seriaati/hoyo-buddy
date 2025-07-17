@@ -119,11 +119,14 @@ class ExportButton(Button[GachaLogManageView]):
                     "gacha_type": str(x.banner_type),
                     "item_id": str(x.item_id),
                     "time": x.time.astimezone(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S"),
-                    "rank_type": str(x.rarity),
+                    "rank_type": str(x.rarity - 1)
+                    if self.view.account.game is Game.ZZZ
+                    else str(x.rarity),
                 }
-                for x in await GachaHistory.filter(account=self.view.account).all()
+                async for x in GachaHistory.filter(account=self.view.account)
             ],
         }
+
         if self.view.account.game is Game.STARRAIL:
             for item in game_info["list"]:
                 item["gacha_id"] = ""

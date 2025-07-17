@@ -457,11 +457,16 @@ class HoyoBuddy(commands.AutoShardedBot):
         tasks: list[asyncio.Task] = []
 
         # Update enka.py assets
-        async with enka.GenshinClient() as enka_gi, enka.HSRClient() as enka_hsr:
+        async with (
+            enka.GenshinClient() as enka_gi,
+            enka.HSRClient() as enka_hsr,
+            enka.ZZZClient() as enka_zzz,
+        ):
             tasks.extend(
                 (
                     asyncio.create_task(enka_gi.update_assets()),
                     asyncio.create_task(enka_hsr.update_assets()),
+                    asyncio.create_task(enka_zzz.update_assets()),
                 )
             )
 

@@ -61,7 +61,11 @@ HoyolabCharacter: TypeAlias = (
 
 Interaction: TypeAlias = discord.Interaction[HoyoBuddy]
 User: TypeAlias = discord.User | discord.Member | None
-Builds: TypeAlias = dict[str, list[enka.gi.Build]] | dict[str, list[enka.hsr.Build]]
+Builds: TypeAlias = (
+    dict[str, list[enka.gi.Build]]
+    | dict[str, list[enka.hsr.Build]]
+    | dict[str, list[enka.zzz.Build]]
+)
 
 ItemCategory: TypeAlias = (
     ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory

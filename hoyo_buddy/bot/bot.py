@@ -454,30 +454,25 @@ class HoyoBuddy(commands.AutoShardedBot):
             await models.HoyoAccount.filter(id=current_accounts[0].id).update(current=True)
 
     async def update_assets(self) -> None:
-        tasks: list[asyncio.Task] = []
-
         # Update enka.py assets
-        async with enka.GenshinClient() as enka_gi, enka.HSRClient() as enka_hsr:
-            tasks.extend(
-                (
-                    asyncio.create_task(enka_gi.update_assets()),
-                    asyncio.create_task(enka_hsr.update_assets()),
-                )
+        async with (
+            enka.GenshinClient() as enka_gi,
+            enka.HSRClient() as enka_hsr,
+            enka.ZZZClient() as enka_zzz,
+        ):
+            await asyncio.gather(
+                # Update enka.py assets
+                enka_gi.update_assets(),
+                enka_hsr.update_assets(),
+                enka_zzz.update_assets(),
+                # Update genshin.py assets
+                genshin.utility.update_characters_ambr(),
+                # Update item ID -> name mappings and some other stuff
+                self.update_zzz_assets(),
+                self.update_hsr_assets(),
+                # Fetch mi18n files
+                translator.fetch_mi18n_files(),
             )
-
-            tasks.extend(
-                (
-                    # Update genshin.py assets
-                    asyncio.create_task(genshin.utility.update_characters_ambr()),
-                    # Update item ID -> name mappings and some other stuff
-                    asyncio.create_task(self.update_zzz_assets()),
-                    asyncio.create_task(self.update_hsr_assets()),
-                    # Fetch mi18n files
-                    asyncio.create_task(translator.fetch_mi18n_files()),
-                )
-            )
-
-            await asyncio.gather(*tasks)
 
     async def update_zzz_assets(self) -> None:
         result: dict[str, dict[str, str]] = {}

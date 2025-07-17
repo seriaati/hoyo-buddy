@@ -28,7 +28,7 @@ dependencies = [
   "tortoise-orm>=0.21.7",
   "genshin[auth,sqlite,socks-proxy]",
   "toml>=0.10.2",
-  "enka>=2.4.3",
+  "enka[redis]>=2.4.3",
   "yatta-py>=1.3.11",
   "akasha-py>=0.2.9",
   "prometheus-client>=0.21.1",

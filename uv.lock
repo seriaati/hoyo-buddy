@@ -583,7 +583,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.8"
-source = { git = "https://github.com/seriaati/enka-py#621d87d9abb0414134c23885603f36aa70d16dff" }
+source = { git = "https://github.com/seriaati/enka-py#7c76878e8e7ebf527d3e8865a2c5503fcdfa18b0" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -592,6 +592,11 @@ dependencies = [
     { name = "loguru" },
     { name = "orjson" },
     { name = "pydantic" },
+]
+
+[package.optional-dependencies]
+redis = [
+    { name = "redis", extra = ["hiredis"] },
 ]
 
 [[package]]
@@ -830,7 +835,7 @@ dependencies = [
     { name = "cachetools" },
     { name = "cryptography" },
     { name = "discord-py", extra = ["speed"] },
-    { name = "enka" },
+    { name = "enka", extra = ["redis"] },
     { name = "flet", extra = ["web"] },
     { name = "fonttools" },
     { name = "genshin", extra = ["auth", "socks-proxy", "sqlite"] },
@@ -874,7 +879,7 @@ requires-dist = [
     { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "discord-py", extras = ["speed"], specifier = ">=2.5.0" },
-    { name = "enka", git = "https://github.com/seriaati/enka-py" },
+    { name = "enka", extras = ["redis"], git = "https://github.com/seriaati/enka-py" },
     { name = "flet", extras = ["web"], specifier = ">=0.26.0" },
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite", "socks-proxy"], git = "https://github.com/thesadru/genshin.py?branch=master" },

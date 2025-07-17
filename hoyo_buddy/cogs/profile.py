@@ -198,7 +198,7 @@ class Profile(
     )
     @app_commands.rename(**get_rename_kwargs(user=True, account=True), **gen_character_id_rename(3))
     @app_commands.describe(
-        **get_describe_kwargs(user=True, account=True), **gen_character_id_describe(3)
+        **get_describe_kwargs(user=True, account=True, uid=True), **gen_character_id_describe(3)
     )
     async def profile_zzz_command(
         self,

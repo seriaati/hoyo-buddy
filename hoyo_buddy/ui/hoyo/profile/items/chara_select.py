@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from hoyo_buddy.db import HoyoAccount
-    from hoyo_buddy.types import Builds, Character, Interaction
+    from hoyo_buddy.types import Character, Interaction
 
     from ..view import ProfileView
     from .build_select import BuildSelect
@@ -29,15 +29,6 @@ DATA_TYPES: Final[dict[CharacterType, LocaleStr]] = {
 MAX_VALUES: Final[dict[Game, int]] = {Game.GENSHIN: 4, Game.STARRAIL: 4, Game.ZZZ: 3}
 
 
-def determine_chara_type(character_id: str, *, builds: Builds, in_showcase: bool) -> CharacterType:
-    if in_showcase:
-        return CharacterType.LIVE
-    chara_builds = builds.get(character_id, [])
-    if not any(build.live for build in chara_builds):
-        return CharacterType.BUILD
-    return CharacterType.LIVE
-
-
 class CharacterSelect(PaginatorSelect[ProfileView]):
     def __init__(
         self,
@@ -45,13 +36,16 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
         characters: Sequence[Character],
         genshin_data: enka.gi.ShowcaseResponse | None,
         starrail_data: enka.hsr.ShowcaseResponse | None,
+        zzz_data: enka.zzz.ShowcaseResponse | None,
         account: HoyoAccount | None,
         character_ids: list[str],
         *,
         row: int,
     ) -> None:
         options: list[SelectOption] = []
-        showcase_character_ids = self._get_showcase_character_ids(genshin_data, starrail_data, game)
+        showcase_character_ids = self._get_showcase_character_ids(
+            genshin_data, starrail_data, zzz_data, game
+        )
 
         for character in characters:
             if isinstance(character, HoyolabCharacter):
@@ -125,21 +119,25 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
     def _get_showcase_character_ids(
         genshin_data: enka.gi.ShowcaseResponse | None,
         starrail_data: enka.hsr.ShowcaseResponse | None,
+        zzz_data: enka.zzz.ShowcaseResponse | None,
         game: Game,
     ) -> set[str]:
         if game is Game.GENSHIN:
             showcase_data = genshin_data
         elif game is Game.STARRAIL:
             showcase_data = starrail_data
+        elif game is Game.ZZZ:
+            showcase_data = zzz_data
         else:
             showcase_data = None
 
         if showcase_data is None:
-            showcase_character_ids = set()
-        else:
-            showcase_character_ids = {str(character.id) for character in showcase_data.characters}
+            return set()
 
-        return showcase_character_ids
+        if isinstance(showcase_data, enka.zzz.ShowcaseResponse):
+            return {str(character.id) for character in showcase_data.agents}
+
+        return {str(character.id) for character in showcase_data.characters}
 
     @staticmethod
     def update_ui(view: ProfileView, *, character_id: str, is_team: bool) -> None:
@@ -165,7 +163,7 @@ class CharacterSelect(PaginatorSelect[ProfileView]):
 
         # Set builds
         showcase_character_ids = CharacterSelect._get_showcase_character_ids(
-            view.genshin_data, view.starrail_data, view.game
+            view.genshin_data, view.starrail_data, view.zzz_data, view.game
         )
         hoyolab_character_ids = {
             str(character.id)

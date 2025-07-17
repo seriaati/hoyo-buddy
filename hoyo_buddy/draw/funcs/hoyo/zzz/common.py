@@ -14,7 +14,7 @@ from genshin.models import (
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
-    from hoyo_buddy.models import ZZZEnkaCharacter
+    from hoyo_buddy.models import ZZZEnkaCharacter, ZZZStat
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc and w-engine
@@ -87,7 +87,7 @@ PEN_NAME: Final[dict[Locale, str]] = {
 
 def get_props(
     agent: ZZZFullAgent | ZZZEnkaCharacter, *, locale: Locale | None = None
-) -> list[ZZZAgentProperty]:
+) -> list[ZZZAgentProperty] | list[ZZZStat]:
     pen = dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN)
     if pen is None:
         # Calculate flat pen from discs

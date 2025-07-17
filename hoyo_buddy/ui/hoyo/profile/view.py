@@ -37,14 +37,15 @@ from hoyo_buddy.exceptions import (
 )
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.icons import get_game_icon
-from hoyo_buddy.l10n import LevelStr, LocaleStr
+from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
+from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
-from hoyo_buddy.utils import blur_uid, format_float, human_format_number
+from hoyo_buddy.utils import format_float, human_format_number
 
 from .card_settings import get_card_settings
 from .image_settings import get_default_art, get_default_collection, get_team_image
@@ -73,23 +74,26 @@ GI_CARD_ENDPOINTS = {
 }
 
 
-class ProfileView(View):
+class ProfileView(View, PlayerEmbedMixin):
     def __init__(
         self,
         uid: int,
         game: Game,
         card_data: dict[str, Any],
         *,
-        character_ids: list[str],
+        # Hoyolab data
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
         hoyolab_hsr_user: StarRailUserStats | None = None,
         hoyolab_gi_characters: list[HoyolabGICharacter] | None = None,
         hoyolab_gi_user: PartialGenshinUserStats | None = None,
+        hoyolab_zzz_user: RecordCard | None = None,
+        hoyolab_zzz_characters: Sequence[ZZZPartialAgent | ZZZEnkaCharacter] | None = None,
+        # Enka data
         starrail_data: enka.hsr.ShowcaseResponse | None = None,
         genshin_data: enka.gi.ShowcaseResponse | None = None,
-        zzz_data: Sequence[ZZZPartialAgent | ZZZEnkaCharacter] | None = None,
-        zzz_enka_data: enka.zzz.ShowcaseResponse | None = None,
-        zzz_user: RecordCard | None = None,
+        zzz_data: enka.zzz.ShowcaseResponse | None = None,
+        # Misc
+        character_ids: list[str],
         account: HoyoAccount | None,
         builds: Builds | None = None,
         owner: enka.Owner | None = None,
@@ -98,16 +102,20 @@ class ProfileView(View):
     ) -> None:
         super().__init__(author=author, locale=locale)
 
+        # Hoyolab data
         self.hoyolab_hsr_characters = hoyolab_hsr_characters or []
         self.hoyolab_hsr_user = hoyolab_hsr_user
+
         self.hoyolab_gi_characters = hoyolab_gi_characters or []
         self.hoyolab_gi_user = hoyolab_gi_user
 
+        self.hoyolab_zzz_user = hoyolab_zzz_user
+        self.hoyolab_zzz_characters = hoyolab_zzz_characters or []
+
+        # Enka data
         self.starrail_data = starrail_data
         self.genshin_data = genshin_data
-        self.zzz_data = zzz_data or []
-        self.zzz_user = zzz_user
-        self.zzz_enka_data = zzz_enka_data
+        self.zzz_data = zzz_data
 
         self.uid = uid
         self.game = game
@@ -177,6 +185,8 @@ class ProfileView(View):
         for builds in self._builds.values():
             character = builds[0].character
             if str(character.id) not in enka_chara_ids:
+                if isinstance(character, enka.zzz.Agent):
+                    character = GenshinClient.convert_zzz_character(character)
                 self.characters[str(character.id)] = character
 
         for chara in hoyolab_characters:
@@ -185,14 +195,14 @@ class ProfileView(View):
                 self.characters[str(chara.id)] = chara
 
     def _set_zzz_characters_with_enka(self) -> None:
-        data = self.zzz_enka_data
+        data = self.zzz_data
         enka_chara_ids: list[str] = []
         if data is not None:
             for chara in data.agents:
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = GenshinClient.convert_zzz_character(chara)
 
-        for chara in self.zzz_data:
+        for chara in self.hoyolab_zzz_characters:
             if str(chara.id) not in enka_chara_ids:
                 enka_chara_ids.append(str(chara.id))
                 self.characters[str(chara.id)] = chara
@@ -212,135 +222,6 @@ class ProfileView(View):
             ):
                 break
             self.character_ids.append(character_id)
-
-    @property
-    def player_embed(self) -> DefaultEmbed:
-        """Player info embed."""
-        uid_str = blur_uid(self.uid) if self._account is not None else str(self.uid)
-        if self.starrail_data is not None:
-            player = self.starrail_data.player
-            embed = DefaultEmbed(
-                self.locale,
-                title=f"{player.nickname} ({uid_str})",
-                description=LocaleStr(
-                    key="profile.player_info.embed.description",
-                    level=player.level,
-                    world_level=player.equilibrium_level,
-                    friend_count=player.friend_count,
-                    light_cones=player.stats.light_cone_count,
-                    characters=player.stats.character_count,
-                    achievements=player.stats.achievement_count,
-                ),
-            )
-            embed.set_thumbnail(url=player.icon)
-            if player.signature:
-                embed.set_footer(text=player.signature)
-        elif self.genshin_data is not None:
-            player = self.genshin_data.player
-            embed = DefaultEmbed(self.locale, title=f"{player.nickname} ({uid_str})")
-
-            embed.add_field(name=LocaleStr(key="profile_gi_embed_ar"), value=str(player.level))
-            embed.add_field(
-                name=LocaleStr(key="profile_gi_embed_world_level"), value=str(player.world_level)
-            )
-            embed.add_field(
-                name=LocaleStr(key="achievement_complete_count", mi18n_game=Game.GENSHIN),
-                value=str(player.achievements),
-            )
-            embed.add_field(
-                name=LocaleStr(key="full_fetter_avatar_num", mi18n_game=Game.GENSHIN),
-                value=str(player.max_friendship_character_count),
-            )
-            embed.add_field(
-                name=LocaleStr(key="spriral_abyss", mi18n_game=Game.GENSHIN),
-                value=f"{player.abyss_floor}-{player.abyss_level}",
-            )
-            if player.theater_act is not None:
-                embed.add_field(
-                    name=LocaleStr(key="card_role_combat_name", mi18n_game=Game.GENSHIN),
-                    value=LocaleStr(
-                        key="card_role_combat_value", mi18n_game=Game.GENSHIN, x=player.theater_act
-                    ),
-                )
-
-            embed.set_thumbnail(url=player.profile_picture_icon.circle)
-            embed.set_image(url=player.namecard.full)
-            if player.signature:
-                embed.set_footer(text=player.signature)
-        elif self.zzz_enka_data is not None:
-            player = self.zzz_enka_data.player
-            level_str = LevelStr(player.level).translate(self.locale)
-            embed = DefaultEmbed(
-                self.locale, title=f"{player.nickname} ({uid_str})", description=f"{level_str}"
-            )
-            if player.signature:
-                embed.set_footer(text=player.signature)
-        elif self.hoyolab_gi_user is not None:
-            player = self.hoyolab_gi_user.info
-            stats = self.hoyolab_gi_user.stats
-            embed = DefaultEmbed(self.locale, title=f"{player.nickname} ({uid_str})")
-
-            embed.add_field(name=LocaleStr(key="profile_gi_embed_ar"), value=str(player.level))
-            embed.add_field(
-                name=LocaleStr(key="achievement_complete_count", mi18n_game=Game.GENSHIN),
-                value=str(stats.achievements),
-            )
-            embed.add_field(
-                name=LocaleStr(key="full_fetter_avatar_num", mi18n_game=Game.GENSHIN),
-                value=str(stats.max_friendship_characters),
-            )
-            embed.add_field(
-                name=LocaleStr(key="spriral_abyss", mi18n_game=Game.GENSHIN),
-                value=stats.spiral_abyss,
-            )
-            if stats.theater.has_data:
-                embed.add_field(
-                    name=LocaleStr(key="card_role_combat_name", mi18n_game=Game.GENSHIN),
-                    value=LocaleStr(
-                        key="card_role_combat_value",
-                        mi18n_game=Game.GENSHIN,
-                        x=stats.theater.max_act,
-                    ),
-                )
-            if stats.stygian.has_data:
-                embed.add_field(
-                    name=LocaleStr(key="hard_challenge_block_title", mi18n_game=Game.GENSHIN),
-                    value=str(stats.stygian.difficulty),
-                )
-
-            embed.set_thumbnail(url=player.in_game_avatar)
-        elif self.hoyolab_hsr_user is not None:
-            player = self.hoyolab_hsr_user.info
-            stats = self.hoyolab_hsr_user.stats
-            embed = DefaultEmbed(
-                self.locale,
-                title=f"{player.nickname} ({uid_str})",
-                description=LocaleStr(
-                    key="profile.player_info.hoyolab.embed.description",
-                    level=player.level,
-                    characters=stats.avatar_num,
-                    chest=stats.chest_num,
-                    moc=stats.abyss_process,
-                    achievements=stats.achievement_num,
-                ),
-            )
-        elif self.zzz_user is not None:
-            player = self.zzz_user
-            data_str = "\n".join(f"{data.name}: {data.value}" for data in player.data)
-            level_str = LevelStr(player.level).translate(self.locale)
-            embed = DefaultEmbed(
-                self.locale,
-                title=f"{player.nickname} ({uid_str})",
-                description=f"{level_str}\n{data_str}",
-            )
-        else:
-            embed = DefaultEmbed(
-                self.locale,
-                title=LocaleStr(key="profile.no_data.title"),
-                description=LocaleStr(key="profile.no_data.description"),
-            )
-
-        return embed
 
     @property
     def card_embed(self) -> DefaultEmbed:
@@ -372,6 +253,7 @@ class ProfileView(View):
                     characters,
                     self.genshin_data,
                     self.starrail_data,
+                    self.zzz_data,
                     self._account,
                     self.character_ids,
                     row=2,
@@ -744,10 +626,10 @@ class ProfileView(View):
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON
         )
-        character_ids = [agent.id for agent in self.zzz_data]
+        character_ids = [agent.id for agent in self.hoyolab_zzz_characters]
 
-        if self.zzz_enka_data is not None:
-            character_ids.extend([agent.id for agent in self.zzz_enka_data.agents])
+        if self.zzz_data is not None:
+            character_ids.extend([agent.id for agent in self.zzz_data.agents])
 
         for character_id in character_ids:
             card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)

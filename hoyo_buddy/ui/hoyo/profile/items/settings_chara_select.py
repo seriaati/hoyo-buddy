@@ -7,7 +7,7 @@ from genshin.models import ZZZPartialAgent
 
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import HoyolabGICharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.ui import PaginatorSelect, SelectOption, V_co
 
 if TYPE_CHECKING:
@@ -34,11 +34,15 @@ class CharacterSelect(PaginatorSelect, Generic[V_co]):
 
     @staticmethod
     def _get_element_emoji(chara: Character) -> str:
-        if isinstance(chara, ZZZPartialAgent):
+        if isinstance(chara, ZZZPartialAgent | ZZZEnkaCharacter):
             return get_zzz_element_emoji(chara.element)
         if isinstance(chara, enka.gi.Character | HoyolabGICharacter):
             return get_gi_element_emoji(chara.element.name)
-        return get_hsr_element_emoji(str(chara.element))
+        if isinstance(chara, enka.hsr.Character | HoyolabHSRCharacter):  # pyright: ignore[reportUnnecessaryIsInstance]
+            return get_hsr_element_emoji(str(chara.element))
+
+        msg = f"Unsupported character type: {type(chara)}"
+        raise TypeError(msg)
 
     def _get_options(self) -> list[SelectOption]:
         return [

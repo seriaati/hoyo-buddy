@@ -21,7 +21,7 @@ from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import HoyolabGICharacter
+from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.ui import (
     Button,
     Modal,
@@ -58,12 +58,13 @@ async def get_team_image(user_id: int, character_id: str, *, game: Game) -> str 
 def get_default_art(
     character: Character | ZZZFullAgent, *, is_team: bool, use_m3_art: bool = False
 ) -> str:
-    if isinstance(character, ZZZPartialAgent | ZZZFullAgent):
+    if isinstance(character, ZZZPartialAgent | ZZZFullAgent | ZZZEnkaCharacter):
         if is_team:
             return character.banner_icon
         if use_m3_art:
             return ZZZ_M3_ART_URL.format(char_id=character.id)
         return ZZZ_M6_ART_URL.format(char_id=character.id)
+
     if isinstance(character, enka.gi.Character | HoyolabGICharacter):
         if character.costume is not None:
             return character.costume.icon.gacha
@@ -72,7 +73,12 @@ def get_default_art(
         if "10000007" in str(character.id):  # PlayerGirl
             return PLAYER_GIRL_GACHA_ART
         return character.icon.gacha
-    return HSR_DEFAULT_ART_URL.format(char_id=character.id)
+
+    if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):  # pyright: ignore[reportUnnecessaryIsInstance]
+        return HSR_DEFAULT_ART_URL.format(char_id=character.id)
+
+    msg = f"Unsupported character type: {type(character)}"
+    raise TypeError(msg)
 
 
 def get_default_collection(

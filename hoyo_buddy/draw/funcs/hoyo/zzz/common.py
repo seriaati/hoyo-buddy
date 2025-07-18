@@ -9,6 +9,7 @@ from genshin.models import (
     ZZZFullAgent,
     ZZZPropertyType,
     ZZZSkillType,
+    ZZZSpecialty,
 )
 
 from hoyo_buddy.enums import Locale
@@ -110,16 +111,34 @@ def get_props(
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_DEF),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ATK),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_IMPACT),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ADRENALINE),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_MASTERY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ANOMALY_PROFICIENCY),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_RATE),
         dutils.get(agent.properties, type=ZZZPropertyType.AGENT_CRIT_DMG),
         pen,
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO),
-        dutils.get(agent.properties, type=ZZZPropertyType.AGENT_SHEER_FORCE),
     ]
+
+    energy_index = 4
+    pen_ratio_index = 9
+
+    # Enka chars have all props, while hoyolab chars only have some,
+    # so we need to insert only the needed props based on the agent's specialty
+    # to make sure only 12 props are returned.
+
+    if agent.specialty is ZZZSpecialty.RUPTURE:
+        props.insert(
+            energy_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ADRENALINE)
+        )
+        props.insert(
+            pen_ratio_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_SHEER_FORCE)
+        )
+    else:
+        props.insert(
+            energy_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_ENERGY_GEN)
+        )
+        props.insert(
+            pen_ratio_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO)
+        )
 
     dmg_index = 4
     match agent.element:

@@ -650,6 +650,18 @@ ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
     enka.zzz.AgentStatType.SHEER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,  # for yi xuan?
 }
 
+ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[
+    dict[enka.zzz.ProfessionType, genshin.models.ZZZSpecialty | None]
+] = {
+    enka.zzz.ProfessionType.ANOMALY: genshin.models.ZZZSpecialty.ANOMALY,
+    enka.zzz.ProfessionType.ATTACK: genshin.models.ZZZSpecialty.ATTACK,
+    enka.zzz.ProfessionType.DEFENSE: genshin.models.ZZZSpecialty.DEFENSE,
+    enka.zzz.ProfessionType.SUPPORT: genshin.models.ZZZSpecialty.SUPPORT,
+    enka.zzz.ProfessionType.STUN: genshin.models.ZZZSpecialty.STUN,
+    enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE,
+    enka.zzz.ProfessionType.UNKNOWN: None,
+}
+
 
 def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")

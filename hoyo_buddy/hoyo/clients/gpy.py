@@ -27,6 +27,7 @@ from hoyo_buddy.constants import (
     ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
     ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
     ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
+    ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY,
     ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY,
     ZZZ_RARITY_NUM_TO_RARITY,
     contains_traveler_id,
@@ -430,6 +431,7 @@ class GenshinClient(ProxyGenshinClient):
             rank=agent.mindscape,
             skills=skills,
             outfit_id=agent.skin_id,
+            specialty=ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY.get(agent.specialty, None),
         )
 
     async def get_hoyolab_gi_characters(self) -> list[models.HoyolabGICharacter]:

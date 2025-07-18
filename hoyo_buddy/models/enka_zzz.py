@@ -25,6 +25,7 @@ class ZZZEnkaCharacter:
     rank: int
     skills: list[ZZZSkill]
     outfit_id: int | None
+    specialty: genshin.models.ZZZSpecialty | None
 
     @property
     def banner_icon(self) -> str:

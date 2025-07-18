@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 from hoyo_buddy.db import HoyoAccount, Leaderboard, get_locale, update_lb_ranks
 from hoyo_buddy.embeds import DefaultEmbed
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Interaction
 
-LB_ORDERS: dict[LeaderboardType, Literal["ASC", "DESC"]] = {
+LB_ORDERS: Final[dict[LeaderboardType, Literal["ASC", "DESC"]]] = {
     LeaderboardType.ACHIEVEMENT: "DESC",
     LeaderboardType.CHEST: "DESC",
     LeaderboardType.ABYSS_DMG: "DESC",

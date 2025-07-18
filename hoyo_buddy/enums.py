@@ -158,6 +158,7 @@ class LeaderboardType(StrEnum):
     MAX_FRIENDSHIP = "max_friendship_lb_title"
     ABYSS_DMG = "abyss_dmg_lb_title"
     THEATER_DMG = "theater_dmg_lb_title"
+    STYGIAN = "hard_challenge"
 
 
 class OpenGameLabel(StrEnum):

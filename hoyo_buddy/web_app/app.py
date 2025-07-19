@@ -278,7 +278,7 @@ class WebApp:
             await conn.close()
         return orjson.loads(mmt_result)
 
-    async def _get_or_create_device_id(self, page: ft.Page, user_id: str) -> str:
+    async def _get_or_create_device_id(self, page: ft.Page, user_id: int) -> str:
         device_id = await page.client_storage.get_async(f"hb.{user_id}.device_id")
         logger.debug(f"[{user_id}] Device ID: {device_id}")
         if device_id is None:

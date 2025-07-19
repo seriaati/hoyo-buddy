@@ -200,3 +200,13 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
 
     msg = f"Unsupported game: {game}"
     raise ValueError(msg)
+
+
+def refresh_page_view(page: ft.Page, view: ft.View, app_bar: ft.AppBar | None = None) -> None:
+    view.scroll = ft.ScrollMode.AUTO
+    if app_bar is not None:
+        view.appbar = app_bar
+
+    page.views.clear()
+    page.views.append(view)
+    page.update()

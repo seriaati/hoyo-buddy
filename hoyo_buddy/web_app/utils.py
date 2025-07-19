@@ -103,10 +103,20 @@ def encrypt_string(string: str) -> str:
     return key.encrypt(string.encode()).decode()
 
 
-def reset_storage(page: ft.Page, *, user_id: int) -> None:
-    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.cookies"))
-    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_id"))
-    asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_fp"))
+def clear_storage(
+    page: ft.Page,
+    *,
+    user_id: int,
+    cookies: bool = True,
+    device_id: bool = False,
+    device_fp: bool = False,
+) -> None:
+    if cookies:
+        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.cookies"))
+    if device_id:
+        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_id"))
+    if device_fp:
+        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_fp"))
 
 
 async def fetch_json_file(filename: str) -> Any:
@@ -190,3 +200,13 @@ async def get_gacha_icon(*, game: Game, item_id: int) -> str:
 
     msg = f"Unsupported game: {game}"
     raise ValueError(msg)
+
+
+def refresh_page_view(page: ft.Page, view: ft.View, app_bar: ft.AppBar | None = None) -> None:
+    view.scroll = ft.ScrollMode.AUTO
+    if app_bar is not None:
+        view.appbar = app_bar
+
+    page.views.clear()
+    page.views.append(view)
+    page.update()

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import random
+import string
 from typing import TYPE_CHECKING, Any, Literal
 
 import aiofiles
@@ -126,7 +128,9 @@ class GeetestWebServer:
             if "user_id" in request.query:
                 # login
                 user_id = request.query["user_id"]
-                url = WEB_APP_URLS[CONFIG.env] + f"/geetest?user_id={user_id}"
+                # Generate a random token to prevent caching issues
+                random_token = "".join(random.choices(string.ascii_letters + string.digits, k=16))
+                url = WEB_APP_URLS[CONFIG.env] + f"/geetest?user_id={user_id}&token={random_token}"
             else:
                 # command
                 channel_id = int(request.query["channel_id"])
@@ -176,7 +180,7 @@ class GeetestWebServer:
 
         try:
             await asyncio.Future()
-        except asyncio.CancelledError:
+        except (KeyboardInterrupt, asyncio.CancelledError, SystemExit):
             logger.info("Web server shutting down...")
             await site.stop()
             await app.shutdown()

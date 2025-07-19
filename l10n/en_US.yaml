@@ -134,7 +134,7 @@ edit_nickname_modal_title: Edit nickname
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verification Required
-email_verification_dialog_content: Please enter the verification code received
+email_verification_dialog_content: Please enter the email verification code received from Hoyoverse.
 email_verification_dialog_action: Verify
 email_verification_field_label: Verification code
 email-geetest.embed.title: CAPTCHA verification required for sending email verification code

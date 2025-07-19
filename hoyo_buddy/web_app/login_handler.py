@@ -6,6 +6,7 @@ import asyncpg
 import flet as ft
 import genshin
 import orjson
+from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -34,6 +35,7 @@ async def handle_session_mmt(
     password: str | None = None,
     mobile: str | None = None,
 ) -> None:
+    logger.debug(f"[{params.user_id}] Got SessionMMT with type {mmt_type}")
     await page.client_storage.set_async(f"hb.{params.user_id}.gt_type", mmt_type)
 
     if email is not None:
@@ -99,7 +101,7 @@ async def handle_session_mmt(
 
 class EmailVerifyDialog(ft.AlertDialog):
     def __init__(
-        self, ticket: ActionTicket, *, locale: Locale, user_id: int, params: Params
+        self, ticket: ActionTicket, *, locale: Locale, user_id: int, params: Params, device_id: str
     ) -> None:
         field_ref = ft.Ref[ft.TextField]()
         super().__init__(
@@ -128,6 +130,7 @@ class EmailVerifyDialog(ft.AlertDialog):
                         user_id=user_id,
                         params=params,
                         dialog=self,
+                        device_id=device_id,
                     ),
                 ],
                 tight=True,
@@ -146,9 +149,11 @@ class EmailVerifyCodeButton(ft.FilledButton):
         user_id: int,
         params: Params,
         dialog: EmailVerifyDialog,
+        device_id: str,
     ) -> None:
         super().__init__(
-            translator.translate(LocaleStr(key="email_verification_dialog_action"), locale)
+            translator.translate(LocaleStr(key="email_verification_dialog_action"), locale),
+            on_click=self.verify_code,
         )
 
         self._locale = locale
@@ -157,6 +162,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
         self._user_id = user_id
         self._params = params
         self._dialog = dialog
+        self._device_id = device_id
 
     async def verify_code(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -170,7 +176,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
             return
 
         page.close(self._dialog)
-        show_loading_snack_bar(page, locale=self._locale)
+        show_loading_snack_bar(page)
 
         client = ProxyGenshinClient()
         try:
@@ -189,7 +195,9 @@ class EmailVerifyCodeButton(ft.FilledButton):
         password = decrypt_string(encrypted_password)
 
         try:
-            result = await client._app_login(email, password, ticket=self._ticket)
+            result = await client._app_login(
+                email, password, ticket=self._ticket, device_id=self._device_id
+            )
         except Exception as exc:
             show_error_banner(page, message=str(exc))
             return
@@ -208,11 +216,14 @@ async def handle_action_ticket(
     page: ft.Page,
     params: Params,
     locale: Locale,
+    device_id: str,
 ) -> None:
     await page.client_storage.set_async(f"hb.{params.user_id}.email", encrypt_string(email))
     await page.client_storage.set_async(f"hb.{params.user_id}.password", encrypt_string(password))
     page.open(
-        EmailVerifyDialog(ticket=result, locale=locale, user_id=params.user_id, params=params)
+        EmailVerifyDialog(
+            ticket=result, locale=locale, user_id=params.user_id, params=params, device_id=device_id
+        )
     )
 
 

@@ -62,7 +62,9 @@ class View(discord.ui.View):
         return self
 
     async def on_timeout(self) -> None:
-        if self.message:
+        if self.message and not all(
+            item.url for item in self.children if isinstance(item, (discord.ui.Button))
+        ):
             self.clear_items()
             with contextlib.suppress(discord.HTTPException):
                 await self.message.edit(view=self)

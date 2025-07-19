@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import flet as ft
 import genshin
+import orjson
 from loguru import logger
 
 from hoyo_buddy.constants import get_docs_url, locale_to_gpy_lang
@@ -30,7 +31,7 @@ type LoginResult = (
 
 
 class EmailPasswordPage(ft.View):
-    def __init__(self, *, params: Params, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale, device_id: str) -> None:
         self._params = params
         self._locale = locale
 
@@ -55,7 +56,9 @@ class EmailPasswordPage(ft.View):
                                 auto_follow_links_target=ft.UrlTarget.BLANK.value,
                             ),
                             ft.Container(
-                                EmailPassWordForm(params=params, locale=locale),
+                                EmailPassWordForm(
+                                    params=params, locale=locale, device_id=device_id
+                                ),
                                 margin=ft.margin.only(top=16),
                             ),
                         ]
@@ -66,12 +69,13 @@ class EmailPasswordPage(ft.View):
 
 
 class EmailPassWordForm(ft.Column):
-    def __init__(self, *, params: Params, locale: Locale) -> None:
+    def __init__(self, *, params: Params, locale: Locale, device_id: str) -> None:
         self._params = params
 
         self._locale = locale
         self._email_ref = ft.Ref[ft.TextField]()
         self._password_ref = ft.Ref[ft.TextField]()
+        self._device_id = device_id
 
         super().__init__(
             [
@@ -122,7 +126,7 @@ class EmailPassWordForm(ft.Column):
 
         try:
             if self._params.platform is Platform.HOYOLAB:
-                return await client._app_login(email, password)
+                return await client._app_login(email, password, device_id=self._device_id)
             return await client._cn_web_login(email, password)
         except genshin.GenshinException as exc:
             self._handle_genshin_exception(exc, page)
@@ -177,7 +181,6 @@ class EmailPassWordForm(ft.Column):
         page: ft.Page,
     ) -> None:
         """Handle SessionMMT response type."""
-        logger.debug(f"[{self._params.user_id}] Got SessionMMT")
         await handle_session_mmt(
             result,
             email=email,
@@ -197,6 +200,11 @@ class EmailPassWordForm(ft.Column):
         email_result = await client._send_verification_email(result)
 
         if isinstance(email_result, genshin.models.SessionMMT):
+            logger.debug(f"[{self._params.user_id}] Saving action ticket to client storage")
+            await page.client_storage.set_async(
+                f"hb.{self._params.user_id}.action_ticket",
+                orjson.dumps(result.model_dump()).decode(),
+            )
             await self._handle_session_mmt(email_result, email, password, "on_email_send", page)
         else:
             await handle_action_ticket(
@@ -206,6 +214,7 @@ class EmailPassWordForm(ft.Column):
                 page=page,
                 params=self._params,
                 locale=self._locale,
+                device_id=self._device_id,
             )
 
     async def _handle_successful_login(

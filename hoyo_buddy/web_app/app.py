@@ -26,11 +26,12 @@ from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
 from .schema import GachaParams, Params
 from .utils import (
+    clear_storage,
     decrypt_string,
     encrypt_string,
     get_gacha_icon,
     get_gacha_names,
-    reset_storage,
+    refresh_page_view,
     show_error_banner,
     show_loading_snack_bar,
 )
@@ -100,17 +101,7 @@ class WebApp:
         if view is None:
             return
 
-        self._refresh_page_view(view)
-
-    def _refresh_page_view(self, view: ft.View, app_bar: ft.AppBar | None = None) -> None:
-        page = self._page
-        view.scroll = ft.ScrollMode.AUTO
-        if app_bar is not None:
-            view.appbar = app_bar
-
-        page.views.clear()
-        page.views.append(view)
-        page.update()
+        refresh_page_view(page, view)
 
     def close_dialogs(self) -> None:
         controls = self._page._Page__offstage.controls  # pyright: ignore[reportAttributeAccessIssue]
@@ -138,10 +129,17 @@ class WebApp:
         mmt_result = await self._get_user_temp_data(params.user_id)
         email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
+        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
+        if device_id is None:
+            return pages.ErrorPage(code=400, message="Cannot find device ID in client storage.")
+
         client = ProxyGenshinClient()
         try:
             result = await client._app_login(
-                email, password, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+                email,
+                password,
+                mmt_result=genshin.models.SessionMMTResult(**mmt_result),
+                device_id=device_id,
             )
         except Exception as exc:
             show_error_banner(page, message=str(exc))
@@ -157,9 +155,9 @@ class WebApp:
 
             if isinstance(email_result, genshin.models.SessionMMT):
                 # Geetest triggered for sending email verification code
-                await page.client_storage.set_async(f"hb.{params.user_id}.gt_type", "on_email_send")
+                logger.debug(f"[{params.user_id}] Saving action ticket to client storage")
                 await page.client_storage.set_async(
-                    f"hb.{params.user_id}.action_ticket", orjson.dumps(result.dict()).decode()
+                    f"hb.{params.user_id}.action_ticket", orjson.dumps(result.model_dump()).decode()
                 )
                 await handle_session_mmt(
                     email_result,
@@ -178,6 +176,7 @@ class WebApp:
                     page=page,
                     params=params,
                     locale=Locale(params.locale),
+                    device_id=device_id,
                 )
         else:
             encrypted_cookies = encrypt_string(result.to_str())
@@ -195,23 +194,18 @@ class WebApp:
                 code=400, message="Cannot find email or password in client storage."
             )
 
+        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
+        if device_id is None:
+            return pages.ErrorPage(code=400, message="Cannot find device ID in client storage.")
+
         str_action_ticket: str | None = await page.client_storage.get_async(
             f"hb.{params.user_id}.action_ticket"
         )
         if str_action_ticket is None:
             return pages.ErrorPage(code=400, message="Cannot find action ticket in client storage.")
-        action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
-        mmt_result = await self._get_user_temp_data(params.user_id)
-        email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
-        client = ProxyGenshinClient()
-        try:
-            await client._send_verification_email(
-                action_ticket, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
-            )
-        except Exception as exc:
-            show_error_banner(page, message=str(exc))
-            return None
+        action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
+        email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
         await handle_action_ticket(
             action_ticket,
@@ -220,6 +214,7 @@ class WebApp:
             page=page,
             params=params,
             locale=Locale(params.locale),
+            device_id=device_id,
         )
 
     async def _handle_on_otp_send(self, params: Params) -> ft.View | None:
@@ -251,13 +246,18 @@ class WebApp:
         gt_type: Literal[
             "on_login", "on_email_send", "on_otp_send"
         ] = await page.client_storage.get_async(f"hb.{params.user_id}.gt_type")  # pyright: ignore[reportAssignmentType]
+        logger.debug(f"[{params.user_id}] Handling geetest type: {gt_type}")
 
         if gt_type == "on_login":
             return await self._handle_on_login(params)
         if gt_type == "on_email_send":
             return await self._handle_on_email_send(params)
-        # on_otp_send
-        return await self._handle_on_otp_send(params)
+        if gt_type == "on_otp_send":
+            return await self._handle_on_otp_send(params)
+
+        return pages.ErrorPage(
+            code=400, message=f"Invalid geetest type {gt_type} in client storage."
+        )
 
     async def _get_encrypted_email_password(
         self, page: ft.Page, user_id: int
@@ -278,6 +278,16 @@ class WebApp:
             await conn.close()
         return orjson.loads(mmt_result)
 
+    async def _get_or_create_device_id(self, page: ft.Page, user_id: str) -> str:
+        device_id = await page.client_storage.get_async(f"hb.{user_id}.device_id")
+        logger.debug(f"[{user_id}] Device ID: {device_id}")
+        if device_id is None:
+            logger.debug(f"[{user_id}] Device ID not found, generating a new one.")
+            device_id = genshin.Client.generate_app_device_id()
+            await page.client_storage.set_async(f"hb.{user_id}.device_id", device_id)
+
+        return device_id
+
     async def _handle_finish(self, params: Params, locale: Locale) -> ft.View | None:
         logger.debug(f"[{params.user_id}] Handle finish start")
         page = self._page
@@ -285,8 +295,12 @@ class WebApp:
         self.close_dialogs()
         self.close_banners()
 
-        view = pages.EarlyFinishPage(params=params, locale=locale)
-        self._refresh_page_view(view, app_bar=self.login_app_bar)
+        view = pages.LoadingPage(
+            title=LocaleStr(key="fetching_accounts"),
+            description=LocaleStr(key="fetching_accounts_stuck"),
+            locale=locale,
+        )
+        refresh_page_view(page, view, app_bar=self.login_app_bar)
 
         device_id_exists = await page.client_storage.contains_key_async(
             f"hb.{params.user_id}.device_id"
@@ -327,9 +341,9 @@ class WebApp:
 
         logger.debug(f"[{params.user_id}] Before get game accs, cookies: {cookies}")
         if device_id is not None:
-            logger.debug(f"{params.user_id} Before get game accs, device id: {device_id}")
+            logger.debug(f"[{params.user_id}] Before get game accs, device id: {device_id}")
         if device_fp is not None:
-            logger.debug(f"{params.user_id} Before get game accs, device fp: {device_fp}")
+            logger.debug(f"[{params.user_id}] Before get game accs, device fp: {device_fp}")
 
         try:
             platform = params.platform or Platform.HOYOLAB
@@ -348,12 +362,13 @@ class WebApp:
             return None
 
         if not accounts:
-            message = LocaleStr(
-                key="no_game_accounts_error_message",
-                platform=EnumStr(params.platform or Platform.HOYOLAB),
-            ).translate(locale)
-            show_error_banner(page, message=message)
-            return None
+            return pages.ErrorPage(
+                code=404,
+                message=LocaleStr(
+                    key="no_game_accounts_error_message",
+                    platform=EnumStr(params.platform or Platform.HOYOLAB),
+                ).translate(locale),
+            )
 
         return pages.FinishPage(
             params=params,
@@ -389,7 +404,6 @@ class WebApp:
         user_id = page.session.get("hb.user_id")
         if user_id is None:
             return pages.ErrorPage(code=400, message="Cannot find user_id in client storage.")
-
         parsed_params["user_id"] = user_id
 
         try:
@@ -400,12 +414,15 @@ class WebApp:
         else:
             match route:
                 case "/platforms":
-                    reset_storage(page, user_id=params.user_id)
+                    clear_storage(page, user_id=params.user_id)
                     view = pages.PlatformsPage(params=params, locale=locale)
                 case "/methods":
                     view = pages.MethodsPage(params=params, locale=locale)
                 case "/email_password":
-                    view = pages.EmailPasswordPage(params=params, locale=locale)
+                    device_id = await self._get_or_create_device_id(page, user_id)
+                    view = pages.EmailPasswordPage(
+                        params=params, locale=locale, device_id=device_id
+                    )
                 case "/dev_tools":
                     view = pages.DevToolsPage(params=params, locale=locale)
                 case "/dev":

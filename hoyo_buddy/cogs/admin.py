@@ -185,7 +185,7 @@ class Admin(commands.Cog):
         locale_count_list = (
             await Settings.all()
             .group_by("lang")
-            .annotate(count=Count("id"))
+            .annotate(count=Count("user_id"))
             .values("lang", "count")
         )
         locale_count = {item["lang"]: item["count"] for item in locale_count_list}

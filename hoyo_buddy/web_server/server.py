@@ -180,7 +180,7 @@ class GeetestWebServer:
 
         try:
             await asyncio.Future()
-        except asyncio.CancelledError:
+        except (KeyboardInterrupt, asyncio.CancelledError, SystemExit):
             logger.info("Web server shutting down...")
             await site.stop()
             await app.shutdown()

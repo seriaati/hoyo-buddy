@@ -205,8 +205,12 @@ class SubmitButton(ft.FilledButton):
         finally:
             await conn.close()
 
-        # Delete cookies and device info from client storage
-        reset_storage(page, user_id=user_id)
+        clear_storage(
+            page,
+            user_id=user_id,
+            device_id=region is genshin.Region.CHINESE,
+            device_fp=region is genshin.Region.CHINESE,
+        )
 
         page.open(
             ft.SnackBar(

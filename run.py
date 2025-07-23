@@ -14,6 +14,7 @@ from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import POOL_MAX_WORKERS
 from hoyo_buddy.db.pgsql import Database
+from hoyo_buddy.health_server.server import HealthWebServer
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import entry_point, wrap_task_factory
 
@@ -44,6 +45,13 @@ async def main() -> None:
             translator,
             HoyoBuddy(session=session, pool=pool, config=CONFIG, executor=executor) as bot,
         ):
+            port = (
+                CONFIG.health_port_main if CONFIG.deployment == "main" else CONFIG.health_port_sub
+            )
+            if port is not None:
+                health_server = HealthWebServer()
+                asyncio.create_task(health_server.run(port=port))
+
             await bot.start(CONFIG.discord_token)
 
 

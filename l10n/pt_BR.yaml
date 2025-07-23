@@ -9,7 +9,7 @@ about_command.translators: Tradutores
 about_command.uptime: Tempo de atividade
 about_command.website: Site oficial
 about_command_description: Sobre o bot
-about_embed.description: "Um bot do Discord rico em funcionalidades, fácil de usar e com um design bonito, feito especificamente para jogadores da Hoyoverse."
+about_embed.description: "Um bot do Discord rico em recursos, fácil de usar e com design elegante, feito para jogos da Hoyoverse."
 abundance: Abundância
 abyss.battles_won_fought: "Batalhas Vencidas/Lutadas: {val1}/{val2}"
 abyss.deepest_descent: "Descida Mais Profunda: {val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: Editar apelido
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verificação Necessária
-email_verification_dialog_content: "Por favor, insira o código de verificação recebido"
+email_verification_dialog_content: "Por favor, insira o código de verificação por email recebido da Hoyoverse."
 email_verification_dialog_action: Verificar
 email_verification_field_label: Código de verificação
 email-geetest.embed.title: Verificação CAPTCHA necessária para enviar o código de verificação por email
@@ -553,6 +553,12 @@ dyk_github: "O Hoyo Buddy é de código aberto no [GitHub](<https://github.com/s
 dyk_python: O Hoyo Buddy é escrito em Python puro
 dyk_team_card: Você pode gerar um card de time em /profile selecionando múltiplos personagens
 dyk_set_default_acc: Você pode definir uma conta padrão que é usada para executar todos os comandos em /accounts
+dyk_status_page: "Você pode verificar o status do bot [aqui](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Página de status
+docs_page_btn_label: Documentação
+invite_page_btn_label: Convite
+invite_command_desc: Convide o Hoyo Buddy para seu servidor ou adicione-o aos seus aplicativos
+help_command_desc: "Precisa de ajuda? Veja a documentação ou entre em nosso servidor do Discord"
 title_dyk: "Você sabia?"
 button_label_dyk: "Mensagens \"Você sabia?\""
 events_view_start_date_embed_field: Hora de Início
@@ -822,3 +828,4 @@ hard_challenge: "Confronto Abissal"
 fetching_accounts: Aguarde enquanto obtemos suas contas...
 fetching_accounts_stuck: "Se você ficou preso nesta página, tente executar o comando novamente ou entre em contato conosco para corrigir o problema."
 aaa_acronym: AAA
+changelog_command_desc: Veja as últimas mudanças e atualizações

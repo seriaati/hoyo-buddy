@@ -1292,3 +1292,5 @@ SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 111799263382708225
 HB_BIRTHDAY = datetime.date(2024, 6, 7)
 
 POOL_MAX_WORKERS = 1 if CONFIG.is_dev else min(32, (os.cpu_count() or 1))
+
+INSTALL_URL = "https://one.hb.seria.moe/install"

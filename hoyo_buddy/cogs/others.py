@@ -11,7 +11,7 @@ from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import IMAGE_EXTENSIONS, get_docs_url
+from hoyo_buddy.constants import IMAGE_EXTENSIONS, INSTALL_URL, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.db.utils import get_locale
@@ -176,6 +176,21 @@ class Others(commands.Cog):
                 row=1,
             )
         )
+        view.add_item(
+            Button(
+                label=LocaleStr(key="status_page_btn_label"),
+                url="https://status.seria.moe/?category=Hoyo%20Buddy",
+                row=2,
+            )
+        )
+        view.add_item(
+            Button(
+                label=LocaleStr(key="docs_page_btn_label"),
+                url=get_docs_url("intro", locale=locale),
+                row=2,
+            )
+        )
+        view.add_item(Button(label=LocaleStr(key="invite_page_btn_label"), url=INSTALL_URL, row=2))
 
         # brand image
         image_ = discord.File(

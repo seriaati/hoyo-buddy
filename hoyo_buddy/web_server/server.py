@@ -152,6 +152,10 @@ class GeetestWebServer:
             raise web.HTTPBadRequest(reason=f"Missing query parameter: {e}") from e
         return web.Response(status=302, headers={"Location": url})
 
+    async def health_check(self, _: web.Request) -> web.Response:
+        """Health check endpoint to ensure the server is running."""
+        return web.json_response({"status": "ok"})
+
     async def run(self, *, port: int) -> None:
         logger.info(f"Starting web server on port {port}...")
 
@@ -168,6 +172,7 @@ class GeetestWebServer:
                 web.get("/mmt", self.mmt_endpoint),
                 web.post("/send-data", self.send_data_endpoint),
                 web.get("/redirect", self.redirect),
+                web.get("/health", self.health_check),
             ]
         )
 

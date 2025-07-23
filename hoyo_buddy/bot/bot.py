@@ -181,6 +181,9 @@ class HoyoBuddy(commands.AutoShardedBot):
             if not self.config.prometheus and cog_name == "prometheus":
                 continue
 
+            if self.config.is_dev and cog_name == "health":
+                continue
+
             try:
                 await self.load_extension(f"hoyo_buddy.cogs.{cog_name}")
                 logger.info(f"Loaded cog {cog_name!r}")

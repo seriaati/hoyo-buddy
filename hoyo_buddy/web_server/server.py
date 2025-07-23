@@ -152,7 +152,7 @@ class GeetestWebServer:
             raise web.HTTPBadRequest(reason=f"Missing query parameter: {e}") from e
         return web.Response(status=302, headers={"Location": url})
 
-    async def run(self, port: int = 5000) -> None:
+    async def run(self, *, port: int) -> None:
         logger.info(f"Starting web server on port {port}...")
 
         async with aiofiles.open("hoyo_buddy/web_server/page_login.html") as f:

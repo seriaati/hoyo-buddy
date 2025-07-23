@@ -14,6 +14,7 @@ from discord.ext import commands, tasks
 from loguru import logger
 from prometheus_client import Counter, Gauge
 
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models import HoyoAccount
 
 if TYPE_CHECKING:
@@ -81,15 +82,20 @@ class PrometheusCog(commands.Cog):
         self.set_metrics_loop_accounts.cancel()
 
     async def start_prometheus_server(self) -> None:
+        port = CONFIG.prometheus_port
+        if port is None:
+            logger.warning("Prometheus port is not set in the settings, skipping server start")
+            return
+
         try:
-            prometheus_client.start_http_server(9637)
+            prometheus_client.start_http_server(port)
         except OSError as e:
             if e.errno == 98:  # Address already in use
-                logger.warning("Prometheus server is already running on port 9637")
+                logger.warning(f"Prometheus server is already running on port {port}")
             else:
                 logger.error(f"Failed to start Prometheus server: {e}")
         else:
-            logger.info("Prometheus server started on port 9637")
+            logger.info(f"Prometheus server started on port {port}")
 
     @tasks.loop(seconds=5)
     async def set_metrics_loop(self) -> None:

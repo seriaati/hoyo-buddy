@@ -31,6 +31,13 @@ class Config(BaseSettings):
     proxy: str | None = None
     redis_url: str | None = None
 
+    # Ports
+    web_server_port: int | None = None
+    web_app_port: int | None = None
+    health_port_main: int | None = None
+    health_port_sub: int | None = None
+    prometheus_port: int | None = None
+
     # Command-line arguments
     search: bool = False
     sentry: bool = False

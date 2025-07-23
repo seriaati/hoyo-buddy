@@ -9,7 +9,6 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.utils import get_locale, show_anniversary_dismissible
-from hoyo_buddy.utils import ephemeral
 
 from ..types import Interaction
 from ..ui.settings import SettingsUI
@@ -24,7 +23,7 @@ class Settings(commands.Cog):
 
     @app_commands.command(name=locale_str("settings"), description=COMMANDS["settings"].description)
     async def settings_command(self, i: Interaction) -> Any:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer(ephemeral=True)
 
         settings = await UserSettings.get(user_id=i.user.id)
         locale = await get_locale(i)

@@ -9,7 +9,7 @@ about_command.translators: Translators
 about_command.uptime: Uptime
 about_command.website: Official website
 about_command_description: About the bot
-about_embed.description: "A feature rich, easy to use, and beautifully designed Discord bot specifically made for Hoyoverse gamers."
+about_embed.description: "A feature rich, easy to use, and beautifully designed Discord bot made for Hoyoverse gamers."
 abundance: Abundance
 abyss.battles_won_fought: "Battles Won/Fought: {val1}/{val2}"
 abyss.deepest_descent: "Deepest Descent: {val}"

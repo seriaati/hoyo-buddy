@@ -5,7 +5,9 @@ import datetime
 from typing import TYPE_CHECKING
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from loguru import logger
 
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
@@ -45,12 +47,26 @@ class Scheduler:
         # Check-in
         asyncio.create_task(DailyCheckin.execute())
 
+    async def send_heartbeat(self) -> None:
+        if CONFIG.scheduler_heartbeat_url is None:
+            logger.warning("Scheduler heartbeat URL is not set in the configuration.")
+            return
+
+        await self.session.get(CONFIG.scheduler_heartbeat_url)
+
     def start(self) -> None:
         self.scheduler.add_job(
             self.run_auto_tasks,
             "interval",
             minutes=INTERVAL_MIN,
             id="auto_tasks",
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            self.send_heartbeat,
+            "interval",
+            minutes=1,
+            id="heartbeat",
             next_run_time=get_now(datetime.UTC),
         )
         self.scheduler.start()

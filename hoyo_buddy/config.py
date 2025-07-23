@@ -30,6 +30,7 @@ class Config(BaseSettings):
     fernet_key: str
     proxy: str | None = None
     redis_url: str | None = None
+    scheduler_heartbeat_url: str | None = None
 
     # Ports
     web_server_port: int | None = None

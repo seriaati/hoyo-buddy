@@ -560,7 +560,7 @@ status_page_btn_label: Status page
 docs_page_btn_label: Documentation
 invite_page_btn_label: Invite
 invite_command_desc: Invite Hoyo Buddy to your server or add it to your apps
-help_command_desc: Need help? View the documentation or join our Discord server
+help_command_desc: "Need help? View the documentation or join our Discord server"
 title_dyk: "Did you know?"
 button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time

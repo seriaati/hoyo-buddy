@@ -9,7 +9,7 @@ about_command.translators: Vertalers
 about_command.uptime: Uptime
 about_command.website: Officiële website
 about_command_description: Over de bot
-about_embed.description: "Een veelzijdige, gebruiksvriendelijke en prachtig ontworpen Discord-bot, speciaal gemaakt voor Hoyoverse-gamers."
+about_embed.description: "Een veelzijdige, gebruiksvriendelijke en prachtig ontworpen Discord-bot, gemaakt voor Hoyoverse gamers."
 abundance: Overvloed
 abyss.battles_won_fought: "Gevechten Gewonnen/Gestreden: {val1}/{val2}"
 abyss.deepest_descent: "Diepste Afdaaling: {val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: Bijnaam bewerken
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verificatie Vereist
-email_verification_dialog_content: Voer de ontvangen verificatiecode aub in
+email_verification_dialog_content: Voer de e-mailverificatiecode in die je van Hoyoverse hebt ontvangen.
 email_verification_dialog_action: Verifiëren
 email_verification_field_label: Verificatiecode
 email-geetest.embed.title: CAPTCHA-verificatie vereist voor het verzenden van een e-mailverificatiecode
@@ -555,6 +555,12 @@ dyk_github: "Hoyo Buddy is open-sourced op [GitHub](<https://github.com/seriaati
 dyk_python: Hoyo Buddy is gecodeerd in pure Python
 dyk_team_card: Je kunt een teamkaart genereren in /profile door meerdere karakters te selecteren
 dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt om alle opdrachten in /accounts uit te voeren
+dyk_status_page: "Je kan de status van de bot [hier controleren](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Status pagina
+docs_page_btn_label: Documentatie
+invite_page_btn_label: Uitnodiging
+invite_command_desc: Nodig Hoyo Buddy uit tot je server of voeg het toe aan je apps
+help_command_desc: "Hulp nodig? Bekijk de documentatie of join onze Discord Server"
 title_dyk: "Wist je dat?"
 button_label_dyk: Wist je dat berichten
 events_view_start_date_embed_field: Starttijd
@@ -824,3 +830,4 @@ hard_challenge: "Stygian Onslaught"
 fetching_accounts: Wacht even terwijl we je accounts ophalen...
 fetching_accounts_stuck: "Als je vastloopt op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
 aaa_acronym: AAA
+changelog_command_desc: Bekijk de laatste wijzigingen en updates

@@ -48,6 +48,9 @@ type CommandName = Literal[
     "upload",
     "settings",
     "search",
+    "invite",
+    "help",
+    "changelog",
 ]
 
 
@@ -271,5 +274,18 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     ),
     "settings": CommandConfig(
         description=locale_str("Configure your user settings", key="settings_command_description")
+    ),
+    "invite": CommandConfig(
+        description=locale_str(
+            "Invite Hoyo Buddy to your server or add it to your apps", key="invite_command_desc"
+        )
+    ),
+    "help": CommandConfig(
+        description=locale_str(
+            "Need help? View the documentation or join our Discord server", key="help_command_desc"
+        )
+    ),
+    "changelog": CommandConfig(
+        description=locale_str("View the latest changes and updates", key="changelog_command_desc")
     ),
 }

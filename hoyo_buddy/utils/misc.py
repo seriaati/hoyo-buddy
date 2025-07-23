@@ -25,13 +25,14 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     HB_BIRTHDAY,
     IMAGE_EXTENSIONS,
+    LOCALE_TO_DOCS_LANG,
     SLEEP_TIMES,
     STATIC_FOLDER,
     TRAVELER_IDS,
     UTC_8,
 )
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, Locale
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -645,3 +646,38 @@ def shorten_preserving_newlines(text: str, width: int, placeholder: str = "...")
             return paragraph[:max_len].rstrip() + placeholder
 
     return truncated
+
+
+def parse_changelog(content: str) -> dict[str, str]:
+    """
+    Parse a changelog markdown string and return a dictionary:
+    {
+        "v1.16.8": "<raw content for this version>",
+        "v1.16.7": "<raw content for this version>",
+        ...
+    }
+    """
+    changelog = {}
+    version_pattern = re.compile(r"^## (v[0-9.]+)", re.MULTILINE)
+
+    # Find all versions and their start positions
+    versions = [(m.group(1), m.start()) for m in version_pattern.finditer(content)]
+    versions.append((None, len(content)))  # Add endpoint for slicing
+
+    for i in range(len(versions) - 1):
+        version = versions[i][0]
+        start = versions[i][1]
+        end = versions[i + 1][1]
+        # Extract raw content after the version heading
+        raw_content = content[start:end].split("\n", 1)[1].strip()
+        changelog[version] = raw_content
+
+    return changelog
+
+
+def get_changelog_url(locale: Locale | None = None) -> str:
+    """Get the URL for the changelog documentation."""
+    lang_code = None if locale is None else LOCALE_TO_DOCS_LANG.get(locale)
+    if lang_code is None:
+        return "https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/docs/changelog.md"
+    return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/i18n/{lang_code}/docusaurus-plugin-content-docs/current/changelog.md"

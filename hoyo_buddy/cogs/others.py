@@ -16,6 +16,8 @@ from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.exceptions import NotAnImageError
+from hoyo_buddy.ui.paginator import Page, PaginatorView
+from hoyo_buddy.utils.misc import get_changelog_url, parse_changelog, shorten_preserving_newlines
 
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
@@ -217,6 +219,56 @@ class Others(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
         url = await upload_image(i.client.session, image_url=image.url)
         await i.followup.send(f"<{url}>", ephemeral=True)
+
+    @app_commands.command(
+        name=app_commands.locale_str("invite"), description=COMMANDS["invite"].description
+    )
+    async def invite_command(self, i: Interaction) -> None:
+        await i.response.send_message(INSTALL_URL, ephemeral=True)
+
+    @app_commands.command(
+        name=app_commands.locale_str("help"), description=COMMANDS["help"].description
+    )
+    async def help_command(self, i: Interaction) -> None:
+        locale = await get_locale(i)
+        content = LocaleStr(
+            custom_str="- [{server_label}](https://discord.gg/ryfamUykRw)\n- [{docs_label}](<{docs_url}>)\n - [{status_label}]({status_url})",
+            server_label=LocaleStr(key="about_command.discord_server"),
+            docs_label=LocaleStr(key="docs_page_btn_label"),
+            docs_url=get_docs_url("intro", locale=locale),
+            status_label=LocaleStr(key="status_page_btn_label"),
+            status_url="https://status.seria.moe/?category=Hoyo%20Buddy",
+        )
+        await i.response.send_message(content.translate(locale), ephemeral=True)
+
+    @app_commands.command(
+        name=app_commands.locale_str("changelog"), description=COMMANDS["changelog"].description
+    )
+    async def changelog_command(self, i: Interaction) -> None:
+        locale = await get_locale(i)
+
+        async with self.bot.session.get(get_changelog_url(locale)) as resp:
+            if resp.status != 200:
+                msg = "Failed to fetch changelog"
+                raise ValueError(msg)
+
+            content = await resp.text()
+
+        changelog = parse_changelog(content)
+        pages = [
+            Page(content=f"# {title}\n{shorten_preserving_newlines(body, width=2000)}")
+            for title, body in changelog.items()
+        ]
+
+        paginator = PaginatorView(pages, author=i.user, locale=locale)
+        paginator.add_item(
+            Button(
+                label=LocaleStr(key="changelog_embed_title"),
+                row=4,
+                url=get_docs_url("changelog", locale=locale),
+            )
+        )
+        await paginator.start(i, ephemeral=True)
 
 
 async def setup(bot: HoyoBuddy) -> None:

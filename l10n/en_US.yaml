@@ -559,6 +559,8 @@ dyk_status_page: "You can check the bot's status [here](<https://status.seria.mo
 status_page_btn_label: Status page
 docs_page_btn_label: Documentation
 invite_page_btn_label: Invite
+invite_command_desc: Invite Hoyo Buddy to your server or add it to your apps
+help_command_desc: Need help? View the documentation or join our Discord server
 title_dyk: "Did you know?"
 button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time
@@ -828,3 +830,4 @@ hard_challenge: "Stygian Onslaught"
 fetching_accounts: Please wait while we are getting your accounts...
 fetching_accounts_stuck: "If you are stuck on this page, please try running the command again or contact us to fix the issue."
 aaa_acronym: AAA
+changelog_command_desc: View the latest changes and updates

@@ -134,7 +134,7 @@ edit_nickname_modal_title: Chỉnh sửa biệt danh
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Lôi
 email_verification_dialog_title: Yêu cầu xác minh
-email_verification_dialog_content: Xin vui lòng nhập mã xác minh được nhận từ email của Hoyoverse.
+email_verification_dialog_content: Vui lòng nhập mã xác thực nhận được từ email của Hoyoverse.
 email_verification_dialog_action: Xác minh
 email_verification_field_label: Mã xác minh
 email-geetest.embed.title: Yêu cầu xác minh CAPTCHA để gửi Email Mã xác minh

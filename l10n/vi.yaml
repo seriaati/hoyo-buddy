@@ -9,7 +9,7 @@ about_command.translators: Phiên dịch
 about_command.uptime: Thời gian hoạt động
 about_command.website: Trang web chính thức
 about_command_description: Về bot này
-about_embed.description: "Một Discord bot với tính năng phong phú, dễ sử dụng với những thiết kế dẹp danh riêng cho những game Hoyoverse"
+about_embed.description: "Là một Discord bot với nhiều tính năng phong phú, dễ sử dụng, được thiết kế đẹp mắt dành cho game thủ Hoyoverse."
 abundance: Trù Phú
 abyss.battles_won_fought: "Khiêu Chiến Thành Công/Đã Đánh: {val1}/{val2}"
 abyss.deepest_descent: "Đến nơi sâu nhất: {val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: Chỉnh sửa biệt danh
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Lôi
 email_verification_dialog_title: Yêu cầu xác minh
-email_verification_dialog_content: Xin vui lòng nhập mã xác minh được nhận.
+email_verification_dialog_content: Xin vui lòng nhập mã xác minh được nhận từ email của Hoyoverse.
 email_verification_dialog_action: Xác minh
 email_verification_field_label: Mã xác minh
 email-geetest.embed.title: Yêu cầu xác minh CAPTCHA để gửi Email Mã xác minh
@@ -555,6 +555,12 @@ dyk_github: "Hoyo Buddy là một dự án mã nguồn mở trên [GitHub](<http
 dyk_python: Hoyo Buddy được lập trình hoàn toàn bằng Python
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
+dyk_status_page: "Bạn có thể kiểm tra trạng thái của bot ở [đây](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Trang trạng thái
+docs_page_btn_label: Tài liệu Wiki
+invite_page_btn_label: Mời
+invite_command_desc: Thêm Hoyo Buddy vào máy chủ hoặc thêm vào ứng dụng của bạn.
+help_command_desc: "Cần trợ giúp? Xem tài liệu Wiki hoặc tham gia máy chủ Discord."
 title_dyk: "Bạn có biết?"
 button_label_dyk: Tin Nhắn "Bạn có biết"
 events_view_start_date_embed_field: Thời gian bắt đầu
@@ -824,3 +830,4 @@ hard_challenge: "Ảo Cảnh Hiểm Ác"
 fetching_accounts: "Đang truy vấn tài khoản, vui lòng chờ..."
 fetching_accounts_stuck: "Nếu bạn bị kẹt tại trang này, hãy thử chạy lại lệnh hoặc liên hệ chúng tôi để xử lý lỗi."
 aaa_acronym: Tự Tích Thiểm Năng
+changelog_command_desc: Xem những thay đổi và cập nhật mới nhất

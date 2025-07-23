@@ -555,6 +555,7 @@ dyk_github: "Hoyo Buddy is open-sourced on [GitHub](<https://github.com/seriaati
 dyk_python: Hoyo Buddy is coded in pure Python
 dyk_team_card: You can generate a team card in /profile by selecting multiple characters
 dyk_set_default_acc: You can set a default account that is used to run all commands in /accounts
+dyk_status_page: "You can check the bot's status [here](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
 title_dyk: "Did you know?"
 button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time

@@ -134,7 +134,7 @@ edit_nickname_modal_title: 编辑昵称
 eidolon_superimpose_str: "{eidolon}魂 叠{superimpose}"
 electro: 雷
 email_verification_dialog_title: 需要验证
-email_verification_dialog_content: 请输入收到的验证码
+email_verification_dialog_content: 请输入从 Hoyoverse 接收到的邮箱验证码。
 email_verification_dialog_action: 验证
 email_verification_field_label: 验证码
 email-geetest.embed.title: 在发送验证码前须进行 CAPTCHA 验证
@@ -555,6 +555,12 @@ dyk_github: "Hoyo Buddy 于 [GitHub](<https://github.com/seriaati/hoyo-buddy>) �
 dyk_python: Hoyo Buddy 是用纯Python编写而成的。
 dyk_team_card: 你可以通过选择多个角色的方式在 /profile 生成队伍卡片
 dyk_set_default_acc: 你可以用 /accounts 设置一个预设账户，用于运行所有命令
+dyk_status_page: "你可以在[这里](<https://status.seria.moe/?category=Hoyo%20Buddy>)查看机器人状态"
+status_page_btn_label: 状态页
+docs_page_btn_label: 文档
+invite_page_btn_label: 邀请
+invite_command_desc: 邀请Hoyo Buddy到你的服务器或者将Hoyo Buddy添加到你的APP中
+help_command_desc: 需要帮助吗？查看文档或者加入我们的服务器吧。
 title_dyk: "你知道吗？"
 button_label_dyk: 「你知道吗」消息
 events_view_start_date_embed_field: 开始时间
@@ -824,3 +830,4 @@ hard_challenge: "幽境危战"
 fetching_accounts: 请稍等，我们正在获取你的账户.......
 fetching_accounts_stuck: "如果你在此页面卡住，请重新运行该命令或者联系我们解决此问题。"
 aaa_acronym: 闪能自动累计
+changelog_command_desc: 查看最新更改和更新

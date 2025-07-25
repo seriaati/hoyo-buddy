@@ -9,7 +9,7 @@ about_command.translators: 翻訳者
 about_command.uptime: 稼働時間
 about_command.website: 公式ウェブサイト
 about_command_description: Botについて
-about_embed.description: "HoYoverseゲーマーのために特別に作られた、機能豊富で使いやすく、美しくデザインされたDiscordボットです。"
+about_embed.description: "機能豊富で使いやすく、美しくデザインされたHoyoverseゲーム専用のDiscordボットです。"
 abundance: 豊穣
 abyss.battles_won_fought: "勝利/戦闘回数：{val1}/{val2}"
 abyss.deepest_descent: "到達層：{val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: ニックネームを編集
 eidolon_superimpose_str: "{eidolon}凸{superimpose}重"
 electro: 雷
 email_verification_dialog_title: 認証が必要です
-email_verification_dialog_content: 受信した認証コードを入力してください
+email_verification_dialog_content: Hoyoverseから受信したメール認証コードを入力してください。
 email_verification_dialog_action: 認証
 email_verification_field_label: 認証コード
 email-geetest.embed.title: メール認証コード送信のためのCAPTCHA認証が必要です
@@ -553,6 +553,12 @@ dyk_github: "Hoyo Buddyは [GitHub](<https://github.com/seriaati/hoyo-buddy>) �
 dyk_python: Hoyo Buddyは純粋なPythonで書かれています
 dyk_team_card: /profile で複数のキャラクターを選択することでチームカードを生成できます
 dyk_set_default_acc: /accounts ですべてのコマンドを実行するために使用されるデフォルトアカウントを設定できます
+dyk_status_page: "ボットのステータスを[こちら](<https://status.seria.moe/?category=Hoyo%20Buddy>)で確認できます"
+status_page_btn_label: ステータスページ
+docs_page_btn_label: ドキュメント
+invite_page_btn_label: 招待
+invite_command_desc: Hoyo Buddyをあなたのサーバーに招待するか、アプリに追加してください
+help_command_desc: 困ったときは？ドキュメントを確認するか、Discordサーバーにご参加ください
 title_dyk: "知っていましたか？"
 button_label_dyk: Did you know メッセージ
 events_view_start_date_embed_field: 開始日時
@@ -822,3 +828,4 @@ hard_challenge: "幽境の激戦"
 fetching_accounts: アカウント情報を取得中です。しばらくお待ちください...
 fetching_accounts_stuck: "このページで動作が停止している場合は、コマンドを再実行するか、お問い合わせください。問題を解決いたします。"
 aaa_acronym: アドレナリン回復
+changelog_command_desc: 最新の変更内容とアップデートを確認する

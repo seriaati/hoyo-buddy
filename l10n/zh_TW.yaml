@@ -9,7 +9,7 @@ about_command.translators: 翻譯員
 about_command.uptime: 上線時間
 about_command.website: 官方網站
 about_command_description: 關於機器人
-about_embed.description: "一個為 Hoyoverse 遊戲玩家量身訂做的 Discord 機器人, 功能豐富、易於使用且設計精美。"
+about_embed.description: "一款為 Hoyoverse 遊戲玩家量身訂做的 Discord 機器人, 功能豐富、易於使用且設計精美。"
 abundance: 豐饒
 abyss.battles_won_fought: "獲勝次數/戰鬥次數: {val1}/{val2}"
 abyss.deepest_descent: "最深抵達: {val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: 編輯暱稱
 eidolon_superimpose_str: "魂{eidolon}疊{superimpose}"
 electro: 雷
 email_verification_dialog_title: 需要驗證
-email_verification_dialog_content: 請輸入收到的驗證碼
+email_verification_dialog_content: 請輸入收到來自 Hoyoverse 的 email 驗證碼。
 email_verification_dialog_action: 驗證
 email_verification_field_label: 驗證碼
 email-geetest.embed.title: 在寄送驗證碼前需要進行 CAPTCHA 驗證
@@ -555,6 +555,12 @@ dyk_github: "Hoyo Buddy 於 [GitHub](<https://github.com/seriaati/hoyo-buddy>) �
 dyk_python: Hoyo Buddy 使用純 Python 編寫而成
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
+dyk_status_page: "你可以在[這裡](<https://status.seria.moe/?category=Hoyo%20Buddy>)查看機器人的運作狀況"
+status_page_btn_label: 運行狀態頁面
+docs_page_btn_label: 文檔
+invite_page_btn_label: 邀請
+invite_command_desc: 邀請 Hoyo Buddy 到你的伺服器，或是將其新增至你的應用程式中
+help_command_desc: 需要幫助嗎？查看文檔或加入我們的 Discord 伺服器
 title_dyk: "你知道嗎？"
 button_label_dyk: 「你知道嗎」訊息
 events_view_start_date_embed_field: 開始時間
@@ -824,3 +830,4 @@ hard_challenge: "幽境危戰"
 fetching_accounts: 請稍等，正在獲取你的帳戶…
 fetching_accounts_stuck: "如果此頁面長時間沒有跳轉，請嘗試重新執行一次指令，或是聯繫我們來解決問題。"
 aaa_acronym: 閃能自動累積
+changelog_command_desc: 查看最新一期的變更

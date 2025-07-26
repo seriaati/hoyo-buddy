@@ -9,7 +9,7 @@ about_command.translators: Traductores
 about_command.uptime: Tiempo de actividad
 about_command.website: Sitio web oficial
 about_command_description: Sobre el bot
-about_embed.description: "Un bot de Discord con muchas funciones, fácil de usar y bellamente diseñado, creado específicamente para jugadores de Hoyoverse."
+about_embed.description: "Un bot de Discord con muchas funciones, fácil de usar y bellamente diseñado, hecho para jugadores de Hoyoverse."
 abundance: Abundancia
 abyss.battles_won_fought: "Batallas Ganadas/Libradas: {val1}/{val2}"
 abyss.deepest_descent: "Descenso más profundo: {val}"
@@ -134,7 +134,7 @@ edit_nickname_modal_title: Editar nombre de imagen
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
 email_verification_dialog_title: Verificación requerida
-email_verification_dialog_content: Por favor ingresa el código de verificación recibido
+email_verification_dialog_content: "Por favor, ingresa el código de verificación de correo recibido de Hoyoverse."
 email_verification_dialog_action: Verificar
 email_verification_field_label: Código de verificación
 email-geetest.embed.title: Se requiere verificación CAPTCHA para enviar el código de verificación por correo
@@ -555,6 +555,12 @@ dyk_github: "Hoyo Buddy es de código abierto en [GitHub](<https://github.com/se
 dyk_python: Hoyo Buddy está codificado puramente en Python
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
+dyk_status_page: "Puedes ver el estado del bot [aquí](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Estado de la pagina
+docs_page_btn_label: Documentación
+invite_page_btn_label: Invitar
+invite_command_desc: Invita a Hoyo Buddy a tu servidor o agréguelo a tus aplicaciones
+help_command_desc: "¿Necesitas ayuda? Vé la documentación o únete a nuestro servidor de Discord"
 title_dyk: "¿Sabías que...?"
 button_label_dyk: Mensajes de información
 events_view_start_date_embed_field: Hora de inicio
@@ -824,3 +830,4 @@ hard_challenge: "Conflagración Estigia"
 fetching_accounts: Por favor espera mientras obtenemos tus cuentas...
 fetching_accounts_stuck: "Si estás atascado en esta página, por favor intenta ejecutar el comando de nuevo o contáctanos para solucionar el problema."
 aaa_acronym: Acu. Auto. de Adrenalina
+changelog_command_desc: Vé los últimos cambios y actualizaciones

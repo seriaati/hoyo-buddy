@@ -551,6 +551,7 @@ def locale_to_zenless_data_lang(locale: Locale) -> str:
 
 STARRAIL_DATA_URL = "https://gitlab.com/Dimbreath/turnbasedgamedata/-/raw/main"
 HSR_AVATAR_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfig.json"
+HSR_AVATAR_CONFIG_LD_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfigLD.json"
 HSR_EQUIPMENT_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/EquipmentConfig.json"
 HSR_TEXT_MAP_URL = f"{STARRAIL_DATA_URL}/TextMap/TextMap{{lang}}.json"
 

@@ -24,6 +24,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import (
     GUILD_ID,
+    HSR_AVATAR_CONFIG_LD_URL,
     HSR_AVATAR_CONFIG_URL,
     HSR_EQUIPMENT_CONFIG_URL,
     HSR_TEXT_MAP_URL,
@@ -549,6 +550,9 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         async with asyncio.TaskGroup() as tg:
             avatar_config_task = tg.create_task(fetch_json(self.session, HSR_AVATAR_CONFIG_URL))
+            avatar_config_ld_task = tg.create_task(
+                fetch_json(self.session, HSR_AVATAR_CONFIG_LD_URL)
+            )
             equipment_config_task = tg.create_task(
                 fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL)
             )
@@ -558,12 +562,16 @@ class HoyoBuddy(commands.AutoShardedBot):
             }
 
         avatar_config = avatar_config_task.result()
+        avatar_config_ld = avatar_config_ld_task.result()
         equipment_config = equipment_config_task.result()
         text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
 
         item_id_mapping: dict[int, int] = {}  # item ID -> text map key
 
         for avatar in avatar_config:
+            item_id_mapping[avatar["AvatarID"]] = avatar["AvatarName"]["Hash"]
+
+        for avatar in avatar_config_ld:
             item_id_mapping[avatar["AvatarID"]] = avatar["AvatarName"]["Hash"]
 
         for equipment in equipment_config:

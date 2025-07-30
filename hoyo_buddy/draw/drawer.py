@@ -357,7 +357,10 @@ class Drawer:
                 if image.mode != "RGBA":
                     image = image.convert("RGBA")
             except FileNotFoundError:
-                logger.error(f"File not found: {file_path}")
+                if "iili.io" in str(file_path):
+                    logger.warning(f"File not found: {file_path}")
+                else:
+                    logger.error(f"File not found: {file_path}")
                 image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
             else:
                 if image_cache is not None:

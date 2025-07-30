@@ -181,6 +181,7 @@ class PlayerEmbedMixin:
             )
 
         embed.set_thumbnail(url=player.in_game_avatar)
+        return embed
 
     @property
     def hoyolab_hsr(self) -> DefaultEmbed | None:

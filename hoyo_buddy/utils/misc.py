@@ -199,7 +199,7 @@ def blur_uid(uid: int, *, arterisk: str = "*") -> str:
     """Blur a UID by replacing the middle 5 digits with asterisks."""
     uid_ = str(uid)
     middle_index = len(uid_) // 2
-    return uid_[: middle_index - 1] + arterisk * 3 + uid_[middle_index + 2 :]
+    return uid_[: middle_index - 2] + arterisk * 5 + uid_[middle_index + 3 :]
 
 
 def get_discord_user_link(user_id: int) -> str:

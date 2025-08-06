@@ -170,44 +170,50 @@ class ProfileView(View, PlayerEmbedMixin):
             if char_id not in self._card_data:
                 raise CardNotReadyError(self.characters[char_id].name)
 
-    def _set_characters_with_enka(self, game: Literal[Game.STARRAIL, Game.GENSHIN]) -> None:
-        hoyolab_characters = (
-            self.hoyolab_hsr_characters if game is Game.STARRAIL else self.hoyolab_gi_characters
-        )
-        data = self.starrail_data if game is Game.STARRAIL else self.genshin_data
+    def _set_characters_with_enka(
+        self, game: Literal[Game.STARRAIL, Game.GENSHIN, Game.ZZZ]
+    ) -> None:
+        if game is Game.STARRAIL:
+            hoyolab_characters = self.hoyolab_hsr_characters
+        elif game is Game.GENSHIN:
+            hoyolab_characters = self.hoyolab_gi_characters
+        else:  # Game.ZZZ
+            hoyolab_characters = self.hoyolab_zzz_characters
 
-        enka_chara_ids: list[str] = []
+        if game is Game.STARRAIL:
+            data = self.starrail_data
+        elif game is Game.GENSHIN:
+            data = self.genshin_data
+        else:  # Game.ZZZ
+            data = self.zzz_data
+
+        enka_char_ids: list[str] = []
         if data is not None:
-            for chara in data.characters:
-                enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = chara
+            if isinstance(data, enka.zzz.ShowcaseResponse):
+                characters = data.agents
+            else:
+                characters = data.characters
+
+            for char in characters:
+                enka_char_ids.append(str(char.id))
+                character = (
+                    GenshinClient.convert_zzz_character(char)
+                    if isinstance(char, enka.zzz.Agent)
+                    else char
+                )
+                self.characters[str(char.id)] = character
 
         for builds in self._builds.values():
             character = builds[0].character
-            if str(character.id) not in enka_chara_ids:
+            if str(character.id) not in enka_char_ids:
                 if isinstance(character, enka.zzz.Agent):
                     character = GenshinClient.convert_zzz_character(character)
                 self.characters[str(character.id)] = character
 
-        for chara in hoyolab_characters:
-            if str(chara.id) not in enka_chara_ids:
-                enka_chara_ids.append(str(chara.id))
-                self.characters[str(chara.id)] = chara
-
-    def _set_zzz_characters_with_enka(self) -> None:
-        # Hoyolab characters take precedence over Enka characters
-        hoyolab_char_ids: set[int] = set()
-
-        for char in self.hoyolab_zzz_characters:
-            hoyolab_char_ids.add(char.id)
-            self.characters[str(char.id)] = char
-
-        if self.zzz_data is None:
-            return
-
-        for char in self.zzz_data.agents:
-            if char.id not in hoyolab_char_ids:
-                self.characters[str(char.id)] = GenshinClient.convert_zzz_character(char)
+        for char in hoyolab_characters:
+            if str(char.id) not in enka_char_ids:
+                enka_char_ids.append(str(char.id))
+                self.characters[str(char.id)] = char
 
     def _set_characters(self) -> None:
         if self.game is Game.STARRAIL:
@@ -215,7 +221,7 @@ class ProfileView(View, PlayerEmbedMixin):
         elif self.game is Game.GENSHIN:
             self._set_characters_with_enka(Game.GENSHIN)
         elif self.game is Game.ZZZ:
-            self._set_zzz_characters_with_enka()
+            self._set_characters_with_enka(Game.ZZZ)
 
         for character_id in self._param_character_ids:
             if (

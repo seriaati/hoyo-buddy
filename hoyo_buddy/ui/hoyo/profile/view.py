@@ -562,11 +562,12 @@ class ProfileView(View, PlayerEmbedMixin):
             # Only one card setting is stored per character, no matter the outfit.
             # However, since different outfits have different default colors,
             # we need to use the outfit_id to get the correct color.
+            # Outfit data doesn't always have 'color' field, so we default to the main character color.
             agent_colors = {
                 a.id: agent_card_settings[a.id].custom_primary_color
                 or self._card_data[
                     f"{a.id}_{a.outfit_id}" if a.outfit_id is not None else str(a.id)
-                ]["color"]
+                ].get("color", self._card_data[str(a.id)]["color"])
                 for a in agents
             }
             show_substat_rolls = {

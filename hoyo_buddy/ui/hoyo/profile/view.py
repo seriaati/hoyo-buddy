@@ -559,10 +559,15 @@ class ProfileView(View, PlayerEmbedMixin):
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
                 for char_id in self.character_ids
             }
+            # Only one card setting is stored per character, no matter the outfit.
+            # However, since different outfits have different default colors,
+            # we need to use the outfit_id to get the correct color.
             agent_colors = {
-                int(char_id): agent_card_settings[int(char_id)].custom_primary_color
-                or self._card_data[char_id]["color"]
-                for char_id in self.character_ids
+                a.id: agent_card_settings[a.id].custom_primary_color
+                or self._card_data[
+                    f"{a.id}_{a.outfit_id}" if a.outfit_id is not None else str(a.id)
+                ]["color"]
+                for a in agents
             }
             show_substat_rolls = {
                 int(char_id): agent_card_settings[int(char_id)].show_substat_rolls
@@ -577,11 +582,11 @@ class ProfileView(View, PlayerEmbedMixin):
                 for char_id in self.character_ids
             }
             images = {
-                str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
+                str(a.id): await get_team_image(i.user.id, str(a.id), game=self.game)
                 or get_default_art(
-                    char, is_team=True, use_m3_art=agent_card_settings[int(char.id)].use_m3_art
+                    a, is_team=True, use_m3_art=agent_card_settings[int(a.id)].use_m3_art
                 )
-                for char in characters
+                for a in agents
             }
 
             return await draw_zzz_team_card(

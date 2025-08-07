@@ -3,11 +3,8 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING, Any
 
-import ambr
-import hakushin
 import orjson
 import pandas as pd
-import yatta
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import UIGF_GAME_KEYS
@@ -215,13 +212,8 @@ class GachaCommand:
 
             if records:
                 # Fetch rarity map with Yatta API
-                async with yatta.YattaAPI() as api:
-                    characters = await api.fetch_characters()
-                    lcs = await api.fetch_light_cones()
-
-                rarity_map: dict[int, int] = {
-                    character.id: character.rarity for character in characters
-                } | {lc.id: lc.rarity for lc in lcs}
+                async with YattaAPIClient() as client:
+                    rarity_map = await client.fetch_rarity_map()
 
                 count = 0
 
@@ -270,16 +262,8 @@ class GachaCommand:
 
             if records:
                 # Fetch rarity map with Ambr API
-                async with ambr.AmbrAPI() as api:
-                    characters = await api.fetch_characters()
-                    weapons = await api.fetch_weapons()
-
-                items = characters + weapons
-                rarity_map: dict[int, int] = {}
-                for item in items:
-                    if isinstance(item.id, str) and not item.id.isdigit():
-                        continue
-                    rarity_map[int(item.id)] = item.rarity
+                async with AmbrAPIClient() as client:
+                    rarity_map = await client.fetch_rarity_map()
 
                 count = 0
 
@@ -326,18 +310,8 @@ class GachaCommand:
 
             if records:
                 # Fetch rarity map with Hakushin API
-                async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
-                    characters = await api.fetch_characters()
-                    bangboos = await api.fetch_bangboos()
-                    w_engines = await api.fetch_weapons()
-
-                items = characters + bangboos + w_engines
-                rarity_map: dict[int, int] = {}
-                rarity_converter: dict[str, int] = {"S": 5, "A": 4, "B": 3}
-                for item in items:
-                    if item.rarity is None:
-                        continue
-                    rarity_map[item.id] = rarity_converter[item.rarity]
+                async with HakushinZZZClient() as client:
+                    rarity_map = await client.fetch_rarity_map()
 
                 count = 0
 

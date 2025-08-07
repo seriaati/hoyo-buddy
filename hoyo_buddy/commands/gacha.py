@@ -66,11 +66,16 @@ class GachaCommand:
             msg = f"Rarity fetching is not implemented for {game}"
             raise ValueError(msg)
 
-        async with api:
+        fetch_map = not all("rank_type" in record for record in records)
+        if fetch_map:
+            async with api:
+                rarity_map = await api.fetch_rarity_map()
+
             for record in records:
                 if "rank_type" in record:
                     continue
-                record["rank_type"] = await api.fetch_item_rarity(str(record["item_id"]))
+
+                record["rank_type"] = rarity_map[record["item_id"]]
 
         return records
 
@@ -418,7 +423,7 @@ class GachaCommand:
         for record in records:
             created = await GachaHistory.create(
                 wish_id=record.id,
-                rarity=record.rarity + (1 if account.game is Game.ZZZ else 0),
+                rarity=record.rarity,
                 item_id=record.item_id,
                 banner_type=record.banner_type,
                 account=account,

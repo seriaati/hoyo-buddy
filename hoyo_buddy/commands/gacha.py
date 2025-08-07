@@ -96,22 +96,25 @@ class GachaCommand:
         ]
         records.sort(key=lambda x: x.id)
 
-        count = 0
+        before = await GachaHistory.get_wish_count(account)
+        await GachaHistory.bulk_create(
+            [
+                GachaHistory(
+                    wish_id=record.id,
+                    rarity=record.rarity,
+                    item_id=record.item_id,
+                    banner_type=record.banner_type,
+                    account=account,
+                    time=record.time,
+                    banner_id=None,
+                    game=Game.STARRAIL,
+                )
+                for record in records
+            ]
+        )
+        after = await GachaHistory.get_wish_count(account)
 
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity,
-                item_id=record.item_id,
-                banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-                banner_id=record.banner_id,
-            )
-            if created:
-                count += 1
-
-        return count
+        return after - before
 
     @classmethod
     async def _zzz_rng_moe_import(
@@ -151,22 +154,24 @@ class GachaCommand:
             )
         records.sort(key=lambda x: x.id)
 
-        count = 0
-
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity + 1,
-                item_id=record.item_id,
-                banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-                banner_id=record.banner_id,
-            )
-            if created:
-                count += 1
-
-        return count
+        before = await GachaHistory.get_wish_count(account)
+        await GachaHistory.bulk_create(
+            [
+                GachaHistory(
+                    wish_id=record.id,
+                    rarity=record.rarity + 1,  # rng.moe uses 2~4, we use 3~5
+                    item_id=record.item_id,
+                    banner_type=record.banner_type,
+                    account=account,
+                    time=record.time,
+                    banner_id=None,
+                    game=Game.ZZZ,
+                )
+                for record in records
+            ]
+        )
+        after = await GachaHistory.get_wish_count(account)
+        return after - before
 
     @classmethod
     async def _stardb_import(
@@ -217,22 +222,24 @@ class GachaCommand:
                 async with YattaAPIClient() as client:
                     rarity_map = await client.fetch_rarity_map()
 
-                count = 0
-
-                for record in records:
-                    created = await GachaHistory.create(
-                        wish_id=record.id,
-                        rarity=rarity_map[record.item_id],
-                        item_id=record.item_id,
-                        banner_type=record.banner_type,
-                        account=account,
-                        time=record.time,
-                        banner_id=None,
-                    )
-                    if created:
-                        count += 1
-
-                return count
+                before = await GachaHistory.get_wish_count(account)
+                await GachaHistory.bulk_create(
+                    [
+                        GachaHistory(
+                            wish_id=record.id,
+                            rarity=rarity_map[record.item_id],
+                            item_id=record.item_id,
+                            banner_type=record.banner_type,
+                            account=account,
+                            time=record.time,
+                            banner_id=None,
+                            game=Game.STARRAIL,
+                        )
+                        for record in records
+                    ]
+                )
+                after = await GachaHistory.get_wish_count(account)
+                return after - before
 
         return 0
 
@@ -268,22 +275,24 @@ class GachaCommand:
                 async with AmbrAPIClient() as client:
                     rarity_map = await client.fetch_rarity_map()
 
-                count = 0
-
-                for record in records:
-                    created = await GachaHistory.create(
-                        wish_id=record.id,
-                        rarity=rarity_map[record.item_id],
-                        item_id=record.item_id,
-                        banner_type=record.banner_type,
-                        account=account,
-                        time=record.time,
-                        banner_id=None,
-                    )
-                    if created:
-                        count += 1
-
-                return count
+                before = await GachaHistory.get_wish_count(account)
+                await GachaHistory.bulk_create(
+                    [
+                        GachaHistory(
+                            wish_id=record.id,
+                            rarity=rarity_map[record.item_id],
+                            item_id=record.item_id,
+                            banner_type=record.banner_type,
+                            account=account,
+                            time=record.time,
+                            banner_id=None,
+                            game=Game.GENSHIN,
+                        )
+                        for record in records
+                    ]
+                )
+                after = await GachaHistory.get_wish_count(account)
+                return after - before
 
         return 0
 
@@ -317,22 +326,24 @@ class GachaCommand:
                 async with HakushinZZZClient() as client:
                     rarity_map = await client.fetch_rarity_map()
 
-                count = 0
-
-                for record in records:
-                    created = await GachaHistory.create(
-                        wish_id=record.id,
-                        rarity=rarity_map[record.item_id],
-                        item_id=record.item_id,
-                        banner_type=record.banner_type,
-                        account=account,
-                        time=record.time,
-                        banner_id=None,
-                    )
-                    if created:
-                        count += 1
-
-                return count
+                before = await GachaHistory.get_wish_count(account)
+                await GachaHistory.bulk_create(
+                    [
+                        GachaHistory(
+                            wish_id=record.id,
+                            rarity=rarity_map[record.item_id],
+                            item_id=record.item_id,
+                            banner_type=record.banner_type,
+                            account=account,
+                            time=record.time,
+                            banner_id=None,
+                            game=Game.ZZZ,
+                        )
+                        for record in records
+                    ]
+                )
+                after = await GachaHistory.get_wish_count(account)
+                return after - before
 
         return 0
 
@@ -397,22 +408,24 @@ class GachaCommand:
 
         records.sort(key=lambda x: x.id)
 
-        count = 0
-
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity,
-                item_id=record.item_id,
-                banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-                banner_id=None,
-            )
-            if created:
-                count += 1
-
-        return count
+        before = await GachaHistory.get_wish_count(account)
+        await GachaHistory.bulk_create(
+            [
+                GachaHistory(
+                    wish_id=record.id,
+                    rarity=record.rarity,
+                    item_id=record.item_id,
+                    banner_type=record.banner_type,
+                    account=account,
+                    time=record.time,
+                    banner_id=None,
+                    game=account.game,
+                )
+                for record in records
+            ]
+        )
+        after = await GachaHistory.get_wish_count(account)
+        return after - before
 
     @classmethod
     async def _srgf_import(
@@ -435,22 +448,24 @@ class GachaCommand:
         records = [SRGFRecord(timezone=tz_hour, **record) for record in data["list"]]
         records.sort(key=lambda x: x.id)
 
-        count = 0
-
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity,
-                item_id=record.item_id,
-                banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-                banner_id=None,
-            )
-            if created:
-                count += 1
-
-        return count
+        before = await GachaHistory.get_wish_count(account)
+        await GachaHistory.bulk_create(
+            [
+                GachaHistory(
+                    wish_id=record.id,
+                    rarity=record.rarity,
+                    item_id=record.item_id,
+                    banner_type=record.banner_type,
+                    account=account,
+                    time=record.time,
+                    banner_id=None,
+                    game=Game.STARRAIL,
+                )
+                for record in records
+            ]
+        )
+        after = await GachaHistory.get_wish_count(account)
+        return after - before
 
     @classmethod
     async def _starward_zzz_import(
@@ -473,22 +488,25 @@ class GachaCommand:
         records = [StarwardZZZRecord(tz_hour=tz_hour, **record) for record in data["list"]]
         records.sort(key=lambda x: x.id)
 
-        count = 0
+        before = await GachaHistory.get_wish_count(account)
+        await GachaHistory.bulk_create(
+            [
+                GachaHistory(
+                    wish_id=record.id,
+                    rarity=record.rarity + 1,  # starward ZZZ uses 2~4, we use 3~5
+                    item_id=record.item_id,
+                    banner_type=record.banner_type,
+                    account=account,
+                    time=record.time,
+                    banner_id=None,
+                    game=Game.ZZZ,
+                )
+                for record in records
+            ]
+        )
+        after = await GachaHistory.get_wish_count(account)
 
-        for record in records:
-            created = await GachaHistory.create(
-                wish_id=record.id,
-                rarity=record.rarity + 1,
-                item_id=record.item_id,
-                banner_type=record.banner_type,
-                account=account,
-                time=record.time,
-                banner_id=None,
-            )
-            if created:
-                count += 1
-
-        return count
+        return after - before
 
     @staticmethod
     async def run_import(i: Interaction, account: HoyoAccount) -> None:

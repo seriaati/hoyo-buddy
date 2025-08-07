@@ -89,7 +89,8 @@ class URLImport(Button[GachaImportView]):
         ).add_acc_info(self.account)
         await i.edit_original_response(embed=embed, view=None)
 
-        count = 0
+        records: list[GachaHistory] = []
+        before = await GachaHistory.get_wish_count(self.account)
 
         if self.account.game is Game.GENSHIN:
             wishes: list[genshin.models.Wish] = [
@@ -109,17 +110,18 @@ class URLImport(Button[GachaImportView]):
                     msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
                     raise ValueError(msg)
 
-                created = await GachaHistory.create(
-                    wish_id=wish.id,
-                    rarity=wish.rarity,
-                    time=wish.time,
-                    banner_type=banner_type,
-                    item_id=item_id,
-                    account=self.account,
-                    banner_id=None,
+                records.append(
+                    GachaHistory(
+                        wish_id=wish.id,
+                        rarity=wish.rarity,
+                        time=wish.time,
+                        banner_type=banner_type,
+                        item_id=item_id,
+                        account=self.account,
+                        banner_id=None,
+                        game=Game.GENSHIN,
+                    )
                 )
-                if created:
-                    count += 1
 
         elif self.account.game is Game.STARRAIL:
             warps: list[genshin.models.Warp] = [
@@ -130,17 +132,18 @@ class URLImport(Button[GachaImportView]):
             for warp in warps:
                 self._check_uid(warp)
 
-                created = await GachaHistory.create(
-                    wish_id=warp.id,
-                    rarity=warp.rarity,
-                    time=warp.time,
-                    banner_type=warp.banner_type,
-                    item_id=warp.item_id,
-                    account=self.account,
-                    banner_id=warp.banner_id,
+                records.append(
+                    GachaHistory(
+                        wish_id=warp.id,
+                        rarity=warp.rarity,
+                        time=warp.time,
+                        banner_type=warp.banner_type,
+                        item_id=warp.item_id,
+                        account=self.account,
+                        banner_id=warp.banner_id,
+                        game=Game.STARRAIL,
+                    )
                 )
-                if created:
-                    count += 1
 
         elif self.account.game is Game.ZZZ:
             signals: list[genshin.models.SignalSearch] = [
@@ -151,25 +154,29 @@ class URLImport(Button[GachaImportView]):
             for signal in signals:
                 self._check_uid(signal)
 
-                created = await GachaHistory.create(
-                    wish_id=signal.id,
-                    rarity=signal.rarity + 1,
-                    time=signal.time,
-                    banner_type=signal.banner_type,
-                    item_id=signal.item_id,
-                    account=self.account,
-                    banner_id=None,
+                records.append(
+                    GachaHistory(
+                        wish_id=signal.id,
+                        rarity=signal.rarity + 1,  # ZZZ uses 2~4, we use 3~5
+                        time=signal.time,
+                        banner_type=signal.banner_type,
+                        item_id=signal.item_id,
+                        account=self.account,
+                        banner_id=None,
+                        game=Game.ZZZ,
+                    )
                 )
-                if created:
-                    count += 1
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
+        await GachaHistory.bulk_create(records)
+
+        after = await GachaHistory.get_wish_count(self.account)
         await update_gacha_nums(i.client.pool, account=self.account)
 
         embed = DefaultEmbed(
             self.view.locale,
             title=LocaleStr(key="gacha_import_success_title"),
-            description=LocaleStr(key="gacha_import_success_message", count=count),
+            description=LocaleStr(key="gacha_import_success_message", count=after - before),
         ).add_acc_info(self.account)
         await i.edit_original_response(embed=embed)

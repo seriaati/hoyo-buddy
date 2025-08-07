@@ -16,6 +16,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LOADING
 from hoyo_buddy.enums import GachaImportSource, Game
 from hoyo_buddy.exceptions import (
+    AccountGameMismatchError,
     FeatureNotImplementedError,
     InvalidFileExtError,
     NoGachaLogFoundError,
@@ -80,6 +81,9 @@ class GachaCommand:
         """Star Rail Station import."""
         cls._validate_file_ext(file, "csv")
 
+        if account.game is not Game.STARRAIL:
+            raise AccountGameMismatchError(Game.STARRAIL)
+
         bytes_ = await file.read()
         records_df = await i.client.loop.run_in_executor(
             i.client.executor, pd.read_csv, io.BytesIO(bytes_)
@@ -112,6 +116,9 @@ class GachaCommand:
     ) -> int:
         """zzz.rng.moe import."""
         cls._validate_file_ext(file, "json")
+
+        if account.game is not Game.ZZZ:
+            raise AccountGameMismatchError(Game.ZZZ)
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
@@ -178,6 +185,9 @@ class GachaCommand:
 
     @staticmethod
     async def _stardb_hsr_import(account: HoyoAccount, data: dict[str, Any]) -> int:
+        if account.game is not Game.STARRAIL:
+            raise AccountGameMismatchError(Game.STARRAIL)
+
         hsr_data = next(
             (d["warps"] for d in data["user"]["hsr"]["uids"] if d["uid"] == account.uid), None
         )
@@ -228,6 +238,9 @@ class GachaCommand:
 
     @staticmethod
     async def _stardb_gi_import(account: HoyoAccount, data: dict[str, Any]) -> int:
+        if account.game is not Game.GENSHIN:
+            raise AccountGameMismatchError(Game.GENSHIN)
+
         gi_data = next(
             (d["wishes"] for d in data["user"]["gi"]["uids"] if d["uid"] == account.uid), None
         )
@@ -283,6 +296,9 @@ class GachaCommand:
 
     @staticmethod
     async def _stardb_zzz_import(account: HoyoAccount, data: dict[str, Any]) -> int:
+        if account.game is not Game.ZZZ:
+            raise AccountGameMismatchError(Game.ZZZ)
+
         zzz_data = next(
             (d["signals"] for d in data["user"]["zzz"]["uids"] if d["uid"] == account.uid), None
         )
@@ -420,6 +436,9 @@ class GachaCommand:
         """SRGF import."""
         cls._validate_file_ext(file, "json")
 
+        if account.game is not Game.STARRAIL:
+            raise AccountGameMismatchError(Game.STARRAIL)
+
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)
 
@@ -453,6 +472,9 @@ class GachaCommand:
     ) -> int:
         """Starward Launcher ZZZ import."""
         cls._validate_file_ext(file, "json")
+
+        if account.game is not Game.ZZZ:
+            raise AccountGameMismatchError(Game.ZZZ)
 
         bytes_ = await file.read()
         data = await i.client.loop.run_in_executor(i.client.executor, orjson.loads, bytes_)

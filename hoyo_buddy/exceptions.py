@@ -248,3 +248,12 @@ class ImageFileTooLargeError(HoyoBuddyError):
             title=LocaleStr(key="image_file_too_large_error_title"),
             message=LocaleStr(key="image_file_too_large_error_message", size=20),
         )
+
+
+class AccountGameMismatchError(HoyoBuddyError):
+    def __init__(self, game: Game) -> None:
+        super().__init__(
+            title=LocaleStr(key="account_game_mismatch_error_title"),
+            message=LocaleStr(key="account_game_mismatch_error_message", game=EnumStr(game)),
+        )
+        self.game = game

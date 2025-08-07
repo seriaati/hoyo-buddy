@@ -385,13 +385,17 @@ class HakushinTranslator:
 
 
 class HakushinZZZClient(hakushin.clients.ZZZClient):
-    async def fetch_item_rarity(self, item_id: str) -> int:
-        agents = await self.fetch_characters()
-        engines = await self.fetch_weapons()
-        items = agents + engines
+    async def fetch_rarity_map(self) -> dict[int, int]:
+        characters = await self.fetch_characters()
+        bangboos = await self.fetch_bangboos()
+        w_engines = await self.fetch_weapons()
 
+        items = characters + bangboos + w_engines
+        zzz_rarity_map: dict[int, int] = {}
+        rarity_converter: dict[str, int] = {"S": 5, "A": 4, "B": 3}
         for item in items:
-            if str(item.id) == item_id and item.rarity is not None:
-                return STAR_NUMS[item.rarity]
+            if item.rarity is None:
+                continue
+            zzz_rarity_map[item.id] = rarity_converter[item.rarity]
 
-        return 0
+        return zzz_rarity_map

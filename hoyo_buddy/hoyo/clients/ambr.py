@@ -529,14 +529,15 @@ class AmbrAPIClient(ambr.AmbrAPI):
 
         return characters
 
-    async def fetch_item_rarity(self, item_id: str) -> int:
-        characters = await super().fetch_characters()
-        weapons = await super().fetch_weapons()
+    async def fetch_rarity_map(self) -> dict[int, int]:
+        characters = await self.fetch_characters()
+        weapons = await self.fetch_weapons()
+
         items = characters + weapons
-
+        gi_rarity_map: dict[int, int] = {}
         for item in items:
-            if str(item.id) == item_id:
-                return item.rarity
+            if isinstance(item.id, str) and not item.id.isdigit():
+                continue
+            gi_rarity_map[int(item.id)] = item.rarity
 
-        msg = f"Item with ID {item_id!r} not found"
-        raise ValueError(msg)
+        return gi_rarity_map

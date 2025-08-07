@@ -410,14 +410,10 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return characters
 
-    async def fetch_item_rarity(self, item_id: str) -> int:
-        characters = await super().fetch_characters()
-        light_cones = await self.fetch_light_cones()
-        items = characters + light_cones
+    async def fetch_rarity_map(self) -> dict[int, int]:
+        characters = await self.fetch_characters()
+        lcs = await self.fetch_light_cones()
 
-        for item in items:
-            if str(item.id) == item_id:
-                return item.rarity
-
-        msg = f"Item with ID {item_id!r} not found."
-        raise ValueError(msg)
+        return {character.id: character.rarity for character in characters} | {
+            lc.id: lc.rarity for lc in lcs
+        }

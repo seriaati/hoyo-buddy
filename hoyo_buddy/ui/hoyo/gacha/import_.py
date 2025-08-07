@@ -116,6 +116,7 @@ class URLImport(Button[GachaImportView]):
                     banner_type=banner_type,
                     item_id=item_id,
                     account=self.account,
+                    banner_id=None,
                 )
                 if created:
                     count += 1
@@ -136,6 +137,7 @@ class URLImport(Button[GachaImportView]):
                     banner_type=warp.banner_type,
                     item_id=warp.item_id,
                     account=self.account,
+                    banner_id=warp.banner_id,
                 )
                 if created:
                     count += 1
@@ -156,6 +158,7 @@ class URLImport(Button[GachaImportView]):
                     banner_type=signal.banner_type,
                     item_id=signal.item_id,
                     account=self.account,
+                    banner_id=None,
                 )
                 if created:
                     count += 1

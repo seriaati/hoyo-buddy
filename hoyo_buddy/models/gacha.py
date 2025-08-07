@@ -21,6 +21,7 @@ class StarRailStationRecord(BaseModel):
     rarity: int
     time: datetime.datetime
     banner_type: int = Field(alias="type")
+    banner_id: int = Field(alias="banner")
 
 
 class ZZZRngMoeRecord(BaseModel):
@@ -30,6 +31,7 @@ class ZZZRngMoeRecord(BaseModel):
     tz_hour: int
     time: datetime.datetime = Field(alias="timestamp")
     banner_type: int = Field(alias="gachaType")
+    banner_id: int = Field(alias="gacha")
 
     @field_validator("time")
     @classmethod

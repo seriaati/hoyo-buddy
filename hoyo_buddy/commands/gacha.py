@@ -106,6 +106,7 @@ class GachaCommand:
                 banner_type=record.banner_type,
                 account=account,
                 time=record.time,
+                banner_id=record.banner_id,
             )
             if created:
                 count += 1
@@ -160,6 +161,7 @@ class GachaCommand:
                 banner_type=record.banner_type,
                 account=account,
                 time=record.time,
+                banner_id=record.banner_id,
             )
             if created:
                 count += 1
@@ -225,6 +227,7 @@ class GachaCommand:
                         banner_type=record.banner_type,
                         account=account,
                         time=record.time,
+                        banner_id=None,
                     )
                     if created:
                         count += 1
@@ -275,6 +278,7 @@ class GachaCommand:
                         banner_type=record.banner_type,
                         account=account,
                         time=record.time,
+                        banner_id=None,
                     )
                     if created:
                         count += 1
@@ -323,6 +327,7 @@ class GachaCommand:
                         banner_type=record.banner_type,
                         account=account,
                         time=record.time,
+                        banner_id=None,
                     )
                     if created:
                         count += 1
@@ -402,6 +407,7 @@ class GachaCommand:
                 banner_type=record.banner_type,
                 account=account,
                 time=record.time,
+                banner_id=None,
             )
             if created:
                 count += 1
@@ -439,6 +445,7 @@ class GachaCommand:
                 banner_type=record.banner_type,
                 account=account,
                 time=record.time,
+                banner_id=None,
             )
             if created:
                 count += 1
@@ -476,6 +483,7 @@ class GachaCommand:
                 banner_type=record.banner_type,
                 account=account,
                 time=record.time,
+                banner_id=None,
             )
             if created:
                 count += 1

@@ -48,8 +48,22 @@ class GachaHistory(BaseModel):
         time: datetime.datetime,
         item_id: int,
         banner_type: int,
+        banner_id: int | None,
         account: HoyoAccount,
     ) -> bool:
+        """Create a new GachaHistory record.
+
+        Returns True if the record was created, False if it already exists.
+
+        Args:
+            wish_id: Unique identifier for the wish.
+            rarity: Rarity of the item.
+            time: Timestamp of the wish.
+            item_id: Identifier for the item.
+            banner_type: Type of the banner.
+            banner_id: Identifier for the banner, if applicable. Most wish services do not have this.
+            account: The HoyoAccount associated with this wish.
+        """
         try:
             await super().create(
                 wish_id=wish_id,
@@ -61,7 +75,7 @@ class GachaHistory(BaseModel):
                 num_since_last=1,
                 game=account.game,
                 account=account,
-                account_id=account.id,
+                banner_id=banner_id,
             )
         except IntegrityError:
             return False

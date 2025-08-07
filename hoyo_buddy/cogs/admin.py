@@ -11,8 +11,12 @@ from tortoise.functions import Count
 
 from hoyo_buddy.config import Deployment
 from hoyo_buddy.db import HoyoAccount, Settings, User
+from hoyo_buddy.db.models.gacha_history import GachaHistory
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.hoyo.clients.hakushin import HakushinZZZClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import add_to_hoyo_codes
 
@@ -266,6 +270,34 @@ class Admin(commands.Cog):
         self.bot.enka_hsr_down = not self.bot.enka_hsr_down
         status = "down" if self.bot.enka_hsr_down else "up"
         await ctx.send(f"Enka HSR is now marked as {status}.")
+
+    @commands.command(name="fix-gacha-rarities", aliases=["fgr"])
+    async def fix_gacha_rarities_command(self, ctx: commands.Context) -> Any:
+        if self.bot.deployment != "main":
+            return
+
+        message = await ctx.send("Fetching gacha rarities...")
+
+        async with YattaAPIClient() as client:
+            hsr_rarity_map = await client.fetch_rarity_map()
+
+        async with AmbrAPIClient() as client:
+            gi_rarity_map = await client.fetch_rarity_map()
+
+        async with HakushinZZZClient() as client:
+            zzz_rarity_map = await client.fetch_rarity_map()
+
+        await message.edit(content="Updating gacha rarities...")
+
+        for game, rarity_map in (
+            (genshin.Game.GENSHIN, gi_rarity_map),
+            (genshin.Game.STARRAIL, hsr_rarity_map),
+            (genshin.Game.ZZZ, zzz_rarity_map),
+        ):
+            for item_id, rarity in rarity_map.items():
+                await GachaHistory.filter(game=game, item_id=item_id).update(rarity=rarity)
+
+        await message.edit(content="Gacha rarities updated successfully.")
 
 
 async def setup(bot: HoyoBuddy) -> None:

@@ -516,8 +516,11 @@ class GachaCommand:
                 count = await cls._uigf_import(i, account=account, file=file)
             elif source is GachaImportSource.STARWARD_ZZZ:
                 count = await cls._starward_zzz_import(i, account=account, file=file)
-            else:  # SRGF
+            elif source is GachaImportSource.SRGF:
                 count = await cls._srgf_import(i, account=account, file=file)
+            else:
+                msg = f"Unsupported GachaImportSource: {source}"
+                raise ValueError(msg)
         except Exception as e:
             error_embed, _ = get_error_embed(e, locale)
             await i.edit_original_response(embed=error_embed)

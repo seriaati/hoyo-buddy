@@ -3,10 +3,8 @@ authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
 dependencies = [
   "aiocache>=0.12.2",
   "aiofiles>=24.1.0",
-  "asyncache>=0.3.1",
   "asyncpg>=0.29.0",
   "asyncpg-listen>=0.0.6",
-  "cachetools>=5.5.0",
   "discord-py[speed]>=2.5.0",
   "hakushin-py>=0.4.4",
   "jishaku>=2.5.2",

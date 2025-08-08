@@ -305,18 +305,6 @@ wheels = [
 ]
 
 [[package]]
-name = "asyncache"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "cachetools" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/49/cf/17f8a6b6b97f77b5981fbce1266913e718daaa3467b46f60a785cbaadc29/asyncache-0.3.1.tar.gz", hash = "sha256:9a1e60a75668e794657489bdea6540ee7e3259c483517b934670db7600bf5035", size = 3797, upload-time = "2022-11-15T10:06:47.476Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/94/51927deb4f40872361ec4f5534f68f7a9ce81c4ef20bf5cd765307f4c15d/asyncache-0.3.1-py3-none-any.whl", hash = "sha256:ef20a1024d265090dd1e0785c961cf98b9c32cc7d9478973dcf25ac1b80011f5", size = 3722, upload-time = "2022-11-15T10:06:45.546Z" },
-]
-
-[[package]]
 name = "asyncclick"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
@@ -460,15 +448,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/af/85/a94e5cfaa0ca449d8f91c3d6f78313ebf919a0dbd55a100c711c6e9655bc/Brotli-1.1.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:832436e59afb93e1836081a20f324cb185836c617659b07b129141a8426973c7", size = 2930206, upload-time = "2024-10-18T12:32:51.198Z" },
     { url = "https://files.pythonhosted.org/packages/c2/f0/a61d9262cd01351df22e57ad7c34f66794709acab13f34be2675f45bf89d/Brotli-1.1.0-cp313-cp313-win32.whl", hash = "sha256:43395e90523f9c23a3d5bdf004733246fba087f2948f87ab28015f12359ca6a0", size = 333804, upload-time = "2024-10-18T12:32:52.661Z" },
     { url = "https://files.pythonhosted.org/packages/7e/c1/ec214e9c94000d1c1974ec67ced1c970c148aa6b8d8373066123fc3dbf06/Brotli-1.1.0-cp313-cp313-win_amd64.whl", hash = "sha256:9011560a466d2eb3f5a6e4929cf4a09be405c64154e12df0dd72713f6500e32b", size = 358517, upload-time = "2024-10-18T12:32:54.066Z" },
-]
-
-[[package]]
-name = "cachetools"
-version = "5.5.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6c/81/3747dad6b14fa2cf53fcf10548cf5aea6913e96fab41a3c198676f8948a5/cachetools-5.5.2.tar.gz", hash = "sha256:1a661caa9175d26759571b2e19580f9d6393969e5dfca11fdb1f947a23e640d4", size = 28380, upload-time = "2025-02-20T21:01:19.524Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/76/20fa66124dbe6be5cafeb312ece67de6b61dd91a0247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl", hash = "sha256:d26a22bcc62eb95c3beabd9f1ee5e820d3d2704fe2967cbe350e20c8ffcd3f0a", size = 10080, upload-time = "2025-02-20T21:01:16.647Z" },
 ]
 
 [[package]]
@@ -850,10 +829,8 @@ dependencies = [
     { name = "akasha-py" },
     { name = "ambr-py" },
     { name = "apscheduler" },
-    { name = "asyncache" },
     { name = "asyncpg" },
     { name = "asyncpg-listen" },
-    { name = "cachetools" },
     { name = "cryptography" },
     { name = "discord-py", extra = ["speed"] },
     { name = "enka", extra = ["redis"] },
@@ -897,10 +874,8 @@ requires-dist = [
     { name = "akasha-py", specifier = ">=0.2.9" },
     { name = "ambr-py", git = "https://github.com/seriaati/ambr" },
     { name = "apscheduler", specifier = ">=3.11.0" },
-    { name = "asyncache", specifier = ">=0.3.1" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "asyncpg-listen", specifier = ">=0.0.6" },
-    { name = "cachetools", specifier = ">=5.5.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "discord-py", extras = ["speed"], specifier = ">=2.5.0" },
     { name = "enka", extras = ["redis"], git = "https://github.com/seriaati/enka-py" },

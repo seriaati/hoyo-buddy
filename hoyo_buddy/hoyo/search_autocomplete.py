@@ -271,12 +271,17 @@ class AutocompleteSetup:
                 if isinstance(category, HakushinItemCategory):
                     continue
 
+                beta_ids = cls._category_beta_ids.get((game, category), [])
+                beta_ids = [str(i) for i in beta_ids]
+
                 for locale, task in locales.items():
                     items = task.result()
                     for item in items:
                         if not hasattr(item, "id") or not hasattr(item, "name"):
                             continue
                         if hasattr(item, "rarity") and item.rarity is None:
+                            continue
+                        if str(item.id) in beta_ids:
                             continue
 
                         cls._result[game][category][locale].append(

@@ -18,9 +18,10 @@ uv sync --frozen --no-dev  # Install production dependencies only
 ### Code Quality
 
 ```bash
-ruff check                 # Lint code
-ruff format               # Format code  
-pyright hoyo_buddy/       # Type checking, missing import errors can be ignored
+ruff check                               # Lint code
+ruff check --fix --unsafe-fixes          # Auto-fix linting issues
+ruff format                              # Format code
+pyright hoyo_buddy/                      # Type checking, missing import errors can be ignored
 ```
 
 ### Database Operations

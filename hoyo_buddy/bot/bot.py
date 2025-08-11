@@ -126,14 +126,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.process = psutil.Process()
         self.enka_hsr_down = False
 
-        self.autocomplete_choices: AutocompleteChoices = defaultdict(
+        self.search_autofill: AutocompleteChoices = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))
         )
-        """[game][category][locale][item_name] -> item_id"""
-        self.beta_autocomplete_choices: BetaAutocompleteChoices = defaultdict(
-            lambda: defaultdict(list)
-        )
-        """[game][locale][item_name] -> item_id"""
+        self.beta_search_autofill: BetaAutocompleteChoices = defaultdict(lambda: defaultdict(list))
 
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False

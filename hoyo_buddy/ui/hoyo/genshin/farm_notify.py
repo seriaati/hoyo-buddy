@@ -92,10 +92,10 @@ class FarmNotifyView(PaginatorView):
             embed.add_acc_info(self._notify.account)
             return await i.followup.send(embed=embed)
 
-        character_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        character_choices = i.client.search_autofill[Game.GENSHIN][ItemCategory.CHARACTERS]
         characters = character_choices.get(self.locale, character_choices[Locale.american_english])
 
-        weapon_choices = i.client.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        weapon_choices = i.client.search_autofill[Game.GENSHIN][ItemCategory.WEAPONS]
         weapons = weapon_choices.get(self.locale, weapon_choices[Locale.american_english])
 
         for choice in characters:

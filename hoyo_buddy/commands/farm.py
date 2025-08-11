@@ -35,7 +35,7 @@ class FarmCommand:
     ) -> None:
         self._interaction = interaction
         self._account = account
-        self._choices = interaction.client.autocomplete_choices
+        self._choices = interaction.client.search_autofill
         self._query = query
         self._settings = settings
         self._action = action

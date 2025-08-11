@@ -248,8 +248,8 @@ class Profile(
                 LocaleStr(key="search_autocomplete_no_results"), locale
             )
 
-        choices = self.bot.autocomplete_choices[game][category].get(
-            locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
+        choices = self.bot.search_autofill[game][category].get(
+            locale, self.bot.search_autofill[game][category][Locale.american_english]
         )
         if not choices:
             return self.bot.get_error_choice(

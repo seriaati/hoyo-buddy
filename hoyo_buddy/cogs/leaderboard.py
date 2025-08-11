@@ -215,7 +215,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
+        characters = self.bot.search_autofill[Game.GENSHIN][ItemCategory.CHARACTERS]
 
         if not characters:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)

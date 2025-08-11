@@ -24,11 +24,11 @@ class Build(commands.GroupCog):
 
     def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
         if game is Game.GENSHIN:
-            characters = self.bot.autocomplete_choices[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
+            characters = self.bot.search_autofill[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
         elif game is Game.STARRAIL:
-            characters = self.bot.autocomplete_choices[Game.STARRAIL][yatta.ItemCategory.CHARACTERS]
+            characters = self.bot.search_autofill[Game.STARRAIL][yatta.ItemCategory.CHARACTERS]
         elif game is Game.ZZZ:
-            characters = self.bot.autocomplete_choices[Game.ZZZ][hakushin.ZZZItemCategory.AGENTS]
+            characters = self.bot.search_autofill[Game.ZZZ][hakushin.ZZZItemCategory.AGENTS]
         else:
             characters = {}
 

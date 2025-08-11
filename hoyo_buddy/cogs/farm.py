@@ -33,8 +33,8 @@ class Farm(
 
     def _get_choices(self, locale: Locale) -> list[app_commands.Choice[str]]:
         """Get characters and weapons autocomplete choices."""
-        characters = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.CHARACTERS]
-        weapons = self.bot.autocomplete_choices[Game.GENSHIN][ItemCategory.WEAPONS]
+        characters = self.bot.search_autofill[Game.GENSHIN][ItemCategory.CHARACTERS]
+        weapons = self.bot.search_autofill[Game.GENSHIN][ItemCategory.WEAPONS]
 
         if not characters or not weapons:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)

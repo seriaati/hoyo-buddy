@@ -38,35 +38,17 @@ __all__ = (
 
 
 async def get_locale(i: Interaction) -> Locale:
-    cache = i.client.cache
-    key = f"{i.user.id}:lang"
-    if await cache.exists(key):
-        locale = await cache.get(key)
-        return Locale(locale) if locale is not None else Locale(str(i.locale))
-
-    settings = await Settings.get_or_none(user_id=i.user.id).only("lang")
-    if settings is None:
-        locale = Locale(str(i.locale))
-        await cache.set(key, locale.value)
-        return locale
-
-    locale = settings.locale or Locale(str(i.locale))
-    await cache.set(key, locale.value)
-    return locale
+    settings = await Settings.get_or_none(user_id=i.user.id)
+    return (
+        settings.locale or Locale.american_english
+        if settings is not None
+        else Locale.american_english
+    )
 
 
 async def get_enable_dyk(i: Interaction) -> bool:
-    cache = i.client.cache
-    key = f"{i.user.id}:dyk"
-    if await cache.exists(key):
-        return await cache.get(key)
-    settings = await Settings.get_or_none(user_id=i.user.id).only("enable_dyk")
-    if settings is None:
-        await cache.set(key, True)
-        return True
-
-    await cache.set(key, settings.enable_dyk)
-    return settings.enable_dyk
+    settings = await Settings.get_or_none(user_id=i.user.id)
+    return settings.enable_dyk if settings is not None else True
 
 
 async def get_dyk(i: Interaction) -> str:

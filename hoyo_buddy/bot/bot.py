@@ -652,6 +652,10 @@ class HoyoBuddy(commands.AutoShardedBot):
         logger.info("Bot shutting down...")
         if self.geetest_command_task is not None:
             self.geetest_command_task.cancel()
+
+        await Settings.close_redis_pool()
+        await CardSettings.close_redis_pool()
+
         await super().close()
 
     @property

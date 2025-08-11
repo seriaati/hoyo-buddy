@@ -7,13 +7,16 @@ from tortoise import fields
 
 from hoyo_buddy.enums import Locale
 
-from .base import BaseModel
+from .base import CachedModel
 
 if TYPE_CHECKING:
     from .user import User
 
 
-class Settings(BaseModel):
+class Settings(CachedModel):
+    _cache_ttl = 60 * 60 * 24
+    _cache_prefix = "settings"
+
     lang: fields.Field[str | None] = fields.CharField(max_length=10, null=True)
     dark_mode = fields.BooleanField(default=True)
     user: fields.OneToOneRelation[User] = fields.OneToOneField(
@@ -28,3 +31,11 @@ class Settings(BaseModel):
     @property
     def locale(self) -> Locale | None:
         return Locale(self.lang) if self.lang else None
+
+    @classmethod
+    async def get(cls, user_id: int) -> Settings:
+        return await cls.get_cached(user_id)
+
+    @classmethod
+    async def get_or_none(cls, user_id: int) -> Settings | None:
+        return await cls.get_or_none_cached(user_id)

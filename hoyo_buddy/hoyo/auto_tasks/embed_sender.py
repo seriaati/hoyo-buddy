@@ -54,7 +54,7 @@ class EmbedSender:
 
     @classmethod
     async def _get_locale(cls, user_id: int) -> Locale | None:
-        settings = await Settings.get(user_id=user_id).only("lang")
+        settings = await Settings.get(user_id=user_id)
         return Locale(settings.lang) if settings.lang else None
 
     @classmethod

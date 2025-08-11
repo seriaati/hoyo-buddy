@@ -57,16 +57,15 @@ class SettingsUI(View):
             view=self,
         )
 
-        # Update cache
-        await i.client.cache.set(f"{i.user.id}:lang", self.settings.lang)
-        await i.client.cache.set(f"{i.user.id}:dyk", self.settings.enable_dyk)
-
         # NOTE: This is a workaround for a bug in tortoise ORM
         await Settings.filter(user_id=i.user.id).update(
             lang=self.settings.lang,
             dark_mode=self.settings.dark_mode,
             enable_dyk=self.settings.enable_dyk,
         )
+
+        # Update cache
+        await self.settings._cache_set()
 
 
 class LanguageSelector(Select["SettingsUI"]):

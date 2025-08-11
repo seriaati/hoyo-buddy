@@ -70,19 +70,54 @@ class Search(commands.Cog):
     async def before_update_search_autofill(self) -> None:
         await self.bot.wait_until_ready()
 
+    def _get_serialized_search_autofill(self) -> dict[str, Any]:
+        return {
+            game.value: {
+                category.value: {locale.value: [{"name": choice.name, "value": choice.value}]}
+            }
+            for game, game_data in self.bot.search_autofill.items()
+            for category, category_data in game_data.items()
+            for locale, choices in category_data.items()
+            for choice in choices
+        }
+
+    def _set_cached_search_autofill(self, data: dict[str, Any]) -> None:
+        self.bot.search_autofill = {
+            Game(game): {
+                category: {
+                    Locale(locale): [app_commands.Choice(**choice) for choice in choices]
+                    for locale, choices in category_data.items()
+                }
+                for category, category_data in game_data.items()
+            }
+            for game, game_data in data.items()
+        }
+
     async def _setup_search_autofill(self) -> None:
+        cache_key = "search_autocomplete_choices"
+
         logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
+        cached_autofill = await self.bot.cache.get(cache_key)
+        if cached_autofill is not None:
+            logger.info("Using cached search autocomplete choices")
+            self._set_cached_search_autofill(cached_autofill)
+            return
+
         try:
             (
-                self.bot.autocomplete_choices,
+                self.bot.search_autofill,
                 self._beta_id_to_category,
-                self.bot.beta_autocomplete_choices,
+                self.bot.beta_search_autofill,
             ) = await AutocompleteSetup.start(self.bot.session)
         except Exception as e:
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)
+
+        await self.bot.cache.set(
+            cache_key, self._get_serialized_search_autofill(), ttl=60 * 60 * 24
+        )
 
         logger.info(
             f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"
@@ -374,12 +409,12 @@ class Search(commands.Cog):
         except ValueError:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
-        if not self.bot.autocomplete_choices or game not in self.bot.autocomplete_choices:
+        if not self.bot.search_autofill or game not in self.bot.search_autofill:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
-            choices = self.bot.beta_autocomplete_choices[game].get(
-                locale, self.bot.beta_autocomplete_choices[game][Locale.american_english]
+            choices = self.bot.beta_search_autofill[game].get(
+                locale, self.bot.beta_search_autofill[game][Locale.american_english]
             )
             if not choices:
                 return self.bot.get_error_choice(
@@ -402,8 +437,8 @@ class Search(commands.Cog):
             # if category is ambr.ItemCategory.SPIRAL_ABYSS:
             #     return await AbyssEnemyView.get_autocomplete_choices()
 
-            choices = self.bot.autocomplete_choices[game][category].get(
-                locale, self.bot.autocomplete_choices[game][category][Locale.american_english]
+            choices = self.bot.search_autofill[game][category].get(
+                locale, self.bot.search_autofill[game][category][Locale.american_english]
             )
             if not choices:
                 return self.bot.get_error_choice(

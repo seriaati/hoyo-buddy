@@ -8,6 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+import aiocache
 import aiosqlite
 import asyncpg_listen
 import discord
@@ -20,6 +21,7 @@ from loguru import logger
 from seria.utils import write_json
 
 from hoyo_buddy.bot.error_handler import get_error_embed
+from hoyo_buddy.cache import OrjsonSerializer, image_cache
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import (
@@ -38,6 +40,7 @@ from hoyo_buddy.constants import (
     ZZZ_TEXT_MAP_URL,
 )
 from hoyo_buddy.db import get_locale, models
+from hoyo_buddy.db.models import CardSettings, Settings
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
@@ -45,7 +48,6 @@ from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platfor
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
-from hoyo_buddy.redis import image_cache
 from hoyo_buddy.utils import (
     capture_exception,
     fetch_json,
@@ -54,7 +56,6 @@ from hoyo_buddy.utils import (
     should_ignore_error,
 )
 
-from .cache import LFUCache
 from .command_tree import CommandTree
 
 if TYPE_CHECKING:
@@ -121,7 +122,15 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.nai_client: NAIClient | None = None
         self.pool = pool
         self.config = config
-        self.cache = LFUCache()
+
+        self.cache = (
+            aiocache.Cache.from_url(config.redis_url)
+            if config.redis_url
+            else aiocache.SimpleMemoryCache()
+        )
+        self.cache.namespace = "hoyo_buddy"
+        self.cache.serializer = OrjsonSerializer()
+
         self.user_ids: set[int] = set()
         self.process = psutil.Process()
         self.enka_hsr_down = False

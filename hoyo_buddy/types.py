@@ -70,8 +70,8 @@ Builds: TypeAlias = (
 ItemCategory: TypeAlias = (
     ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
 )
-AutocompleteChoices: TypeAlias = defaultdict[
-    Game, defaultdict[ItemCategory, defaultdict[Locale, list[discord.app_commands.Choice[str]]]]
+AutocompleteChoices: TypeAlias = dict[
+    Game, dict[ItemCategory, dict[Locale, list[discord.app_commands.Choice[str]]]]
 ]
 BetaAutocompleteChoices: TypeAlias = defaultdict[
     Game, defaultdict[Locale, list[discord.app_commands.Choice[str]]]

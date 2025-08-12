@@ -64,6 +64,8 @@ ignore = [
   "S301",    # pickle module used
   "S403",    # pickle module used
   "E741",    # Ambiguous variable name
+  "ANN002",  # Missing type annotation for *args
+  "ANN003",  # Missing type annotation for **kwargs
 
   # Refactor related ignores
   "C901",    # Function is too complex

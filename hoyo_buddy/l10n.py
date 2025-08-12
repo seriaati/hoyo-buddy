@@ -79,7 +79,7 @@ class LocaleStr:
         data_game: Game | None = None,
         append: str | None = None,
         default: str | None = None,
-        **kwargs: Any,
+        **kwargs,
     ) -> None:
         self.custom_str = custom_str
         self.key = key

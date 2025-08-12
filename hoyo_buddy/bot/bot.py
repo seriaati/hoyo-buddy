@@ -255,7 +255,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         capture_exception(e)
 
     async def dm_user(
-        self, user_id: int, *, content: str | None = None, **kwargs: Any
+        self, user_id: int, *, content: str | None = None, **kwargs
     ) -> tuple[discord.Message | None, bool]:
         logger.debug(f"DMing user {user_id}")
 

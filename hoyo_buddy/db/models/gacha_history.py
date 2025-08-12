@@ -41,5 +41,5 @@ class GachaHistory(BaseModel):
         return await cls.filter(account=account).count()
 
     @classmethod
-    async def bulk_create(cls, records: list[Self], **kwargs: Any) -> None:
+    async def bulk_create(cls, records: list[Self], **kwargs) -> None:
         return await super().bulk_create(records, batch_size=5000, ignore_conflicts=True, **kwargs)

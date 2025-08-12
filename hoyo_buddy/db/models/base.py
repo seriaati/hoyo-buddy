@@ -124,7 +124,7 @@ class CachedModel(BaseModel):
             return None
 
     @classmethod
-    async def get(cls, *args: Any, **kwargs: Any) -> Self:
+    async def get(cls, *args, **kwargs) -> Self:
         cached_data = await cls._cache_get()
         if cached_data is not None:
             try:
@@ -145,7 +145,7 @@ class CachedModel(BaseModel):
             return instance
 
     @classmethod
-    async def get_or_none(cls, *args: Any, **kwargs: Any) -> Self | None:
+    async def get_or_none(cls, *args, **kwargs) -> Self | None:
         cached_data = await cls._cache_get()
         if cached_data is not None:
             try:
@@ -166,7 +166,7 @@ class CachedModel(BaseModel):
         else:
             return instance
 
-    async def save(self, *args: Any, **kwargs: Any) -> None:
+    async def save(self, *args, **kwargs) -> None:
         await super().save(*args, **kwargs)
         asyncio.create_task(self._cache_set())
 

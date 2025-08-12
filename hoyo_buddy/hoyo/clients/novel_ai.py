@@ -10,7 +10,7 @@ from hoyo_buddy.exceptions import AIGenImageError
 
 
 class NAIClient(novelai.NAIClient):
-    def __init__(self, *, token: str, host_url: str, **kwargs: Any) -> None:
+    def __init__(self, *, token: str, host_url: str, **kwargs) -> None:
         novelai.Host.CUSTOM.value.url = host_url
         super().__init__(token=token, **kwargs)
 

@@ -204,7 +204,7 @@ def build_account_query(
     region: genshin.Region | None = None,
     platform: Platform | None = None,
     user_id: int | None = None,
-    **kwargs: Any,
+    **kwargs,
 ) -> Q:
     query = Q()
     if games is not None:

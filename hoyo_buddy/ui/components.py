@@ -140,7 +140,7 @@ class View(discord.ui.View):
                 item.translate(self.locale)
 
     @staticmethod
-    async def absolute_send(i: Interaction, **kwargs: Any) -> None:
+    async def absolute_send(i: Interaction, **kwargs) -> None:
         with contextlib.suppress(discord.HTTPException):
             if not i.response.is_done():
                 await i.response.send_message(**kwargs)
@@ -148,7 +148,7 @@ class View(discord.ui.View):
                 await i.followup.send(**kwargs)
 
     @staticmethod
-    async def absolute_edit(i: Interaction, **kwargs: Any) -> None:
+    async def absolute_edit(i: Interaction, **kwargs) -> None:
         with contextlib.suppress(discord.HTTPException):
             if not i.response.is_done():
                 await i.response.edit_message(**kwargs)
@@ -206,7 +206,7 @@ class Button(discord.ui.Button, Generic[V_co]):
         if self.locale_str_label:
             self.label = translator.translate(self.locale_str_label, locale)
 
-    async def set_loading_state(self, i: Interaction, **kwargs: Any) -> None:
+    async def set_loading_state(self, i: Interaction, **kwargs) -> None:
         self.original_label = self.label[:] if self.label else None
         self.original_emoji = str(self.emoji) if self.emoji else None
         self.original_disabled = self.disabled
@@ -219,7 +219,7 @@ class Button(discord.ui.Button, Generic[V_co]):
 
         await self.view.absolute_edit(i, view=self.view, **kwargs)
 
-    async def unset_loading_state(self, i: Interaction, **kwargs: Any) -> None:
+    async def unset_loading_state(self, i: Interaction, **kwargs) -> None:
         if self.original_disabled is None:
             msg = "unset_loading_state called before set_loading_state"
             raise RuntimeError(msg)
@@ -278,7 +278,7 @@ class GoBackButton(Button, Generic[V_co]):
 
 
 class ToggleButton(Button, Generic[V_co]):
-    def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs: Any) -> None:
+    def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
         kwargs["row"] = kwargs.get("row", 1)
@@ -315,7 +315,7 @@ class ToggleButton(Button, Generic[V_co]):
 
         self.translate(self.view.locale)
 
-    async def callback(self, i: Interaction, *, edit: bool = True, **kwargs: Any) -> Any:
+    async def callback(self, i: Interaction, *, edit: bool = True, **kwargs) -> Any:
         self.current_toggle = not self.current_toggle
         self.update_style()
         if edit:
@@ -425,7 +425,7 @@ class Select(discord.ui.Select, Generic[V_co]):
 
         await self.view.absolute_edit(i, view=self.view)
 
-    async def unset_loading_state(self, i: Interaction, **kwargs: Any) -> None:
+    async def unset_loading_state(self, i: Interaction, **kwargs) -> None:
         if (
             not self.original_options
             or self.original_disabled is None
@@ -466,7 +466,7 @@ PREV_PAGE = SelectOption(
 
 
 class PaginatorSelect(Select, Generic[V_co]):
-    def __init__(self, options: list[SelectOption], **kwargs: Any) -> None:
+    def __init__(self, options: list[SelectOption], **kwargs) -> None:
         if not options:
             options = [SelectOption(label="placeholder", value="0")]
             kwargs["disabled"] = True

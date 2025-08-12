@@ -53,10 +53,10 @@ class MimoClaimTaksResult(NamedTuple):
 class ProxyGenshinClient(genshin.Client):
     def __init__(
         self,
-        *args: Any,
+        *args,
         region: genshin.Region = genshin.Region.OVERSEAS,
         use_proxy: bool = True,
-        **kwargs: Any,
+        **kwargs,
     ) -> None:
         super().__init__(
             *args,
@@ -585,7 +585,7 @@ class GenshinClient(ProxyGenshinClient):
         params: Mapping[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
         challenge: Mapping[str, str] | None = None,
-        **kwargs: Any,
+        **kwargs,
     ) -> Mapping[str, str]:
         """Claim the daily reward."""
         await self.update_cookies_for_checkin()

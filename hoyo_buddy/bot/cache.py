@@ -7,7 +7,7 @@ import aiocache
 
 
 class LFUCache(aiocache.SimpleMemoryCache):
-    def __init__(self, maxsize: int = 1024, **kwargs: Any) -> None:
+    def __init__(self, maxsize: int = 1024, **kwargs) -> None:
         super().__init__(**kwargs)
         self._maxsize = maxsize
         self._frequency: defaultdict[Any, int] = defaultdict(int)

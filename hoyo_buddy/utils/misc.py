@@ -336,7 +336,7 @@ def wrap_task_factory() -> None:
             raise
 
     def new_factory(
-        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any
+        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs
     ) -> asyncio.Task[Any] | asyncio.Future[Any]:
         wrapped_coro = coro_wrapper(coro, coro_name=kwargs.get("name"))
 
@@ -614,7 +614,7 @@ def capture_exception(e: Exception) -> None:
 
 def handle_autocomplete_errors(func: Callable) -> Callable:
     @wraps(func)
-    async def wrapper(*args: Any, **kwargs: Any) -> list[discord.app_commands.Choice[str]]:
+    async def wrapper(*args, **kwargs) -> list[discord.app_commands.Choice[str]]:
         try:
             return await func(*args, **kwargs)
         except Exception as e:

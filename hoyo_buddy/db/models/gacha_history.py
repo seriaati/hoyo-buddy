@@ -1,7 +1,7 @@
 # pyright: reportAssignmentType=false
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Self
 
 from tortoise import fields
 

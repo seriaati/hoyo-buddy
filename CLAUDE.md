@@ -67,6 +67,8 @@ pm2 start pm2.json        # Production deployment (both apps)
 
 ## Code Standards
 
+Don't add unnecessary comments.
+
 ### Python Requirements
 
 - Python 3.11+ with `from __future__ import annotations`

@@ -1,7 +1,7 @@
 # pyright: reportAssignmentType=false
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from tortoise import fields
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class Settings(CachedModel):
     _cache_ttl = 60 * 60 * 24
-    _cache_prefix = "settings"
+    _pks = ("user_id",)
 
     lang: fields.Field[str | None] = fields.CharField(max_length=10, null=True)
     dark_mode = fields.BooleanField(default=True)
@@ -33,9 +33,9 @@ class Settings(CachedModel):
         return Locale(self.lang) if self.lang else None
 
     @classmethod
-    async def get(cls, user_id: int) -> Settings:
-        return await cls.get_cached(user_id)
+    async def get(cls, *, user_id: int | None = None) -> Self:
+        return await super().get(user_id=user_id)
 
     @classmethod
-    async def get_or_none(cls, user_id: int) -> Settings | None:
-        return await cls.get_or_none_cached(user_id)
+    async def get_or_none(cls, *, user_id: int) -> Self | None:
+        return await super().get_or_none(user_id=user_id)

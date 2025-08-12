@@ -1,7 +1,7 @@
 # pyright: reportAssignmentType=false
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Self
 
 from tortoise import fields
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class CardSettings(CachedModel):
     _cache_ttl = 60 * 60 * 24
-    _cache_prefix = "card_settings"
+    _pks = ("character_id", "user_id", "game")
 
     character_id = fields.CharField(max_length=8)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
@@ -40,3 +40,24 @@ class CardSettings(CachedModel):
     class Meta:
         unique_together = ("character_id", "user", "game")
         ordering = ("character_id",)
+
+    @staticmethod
+    def _get_kwargs(*, character_id: str, game: Game | None, user_id: int) -> dict[str, Any]:
+        kwargs = {"character_id": character_id, "user_id": user_id}
+        if game is not None:
+            kwargs["game"] = game
+        return kwargs
+
+    @classmethod
+    async def get(cls, *, character_id: str, user_id: int, game: Game | None = None) -> Self:
+        return await super().get(
+            **cls._get_kwargs(character_id=character_id, game=game, user_id=user_id)
+        )
+
+    @classmethod
+    async def get_or_none(
+        cls, *, character_id: str, user_id: int, game: Game | None = None
+    ) -> Self | None:
+        return await super().get_or_none(
+            **cls._get_kwargs(character_id=character_id, game=game, user_id=user_id)
+        )

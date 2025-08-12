@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 from typing import Any, ClassVar, Self
 
 import orjson
@@ -25,10 +26,17 @@ class BaseModel(Model):
 class CachedModel(BaseModel):
     _redis_pool: ClassVar[redis.ConnectionPool | None] = None
     _cache_ttl: ClassVar[int] = 3600
-    _cache_prefix: ClassVar[str] = "cached_model"
+    _pks: ClassVar[tuple[str, ...]] = ()
 
     class Meta:
         abstract = True
+
+    def __init__(self, *args, **kwargs) -> None:
+        if not self._pks:
+            msg = f"{self.__class__.__name__} has no primary keys defined for caching"
+            raise ValueError(msg)
+
+        super().__init__(*args, **kwargs)
 
     @classmethod
     async def _get_redis(cls) -> redis.Redis | None:
@@ -56,9 +64,11 @@ class CachedModel(BaseModel):
             return None
 
     @classmethod
-    def _get_cache_key(cls, pk: Any) -> str:
-        """Generate cache key for instance."""
-        return f"{cls._cache_prefix}:{cls.__name__}:{pk}"
+    def _get_cache_key(cls) -> str:
+        strings = tuple(sorted(cls._pks))
+        joined = "\0".join(strings)
+        hash_obj = hashlib.sha256(joined.encode())
+        return f"{cls.__name__}:{hash_obj.hexdigest()}"
 
     def serialize(self) -> dict[str, Any]:
         """Serialize model instance for caching."""
@@ -72,65 +82,50 @@ class CachedModel(BaseModel):
         return data
 
     async def _cache_set(self) -> None:
-        """Cache this instance."""
         redis_conn = await self._get_redis()
         if not redis_conn:
             return
 
         try:
-            cache_key = self._get_cache_key(self.pk)
+            cache_key = self._get_cache_key()
             serialized_data = self.serialize()
             json_data = orjson.dumps(serialized_data).decode("utf-8")
-
             await redis_conn.setex(cache_key, self._cache_ttl, json_data)
-            logger.debug(f"Cached {self.__class__.__name__} instance with key: {cache_key}")
-        except Exception as e:
-            logger.error(f"Failed to cache {self.__class__.__name__} instance: {e}")
-        finally:
-            await redis_conn.aclose()
+        except Exception:
+            logger.exception(f"Failed to cache {self.__class__.__name__} instance")
 
     async def _cache_delete(self) -> None:
-        """Delete this instance from cache."""
         redis_conn = await self._get_redis()
         if not redis_conn:
             return
 
         try:
-            cache_key = self._get_cache_key(self.pk)
+            cache_key = self._get_cache_key()
             await redis_conn.delete(cache_key)
-            logger.debug(f"Deleted cache for {self.__class__.__name__} with key: {cache_key}")
-        except Exception as e:
-            logger.error(f"Failed to delete cache for {self.__class__.__name__} instance: {e}")
-        finally:
-            await redis_conn.aclose()
+        except Exception:
+            logger.exception(f"Failed to delete cache for {self.__class__.__name__} instance")
 
     @classmethod
-    async def _cache_get(cls, pk: Any) -> dict[str, Any] | None:
-        """Get instance data from cache."""
+    async def _cache_get(cls) -> dict[str, Any] | None:
         redis_conn = await cls._get_redis()
         if not redis_conn:
             return None
 
         try:
-            cache_key = cls._get_cache_key(pk)
+            cache_key = cls._get_cache_key()
             cached_data = await redis_conn.get(cache_key)
 
             if cached_data is None:
-                logger.debug(f"Cache miss for {cls.__name__} with key: {cache_key}")
                 return None
 
-            logger.debug(f"Cache hit for {cls.__name__} with key: {cache_key}")
             return orjson.loads(cached_data)
-        except Exception as e:
-            logger.error(f"Failed to get cache for {cls.__name__} instance: {e}")
+        except Exception:
+            logger.exception(f"Failed to get cache for {cls.__name__} instance")
             return None
-        finally:
-            await redis_conn.aclose()
 
     @classmethod
-    async def get_cached(cls, pk: Any, **kwargs: Any) -> Self:
-        """Get instance with cache-aside pattern."""
-        cached_data = await cls._cache_get(pk)
+    async def get(cls, *args: Any, **kwargs: Any) -> Self:
+        cached_data = await cls._cache_get()
         if cached_data is not None:
             try:
                 deserialized_data = cls._deserialize(cached_data)
@@ -141,7 +136,7 @@ class CachedModel(BaseModel):
                 return instance
 
         try:
-            instance = await super().get(pk=pk, **kwargs)
+            instance = await super().get(*args, **kwargs)
             asyncio.create_task(instance._cache_set())
         except Exception as e:
             logger.error(f"Failed to get {cls.__name__} from database: {e}")
@@ -150,9 +145,8 @@ class CachedModel(BaseModel):
             return instance
 
     @classmethod
-    async def get_or_none_cached(cls, pk: Any, **kwargs: Any) -> Self | None:
-        """Get instance or None with cache-aside pattern."""
-        cached_data = await cls._cache_get(pk)
+    async def get_or_none(cls, *args: Any, **kwargs: Any) -> Self | None:
+        cached_data = await cls._cache_get()
         if cached_data is not None:
             try:
                 deserialized_data = cls._deserialize(cached_data)
@@ -163,7 +157,7 @@ class CachedModel(BaseModel):
                 return instance
 
         try:
-            instance = await super().get_or_none(pk=pk, **kwargs)
+            instance = await super().get_or_none(*args, **kwargs)
             if instance is not None:
                 asyncio.create_task(instance._cache_set())
         except Exception as e:
@@ -172,26 +166,13 @@ class CachedModel(BaseModel):
         else:
             return instance
 
-    @classmethod
-    async def get_or_create_cached(cls, **kwargs: Any) -> tuple[Self, bool]:
-        """Get or create an instance with cache-aside pattern."""
-        instance = await cls.get_or_none_cached(**kwargs)
-        if instance is not None:
-            return instance, False
-
-        instance = await cls.create(**kwargs)
-        asyncio.create_task(instance._cache_set())
-        return instance, True
-
     async def save(self, *args: Any, **kwargs: Any) -> None:
-        """Override save to cache after database operation."""
         await super().save(*args, **kwargs)
         asyncio.create_task(self._cache_set())
 
-    async def delete(self, *args: Any, **kwargs: Any) -> None:
-        """Override delete to invalidate cache."""
+    async def delete(self) -> None:
         await self._cache_delete()
-        await super().delete(*args, **kwargs)
+        await super().delete()
 
     @classmethod
     async def close_redis_pool(cls) -> None:

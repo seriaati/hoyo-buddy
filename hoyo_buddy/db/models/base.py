@@ -65,7 +65,7 @@ class CachedModel(BaseModel):
 
     @classmethod
     def _get_cache_key(cls, **kwargs) -> str:
-        strings = (f"{pk}={kwargs[pk]}" for pk in cls._pks)
+        strings = (f"{pk}={kwargs.get(pk)}" for pk in cls._pks)
         joined = "\0".join(strings)
         hash_obj = hashlib.sha256(joined.encode())
         return f"{cls.__name__}:{hash_obj.hexdigest()}"

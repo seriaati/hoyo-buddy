@@ -99,11 +99,11 @@ class Search(commands.Cog):
         logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
 
-        cached_autofill = await self.bot.cache.get(cache_key)
-        if cached_autofill is not None:
-            logger.info("Using cached search autocomplete choices")
-            self._set_cached_search_autofill(cached_autofill)
-            return
+        # cached_autofill = await self.bot.cache.get(cache_key)
+        # if cached_autofill is not None:
+        #     logger.info("Using cached search autocomplete choices")
+        #     self._set_cached_search_autofill(cached_autofill)
+        #     return
 
         try:
             (

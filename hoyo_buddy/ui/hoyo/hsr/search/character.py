@@ -368,10 +368,9 @@ class CharacterUI(View):
             embed = self._build_hakushin_ui_embed()
 
         if i.response.is_done():
-            self.message = await i.edit_original_response(embed=embed, view=self)
+            await i.edit_original_response(embed=embed, view=self)
         else:
             await i.response.edit_message(embed=embed, view=self)
-            self.message = await i.original_response()
 
 
 class PageSelector(Select["CharacterUI"]):

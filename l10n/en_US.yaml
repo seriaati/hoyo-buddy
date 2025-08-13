@@ -582,10 +582,14 @@ accounts_added_snackbar_message: "Accounts added successfully, redirecting you b
 account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added.\nJoin our [Discord server](<https://link.seria.moe/hb-dc>) if you need help."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
-gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records, guides for different games are below:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nFor services below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records.\nClick the button below to get instructions on how to get it for your device's platform.\n\nFor services listed below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
 extract_authkey_error_title: Authkey Extraction Failed
 gacha_import_loading_embed_title: Importing Gacha Logs
+gacha_import_pc_import_embed_desc: "Search and open Powershell with the start menu, then copy and paste the following code into it.\n This script is written by the Hoyo Buddy team and is safe to use."
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: Android
+gacha_import_pc_source_code: Source code
 gacha_import_loading_embed_description: "{loading_emoji} This can take a while, please be patient..."
 gacha_upload_invalid_file_error_title: Invalid file format
 gacha_upload_invalid_file_error_message: "Only accepts **{file_format}** files, please try again with a valid file."

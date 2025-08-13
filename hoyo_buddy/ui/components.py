@@ -62,13 +62,15 @@ class View(discord.ui.View):
         return self
 
     async def on_timeout(self) -> None:
-        if self.message and not all(
+        all_url_buttons = all(
             item.url for item in self.children if isinstance(item, (discord.ui.Button))
-        ):
+        )
+        if self.message is not None and not all_url_buttons:
             self.clear_items()
             with contextlib.suppress(discord.HTTPException):
                 await self.message.edit(view=self)
-        else:
+
+        if self.message is None and not all_url_buttons:
             logger.warning(f"View {self!r} timed out without a set message")
 
     async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:

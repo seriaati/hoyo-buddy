@@ -119,7 +119,8 @@ class PlayerEmbedMixin:
             title=f"{player.nickname} ({self.uid_str})",
             description=LevelStr(player.level),
         )
-        embed.set_author(name=player.title.text)
+        if player.title is not None:
+            embed.set_author(name=player.title.text)
 
         embed.add_field(
             name=LocaleStr(key="climbing_tower_layer_s2", mi18n_game=Game.ZZZ),

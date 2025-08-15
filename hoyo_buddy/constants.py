@@ -668,9 +668,9 @@ def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")
 
 
-HSR_ASSETS_URL = "https://homdgcat.wiki/images"
-HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/{{char_id}}.png"
-HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/{{char_id}}.png"
+HSR_ASSETS_URL = "https://raw.githubusercontent.com/seriaati/HSRAssets/refs/heads/main"
+HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/Texture2D/{{char_id}}.png"
+HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/Texture2D/{{char_id}}.png"
 ZZZ_M3_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_2.webp"
 ZZZ_M6_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
 

@@ -40,7 +40,7 @@ license = { file = "LICENSE" }
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.12"
-version = "1.16.9"
+version = "1.16.10"
 
 [tool.uv.sources]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }

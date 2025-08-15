@@ -560,7 +560,7 @@ status_page_btn_label: 状态页
 docs_page_btn_label: 文档
 invite_page_btn_label: 邀请
 invite_command_desc: 邀请Hoyo Buddy到你的服务器或者将Hoyo Buddy添加到你的APP中
-help_command_desc: 需要帮助吗？查看文档或者加入我们的服务器吧。
+help_command_desc: "需要帮助吗？查看文档或者加入我们的服务器吧。"
 title_dyk: "你知道吗？"
 button_label_dyk: 「你知道吗」消息
 events_view_start_date_embed_field: 开始时间
@@ -831,3 +831,5 @@ fetching_accounts: 请稍等，我们正在获取你的账户.......
 fetching_accounts_stuck: "如果你在此页面卡住，请重新运行该命令或者联系我们解决此问题。"
 aaa_acronym: 闪能自动累计
 changelog_command_desc: 查看最新更改和更新
+account_game_mismatch_error_title: 账户游戏不匹配
+account_game_mismatch_error_message: "你正在使用的不是{game}账户。"

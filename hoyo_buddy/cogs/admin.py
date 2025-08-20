@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Any, Literal
 
+import discord
 import genshin
 from discord.ext import commands
 from seria.utils import write_json
@@ -33,7 +34,18 @@ class Admin(commands.Cog):
         self.bot = bot
         self._tasks: set[asyncio.Task] = set()
 
+    @staticmethod
+    def _is_code_enjoyer(member: discord.Member, guild: discord.Guild) -> bool:
+        role = discord.utils.get(guild.roles, id=1292234335562236005)
+        if role is None:
+            return False
+        return role in member.roles
+
     async def cog_check(self, ctx: Context) -> bool:
+        if ctx.command is not None and ctx.command.name == "add-codes":
+            if not isinstance(ctx.author, discord.Member) or ctx.guild is None:
+                return False
+            return self._is_code_enjoyer(ctx.author, ctx.guild)
         return await self.bot.is_owner(ctx.author, original=True)
 
     @commands.command(name="sync")

@@ -53,7 +53,18 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-hydro": "10000007-703",
 }
 
-TRAILBLAZER_IDS = {8001, 8002, 8003, 8004, 8005, 8006, 1001, 1224}
+TRAILBLAZER_IDS = {
+    8001,  # Physics male
+    8002,  # Physics female
+    8003,  # Fire male
+    8004,  # Fire female
+    8005,  # Imaginary male
+    8006,  # Imaginary female
+    8007,  # Ice male
+    8008,  # Ice female
+    1001,  # March 7th ice
+    1224,  # March 7th imaginary
+}
 
 
 def contains_traveler_id(character_id: str) -> bool:

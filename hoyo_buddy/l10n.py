@@ -409,7 +409,7 @@ class Translator:
         # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)
         gender_str = (
             ("♂" if character.id % 2 != 0 else "♀")
-            if gender_symbol and str(character.id)[0] == "8"
+            if gender_symbol and str(character.id).startswith("800")
             else ""
         )
 

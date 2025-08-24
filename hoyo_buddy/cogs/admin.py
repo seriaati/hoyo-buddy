@@ -97,8 +97,8 @@ class Admin(commands.Cog):
         search_cog = self.bot.get_cog("Search")
 
         if isinstance(search_cog, Search):
-            asyncio.create_task(search_cog._setup_search_autofill())
-        await message.edit(content="Search autocomplete update task started.")
+            await search_cog._setup_search_autofill()
+        await message.edit(content="Search autocomplete updated.")
 
     @commands.command(name="add-codes", aliases=["ac"])
     async def add_codes_command(self, ctx: commands.Context, game: genshin.Game, codes: str) -> Any:

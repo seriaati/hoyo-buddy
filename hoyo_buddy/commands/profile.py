@@ -7,7 +7,11 @@ from genshin import GenshinException
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import LOCALE_TO_GI_ENKA_LANG
+from hoyo_buddy.constants import (
+    LOCALE_TO_GI_ENKA_LANG,
+    LOCALE_TO_HSR_ENKA_LANG,
+    LOCALE_TO_ZZZ_ENKA_LANG,
+)
 from hoyo_buddy.draw.card_data import CARD_DATA
 
 from ..ui.hoyo.profile.view import ProfileView
@@ -146,7 +150,9 @@ class ProfileCommand:
         hoyolab_user: StarRailUserStats | None = None
         builds = None
 
-        async with enka.HSRClient(cache=self._enka_cache, use_enka_icons=False) as client:
+        lang = LOCALE_TO_HSR_ENKA_LANG.get(self._locale, enka.hsr.Language.ENGLISH)
+
+        async with enka.HSRClient(lang, cache=self._enka_cache, use_enka_icons=False) as client:
             enka_data, builds = await self.fetch_enka_data(
                 client, self._uid, enka_hsr_down=enka_hsr_down
             )
@@ -185,7 +191,9 @@ class ProfileCommand:
         zzz_user: RecordCard | None = None
         builds = None
 
-        async with enka.ZZZClient(cache=self._enka_cache) as client:
+        lang = LOCALE_TO_ZZZ_ENKA_LANG.get(self._locale, enka.zzz.Language.ENGLISH)
+
+        async with enka.ZZZClient(lang, cache=self._enka_cache) as client:
             enka_data, builds = await self.fetch_enka_data(client, self._uid)
 
         if self._account is not None:

@@ -674,6 +674,22 @@ ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[
     enka.zzz.ProfessionType.UNKNOWN: None,
 }
 
+LOCALE_TO_ZZZ_ENKA_LANG: Final[dict[Locale, enka.zzz.Language]] = {
+    Locale.american_english: enka.zzz.Language.ENGLISH,
+    Locale.japanese: enka.zzz.Language.JAPANESE,
+    Locale.korean: enka.zzz.Language.KOREAN,
+    Locale.chinese: enka.zzz.Language.SIMPLIFIED_CHINESE,
+    Locale.taiwan_chinese: enka.zzz.Language.TRADITIONAL_CHINESE,
+    Locale.russian: enka.zzz.Language.RUSSIAN,
+    Locale.vietnamese: enka.zzz.Language.VIETNAMESE,
+    Locale.thai: enka.zzz.Language.THAI,
+    Locale.brazil_portuguese: enka.zzz.Language.PORTUGUESE,
+    Locale.indonesian: enka.zzz.Language.INDONESIAN,
+    Locale.french: enka.zzz.Language.FRENCH,
+    Locale.spain_spanish: enka.zzz.Language.ESPANOL,
+    Locale.german: enka.zzz.Language.GERMAN,
+}
+
 
 def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")

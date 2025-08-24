@@ -829,3 +829,5 @@ fetching_accounts: Aguarde enquanto obtemos suas contas...
 fetching_accounts_stuck: "Se você ficou preso nesta página, tente executar o comando novamente ou entre em contato conosco para corrigir o problema."
 aaa_acronym: AAA
 changelog_command_desc: Veja as últimas mudanças e atualizações
+account_game_mismatch_error_title: Incompatibilidade de Conta do Jogo
+account_game_mismatch_error_message: "A conta que você está usando não é uma conta do {game}"

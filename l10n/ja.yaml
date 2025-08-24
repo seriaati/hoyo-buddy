@@ -558,7 +558,7 @@ status_page_btn_label: ステータスページ
 docs_page_btn_label: ドキュメント
 invite_page_btn_label: 招待
 invite_command_desc: Hoyo Buddyをあなたのサーバーに招待するか、アプリに追加してください
-help_command_desc: 困ったときは？ドキュメントを確認するか、Discordサーバーにご参加ください
+help_command_desc: "困ったときは？ドキュメントを確認するか、Discordサーバーにご参加ください"
 title_dyk: "知っていましたか？"
 button_label_dyk: Did you know メッセージ
 events_view_start_date_embed_field: 開始日時
@@ -829,3 +829,5 @@ fetching_accounts: アカウント情報を取得中です。しばらくお待�
 fetching_accounts_stuck: "このページで動作が停止している場合は、コマンドを再実行するか、お問い合わせください。問題を解決いたします。"
 aaa_acronym: アドレナリン回復
 changelog_command_desc: 最新の変更内容とアップデートを確認する
+account_game_mismatch_error_title: アカウントゲームミスマッチ
+account_game_mismatch_error_message: "使用しているアカウントは{game}のアカウントではありません"

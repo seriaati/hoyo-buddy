@@ -10,6 +10,7 @@ from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
+from hoyo_buddy.utils.misc import get_project_version
 
 from ..constants import GEETEST_SERVERS
 from ..l10n import LocaleStr, translator
@@ -196,7 +197,12 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
         try:
             result = await client._app_login(
-                email, password, ticket=self._ticket, device_id=self._device_id
+                email,
+                password,
+                ticket=self._ticket,
+                device_id=self._device_id,
+                device_model="Hoyo Buddy",
+                device_name=get_project_version(),
             )
         except Exception as exc:
             show_error_banner(page, message=str(exc))

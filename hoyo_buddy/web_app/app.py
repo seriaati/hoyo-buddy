@@ -21,6 +21,7 @@ from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.utils import dict_cookie_to_str
+from hoyo_buddy.utils.misc import get_project_version
 
 from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt
@@ -140,6 +141,8 @@ class WebApp:
                 password,
                 mmt_result=genshin.models.SessionMMTResult(**mmt_result),
                 device_id=device_id,
+                device_model="Hoyo Buddy",
+                device_name=get_project_version(),
             )
         except Exception as exc:
             show_error_banner(page, message=str(exc))

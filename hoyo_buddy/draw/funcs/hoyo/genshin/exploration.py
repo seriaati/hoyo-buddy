@@ -34,7 +34,7 @@ class ExplorationCard:
     def _get_tribe_levels(exploration: Exploration | None) -> str:
         if exploration is None or exploration.natlan_reputation is None:
             return "0"
-        return "/".join(f"Lv.{t.level}" for t in exploration.natlan_reputation.tribes)
+        return "/".join(str(t.level) for t in exploration.natlan_reputation.tribes)
 
     def _get_card(self, name: str) -> Image.Image:
         return self._drawer.open_asset(f"{name}_{'dark' if self._dark_mode else 'light'}.png")

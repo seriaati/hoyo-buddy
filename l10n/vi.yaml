@@ -831,5 +831,5 @@ fetching_accounts: "Đang truy vấn tài khoản, vui lòng chờ..."
 fetching_accounts_stuck: "Nếu bạn bị kẹt tại trang này, hãy thử chạy lại lệnh hoặc liên hệ chúng tôi để xử lý lỗi."
 aaa_acronym: Tự Tích Thiểm Năng
 changelog_command_desc: Xem những thay đổi và cập nhật mới nhất
-account_game_mismatch_error_title: Tài Khoản Trò Chơi không khớp
-account_game_mismatch_error_message: "Tài khoản bạn đang sử dụng không phải là tài khoàn {game}"
+account_game_mismatch_error_title: Tài khoản game không khớp
+account_game_mismatch_error_message: "Tài khoản bạn đang sử dụng không phải là tài khoản {game}"

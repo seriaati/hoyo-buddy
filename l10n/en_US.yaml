@@ -582,7 +582,7 @@ accounts_added_snackbar_message: "Accounts added successfully, redirecting you b
 account_add_start_message: "Click the button below and follow the instructions to add your accounts. When you're done, use the </accounts> command to view the accounts you have added.\nJoin our [Discord server](<https://link.seria.moe/hb-dc>) if you need help."
 hbls_button_label: Let's start!
 gacha_import_url_modal_title: Enter gacha log URL
-gacha_import_embed_description: "Gacha log URL: Obtain a very long URL from the game to import your gacha records.\nClick the button below to get instructions on how to get it for your device's platform.\n\nFor services listed below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "Click the button below to get instructions on how to get gacha log URL for your device's platform.\n\nFor services listed below, export your gacha records as the specified file format and upload it via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Unable to extract authkey from the URL, please try again with a valid URL."
 extract_authkey_error_title: Authkey Extraction Failed
 gacha_import_loading_embed_title: Importing Gacha Logs

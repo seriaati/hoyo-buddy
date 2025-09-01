@@ -42,31 +42,35 @@ class GachaImportView(View):
         ).add_acc_info(self.account)
 
     async def start(self, i: Interaction) -> Any:
-        self.add_items([URLImport(self.account), PCButton(), IOSButton(), AndroidButton()])
+        self.add_items((URLImport(self.account), PCButton(), IOSButton(), AndroidButton()))
         await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
 
 class PCButton(Button[GachaImportView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="gacha_import_pc_button_label"), row=1)
+        super().__init__(
+            label=LocaleStr(key="gacha_import_pc_player_button_label"),
+            emoji="<:Desktop:1412046347179397150>",
+            row=1,
+        )
 
     async def callback(self, i: Interaction) -> Any:
         embed = DefaultEmbed(
             self.view.locale,
-            title=LocaleStr(key="gacha_import_loading_embed_title"),
+            title=self.label,
             description=LocaleStr(key="gacha_import_pc_import_embed_desc"),
         )
         view = URLButtonView(
             self.view.locale, url=PS_CODE_URL, label=LocaleStr(key="gacha_import_pc_source_code")
         )
-        await i.response.send_message(embed=embed, ephemeral=True)
-        await i.followup.send(content=PS_CODE, view=view, ephemeral=True, suppress_embeds=True)
+        await i.response.send_message(embed=embed, ephemeral=True, view=view)
+        await i.followup.send(content=PS_CODE, ephemeral=True, suppress_embeds=True)
 
 
 class IOSButton(Button[GachaImportView]):
     def __init__(self) -> None:
-        super().__init__(label="iOS", row=1)
+        super().__init__(label="iOS", emoji="<:IOS:1412046328447635538>", row=1)
 
     async def callback(self, i: Interaction) -> Any:
         await i.response.send_message(content=IOS_VIDEO_URL, ephemeral=True)
@@ -74,7 +78,11 @@ class IOSButton(Button[GachaImportView]):
 
 class AndroidButton(Button[GachaImportView]):
     def __init__(self) -> None:
-        super().__init__(label=LocaleStr(key="gacha_import_android_button_label"), row=1)
+        super().__init__(
+            label=LocaleStr(key="gacha_import_android_button_label"),
+            emoji="<:Android:1412046338824339589>",
+            row=1,
+        )
 
     async def callback(self, i: Interaction) -> Any:
         await i.response.send_message(content=ANDROID_VIDEO_URL, ephemeral=True)

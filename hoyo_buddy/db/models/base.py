@@ -64,8 +64,8 @@ class CachedModel(BaseModel):
             return None
 
     @classmethod
-    def _get_cache_key(cls) -> str:
-        strings = tuple(sorted(cls._pks))
+    def _get_cache_key(cls, **kwargs) -> str:
+        strings = (f"{pk}={kwargs.get(pk)}" for pk in cls._pks)
         joined = "\0".join(strings)
         hash_obj = hashlib.sha256(joined.encode())
         return f"{cls.__name__}:{hash_obj.hexdigest()}"
@@ -87,7 +87,8 @@ class CachedModel(BaseModel):
             return
 
         try:
-            cache_key = self._get_cache_key()
+            kwargs = {pk: getattr(self, pk) for pk in self._pks}
+            cache_key = self._get_cache_key(**kwargs)
             serialized_data = self.serialize()
             json_data = orjson.dumps(serialized_data).decode("utf-8")
             await redis_conn.setex(cache_key, self._cache_ttl, json_data)
@@ -100,19 +101,20 @@ class CachedModel(BaseModel):
             return
 
         try:
-            cache_key = self._get_cache_key()
+            kwargs = {pk: getattr(self, pk) for pk in self._pks}
+            cache_key = self._get_cache_key(**kwargs)
             await redis_conn.delete(cache_key)
         except Exception:
             logger.exception(f"Failed to delete cache for {self.__class__.__name__} instance")
 
     @classmethod
-    async def _cache_get(cls) -> dict[str, Any] | None:
+    async def _cache_get(cls, **kwargs) -> dict[str, Any] | None:
         redis_conn = await cls._get_redis()
         if not redis_conn:
             return None
 
         try:
-            cache_key = cls._get_cache_key()
+            cache_key = cls._get_cache_key(**kwargs)
             cached_data = await redis_conn.get(cache_key)
 
             if cached_data is None:
@@ -125,7 +127,7 @@ class CachedModel(BaseModel):
 
     @classmethod
     async def get(cls, *args, **kwargs) -> Self:
-        cached_data = await cls._cache_get()
+        cached_data = await cls._cache_get(**kwargs)
         if cached_data is not None:
             try:
                 deserialized_data = cls._deserialize(cached_data)
@@ -146,7 +148,7 @@ class CachedModel(BaseModel):
 
     @classmethod
     async def get_or_none(cls, *args, **kwargs) -> Self | None:
-        cached_data = await cls._cache_get()
+        cached_data = await cls._cache_get(**kwargs)
         if cached_data is not None:
             try:
                 deserialized_data = cls._deserialize(cached_data)

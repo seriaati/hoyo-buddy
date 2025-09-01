@@ -79,7 +79,7 @@ class ShiyuDefenseCard:
             )
 
         stats = {
-            "shiyu_fastest_clear_time": format_time(self.data.fastest_clear_time, short=True),
+            "shiyu_total_clear_time": format_time(self.data.total_clear_time, short=True),
             "shiyu_highest_frontier": LocaleStr(
                 key=f"shiyu_{self.data.max_floor}_frontier"
             ).translate(self.locale),

@@ -1,12 +1,12 @@
-name: Biweekly Release
+name: Monthly Release
 
 on:
   schedule:
-    - cron: "0 0 1,15 * *"
+    - cron: "0 0 1 * *"
   workflow_dispatch:
 
 jobs:
-  biweekly-release:
+  monthly-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

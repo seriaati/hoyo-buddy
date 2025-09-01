@@ -11,6 +11,7 @@ from hoyo_buddy.constants import get_docs_url, locale_to_gpy_lang
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.utils.misc import get_project_version
 
 from ..login_handler import handle_action_ticket, handle_session_mmt
 from ..utils import encrypt_string, show_error_banner, show_loading_snack_bar
@@ -126,7 +127,13 @@ class EmailPassWordForm(ft.Column):
 
         try:
             if self._params.platform is Platform.HOYOLAB:
-                return await client._app_login(email, password, device_id=self._device_id)
+                return await client._app_login(
+                    email,
+                    password,
+                    device_id=self._device_id,
+                    device_model="Hoyo Buddy",
+                    device_name=get_project_version(),
+                )
             return await client._cn_web_login(email, password)
         except genshin.GenshinException as exc:
             self._handle_genshin_exception(exc, page)

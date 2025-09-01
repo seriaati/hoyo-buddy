@@ -13,6 +13,8 @@ from PIL import Image
 
 from hoyo_buddy.config import CONFIG
 
+IMAGE_CACHE_TTL = 3600
+
 
 class OrjsonSerializer(BaseSerializer):
     DEFAULT_ENCODING = "utf-8"
@@ -36,7 +38,7 @@ class RedisImageCache:
         try:
             with redis.Redis(connection_pool=self.redis) as r, io.BytesIO() as output:
                 image.save(output, format="PNG")
-                r.set(key, output.getvalue())
+                r.setex(key, IMAGE_CACHE_TTL, output.getvalue())
         except redis.RedisError as e:
             logger.error(f"Redis error while setting image {key}: {e}")
 

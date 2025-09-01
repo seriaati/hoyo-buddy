@@ -831,3 +831,5 @@ fetching_accounts: Wacht even terwijl we je accounts ophalen...
 fetching_accounts_stuck: "Als je vastloopt op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
 aaa_acronym: AAA
 changelog_command_desc: Bekijk de laatste wijzigingen en updates
+account_game_mismatch_error_title: Account Game Conflict
+account_game_mismatch_error_message: "Het account dat je gebruikt is geen {game} account"

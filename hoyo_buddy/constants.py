@@ -53,7 +53,18 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-hydro": "10000007-703",
 }
 
-TRAILBLAZER_IDS = {8001, 8002, 8003, 8004, 8005, 8006, 1001, 1224}
+TRAILBLAZER_IDS = {
+    8001,  # Physics male
+    8002,  # Physics female
+    8003,  # Fire male
+    8004,  # Fire female
+    8005,  # Imaginary male
+    8006,  # Imaginary female
+    8007,  # Ice male
+    8008,  # Ice female
+    1001,  # March 7th ice
+    1224,  # March 7th imaginary
+}
 
 
 def contains_traveler_id(character_id: str) -> bool:
@@ -661,6 +672,22 @@ ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[
     enka.zzz.ProfessionType.STUN: genshin.models.ZZZSpecialty.STUN,
     enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE,
     enka.zzz.ProfessionType.UNKNOWN: None,
+}
+
+LOCALE_TO_ZZZ_ENKA_LANG: Final[dict[Locale, enka.zzz.Language]] = {
+    Locale.american_english: enka.zzz.Language.ENGLISH,
+    Locale.japanese: enka.zzz.Language.JAPANESE,
+    Locale.korean: enka.zzz.Language.KOREAN,
+    Locale.chinese: enka.zzz.Language.SIMPLIFIED_CHINESE,
+    Locale.taiwan_chinese: enka.zzz.Language.TRADITIONAL_CHINESE,
+    Locale.russian: enka.zzz.Language.RUSSIAN,
+    Locale.vietnamese: enka.zzz.Language.VIETNAMESE,
+    Locale.thai: enka.zzz.Language.THAI,
+    Locale.brazil_portuguese: enka.zzz.Language.PORTUGUESE,
+    Locale.indonesian: enka.zzz.Language.INDONESIAN,
+    Locale.french: enka.zzz.Language.FRENCH,
+    Locale.spain_spanish: enka.zzz.Language.ESPANOL,
+    Locale.german: enka.zzz.Language.GERMAN,
 }
 
 

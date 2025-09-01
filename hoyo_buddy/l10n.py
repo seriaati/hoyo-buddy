@@ -319,6 +319,9 @@ class Translator:
             logger.warning(f"String {string_key!r} is missing in source lang file")
 
         lang = locale.value.replace("-", "_")
+        if lang == "en-GB":
+            lang = "en-US"
+
         if string.mi18n_game is not None:
             translation = self._mi18n.get((lang, string.mi18n_game), {}).get(string_key)  # pyright: ignore[reportArgumentType, reportCallIssue]
         elif string.game is not None:
@@ -409,7 +412,7 @@ class Translator:
         # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)
         gender_str = (
             ("♂" if character.id % 2 != 0 else "♀")
-            if gender_symbol and str(character.id)[0] == "8"
+            if gender_symbol and str(character.id).startswith("800")
             else ""
         )
 

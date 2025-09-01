@@ -652,7 +652,7 @@ characters_view_show_max_level_only: Show max level characters only
 characters_embed_max_level_characters: Max Level Characters
 natlan_reputation: "Reputation Level: {reputation}, Tribes: {tribes}"
 shiyu_overview: Overview
-shiyu_fastest_clear_time: "Fastest Clear Time This Season:"
+shiyu_total_clear_time: "Total Clear Time:"
 shiyu_highest_frontier: "Highest Frontier Cleared:"
 shiyu_relevant_season: "Relevant Season:"
 shiyu_1_frontier: First Frontier

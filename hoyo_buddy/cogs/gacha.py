@@ -22,8 +22,8 @@ if TYPE_CHECKING:
 
 class Gacha(
     commands.GroupCog,
-    name=app_commands.locale_str("gacha-log"),
-    description=app_commands.locale_str("Gacha log commands"),
+    name=app_commands.locale_str("gacha-log"),  # pyright: ignore[reportArgumentType]
+    description=app_commands.locale_str("Gacha log commands"),  # pyright: ignore[reportArgumentType]
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot

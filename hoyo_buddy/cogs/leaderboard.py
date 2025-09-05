@@ -34,7 +34,7 @@ GUILD_ONLY_MAX_MEMBER_COUNT = 100
 GUILD_ONLY_MAX_UID_COUNT = 30
 
 
-class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
+class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):  # pyright: ignore[reportArgumentType]
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 

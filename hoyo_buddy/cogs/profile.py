@@ -45,8 +45,8 @@ def gen_character_id_describe(max_: int) -> dict[str, app_commands.locale_str]:
 
 class Profile(
     GroupCog,
-    name=app_commands.locale_str("profile"),
-    description=app_commands.locale_str("Profile commands"),
+    name=app_commands.locale_str("profile"),  # pyright: ignore[reportArgumentType]
+    description=app_commands.locale_str("Profile commands"),  # pyright: ignore[reportArgumentType]
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot

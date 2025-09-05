@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 
 class Challenge(
     GroupCog,
-    name=app_commands.locale_str("challenge"),
-    description=app_commands.locale_str("Challenge commands"),
+    name=app_commands.locale_str("challenge"),  # pyright: ignore[reportArgumentType]
+    description=app_commands.locale_str("Challenge commands"),  # pyright: ignore[reportArgumentType]
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot

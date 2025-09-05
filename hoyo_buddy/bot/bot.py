@@ -106,7 +106,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             ),
             help_command=None,
             chunk_guilds_at_startup=False,
-            max_messages=None,
+            max_messages=None,  # pyright: ignore[reportArgumentType]
             tree_cls=CommandTree,
             allowed_contexts=discord.app_commands.AppCommandContext(
                 guild=True, dm_channel=True, private_channel=True

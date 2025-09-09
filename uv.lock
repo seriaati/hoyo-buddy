@@ -188,7 +188,7 @@ wheels = [
 [[package]]
 name = "ambr-py"
 version = "1.8.6"
-source = { git = "https://github.com/seriaati/ambr#04a9bfb55d87b934da799ec21d6689d49b8716d0" }
+source = { git = "https://github.com/seriaati/ambr#349a253bc093b1930ead9825357d14fa09ba7bd7" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

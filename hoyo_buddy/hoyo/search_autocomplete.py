@@ -279,9 +279,13 @@ class AutocompleteSetup:
                     for item in items:
                         if not hasattr(item, "id") or not hasattr(item, "name"):
                             continue
+
+                        # rarity is None means it's a beta item
                         if hasattr(item, "rarity") and item.rarity is None:
                             continue
-                        if str(item.id) in beta_ids:
+
+                        # only hakushin has beta items
+                        if category is ZZZItemCategory and str(item.id) in beta_ids:
                             continue
 
                         cls._result[game][category][locale].append(

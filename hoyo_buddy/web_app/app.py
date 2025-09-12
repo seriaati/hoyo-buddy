@@ -396,6 +396,9 @@ class WebApp:
             return pages.LoginPage(user_data, locale=locale_)
 
         if route == "/geetest":
+            if "user_id" not in parsed_params:
+                return pages.ErrorPage(code=400, message="Missing user_id in parameters.")
+
             query: str | None = await page.client_storage.get_async(
                 f"hb.{parsed_params['user_id']}.params"
             )

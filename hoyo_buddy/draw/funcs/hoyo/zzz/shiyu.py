@@ -78,8 +78,13 @@ class ShiyuDefenseCard:
                 style="black_italic",
             )
 
+        try:
+            total_clear_time = format_time(self.data.total_clear_time, short=True)
+        except AttributeError:
+            total_clear_time = "N/A"
+
         stats = {
-            "shiyu_total_clear_time": format_time(self.data.total_clear_time, short=True),
+            "shiyu_total_clear_time": total_clear_time,
             "shiyu_highest_frontier": LocaleStr(
                 key=f"shiyu_{self.data.max_floor}_frontier"
             ).translate(self.locale),

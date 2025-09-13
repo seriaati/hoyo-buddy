@@ -73,9 +73,10 @@ class Admin(commands.Cog):
         if deployment != self.bot.deployment:
             return
 
+        message = await ctx.send("Reloading translator...")
         await translator.load(force=True)
         await self.bot.start_process_pool()
-        await ctx.send(content="Reloaded translator.")
+        await message.edit(content="Reloaded translator.")
 
     @commands.command(name="update-assets", aliases=["ua"])
     async def update_assets_command(self, ctx: commands.Context, deployment: Deployment) -> Any:

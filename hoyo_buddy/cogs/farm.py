@@ -25,8 +25,8 @@ if TYPE_CHECKING:
 
 class Farm(
     commands.GroupCog,
-    name=app_commands.locale_str("farm"),
-    description=app_commands.locale_str("Farm commands"),
+    name=app_commands.locale_str("farm"),  # pyright: ignore[reportArgumentType]
+    description=app_commands.locale_str("Farm commands"),  # pyright: ignore[reportArgumentType]
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot

@@ -646,22 +646,35 @@ class Modal(discord.ui.Modal):
             await i.response.defer()
         self.stop()
 
+    def _translate_text_input(self, item: TextInput, locale: Locale) -> None:
+        item.label = translator.translate(item.locale_str_label, locale)
+
+        if item.is_digit:
+            item.placeholder = f"({item.min_value} ~ {item.max_value})"
+        elif item.is_bool:
+            item.placeholder = "0/1"
+
+        if item.locale_str_placeholder:
+            item.placeholder = translator.translate(item.locale_str_placeholder, locale)
+        if item.locale_str_default:
+            item.default = translator.translate(item.locale_str_default, locale)
+
+    def _translate_label(self, item: Label, locale: Locale) -> None:
+        item.text = translator.translate(item.locale_str_text, locale)
+        if item.locale_str_description:
+            item.description = translator.translate(item.locale_str_description, locale)
+
+        if isinstance(item.component, TextInput):
+            self._translate_text_input(item.component, locale)
+
     def translate(self, locale: Locale) -> None:
         self.title = translator.translate(self.locale_str_title, locale, max_length=45)
 
         for item in self.children:
             if isinstance(item, TextInput):
-                item.label = translator.translate(item.locale_str_label, locale)
-
-                if item.is_digit:
-                    item.placeholder = f"({item.min_value} ~ {item.max_value})"
-                elif item.is_bool:
-                    item.placeholder = "0/1"
-
-                if item.locale_str_placeholder:
-                    item.placeholder = translator.translate(item.locale_str_placeholder, locale)
-                if item.locale_str_default:
-                    item.default = translator.translate(item.locale_str_default, locale)
+                self._translate_text_input(item, locale)
+            elif isinstance(item, Label):
+                self._translate_label(item, locale)
 
     def validate_inputs(self) -> None:
         """Validates all TextInput children of the modal. Raises InvalidInputError if any input is invalid."""

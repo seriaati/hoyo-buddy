@@ -596,11 +596,12 @@ class WebApp:
                         "client_secret": CONFIG.discord_client_secret,
                     },
                 ) as refresh_resp:
-                    data = await refresh_resp.json()
                     if refresh_resp.status != 200:
                         return None
 
+                    data = await refresh_resp.json()
                     access_token = data.get("access_token")
+
                     if access_token is None:
                         return None
 
@@ -637,11 +638,11 @@ class WebApp:
                 },
             ) as resp,
         ):
-            data: dict[str, Any] = await resp.json()
             if resp.status != 200:
                 return pages.ErrorPage(
-                    code=resp.status, message=data.get("error") or "Unknown error"
+                    code=resp.status, message=resp.reason or "Failed to get access token"
                 )
+            data: dict[str, Any] = await resp.json()
 
         access_token = data.get("access_token")
         if access_token is None:

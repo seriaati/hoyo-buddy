@@ -262,6 +262,7 @@ moc_card_farthest_stage: "最高關卡: {stage}"
 moc_quick_clear: 快速通關
 monday: 星期一
 mondstadt: 蒙德
+nod_krai: 挪德卡萊
 namecards: 名片
 next_page_option_label: 下一頁
 nickname_modal_label: 暱稱
@@ -582,10 +583,14 @@ accounts_added_snackbar_message: "帳戶新增成功，正在將你重新導向�
 account_add_start_message: "點擊下方按鈕，並按照指示新增你的帳戶。完成後，使用</accounts>指令查看已新增的帳戶。\n如果你需要幫助，請加入我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 開始！
 gacha_import_url_modal_title: 輸入抽卡紀錄連結
-gacha_import_embed_description: "抽卡紀錄連結: 從遊戲內獲取一串很長的連結來導入你的抽卡紀錄, 不同遊戲的獲取方式如下:\n- 安卓: [YouTube 影片](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-tw/genshin/wish-import)\n- 崩壞: 星穹鐵道: [Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-tw/warp-import)\n- 絕區零: [zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-tw/zzz/signal-import)\n\n如果你有使用下列的服務之一, 將你的抽卡紀錄導出至指定的檔案格式後即可使用</gacha-log upload>指令將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "點擊下方按鈕獲取關於裝置所屬平台的抽卡連結獲取方式。\n\n對於以下服務，將你的抽卡紀錄導出至指定的檔案格式後使用</gacha-log upload>以將其上傳並導入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "無法從連結內提取 authkey, 請嘗試其他連結。"
 extract_authkey_error_title: Authkey 提取失敗
 gacha_import_loading_embed_title: 正在導入抽卡紀錄
+gacha_import_pc_import_embed_desc: "開啟「開始」菜單並搜尋「Powershell」，接著複製下方的程式碼並在 Powershell 中貼上。\n此腳本由 Hoyo Buddy 團隊編寫，可以安全使用。"
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: 安卓
+gacha_import_pc_source_code: 原始碼
 gacha_import_loading_embed_description: "{loading_emoji} 這需要花費一些時間, 請耐心等候..."
 gacha_upload_invalid_file_error_title: 無效的檔案格式
 gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 檔案, 請使用正確的檔案重試。"
@@ -652,7 +657,7 @@ characters_view_show_max_level_only: 僅顯示滿級角色
 characters_embed_max_level_characters: 滿級角色
 natlan_reputation: "聲望等級: {reputation}, 部落: {tribes}"
 shiyu_overview: 總覽
-shiyu_fastest_clear_time: "當期最快通關時間:"
+shiyu_total_clear_time: "總通關時間:"
 shiyu_highest_frontier: "最高通關防線:"
 shiyu_relevant_season: "統計周期:"
 shiyu_1_frontier: 第一防線

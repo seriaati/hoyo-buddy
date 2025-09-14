@@ -598,6 +598,19 @@ class TextInput(discord.ui.TextInput):
         self.min_value = min_value
         self.is_bool = is_bool
 
+    def translate(self, locale: Locale) -> None:
+        self.label = translator.translate(self.locale_str_label, locale)
+
+        if self.is_digit:
+            self.placeholder = f"({self.min_value} ~ {self.max_value})"
+        elif self.is_bool:
+            self.placeholder = "0/1"
+
+        if self.locale_str_placeholder:
+            self.placeholder = translator.translate(self.locale_str_placeholder, locale)
+        if self.locale_str_default:
+            self.default = translator.translate(self.locale_str_default, locale)
+
 
 class Label[T](discord.ui.Label):
     def __init__(
@@ -618,6 +631,23 @@ class Label[T](discord.ui.Label):
         self.locale_str_text = text
         self.locale_str_description = description
         self.component: T
+
+    def translate(self, locale: Locale) -> None:
+        self.text = translator.translate(self.locale_str_text, locale)
+        if self.locale_str_description:
+            self.description = translator.translate(self.locale_str_description, locale)
+
+        if isinstance(self.component, (Select, TextInput)):
+            self.component.translate(locale)
+
+
+class TextDisplay(discord.ui.TextDisplay):
+    def __init__(self, *, content: LocaleStr | str) -> None:
+        super().__init__(content=content if isinstance(content, str) else "#NoTrans")
+        self.locale_str_content = content
+
+    def translate(self, locale: Locale) -> None:
+        self.content = translator.translate(self.locale_str_content, locale)
 
 
 class Modal(discord.ui.Modal):
@@ -646,35 +676,12 @@ class Modal(discord.ui.Modal):
             await i.response.defer()
         self.stop()
 
-    def _translate_text_input(self, item: TextInput, locale: Locale) -> None:
-        item.label = translator.translate(item.locale_str_label, locale)
-
-        if item.is_digit:
-            item.placeholder = f"({item.min_value} ~ {item.max_value})"
-        elif item.is_bool:
-            item.placeholder = "0/1"
-
-        if item.locale_str_placeholder:
-            item.placeholder = translator.translate(item.locale_str_placeholder, locale)
-        if item.locale_str_default:
-            item.default = translator.translate(item.locale_str_default, locale)
-
-    def _translate_label(self, item: Label, locale: Locale) -> None:
-        item.text = translator.translate(item.locale_str_text, locale)
-        if item.locale_str_description:
-            item.description = translator.translate(item.locale_str_description, locale)
-
-        if isinstance(item.component, TextInput):
-            self._translate_text_input(item.component, locale)
-
     def translate(self, locale: Locale) -> None:
         self.title = translator.translate(self.locale_str_title, locale, max_length=45)
 
         for item in self.children:
-            if isinstance(item, TextInput):
-                self._translate_text_input(item, locale)
-            elif isinstance(item, Label):
-                self._translate_label(item, locale)
+            if isinstance(item, (Label, Select, TextInput, TextDisplay)):
+                item.translate(locale)
 
     def validate_inputs(self) -> None:
         """Validates all TextInput children of the modal. Raises InvalidInputError if any input is invalid."""

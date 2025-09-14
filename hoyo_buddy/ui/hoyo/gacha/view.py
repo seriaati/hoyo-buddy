@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     import asyncpg
 
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models.gacha import GIBanner, HSRBanner
     from hoyo_buddy.types import Interaction, User
 
 

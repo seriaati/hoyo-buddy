@@ -125,18 +125,16 @@ class ViewGachaLogView(View):
         if not five_stars:
             return 0, 0
 
+        gi_banners: list[GIBanner] = []
+        item_names: dict[int, str] = {}
         if self.account.game is Game.GENSHIN:
             gi_banners = await fetch_gi_banners(session)
             async with AmbrAPIClient() as ambr:
                 item_names = await ambr.fetch_item_id_to_name_map()
-        else:
-            gi_banners = []
-            item_names = {}
 
+        hsr_banners: list[HSRBanner] = []
         if self.account.game is Game.STARRAIL:
             hsr_banners = await fetch_hsr_banners(session)
-        else:
-            hsr_banners = []
 
         is_standards: list[bool] = []
         for item in five_stars:

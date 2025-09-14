@@ -133,3 +133,18 @@ class ZZZBanner(BaseModel):
     four_stars: list[int] = Field(alias="rateupA")
     start_at: datetime.datetime = Field(alias="start")
     end_at: datetime.datetime = Field(alias="end")
+
+
+class GIBanner(BaseModel):
+    id: int
+    five_stars: list[str] = Field(default_factory=list, alias="featured")
+    four_stars: list[str] = Field(default_factory=list, alias="featuredRare")
+    start_at: datetime.datetime = Field(alias="start")
+    end_at: datetime.datetime = Field(alias="end")
+
+    def get_five_star_item_ids(self, item_names: dict[int, str]) -> list[int]:
+        return [
+            item_id
+            for item_id, name in item_names.items()
+            if name.replace(" ", "_").lower() in self.five_stars
+        ]

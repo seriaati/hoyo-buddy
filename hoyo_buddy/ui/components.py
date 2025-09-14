@@ -599,6 +599,27 @@ class TextInput(discord.ui.TextInput):
         self.is_bool = is_bool
 
 
+class Label[T](discord.ui.Label):
+    def __init__(
+        self,
+        *,
+        text: LocaleStr | str,
+        component: Select | TextInput,
+        description: str | LocaleStr | None = None,
+    ) -> None:
+        super().__init__(
+            text=text if isinstance(text, str) else "#NoTrans",
+            component=component,
+            description=description
+            if isinstance(description, str) or description is None
+            else "#NoTrans",
+        )
+
+        self.locale_str_text = text
+        self.locale_str_description = description
+        self.component: T
+
+
 class Modal(discord.ui.Modal):
     def __init__(self, *, title: LocaleStr | str, custom_id: str = MISSING) -> None:
         super().__init__(
@@ -645,33 +666,35 @@ class Modal(discord.ui.Modal):
     def validate_inputs(self) -> None:
         """Validates all TextInput children of the modal. Raises InvalidInputError if any input is invalid."""
         for item in self.children:
-            if isinstance(item, TextInput) and item.is_digit:
+            component = item.component if isinstance(item, Label) else item
+
+            if isinstance(component, TextInput) and component.is_digit:
                 try:
-                    value = int(item.value)
+                    value = int(component.value)
                 except ValueError as e:
                     raise InvalidInputError(
-                        LocaleStr(key="invalid_input.input_needs_to_be_int", input=item.label)
+                        LocaleStr(key="invalid_input.input_needs_to_be_int", input=component.label)
                     ) from e
-                if item.max_value is not None and value > item.max_value:
+                if component.max_value is not None and value > component.max_value:
                     raise InvalidInputError(
                         LocaleStr(
                             key="invalid_input.input_out_of_range.max_value",
-                            input=item.label,
-                            max_value=item.max_value,
+                            input=component.label,
+                            max_value=component.max_value,
                         )
                     )
-                if item.min_value is not None and value < item.min_value:
+                if component.min_value is not None and value < component.min_value:
                     raise InvalidInputError(
                         LocaleStr(
                             key="invalid_input.input_out_of_range.min_value",
-                            min_value=item.min_value,
-                            input=item.label,
+                            min_value=component.min_value,
+                            input=component.label,
                         )
                     )
-            elif isinstance(item, TextInput) and item.is_bool:
-                if item.value not in {"0", "1"}:
+            elif isinstance(component, TextInput) and component.is_bool:
+                if component.value not in {"0", "1"}:
                     raise InvalidInputError(
-                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=item.label)
+                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=component.label)
                     )
 
 

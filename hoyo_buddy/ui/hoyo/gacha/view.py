@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
+from loguru import logger
+
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
     BANNER_TYPE_NAMES,
     BANNER_WIN_RATE_TITLES,
-    STANDARD_END_DATES,
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
@@ -16,15 +17,25 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
+from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.gacha import (
+    check_gi_item_is_standard,
+    check_hsr_item_is_standard,
+    check_zzz_item_is_standard,
+    fetch_gi_banners,
+    fetch_hsr_banners,
+)
 from hoyo_buddy.web_app.schema import GachaParams
 
 if TYPE_CHECKING:
+    import aiohttp
     import asyncpg
 
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models.gacha import GIBanner, HSRBanner
     from hoyo_buddy.types import Interaction, User
 
 
@@ -100,7 +111,7 @@ class ViewGachaLogView(View):
 
         return await GachaHistory.filter(**filter_kwargs).count()
 
-    async def calc_50_50_stats(self) -> tuple[int, int]:
+    async def calc_50_50_stats(self, session: aiohttp.ClientSession) -> tuple[int, int]:
         """Calculate the 50/50 stats for the current banner.
         See this image for more information: https://img.seria.moe/JPRHdRVOMVzYGYvR.png
 
@@ -115,13 +126,29 @@ class ViewGachaLogView(View):
         if not five_stars:
             return 0, 0
 
+        gi_banners: list[GIBanner] = []
+        item_names: dict[int, str] = {}
+        if self.account.game is Game.GENSHIN:
+            gi_banners = await fetch_gi_banners(session)
+            async with AmbrAPIClient() as ambr:
+                item_names = await ambr.fetch_item_id_to_name_map()
+
+        hsr_banners: list[HSRBanner] = []
+        if self.account.game is Game.STARRAIL:
+            hsr_banners = await fetch_hsr_banners(session)
+
         is_standards: list[bool] = []
         for item in five_stars:
-            is_standard = item.item_id in STANDARD_ITEMS[self.account.game]
-            if self.account.game in STANDARD_END_DATES:
-                end_date = STANDARD_END_DATES[self.account.game].get(item.item_id)
-                if end_date is not None and item.time.date() < end_date:
-                    is_standard = False
+            if self.account.game is Game.GENSHIN:
+                is_standard = check_gi_item_is_standard(item, gi_banners, item_names)
+            elif self.account.game is Game.STARRAIL:
+                is_standard = check_hsr_item_is_standard(item, hsr_banners)
+            elif self.account.game is Game.ZZZ:
+                is_standard = check_zzz_item_is_standard(item)
+            else:
+                logger.error(f"Unknown game for checking is_standard: {self.account.game}")
+                continue
+
             is_standards.append(is_standard)
 
         status: list[Literal[50, 100]] = [50]  # First pull is always 50% guaranteed
@@ -164,7 +191,9 @@ class ViewGachaLogView(View):
         )
         return f"{top_percent} ({rank}/{total})"
 
-    async def get_stats_embed(self, pool: asyncpg.Pool) -> DefaultEmbed:
+    async def get_stats_embed(
+        self, pool: asyncpg.Pool, session: aiohttp.ClientSession
+    ) -> DefaultEmbed:
         lifetime_pulls = await self.get_pulls_count()
         if lifetime_pulls == 0:
             raise NoGachaLogFoundError
@@ -189,7 +218,7 @@ class ViewGachaLogView(View):
             current_four_star_pity = last_gacha_num - last_five_star_num
 
         # 50/50 win rate
-        banner_wins, banner_5stars = await self.calc_50_50_stats()
+        banner_wins, banner_5stars = await self.calc_50_50_stats(session)
 
         # Average pulls per 5-star and 4-star
         total_five_stars = await self.get_pulls_count(rarity=5, banner_type=self.banner_type)
@@ -274,7 +303,7 @@ class ViewGachaLogView(View):
 
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
-        embed = await self.get_stats_embed(i.client.pool)
+        embed = await self.get_stats_embed(i.client.pool, i.client.session)
         await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
@@ -294,7 +323,7 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
     async def callback(self, i: Interaction) -> Any:
         self.view.banner_type = int(self.values[0])
         await i.response.defer(ephemeral=ephemeral(i))
-        embed = await self.view.get_stats_embed(i.client.pool)
+        embed = await self.view.get_stats_embed(i.client.pool, i.client.session)
         self.update_options_defaults()
 
         button: GoToWebAppButton | None = next(

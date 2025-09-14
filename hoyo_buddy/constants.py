@@ -744,14 +744,6 @@ BANNER_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
 }
 
-STANDARD_END_DATES: Final[dict[Game, dict[int, datetime.date]]] = {
-    Game.GENSHIN: {
-        10000079: datetime.date(2023, 3, 21),  # Dehya
-        10000042: datetime.date(2021, 3, 2),  # Keqing
-        10000069: datetime.date(2022, 9, 9),  # Tighnari
-    }
-}
-
 STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
     Game.GENSHIN: {
         # Characters
@@ -783,6 +775,8 @@ STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
         1003,  # Himeko
         1004,  # Welt
         1209,  # Yanqing
+        1205,  # Blade
+        1102,  # Seele
         # Light Cones
         23003,  # But the Battle Isn't Over
         23004,  # In the Name of the World

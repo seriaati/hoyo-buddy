@@ -14,10 +14,18 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Modal, TextInput, View
+from hoyo_buddy.ui.components import URLButtonView
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
+
+PS_CODE = """
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex "&{$((New-Object System.Net.WebClient).DownloadString('https://gacha.studiobutter.io.vn/start.ps1?ref_type=heads'))}"
+"""
+PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
+IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
+ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
 
 
 class GachaImportView(View):
@@ -34,9 +42,50 @@ class GachaImportView(View):
         ).add_acc_info(self.account)
 
     async def start(self, i: Interaction) -> Any:
-        self.add_item(URLImport(self.account))
+        self.add_items((URLImport(self.account), PCButton(), IOSButton(), AndroidButton()))
         await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
+
+
+class PCButton(Button[GachaImportView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="gacha_import_pc_player_button_label"),
+            emoji="<:Desktop:1412046347179397150>",
+            row=1,
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        embed = DefaultEmbed(
+            self.view.locale,
+            title=self.label,
+            description=LocaleStr(key="gacha_import_pc_import_embed_desc"),
+        )
+        view = URLButtonView(
+            self.view.locale, url=PS_CODE_URL, label=LocaleStr(key="gacha_import_pc_source_code")
+        )
+        await i.response.send_message(embed=embed, ephemeral=True, view=view)
+        await i.followup.send(content=PS_CODE, ephemeral=True, suppress_embeds=True)
+
+
+class IOSButton(Button[GachaImportView]):
+    def __init__(self) -> None:
+        super().__init__(label="iOS", emoji="<:IOS:1412046328447635538>", row=1)
+
+    async def callback(self, i: Interaction) -> Any:
+        await i.response.send_message(content=IOS_VIDEO_URL, ephemeral=True)
+
+
+class AndroidButton(Button[GachaImportView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="gacha_import_android_button_label"),
+            emoji="<:Android:1412046338824339589>",
+            row=1,
+        )
+
+    async def callback(self, i: Interaction) -> Any:
+        await i.response.send_message(content=ANDROID_VIDEO_URL, ephemeral=True)
 
 
 class EnterURLModal(Modal):
@@ -52,6 +101,7 @@ class URLImport(Button[GachaImportView]):
             label=LocaleStr(key="gacha_import_url_modal_title"),
             emoji=LINK,
             style=discord.ButtonStyle.primary,
+            row=0,
         )
         self.account = account
 

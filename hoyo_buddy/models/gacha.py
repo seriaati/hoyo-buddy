@@ -112,3 +112,39 @@ class StarwardZZZRecord(BaseModel):
         return value.replace(
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
+
+
+class HSRBanner(BaseModel):
+    id: int
+    five_stars: list[int] = Field(alias="rateup")
+    four_stars: list[int] = Field(alias="rateup4")
+    start_at: datetime.datetime = Field(alias="start_time")
+    end_at: datetime.datetime = Field(alias="end_time")
+
+    @field_validator("five_stars", mode="before")
+    @classmethod
+    def __parse_five_stars(cls, v: int) -> list[int]:
+        return [v]
+
+
+class ZZZBanner(BaseModel):
+    id: int
+    five_stars: list[int] = Field(alias="rateupS")
+    four_stars: list[int] = Field(alias="rateupA")
+    start_at: datetime.datetime = Field(alias="start")
+    end_at: datetime.datetime = Field(alias="end")
+
+
+class GIBanner(BaseModel):
+    id: int
+    five_stars: list[str] = Field(default_factory=list, alias="featured")
+    four_stars: list[str] = Field(default_factory=list, alias="featuredRare")
+    start_at: datetime.datetime = Field(alias="start")
+    end_at: datetime.datetime = Field(alias="end")
+
+    def get_five_star_item_ids(self, item_names: dict[int, str]) -> list[int]:
+        return [
+            item_id
+            for item_id, name in item_names.items()
+            if name.replace(" ", "_").lower() in self.five_stars
+        ]

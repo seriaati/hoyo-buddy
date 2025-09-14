@@ -507,6 +507,30 @@ wheels = [
 ]
 
 [[package]]
+name = "chompjs"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/73/e7/e5a9874798ec4bc505b34b8cb766337acde9d1ffc8db411cfa96ac59de49/chompjs-1.4.0.tar.gz", hash = "sha256:b0bf92bb508de5c0dbd802e3e6dabac9f0e71caf5f67a6a29112d1213812bd68", size = 17383, upload-time = "2025-08-04T21:08:38.612Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/ac/37c5a771b99b038de6cdd0ae85ebc6a9d5beb6a5b4ed6f6b4d921e339c08/chompjs-1.4.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:d79a5a6b3199044aa6a3e5162dab42fef05d0e7395995e009b9cac878f669f3f", size = 17083, upload-time = "2025-08-04T21:08:11.474Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/40/528ec8ef3365803d8e7e6c9fd09e0dd9a8deb8404cf098a24f3336b49640/chompjs-1.4.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:4ee47ca7fbcf59824e12eefb3e22fc477e2f78c00262c2f3ec0f5cf8bc93a231", size = 17476, upload-time = "2025-08-04T21:08:12.493Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/ed/559696b7be6e5d09acbd11c6f757e754ce82484f15a01dd2d586e24b2f5b/chompjs-1.4.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fd873ebf06b869c490c9aeb9a0127b4011e435c9302142d808461e196396a8a7", size = 33738, upload-time = "2025-08-04T21:08:13.481Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/97/288ef196ca4203a8c646802abc90a0ce1129b4ac5d8f0eb7430755d0c6b7/chompjs-1.4.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b392204f49dd1a5e755fc483a372a4598c18d2c3a64edfbbbb87f5c14a34ae5c", size = 32164, upload-time = "2025-08-04T21:08:14.497Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/ea/1404cbbe89109fb150a7b857ec38113e99194525845f5ede71cc15df447d/chompjs-1.4.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:e7bf87801b77962c5ac36295489dd450e50a12a28bbd3cb2ee0a7e183b55487a", size = 32166, upload-time = "2025-08-04T21:08:15.406Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/a4/527368c681bc00c7733202a20b01630f4e02f09b9ceff95d67e67fa02406/chompjs-1.4.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:1e97ae9e635e7b7ac609acb65738506517034f7afc893302994d1aa5d8aeceaa", size = 33084, upload-time = "2025-08-04T21:08:16.703Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/a1/6e52f583570422d458767f4c03976a051cceb8b8a50589e38573a2ab15f4/chompjs-1.4.0-cp312-cp312-win32.whl", hash = "sha256:e9e1f896dfebc655ae2c416a91f576319959cb67850a16272775a4643af4e405", size = 17714, upload-time = "2025-08-04T21:08:18.045Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/fe/6daab4e7edd4018cad593309c6ba6c6ef7608760c88dd7922c50f5d0d36f/chompjs-1.4.0-cp312-cp312-win_amd64.whl", hash = "sha256:c78c432da60ef0b381c5275a329ced4790071a306b00f84ab96461ec2c7b8796", size = 18517, upload-time = "2025-08-04T21:08:18.931Z" },
+    { url = "https://files.pythonhosted.org/packages/36/03/c089d4b62c4239b63ee30b216a28a3f97ff60bc5cd96ac8ccb0d12abe4ea/chompjs-1.4.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:0c7e44df2eda99377fc51c5df84446c33d35e15c42afe416a4d446fcfddd66df", size = 17075, upload-time = "2025-08-04T21:08:20.243Z" },
+    { url = "https://files.pythonhosted.org/packages/33/eb/9475d48a758cd1dd60c8584d350312b63f59178ad2a7a80b08b801f5f066/chompjs-1.4.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:5b543d2c74d23fe4ed785994afbab75e3a5abf2db16d626bd6ac79befcc8e141", size = 17470, upload-time = "2025-08-04T21:08:21.169Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/51/d40e3327ab4a0a2db6d55163204ed95fdda3e79c5074300dd730155076e7/chompjs-1.4.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b08d9360a0f68932d56cb7de373dacd3f6d55b6df3f21edb8f5bc63e36be8d9a", size = 33673, upload-time = "2025-08-04T21:08:22.546Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/93/9a5d6526b87f464dfba99f6550672969c4b1dc8774b345f55b38faae21d1/chompjs-1.4.0-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a16f4d651342c385fc15c1bc816cf45c9be125cf95a2afa43d1de2015dea2f9b", size = 32093, upload-time = "2025-08-04T21:08:23.794Z" },
+    { url = "https://files.pythonhosted.org/packages/67/41/e5fbbbb0110d4943a422202d6c825ca1e33b945edb6d771b30d8307ccf32/chompjs-1.4.0-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:87a02fae308d80bc3993151059df4a1b2e28115ab7af68423cc641d04b6bcb48", size = 32221, upload-time = "2025-08-04T21:08:25.18Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/d7/3da8893a8461692c99f2784f822ea0222384aee706d6f94210a9f49282d1/chompjs-1.4.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:95f11788f6111c2e779ddd79908d35a61eaa2c2f527865701322c1ceab12a5f2", size = 33130, upload-time = "2025-08-04T21:08:26.131Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/2b/143028f52e7fd4b049dc9b9d4cf1ad879de2121f8d6c5800ebc2f8d33627/chompjs-1.4.0-cp313-cp313-win32.whl", hash = "sha256:6a0af74bf2ea05217c107b01c8e128d30999a85f2795116666ff019d8b12d7bb", size = 17717, upload-time = "2025-08-04T21:08:27.079Z" },
+    { url = "https://files.pythonhosted.org/packages/42/de/f5fbc56c91c19c4cabdba5186ccc658dfd71715e591cfdaaf8f4ab247e83/chompjs-1.4.0-cp313-cp313-win_amd64.whl", hash = "sha256:76620487f40cd28407b06ab5dc1c2854f7261b5975adfe3fa64d4dd47c87235c", size = 18513, upload-time = "2025-08-04T21:08:28.076Z" },
+]
+
+[[package]]
 name = "click"
 version = "8.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -861,6 +885,7 @@ dependencies = [
     { name = "apscheduler" },
     { name = "asyncpg" },
     { name = "asyncpg-listen" },
+    { name = "chompjs" },
     { name = "cryptography" },
     { name = "discord-py", extra = ["speed"] },
     { name = "enka", extra = ["redis"] },
@@ -906,6 +931,7 @@ requires-dist = [
     { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "asyncpg-listen", specifier = ">=0.0.6" },
+    { name = "chompjs", specifier = ">=1.4.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "discord-py", extras = ["speed"], specifier = ">=2.5.0" },
     { name = "enka", extras = ["redis"], git = "https://github.com/seriaati/enka-py" },

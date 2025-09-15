@@ -13,7 +13,7 @@ from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedErro
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, TextInput, URLButtonView, View
+from hoyo_buddy.ui import Button, Label, Modal, TextInput, URLButtonView, View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
@@ -88,7 +88,10 @@ class AndroidButton(Button[GachaImportView]):
 
 
 class EnterURLModal(Modal):
-    url = TextInput(label="URL", style=discord.TextStyle.long)
+    url: Label[TextInput] = Label(
+        text="URL",
+        component=TextInput(style=discord.TextStyle.long),
+    )
 
     def __init__(self) -> None:
         super().__init__(title=LocaleStr(key="gacha_import_url_modal_title"))

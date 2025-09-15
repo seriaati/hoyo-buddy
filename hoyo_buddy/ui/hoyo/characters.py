@@ -57,6 +57,7 @@ from hoyo_buddy.models import (
 from hoyo_buddy.ui import (
     Button,
     GoBackButton,
+    Label,
     Modal,
     Page,
     PaginatorView,
@@ -1015,8 +1016,9 @@ class FilterButton(Button[CharactersView]):
 
 
 class CharactersPerPageModal(Modal):
-    num = TextInput(
-        label=LocaleStr(key="characters_per_page_num_label"), is_digit=True, min_value=1
+    num: Label[TextInput] = Label(
+        text=LocaleStr(key="characters_per_page_num_label"),
+        component=TextInput(is_digit=True, min_value=1),
     )
 
     def __init__(self, current_num: int, total_num: int) -> None:

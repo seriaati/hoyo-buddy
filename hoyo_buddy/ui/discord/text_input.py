@@ -17,7 +17,7 @@ class TextInput(discord.ui.TextInput):
     def __init__(
         self,
         *,
-        label: LocaleStr | str,
+        label: LocaleStr | str | None = None,
         style: discord.TextStyle = discord.TextStyle.short,
         custom_id: str = MISSING,
         placeholder: LocaleStr | str | None = None,
@@ -50,7 +50,8 @@ class TextInput(discord.ui.TextInput):
         self.is_bool = is_bool
 
     def translate(self, locale: Locale) -> None:
-        self.label = translator.translate(self.locale_str_label, locale)
+        if self.locale_str_label:
+            self.label = translator.translate(self.locale_str_label, locale)
 
         if self.is_digit:
             self.placeholder = f"({self.min_value} ~ {self.max_value})"

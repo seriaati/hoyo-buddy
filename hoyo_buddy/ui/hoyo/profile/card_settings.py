@@ -16,7 +16,7 @@ from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, ToggleButton, View
+from hoyo_buddy.ui import Button, Label, Modal, Select, SelectOption, TextInput, ToggleButton, View
 from hoyo_buddy.utils import is_valid_hex_color
 
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
@@ -311,13 +311,15 @@ class DarkModeButton(ToggleButton[CardSettingsView]):
 
 
 class PrimaryColorModal(Modal):
-    color = TextInput(
-        label=LocaleStr(key="profile.primary_color_modal.color.label"),
-        placeholder="#000000",
-        style=TextStyle.short,
-        min_length=7,
-        max_length=7,
-        required=False,
+    color: Label[TextInput] = Label(
+        text=LocaleStr(key="profile.primary_color_modal.color.label"),
+        component=TextInput(
+            placeholder="#000000",
+            style=TextStyle.short,
+            min_length=7,
+            max_length=7,
+            required=False,
+        ),
     )
 
     def __init__(self, current_color: str | None) -> None:

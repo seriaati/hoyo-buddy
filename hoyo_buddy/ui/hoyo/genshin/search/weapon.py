@@ -11,7 +11,7 @@ from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, Select, SelectOption, TextInput, View
+from hoyo_buddy.ui import Button, Label, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -98,12 +98,14 @@ class WeaponUI(View):
 
 
 class WeaponLevelModal(Modal):
-    level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"),
-        placeholder="90",
-        is_digit=True,
-        min_value=1,
-        max_value=90,
+    level: Label[TextInput] = Label(
+        text=LocaleStr(key="characters.sorter.level"),
+        component=TextInput(
+            placeholder="90",
+            is_digit=True,
+            min_value=1,
+            max_value=90,
+        ),
     )
 
 

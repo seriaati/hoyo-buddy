@@ -4,27 +4,28 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.constants import DB_SMALLINT_MAX
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Modal, TextInput
+from hoyo_buddy.ui import Label, Modal, TextInput
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import NotesNotify
 
 
 class TypeOneModal(Modal):
-    enabled = TextInput(label=LocaleStr(key="notif_modal.enabled.label"), is_bool=True)
-    threshold = TextInput(
-        label=LocaleStr(key="notif_modal.threshold.label"), is_digit=True, min_value=0
+    enabled: Label[TextInput] = Label(
+        text=LocaleStr(key="notif_modal.enabled.label"),
+        component=TextInput(is_bool=True),
     )
-    notify_interval = TextInput(
-        label=LocaleStr(key="notif_modal.notify_interval.label"),
-        is_digit=True,
-        max_value=DB_SMALLINT_MAX,
+    threshold: Label[TextInput] = Label(
+        text=LocaleStr(key="notif_modal.threshold.label"),
+        component=TextInput(is_digit=True, min_value=0),
     )
-    max_notif_count = TextInput(
-        label=LocaleStr(key="notif_modal.max_notif_count.label"),
-        is_digit=True,
-        min_value=1,
-        max_value=DB_SMALLINT_MAX,
+    notify_interval: Label[TextInput] = Label(
+        text=LocaleStr(key="notif_modal.notify_interval.label"),
+        component=TextInput(is_digit=True, max_value=DB_SMALLINT_MAX),
+    )
+    max_notif_count: Label[TextInput] = Label(
+        text=LocaleStr(key="notif_modal.max_notif_count.label"),
+        component=TextInput(is_digit=True, min_value=1, max_value=DB_SMALLINT_MAX),
     )
 
     def __init__(

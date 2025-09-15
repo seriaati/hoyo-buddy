@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.utils import MISSING
+from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db.utils import get_locale
@@ -62,25 +63,35 @@ class Modal(discord.ui.Modal):
             component = item.component if isinstance(item, Label) else item
 
             if isinstance(component, TextInput) and component.is_digit:
+                if isinstance(item, Label):
+                    item_text = item.text
+                elif isinstance(item, TextInput):
+                    item_text = item.label
+                else:
+                    logger.error(f"Unable to get item_text for component: {type(item)}")
+                    item_text = ""
+
                 try:
                     value = int(component.value)
                 except ValueError as e:
                     raise InvalidInputError(
-                        LocaleStr(key="invalid_input.input_needs_to_be_int", input=component.label)
+                        LocaleStr(key="invalid_input.input_needs_to_be_int", input=item_text)
                     ) from e
+
                 if component.max_value is not None and value > component.max_value:
                     raise InvalidInputError(
                         LocaleStr(
                             key="invalid_input.input_out_of_range.max_value",
-                            input=component.label,
+                            input=item_text,
                             max_value=component.max_value,
                         )
                     )
+
                 if component.min_value is not None and value < component.min_value:
                     raise InvalidInputError(
                         LocaleStr(
                             key="invalid_input.input_out_of_range.min_value",
+                            input=item_text,
                             min_value=component.min_value,
-                            input=component.label,
                         )
                     )

@@ -78,7 +78,7 @@ def check_gi_item_is_standard(
     is_standard = item.item_id in STANDARD_ITEMS.get(Game.GENSHIN, [])
 
     for banner in gi_banners:
-        if banner.start_at <= item.time <= banner.end_at:
+        if banner.start_at <= item.time.replace(tzinfo=None) <= banner.end_at:
             five_star_item_ids = banner.get_five_star_item_ids(item_names)
             if item.item_id in five_star_item_ids:
                 return False

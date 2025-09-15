@@ -46,7 +46,12 @@ class TextInput(discord.ui.TextInput):
 
     def translate(self, locale: Locale) -> None:
         if self.is_digit:
-            self.placeholder = f"({self.min_value} ~ {self.max_value})"
+            if self.min_value is not None and self.max_value is not None:
+                self.placeholder = f"({self.min_value} ~ {self.max_value})"
+            elif self.min_value is not None:
+                self.placeholder = f"(≥{self.min_value})"
+            elif self.max_value is not None:
+                self.placeholder = f"(≤{self.max_value})"
 
         if self.locale_str_placeholder:
             self.placeholder = translator.translate(self.locale_str_placeholder, locale)

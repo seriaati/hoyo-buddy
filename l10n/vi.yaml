@@ -302,11 +302,21 @@ notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
 notif_modal.enabled.label: Bật
+notif_modal.type_one.description: |
+  Thể lực được kiểm tra mỗi "khoảng thời gian thông báo" phút, và thông báo bắt đầu gửi khi Thể lực lớn hơn hoặc bằng "ngưỡng".
+
+  Khi đạt đến "số lượng thông báo tối đa", thông báo sẽ dừng lại.
+
+  Khi bạn tiêu thụ hết Thể lực của mình đến giá trị nhỏ hơn "ngưỡng", số lần thông báo sẽ được đặt lại và quá trình gửi thông báo sẽ tiếp tục.
 notif_modal.max_notif_count.label: Số lần nhắc nhở tối đa
-notif_modal.notify_interval.label: Giãn cách nhắc nhở (phút)
-notif_modal.notify_time.label: "Gửi thông báo X giờ trước khi máy chủ đặt lại"
+notif_modal.max_notif_count.description: "Số lượng thông báo tối đa có thể gửi."
+notif_modal.notify_interval.label: Khoảng thời gian thông báo
+notif_modal.notify_interval.description: "Khoảng thời gian giữa mỗi thông báo và lần kiểm tra (tính bằng phút)"
+notif_modal.notify_time.label: "Thời gian Nhắc nhở"
+notif_modal.notify_time.description: "Thông báo vào x tiếng trước khi máy chủ reset (4:00 SA theo mủi giờ máy chủ game)"
 notif_modal.notify_weekday.label: Ngày trong tuần muốn nhắc
 notif_modal.threshold.label: Nhắc khi đạt ngưỡng
+notif_modal.threshold.description: "Thông báo sẽ được gửi khi đạt được mức ngưỡng"
 notification_settings_button_label: Cài đặt thông báo
 notify_on_failure_button_label: Thông báo khi điểm danh thất bại
 notify_on_success_button_label: Thông báo khi điểm danh thành công
@@ -583,10 +593,14 @@ accounts_added_snackbar_message: "Thêm tài khoản thành công, đang chuyể
 account_add_start_message: "Nhấp vào nút bên dưới và làm theo hướng dẫn để thêm tài khoản của bạn. Khi bạn hoàn tất, hãy sử dụng lệnh </accounts> để xem các tài khoản bạn đã thêm.\nHãy tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi nếu bạn cần trợ giúp."
 hbls_button_label: Bắt đầu nào!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
-gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nĐối với các dịch vụ bên dưới, hãy xuất nhật ký gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên thông qua lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "Nhấn nút bên dưới để lấy hướng dẫn làm sao để lấy URL nhật ký gacha cho thiết bị của bạn\n\nĐối với các dịch vụ được liệt kê bên dưới, hãy xuất bản ghi gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên qua </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: jaon\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
+gacha_import_pc_import_embed_desc: "Tìm kiếm và mở ứng dụng PowerShell trong Start Menu, sau đó sao bà dán đoạn mã bên dưới vào.\n Script này được viết bởi đội ngữ Hoyo Buddy và an toàn để chạy và sử dụng."
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: Android
+gacha_import_pc_source_code: Mã Nguồn
 gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
 gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
 gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}**, vui lòng thử lại bằng định dạng hợp lệ"

@@ -11,7 +11,7 @@ from hoyo_buddy.enums import Locale
 from ..constants import HOYO_BUDDY_LOCALES
 from ..embeds import DefaultEmbed
 from ..l10n import LocaleStr
-from .components import Select, SelectOption, ToggleButton, View
+from . import Select, SelectOption, ToggleButton, View
 
 if TYPE_CHECKING:
     from ..types import Interaction

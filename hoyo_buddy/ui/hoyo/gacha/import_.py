@@ -13,8 +13,7 @@ from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedErro
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, TextInput, View
-from hoyo_buddy.ui.components import URLButtonView
+from hoyo_buddy.ui import Button, Modal, TextInput, URLButtonView, View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale

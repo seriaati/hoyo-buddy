@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic
+from typing import TYPE_CHECKING
 
 import enka
 from genshin.models import ZZZPartialAgent
@@ -8,7 +8,8 @@ from genshin.models import ZZZPartialAgent
 from hoyo_buddy.emojis import get_gi_element_emoji, get_hsr_element_emoji, get_zzz_element_emoji
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.ui import PaginatorSelect, SelectOption, V_co
+from hoyo_buddy.ui import PaginatorSelect, SelectOption
+from hoyo_buddy.ui.discord.view import View
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
     from ..view import Character
 
 
-class CharacterSelect(PaginatorSelect, Generic[V_co]):
+class CharacterSelect[V_co: View](PaginatorSelect):
     def __init__(self, characters: Sequence[Character], character_id: str, *, row: int) -> None:
         self.view: V_co
 

@@ -302,11 +302,21 @@ notes_available: "{emoji} Available in {in_time}"
 notes_command_description: View real-time notes
 notif.embed.footer: Use /notes to configure reminders
 notif_modal.enabled.label: Enabled
+notif_modal.type_one.description: |
+  Stamina is checked every "notify interval" minutes, and notification begins to send when stamina is larger or equal to "threshold".
+
+  Once "max notify count" is reached, notification stops.
+
+  Once you consume your stamina to a value less than "threshold", the notify count resets, and notification sending resumes.
 notif_modal.max_notif_count.label: Max Notify Count
-notif_modal.notify_interval.label: Notify Interval (in minutes)
-notif_modal.notify_time.label: "Notify X hours before server resets (4:00 AM)"
+notif_modal.max_notif_count.description: "Maximum number of notifications to send."
+notif_modal.notify_interval.label: Notify Interval
+notif_modal.notify_interval.description: "Interval between each notification and check (in minutes.)"
+notif_modal.notify_time.label: "Notify Time"
+notif_modal.notify_time.description: "Notify at X hours before the server resets (4:00 AM in game server's timezone.)"
 notif_modal.notify_weekday.label: The weekday to notify
 notif_modal.threshold.label: Threshold
+notif_modal.threshold.description: "Notification is sent after the threshold is reached."
 notification_settings_button_label: Notification settings
 notify_on_failure_button_label: Notify on check-in failure
 notify_on_success_button_label: Notify on check-in success

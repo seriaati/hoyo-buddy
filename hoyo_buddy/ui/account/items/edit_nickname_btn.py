@@ -6,7 +6,7 @@ from discord import TextStyle
 
 from hoyo_buddy.emojis import EDIT
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, TextInput
+from hoyo_buddy.ui import Button, Label, Modal, TextInput
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -17,12 +17,14 @@ else:
 
 
 class NicknameModal(Modal):
-    nickname = TextInput(
-        label=LocaleStr(key="nickname_modal_label"),
-        placeholder=LocaleStr(key="nickname_modal_placeholder"),
-        required=False,
-        style=TextStyle.short,
-        max_length=32,
+    nickname: Label[TextInput] = Label(
+        text=LocaleStr(key="nickname_modal_label"),
+        component=TextInput(
+            placeholder=LocaleStr(key="nickname_modal_placeholder"),
+            required=False,
+            style=TextStyle.short,
+            max_length=32,
+        ),
     )
 
     def __init__(self, current_nickname: str | None = None) -> None:

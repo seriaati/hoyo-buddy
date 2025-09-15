@@ -2,30 +2,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.constants import DB_SMALLINT_MAX
-from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Modal, TextInput
+from hoyo_buddy.ui import Modal
+
+from .components import ENABLED, MAX_NOTIF_COUNT, NOTIFY_INTERVAL, THRESHOLD, TYPE_ONE_TEXT_DISPLAY
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import NotesNotify
+    from hoyo_buddy.l10n import LocaleStr
 
 
 class TypeOneModal(Modal):
-    enabled = TextInput(label=LocaleStr(key="notif_modal.enabled.label"), is_bool=True)
-    threshold = TextInput(
-        label=LocaleStr(key="notif_modal.threshold.label"), is_digit=True, min_value=0
-    )
-    notify_interval = TextInput(
-        label=LocaleStr(key="notif_modal.notify_interval.label"),
-        is_digit=True,
-        max_value=DB_SMALLINT_MAX,
-    )
-    max_notif_count = TextInput(
-        label=LocaleStr(key="notif_modal.max_notif_count.label"),
-        is_digit=True,
-        min_value=1,
-        max_value=DB_SMALLINT_MAX,
-    )
+    description = TYPE_ONE_TEXT_DISPLAY
+
+    enabled = ENABLED
+    threshold = THRESHOLD
+    notify_interval = NOTIFY_INTERVAL
+    max_notif_count = MAX_NOTIF_COUNT
 
     def __init__(
         self,

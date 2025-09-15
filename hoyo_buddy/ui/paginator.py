@@ -8,7 +8,7 @@ from attr import dataclass
 from discord import ButtonStyle
 
 from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
-from .components import Button, View
+from . import Button, View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale

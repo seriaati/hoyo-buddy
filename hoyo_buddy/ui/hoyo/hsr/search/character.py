@@ -11,7 +11,16 @@ from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, PaginatorSelect, Select, SelectOption, TextInput, View
+from hoyo_buddy.ui import (
+    Button,
+    Label,
+    Modal,
+    PaginatorSelect,
+    Select,
+    SelectOption,
+    TextInput,
+    View,
+)
 from hoyo_buddy.ui.paginator import PaginatorView, paginate_content
 from hoyo_buddy.utils import ephemeral
 
@@ -393,7 +402,10 @@ class ItemSelector(Select["CharacterUI"]):
 
 
 class SkillLevelModal(Modal):
-    level = TextInput(label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1)
+    level: Label[TextInput] = Label(
+        text=LocaleStr(key="characters.sorter.level"),
+        component=TextInput(is_digit=True, min_value=1),
+    )
 
     def __init__(self, max_level: int) -> None:
         super().__init__(title=LocaleStr(key="skill_level.modal.title"))
@@ -443,8 +455,9 @@ class EnterSkilLevel(Button[CharacterUI]):
 
 
 class CharacterLevelModal(Modal):
-    level = TextInput(
-        label=LocaleStr(key="characters.sorter.level"), is_digit=True, min_value=1, max_value=80
+    level: Label[TextInput] = Label(
+        text=LocaleStr(key="characters.sorter.level"),
+        component=TextInput(is_digit=True, min_value=1, max_value=80),
     )
 
 

@@ -24,6 +24,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.ui import (
     Button,
+    Label,
     Modal,
     PaginatorSelect,
     Select,
@@ -312,7 +313,10 @@ class RemoveImageButton(Button[ImageSettingsView]):
 
 
 class EditImageModal(Modal):
-    name = TextInput(label=LocaleStr(key="nickname_modal_label"), required=False, max_length=100)
+    name: Label[TextInput] = Label(
+        text=LocaleStr(key="nickname_modal_label"),
+        component=TextInput(required=False, max_length=100),
+    )
 
     def __init__(self, current_name: str | None) -> None:
         super().__init__(title=LocaleStr(key="edit_nickname_modal_title"))
@@ -455,19 +459,23 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
 
 
 class GenerateAIArtModal(Modal):
-    prompt = TextInput(
-        label=LocaleStr(key="profile.generate_ai_art_modal.prompt.label"),
-        placeholder="navia(genshin impact), foaml dress, idol, beautiful dress, elegant, best quality, aesthetic...",
-        style=TextStyle.paragraph,
-        max_length=250,
+    prompt: Label[TextInput] = Label(
+        text=LocaleStr(key="profile.generate_ai_art_modal.prompt.label"),
+        component=TextInput(
+            placeholder="navia(genshin impact), foaml dress, idol, beautiful dress, elegant, best quality, aesthetic...",
+            style=TextStyle.paragraph,
+            max_length=250,
+        ),
     )
 
-    negative_prompt = TextInput(
-        label=LocaleStr(key="profile.generate_ai_art_modal.negative_prompt.label"),
-        placeholder="bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs...",
-        style=TextStyle.paragraph,
-        max_length=200,
-        required=False,
+    negative_prompt: Label[TextInput] = Label(
+        text=LocaleStr(key="profile.generate_ai_art_modal.negative_prompt.label"),
+        component=TextInput(
+            placeholder="bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs...",
+            style=TextStyle.paragraph,
+            max_length=200,
+            required=False,
+        ),
     )
 
 
@@ -528,10 +536,13 @@ class GenerateAIArtButton(Button[ImageSettingsView]):
 
 
 class AddImageModal(Modal):
-    name = TextInput(label=LocaleStr(key="nickname_modal_label"), required=False, max_length=100)
-    image_url = TextInput(
-        label=LocaleStr(key="profile.add_image_modal.image_url.label"),
-        placeholder="https://example.com/image.png",
+    name: Label[TextInput] = Label(
+        text=LocaleStr(key="nickname_modal_label"),
+        component=TextInput(required=False, max_length=100),
+    )
+    image_url: Label[TextInput] = Label(
+        text=LocaleStr(key="profile.add_image_modal.image_url.label"),
+        component=TextInput(placeholder="https://example.com/image.png"),
     )
 
     def __init__(self) -> None:

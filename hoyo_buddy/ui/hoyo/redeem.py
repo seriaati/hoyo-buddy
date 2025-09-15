@@ -8,7 +8,7 @@ from seria.utils import create_bullet_list
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import GIFT_OUTLINE, LOADING, REDEEM_GIFT
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Modal, TextInput, ToggleButton, View
+from hoyo_buddy.ui import Button, Label, Modal, TextInput, ToggleButton, View
 
 if TYPE_CHECKING:
     import aiohttp
@@ -20,29 +20,25 @@ if TYPE_CHECKING:
 
 
 class GiftCodeModal(Modal):
-    code_1 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=1),
-        placeholder="https://hsr.hoyoverse.com/gift?code=...",
+    code_1: Label[TextInput] = Label(
+        text=LocaleStr(key="gift_code_modal.code_input.label", num=1),
+        component=TextInput(placeholder="https://hsr.hoyoverse.com/gift?code=..."),
     )
-    code_2 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=2),
-        placeholder="https://zzz.hoyoverse.com/gift?code=...",
-        required=False,
+    code_2: Label[TextInput] = Label(
+        text=LocaleStr(key="gift_code_modal.code_input.label", num=2),
+        component=TextInput(placeholder="https://zzz.hoyoverse.com/gift?code=...", required=False),
     )
-    code_3 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=3),
-        placeholder="GENSHINGIFT",
-        required=False,
+    code_3: Label[TextInput] = Label(
+        text=LocaleStr(key="gift_code_modal.code_input.label", num=3),
+        component=TextInput(placeholder="GENSHINGIFT", required=False),
     )
-    code_4 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=4),
-        placeholder="HSR2024",
-        required=False,
+    code_4: Label[TextInput] = Label(
+        text=LocaleStr(key="gift_code_modal.code_input.label", num=4),
+        component=TextInput(placeholder="HSR2024", required=False),
     )
-    code_5 = TextInput(
-        label=LocaleStr(key="gift_code_modal.code_input.label", num=5),
-        placeholder="HOYOBUDDY",
-        required=False,
+    code_5: Label[TextInput] = Label(
+        text=LocaleStr(key="gift_code_modal.code_input.label", num=5),
+        component=TextInput(placeholder="HOYOBUDDY", required=False),
     )
 
 

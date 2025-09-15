@@ -303,11 +303,11 @@ notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
 notif_modal.enabled.label: Bật
 notif_modal.type_one.description: |
-  Thể lực được kiểm tra mỗi "khoảng thời gian thông báo" phút, và thông báo bắt đầu gửi khi Thể lực lớn hơn hoặc bằng "ngưỡng".
+  Cứ mỗi một khoảng thời gian được định trong "giãn cách nhắc nhở", Hoyo Buddy sẽ kiểm tra mức Thể lực và bắt đầu gửi thông báo nếu Thể lực lớn hơn hoặc bằng mức "ngưỡng".
 
-  Khi đạt đến "số lượng thông báo tối đa", thông báo sẽ dừng lại.
+  Khi số thông báo đạt tới "số lượng thông báo tối đa" thì sẽ dừng gửi thông báo.
 
-  Khi bạn tiêu thụ hết Thể lực của mình đến giá trị nhỏ hơn "ngưỡng", số lần thông báo sẽ được đặt lại và quá trình gửi thông báo sẽ tiếp tục.
+  Khi bạn tiêu thụ Thể lực của mình đến giá trị nhỏ hơn mức "ngưỡng", số lần thông báo sẽ được đặt lại và quá trình gửi thông báo sẽ tiếp tục.
 notif_modal.max_notif_count.label: Số lần nhắc nhở tối đa
 notif_modal.max_notif_count.description: "Số lượng thông báo tối đa có thể gửi."
 notif_modal.notify_interval.label: Giãn cách nhắc nhở

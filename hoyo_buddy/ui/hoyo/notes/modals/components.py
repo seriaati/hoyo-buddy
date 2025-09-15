@@ -26,7 +26,7 @@ NOTIFY_TIME: Label[TextInput] = Label(
     component=TextInput(is_digit=True, min_value=1, max_value=24),
     description=LocaleStr(key="notif_modal.notify_time.description"),
 )
-NOTIFY_WEEKDAY: Label[TextInput] = Label(
+NOTIFY_WEEKDAY: Label[WeekdaySelect] = Label(
     text=LocaleStr(key="notif_modal.notify_weekday.label"), component=WeekdaySelect()
 )
 HOURS_BEFORE: Label[TextInput] = Label(

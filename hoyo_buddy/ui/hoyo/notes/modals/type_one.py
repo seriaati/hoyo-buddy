@@ -12,8 +12,6 @@ if TYPE_CHECKING:
 
 
 class TypeOneModal(Modal):
-    description = TYPE_ONE_TEXT_DISPLAY
-
     enabled = ENABLED
     threshold = THRESHOLD
     notify_interval = NOTIFY_INTERVAL

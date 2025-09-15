@@ -6,7 +6,6 @@ import datetime
 import pathlib
 import random
 import re
-from textwrap import shorten
 from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
@@ -16,7 +15,7 @@ import orjson
 import yatta
 from discord import app_commands
 from loguru import logger
-from seria.utils import read_json, read_yaml
+from seria.utils import read_json, read_yaml, shorten
 
 from hoyo_buddy.emojis import INFO
 from hoyo_buddy.enums import Game, Locale
@@ -303,7 +302,7 @@ class Translator:
 
         if isinstance(string, str):
             # It's intentional that we don't apply any modifiers when string is not LocaleStr
-            return shorten(string, width=max_length, placeholder="...") if max_length else string
+            return shorten(string, length=max_length) if max_length else string
 
         extras = self._translate_extras(string.extras, locale)
         string_key = self._get_string_key(string)
@@ -344,9 +343,7 @@ class Translator:
         if string.append:
             translation += string.append
 
-        return (
-            shorten(translation, width=max_length, placeholder="...") if max_length else translation
-        )
+        return shorten(translation, length=max_length) if max_length else translation
 
     def _translate_extras(self, extras: dict[str, Any], locale: Locale) -> dict[str, Any]:
         extras_: dict[str, Any] = {}

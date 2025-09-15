@@ -408,7 +408,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
     async def get_accounts(
-        self, user_id: int, games: Sequence[Game], platform: Platform | None = None
+        self, user_id: int, games: Sequence[Game] | None, platform: Platform | None = None
     ) -> list[models.HoyoAccount]:
         """Get accounts by user ID and games.
 
@@ -417,6 +417,10 @@ class HoyoBuddy(commands.AutoShardedBot):
             games: The games to filter by.
             platform: The platform to filter by.
         """
+        if games is None:
+            logger.warning("Getting account without specifying games, this is not recommended.")
+            games = list(Game)
+
         query = build_account_query(games=games, platform=platform)
         accounts = await models.HoyoAccount.filter(query, user_id=user_id).all()
         if not accounts:
@@ -425,7 +429,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         return accounts
 
     async def get_account(
-        self, user_id: int, games: Sequence[Game], platform: Platform | None = None
+        self, user_id: int, games: Sequence[Game] | None, platform: Platform | None = None
     ) -> models.HoyoAccount:
         """Get an account by user ID and games.
 

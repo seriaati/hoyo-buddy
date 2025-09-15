@@ -9,6 +9,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
+from hoyo_buddy.exceptions import AccountNotFoundError
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..commands.farm import Action, FarmCommand
@@ -55,12 +56,14 @@ class Farm(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["farm view"].games)
         ] = None,
     ) -> None:
+        try:
+            account = account or await self.bot.get_account(
+                i.user.id, COMMANDS["farm view"].games, COMMANDS["farm view"].platform
+            )
+        except AccountNotFoundError:
+            account = None
+
         settings = await Settings.get(user_id=i.user.id)
-        account = (
-            account
-            or await HoyoAccount.filter(user_id=i.user.id, current=True, game=Game.GENSHIN).first()
-            or await HoyoAccount.filter(user_id=i.user.id, game=Game.GENSHIN).first()
-        )
         uid = None if account is None else account.uid
 
         view = FarmView(
@@ -89,10 +92,12 @@ class Farm(
         ],
         query: str,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
+        account = account or await self.bot.get_account(
+            i.user.id, COMMANDS["farm add"].games, COMMANDS["farm add"].platform
+        )
         settings = await Settings.get(user_id=i.user.id)
         locale = await get_locale(i)
-        command = FarmCommand(i, account_, settings, locale, query, Action.ADD)
+        command = FarmCommand(i, account, settings, locale, query, Action.ADD)
         await command.run()
 
     @app_commands.command(
@@ -116,10 +121,12 @@ class Farm(
         ],
         query: str,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
+        account = account or await self.bot.get_account(
+            i.user.id, COMMANDS["farm remove"].games, COMMANDS["farm remove"].platform
+        )
         settings = await Settings.get(user_id=i.user.id)
         locale = await get_locale(i)
-        command = FarmCommand(i, account_, settings, locale, query, Action.REMOVE)
+        command = FarmCommand(i, account, settings, locale, query, Action.REMOVE)
         await command.run()
 
     @app_commands.command(
@@ -134,10 +141,12 @@ class Farm(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["farm reminder"].games)
         ] = None,
     ) -> None:
-        account_ = account or await self.bot.get_account(i.user.id, (Game.GENSHIN,))
+        account = account or await self.bot.get_account(
+            i.user.id, COMMANDS["farm reminder"].games, COMMANDS["farm reminder"].platform
+        )
         settings = await Settings.get(user_id=i.user.id)
         locale = await get_locale(i)
-        command = FarmCommand(i, account_, settings, locale)
+        command = FarmCommand(i, account, settings, locale)
         await command.run()
 
     @farm_view_command.autocomplete("account")

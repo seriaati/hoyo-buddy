@@ -18,7 +18,7 @@ from hoyo_buddy.utils.misc import handle_autocomplete_errors
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
-from ..enums import Game, GeetestType, Platform
+from ..enums import GeetestType
 from ..exceptions import CantRedeemCodeError, InvalidQueryError
 from ..hoyo.transformers import HoyoAccountTransformer
 from ..types import Interaction, User
@@ -50,12 +50,12 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.HONKAI, Game.ZZZ, Game.TOT)
+        account = account or await self.bot.get_account(
+            user.id, COMMANDS["check-in"].games, COMMANDS["check-in"].platform
         )
         settings = await Settings.get(user_id=i.user.id)
         view = CheckInUI(
-            account_, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
+            account, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
         await view.start(i)
 
@@ -77,16 +77,14 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
+        account = account or await self.bot.get_account(
+            user.id, COMMANDS["notes"].games, COMMANDS["notes"].platform
         )
-        accounts = await self.bot.get_accounts(
-            user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        )
+        accounts = await self.bot.get_accounts(user.id, COMMANDS["notes"].games)
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
-            account_,
+            account,
             accounts,
             dark_mode=settings.dark_mode,
             author=i.user,
@@ -112,11 +110,13 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, (Game.GENSHIN,))
+        account = account or await self.bot.get_account(
+            user.id, COMMANDS["exploration"].games, COMMANDS["exploration"].platform
+        )
         settings = await Settings.get(user_id=i.user.id)
         locale = await get_locale(i)
 
-        view = ExplorationView(account_, dark_mode=settings.dark_mode, author=i.user, locale=locale)
+        view = ExplorationView(account, dark_mode=settings.dark_mode, author=i.user, locale=locale)
         await view.start(i)
 
         await show_anniversary_dismissible(i)
@@ -135,18 +135,18 @@ class Hoyo(commands.Cog):
     ) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.TOT), Platform.HOYOLAB
+        account = account or await self.bot.get_account(
+            i.user.id, COMMANDS["redeem"].games, COMMANDS["redeem"].platform
         )
-        if not account_.can_redeem_code:
+        if not account.can_redeem_code:
             raise CantRedeemCodeError
 
-        await account_.fetch_related("notif_settings")
+        await account.fetch_related("notif_settings")
         locale = await get_locale(i)
         available_codes = await RedeemUI.fetch_available_codes(
-            i.client.session, game=HB_GAME_TO_GPY_GAME[account_.game]
+            i.client.session, game=HB_GAME_TO_GPY_GAME[account.game]
         )
-        view = RedeemUI(account_, available_codes, author=i.user, locale=locale)
+        view = RedeemUI(account, available_codes, author=i.user, locale=locale)
         await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))
         view.message = await i.original_response()
 
@@ -223,7 +223,7 @@ class Hoyo(commands.Cog):
         ] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id, (Game.ZZZ, Game.STARRAIL, Game.GENSHIN), Platform.HOYOLAB
+            i.user.id, COMMANDS["mimo"].games, COMMANDS["mimo"].platform
         )
         settings = await Settings.get(user_id=i.user.id)
         view = MimoView(
@@ -246,9 +246,7 @@ class Hoyo(commands.Cog):
         ] = None,
     ) -> None:
         account = account or await self.bot.get_account(
-            i.user.id,
-            (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
-            platform=Platform.HOYOLAB,
+            i.user.id, COMMANDS["web-events"].games, platform=COMMANDS["web-events"].platform
         )
         view = WebEventsView(account, author=i.user, locale=await get_locale(i))
         await view.start(i)

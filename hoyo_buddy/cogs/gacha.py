@@ -12,7 +12,7 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, show_anniversary_dismissible
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
-from ..enums import GachaImportSource, Game
+from ..enums import GachaImportSource
 from ..hoyo.transformers import HoyoAccountTransformer
 from ..types import Interaction
 
@@ -41,7 +41,7 @@ class Gacha(
         ],
     ) -> Any:
         account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
+            i.user.id, COMMANDS["gacha-log import"].games, COMMANDS["gacha-log import"].platform
         )
         await GachaCommand.run_import(i, account_)
         await show_anniversary_dismissible(i)
@@ -59,7 +59,7 @@ class Gacha(
         ],
     ) -> Any:
         account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
+            i.user.id, COMMANDS["gacha-log view"].games, COMMANDS["gacha-log view"].platform
         )
         await GachaCommand.run_view(i, account_)
         await show_anniversary_dismissible(i)
@@ -77,7 +77,7 @@ class Gacha(
         ],
     ) -> Any:
         account_ = account or await self.bot.get_account(
-            i.user.id, (Game.GENSHIN, Game.ZZZ, Game.STARRAIL)
+            i.user.id, COMMANDS["gacha-log manage"].games, COMMANDS["gacha-log manage"].platform
         )
         await GachaCommand.run_manage(i, account_)
         await show_anniversary_dismissible(i)

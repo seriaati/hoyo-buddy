@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import get_locale
-from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.utils import ephemeral
 
 from ..ui.hoyo.stats import StatsView
@@ -22,11 +21,10 @@ class StatsCommand:
         locale = await get_locale(i)
 
         user = self._user or i.user
-        games_available = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI)
-        accounts = await i.client.get_accounts(user.id, games=games_available)
-        account = await i.client.get_account(user.id, games=games_available)
-        if not accounts:
-            raise NoAccountFoundError(games_available)
+        accounts = await i.client.get_accounts(user.id, games=COMMANDS["stats"].games)
+        account = await i.client.get_account(
+            user.id, games=COMMANDS["stats"].games, platform=COMMANDS["stats"].platform
+        )
 
         view = StatsView(accounts, account.id, author=i.user, locale=locale)
         await view.start(i)

@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.characters import CharactersCommand
-from hoyo_buddy.commands.configs import COMMANDS
+from hoyo_buddy.commands.configs import COMMANDS, CommandName
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.db.utils import show_anniversary_dismissible
-from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
@@ -29,15 +28,22 @@ class Characters(
         self.bot = bot
 
     async def characters_command(
-        self, i: Interaction, user: User, account: HoyoAccount | None, game: Game
+        self, i: Interaction, user: User, account: HoyoAccount | None
     ) -> None:
+        user = user or i.user
         await i.response.defer(ephemeral=ephemeral(i))
 
-        user = user or i.user
-        account_ = account or await self.bot.get_account(user.id, (game,))
+        if not isinstance(i.command, app_commands.Command):
+            msg = "i.command is not an instance of Command"
+            raise TypeError(msg)
+
+        command_key = cast("CommandName", i.client.get_command_name(i.command))
+        account = account or await self.bot.get_account(
+            user.id, COMMANDS[command_key].games, COMMANDS[command_key].platform
+        )
         settings = await Settings.get(user_id=i.user.id)
 
-        command = CharactersCommand(account_, settings)
+        command = CharactersCommand(account, settings)
         await command.run(i)
 
         await show_anniversary_dismissible(i)
@@ -53,7 +59,7 @@ class Characters(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters genshin"].games)
         ] = None,
     ) -> None:
-        await self.characters_command(i, user, account, Game.GENSHIN)
+        await self.characters_command(i, user, account)
 
     @app_commands.command(name="hsr", description=COMMANDS["characters hsr"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
@@ -66,7 +72,7 @@ class Characters(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters hsr"].games)
         ] = None,
     ) -> None:
-        await self.characters_command(i, user, account, Game.STARRAIL)
+        await self.characters_command(i, user, account)
 
     @app_commands.command(name="zzz", description=COMMANDS["characters zzz"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
@@ -79,7 +85,7 @@ class Characters(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters zzz"].games)
         ] = None,
     ) -> None:
-        await self.characters_command(i, user, account, Game.ZZZ)
+        await self.characters_command(i, user, account)
 
     @app_commands.command(name="honkai", description=COMMANDS["characters honkai"].description)
     @app_commands.rename(**get_rename_kwargs(user=True, account=True))
@@ -92,7 +98,7 @@ class Characters(
             HoyoAccount | None, HoyoAccountTransformer(COMMANDS["characters honkai"].games)
         ] = None,
     ) -> None:
-        await self.characters_command(i, user, account, Game.HONKAI)
+        await self.characters_command(i, user, account)
 
     @genshin_command.autocomplete("account")
     @hsr_command.autocomplete("account")

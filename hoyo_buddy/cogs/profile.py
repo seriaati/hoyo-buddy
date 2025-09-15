@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import enka
 from discord import app_commands
 from discord.ext.commands import GroupCog
 
-from hoyo_buddy.commands.configs import COMMANDS
+from hoyo_buddy.commands.configs import COMMANDS, CommandName
 from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, get_locale
@@ -52,7 +52,7 @@ class Profile(
         self.bot = bot
 
     async def _parse_params(
-        self, user_id: int, account: HoyoAccount | None, uid: str | None, game: Game
+        self, i: Interaction, user_id: int, account: HoyoAccount | None, uid: str | None
     ) -> tuple[int, HoyoAccount | None]:
         """Get the UID and game from the account or the provided UID and game value."""
         account_ = None
@@ -62,7 +62,14 @@ class Profile(
             except ValueError as e:
                 raise enka.errors.WrongUIDFormatError from e
         else:
-            account_ = account or await self.bot.get_account(user_id, (game,))
+            if not isinstance(i.command, app_commands.Command):
+                msg = "i.command is not an instance of Command"
+                raise TypeError(msg)
+
+            command_key = cast("CommandName", i.client.get_command_name(i.command))
+            account_ = account or await self.bot.get_account(
+                user_id, COMMANDS[command_key].games, COMMANDS[command_key].platform
+            )
             uid_ = account_.uid
 
         return uid_, account_
@@ -85,7 +92,7 @@ class Profile(
         locale = await get_locale(i)
         user = user or i.user
 
-        uid_, account_ = await self._parse_params(user.id, account, uid, game)
+        uid_, account_ = await self._parse_params(i, user.id, account, uid)
         command = ProfileCommand(
             uid=uid_,
             game=game,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
@@ -23,7 +24,7 @@ class EventsCommand:
 
         user = user or i.user
         account = account or await i.client.get_account(
-            user.id, games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+            user.id, games=COMMANDS["events"].games, platform=COMMANDS["events"].platform
         )
 
         client = account.client

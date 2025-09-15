@@ -216,7 +216,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str("View ongoing game events", key="events_command_description"),
     ),
     "mimo": CommandConfig(
-        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
+        games=(Game.STARRAIL, Game.ZZZ),
         platform=Platform.HOYOLAB,
         description=locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
     ),

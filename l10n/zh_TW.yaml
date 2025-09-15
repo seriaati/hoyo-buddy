@@ -302,11 +302,21 @@ notes_available: "{emoji} 在 {in_time} 後可用"
 notes_command_description: 查看即時便籤
 notif.embed.footer: 使用 /notes 來調整通知
 notif_modal.enabled.label: 已啟用
+notif_modal.type_one.description: |
+  每「通知間隔」分鐘將會檢查體力一次，當體力大於或等於「閥值」後，通知將開始發送。
+
+  當「最大通知數」被超過時，將不再發送通知。
+
+  當你消耗體力至小於「閥值」的值後，通知數將歸零，使得通知繼續開始發送。
 notif_modal.max_notif_count.label: 最大通知數
-notif_modal.notify_interval.label: 通知間隔（分鐘）
-notif_modal.notify_time.label: "在伺服器重置時間 (4:00 AM) 的前 X 小時通知"
+notif_modal.max_notif_count.description: "要發送的最大通知數量。"
+notif_modal.notify_interval.label: 通知間隔
+notif_modal.notify_interval.description: "每個通知和檢查之間的間隔（分鐘）。"
+notif_modal.notify_time.label: "通知時間"
+notif_modal.notify_time.description: "在伺服器重置前的 X 小時前通知（重置時間為遊戲伺服器時區的 4:00 AM）。"
 notif_modal.notify_weekday.label: 星期幾通知
 notif_modal.threshold.label: 閥值
+notif_modal.threshold.description: "通知將在閥值被超出後發送。"
 notification_settings_button_label: 通知設定
 notify_on_failure_button_label: 簽到失敗通知
 notify_on_success_button_label: 簽到成功通知

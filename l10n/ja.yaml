@@ -260,6 +260,7 @@ moc_card_farthest_stage: "到達ステージ：{stage}"
 moc_quick_clear: クイッククリア
 monday: 月曜日
 mondstadt: モンド
+nod_krai: ナド・クライ
 namecards: 名刺の飾り紋
 next_page_option_label: 次のページ
 nickname_modal_label: ニックネーム
@@ -299,11 +300,21 @@ notes_available: "{emoji} {in_time} 後に利用可能"
 notes_command_description: リアルタイムノートを表示します
 notif.embed.footer: /notes を使用してリマインダーを設定します
 notif_modal.enabled.label: 有効
+notif_modal.type_one.description: |
+  スタミナは「通知間隔」分ごとにチェックされ、スタミナが「閾値」以上になると通知が送信されます。
+
+  「最大通知数」に達すると、通知が停止します。
+
+  スタミナを「閾値」未満の値まで消費すると、通知カウントがリセットされ、通知の送信が再開されます。
 notif_modal.max_notif_count.label: 最大通知回数
-notif_modal.notify_interval.label: 通知間隔 (分単位)
-notif_modal.notify_time.label: "サーバーリセット (午前5時) の {notify_time} 時間前に通知"
+notif_modal.max_notif_count.description: "送信する通知の最大数。"
+notif_modal.notify_interval.label: 通知間隔
+notif_modal.notify_interval.description: "各通知とチェックの間隔（分単位）。"
+notif_modal.notify_time.label: "通知時間"
+notif_modal.notify_time.description: "サーバーリセットのX時間前に通知（ゲームサーバーのタイムゾーンで午前4:00）。"
 notif_modal.notify_weekday.label: 通知する曜日
 notif_modal.threshold.label: しきい値
+notif_modal.threshold.description: "閾値に達した後に通知が送信されます。"
 notification_settings_button_label: 通知設定
 notify_on_failure_button_label: チェックイン失敗時に通知
 notify_on_success_button_label: チェックイン成功時に通知
@@ -580,10 +591,14 @@ accounts_added_snackbar_message: "アカウントが正常に追加されまし�
 account_add_start_message: "下のボタンをクリックして指示に従いアカウントを追加してください。完了したら、</accounts> コマンドを使用して追加したアカウントを表示します。\nヘルプが必要な場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) に参加してください。"
 hbls_button_label: はじめましょう！
 gacha_import_url_modal_title: ガチャ履歴URLを入力
-gacha_import_embed_description: "ガチャ履歴URL：ゲームから非常に長いURLを取得してガチャ記録をインポートします。各ゲームのガイドは以下の通りです：\n- Android：[YouTube動画](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- 崩壊：スターレイル：[Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- ゼンレスゾーンゼロ：[zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\n以下のサービスについては、ガチャ記録を指定されたファイル形式でエクスポートし、</gacha-log upload> 経由でアップロードしてください：\n1. Star Rail Station：csv\n2. stardb.gg：json\n3. zzz.rng.moe：json\n4. UIGF：json\n5. SRGF：json"
+gacha_import_embed_description: "下のボタンをクリックして、お使いのデバイスプラットフォームでガチャログURLを取得する方法の手順を表示してください。\n\n以下のサービスについては、指定のファイル形式でガチャ記録をエクスポートし、</gacha-log upload> でアップロードしてください\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "URLからAuthkeyを抽出できませんでした。有効なURLで再試行してください。"
 extract_authkey_error_title: Authkey抽出失敗
 gacha_import_loading_embed_title: ガチャ履歴をインポート中
+gacha_import_pc_import_embed_desc: "スタートメニューでPowerShellを検索して開き、以下のコードをコピーして貼り付けてください。\nこのスクリプトはHoyo Buddyチームによって作成されており、安全に使用できます。"
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: Android
+gacha_import_pc_source_code: ソースコード
 gacha_import_loading_embed_description: "{loading_emoji} しばらく時間がかかる場合があります。お待ちください..."
 gacha_upload_invalid_file_error_title: 無効なファイル形式
 gacha_upload_invalid_file_error_message: "**{file_format}** ファイルのみ受け付けます。有効なファイルで再試行してください。"
@@ -650,7 +665,7 @@ characters_view_show_max_level_only: 最大レベルのキャラクターのみ�
 characters_embed_max_level_characters: 最大レベルキャラクター
 natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
-shiyu_fastest_clear_time: "今シーズンの最速クリアタイム："
+shiyu_total_clear_time: "合計クリア時間："
 shiyu_highest_frontier: "クリアした最高フロンティア："
 shiyu_relevant_season: "関連シーズン："
 shiyu_1_frontier: 第一フロンティア

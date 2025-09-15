@@ -254,3 +254,13 @@ class PaginatorSelect[V_co: View](Select):
 
         self.translate(self.view.locale)
         return changed
+
+
+class BooleanSelect[V_co: View](Select):
+    def __init__(self, **kwargs) -> None:
+        options = [
+            SelectOption(label=LocaleStr(key="yes_choice"), value="1", emoji=emojis.CHECK),
+            SelectOption(label=LocaleStr(key="no_choice"), value="0", emoji=emojis.CLOSE),
+        ]
+        super().__init__(options=options, **kwargs)
+        self.view: V_co

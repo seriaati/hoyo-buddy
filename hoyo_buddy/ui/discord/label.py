@@ -124,14 +124,8 @@ class Label[T](discord.ui.Label):
         if isinstance(self.component, TextInput):
             return self.component.value
 
-        msg = "value can only be retrieved for TextInput components"
-        raise TypeError(msg)
-
-    @property
-    def values(self) -> list[str]:
-        """The values of the underlying component."""
         if isinstance(self.component, Select):
-            return self.component.values
+            return self.component.values[0]
 
-        msg = "values can only be retrieved for Select components"
+        msg = "value can only be retrieved for TextInput or Select components"
         raise TypeError(msg)

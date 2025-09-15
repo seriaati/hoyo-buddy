@@ -308,8 +308,9 @@ class ViewShopButton(ui.Button[MimoView]):
 
 
 class BuyItemModal(ui.Modal):
-    amount = ui.TextInput(
-        label=LocaleStr(key="mimo_buy_item_amount_label"), is_digit=True, min_value=1, default="1"
+    amount: ui.Label[ui.TextInput] = ui.Label(
+        text=LocaleStr(key="mimo_buy_item_amount_label"),
+        component=ui.TextInput(is_digit=True, min_value=1, default="1"),
     )
 
     def __init__(self, item: genshin.models.MimoShopItem) -> None:

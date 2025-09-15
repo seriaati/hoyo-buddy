@@ -84,8 +84,3 @@ class Modal(discord.ui.Modal):
                             input=component.label,
                         )
                     )
-            elif isinstance(component, TextInput) and component.is_bool:
-                if component.value not in {"0", "1"}:
-                    raise InvalidInputError(
-                        LocaleStr(key="invalid_input.input_needs_to_be_bool", input=component.label)
-                    )

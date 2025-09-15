@@ -5,15 +5,15 @@ from typing import TYPE_CHECKING
 from hoyo_buddy.constants import DB_SMALLINT_MAX
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Label, Modal, TextInput
+from hoyo_buddy.ui.discord.select import BooleanSelect
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import NotesNotify
 
 
 class TypeOneModal(Modal):
-    enabled: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.enabled.label"),
-        component=TextInput(is_bool=True),
+    enabled: Label[BooleanSelect] = Label(
+        text=LocaleStr(key="notif_modal.enabled.label"), component=BooleanSelect()
     )
     threshold: Label[TextInput] = Label(
         text=LocaleStr(key="notif_modal.threshold.label"),

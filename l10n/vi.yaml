@@ -583,14 +583,10 @@ accounts_added_snackbar_message: "Thêm tài khoản thành công, đang chuyể
 account_add_start_message: "Nhấp vào nút bên dưới và làm theo hướng dẫn để thêm tài khoản của bạn. Khi bạn hoàn tất, hãy sử dụng lệnh </accounts> để xem các tài khoản bạn đã thêm.\nHãy tham gia [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi nếu bạn cần trợ giúp."
 hbls_button_label: Bắt đầu nào!
 gacha_import_url_modal_title: Nhập đường link nhật ký gacha
-gacha_import_embed_description: "Nhấn nút bên dưới để lấy hướng dẫn làm sao để lấy URL nhật ký gacha cho thiết bị của bạn\n\nĐối với các dịch vụ được liệt kê bên dưới, hãy xuất bản ghi gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên qua </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: jaon\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "URL Nhật ký Gacha: Lấy một URL rất dài từ trò chơi để nhập nhật ký gacha của bạn, bên dưới là hướng dẫn cho các trò chơi khác nhau::\n- Android: [Video YouTube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nĐối với các dịch vụ bên dưới, hãy xuất nhật ký gacha của bạn dưới dạng định dạng tệp được chỉ định và tải nó lên thông qua lệnh </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
-gacha_import_pc_import_embed_desc: "Tìm kiếm và mở ứng dụng PowerShell trong Start Menu, sau đó sao bà dán đoạn mã bên dưới vào.\n Script này được viết bởi đội ngữ Hoyo Buddy và an toàn để chạy và sử dụng."
-gacha_import_pc_player_button_label: Windows
-gacha_import_android_button_label: Android
-gacha_import_pc_source_code: Mã Nguồn
 gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
 gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
 gacha_upload_invalid_file_error_message: "Chỉ cho phép file **{file_format}**, vui lòng thử lại bằng định dạng hợp lệ"

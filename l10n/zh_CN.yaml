@@ -302,11 +302,21 @@ notes_available: "{emoji} 在 {in_time} 后可用"
 notes_command_description: 查看实时便笺
 notif.embed.footer: 使用 /note 调配提醒
 notif_modal.enabled.label: 开
+notif_modal.type_one.description: |
+  体力每隔“通知间隔”分钟检查一次，当体力大于或等于“阈值”时开始发送通知。
+
+  一旦达到“最大通知数”，通知将停止。
+
+  一旦你消耗的体力小于“阈值”，通知计数将重置，并继续发送通知。
 notif_modal.max_notif_count.label: 最大通知数
-notif_modal.notify_interval.label: 通知间隔（分钟）
-notif_modal.notify_time.label: "在服务器重置时间（4:00 AM）前 X 小时通知"
+notif_modal.max_notif_count.description: "最大发送通知数量。"
+notif_modal.notify_interval.label: 通知间隔
+notif_modal.notify_interval.description: "每次通知与检查之间间隔（分钟）"
+notif_modal.notify_time.label: "通知时间"
+notif_modal.notify_time.description: "在服务器重置X小时前通知（游戏服务器的凌晨4:00）"
 notif_modal.notify_weekday.label: 星期几通知
 notif_modal.threshold.label: 阈值
+notif_modal.threshold.description: "达到阈值后发送通知。"
 notification_settings_button_label: 通知设定
 notify_on_failure_button_label: 签到失败通知
 notify_on_success_button_label: 签到成功通知

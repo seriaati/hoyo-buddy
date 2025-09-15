@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 class TypeOneModal(Modal):
     enabled: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.enabled.label"),
-        component=TextInput(is_bool=True),
+        text=LocaleStr(key="notif_modal.enabled.label"), component=TextInput(is_bool=True)
     )
     threshold: Label[TextInput] = Label(
         text=LocaleStr(key="notif_modal.threshold.label"),

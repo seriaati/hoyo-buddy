@@ -88,10 +88,7 @@ class AndroidButton(Button[GachaImportView]):
 
 
 class EnterURLModal(Modal):
-    url: Label[TextInput] = Label(
-        text="URL",
-        component=TextInput(style=discord.TextStyle.long),
-    )
+    url: Label[TextInput] = Label(text="URL", component=TextInput(style=discord.TextStyle.long))
 
     def __init__(self) -> None:
         super().__init__(title=LocaleStr(key="gacha_import_url_modal_title"))

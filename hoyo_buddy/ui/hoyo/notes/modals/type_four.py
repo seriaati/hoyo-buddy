@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 class TypeFourModal(Modal):
     enabled: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.enabled.label"),
-        component=TextInput(is_bool=True),
+        text=LocaleStr(key="notif_modal.enabled.label"), component=TextInput(is_bool=True)
     )
     notify_interval: Label[TextInput] = Label(
         text=LocaleStr(key="notif_modal.notify_interval.label"),

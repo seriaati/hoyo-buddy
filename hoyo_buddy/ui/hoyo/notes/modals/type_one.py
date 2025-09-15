@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from hoyo_buddy.ui import Modal
 
-from .components import ENABLED, MAX_NOTIF_COUNT, NOTIFY_INTERVAL, THRESHOLD, TYPE_ONE_TEXT_DISPLAY
+from .components import ENABLED, MAX_NOTIF_COUNT, NOTIFY_INTERVAL, THRESHOLD
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import NotesNotify

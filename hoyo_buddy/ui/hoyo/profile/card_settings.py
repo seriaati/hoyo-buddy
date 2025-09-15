@@ -314,11 +314,7 @@ class PrimaryColorModal(Modal):
     color: Label[TextInput] = Label(
         text=LocaleStr(key="profile.primary_color_modal.color.label"),
         component=TextInput(
-            placeholder="#000000",
-            style=TextStyle.short,
-            min_length=7,
-            max_length=7,
-            required=False,
+            placeholder="#000000", style=TextStyle.short, min_length=7, max_length=7, required=False
         ),
     )
 

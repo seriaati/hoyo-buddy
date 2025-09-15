@@ -26,9 +26,7 @@ class GiftCodeModal(Modal):
     )
     code_2: Label[TextInput] = Label(
         text=LocaleStr(key="gift_code_modal.code_input.label", num=2),
-        component=TextInput(
-            placeholder="https://zzz.hoyoverse.com/gift?code=...", required=False
-        ),
+        component=TextInput(placeholder="https://zzz.hoyoverse.com/gift?code=...", required=False),
     )
     code_3: Label[TextInput] = Label(
         text=LocaleStr(key="gift_code_modal.code_input.label", num=3),

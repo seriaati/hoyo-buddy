@@ -262,6 +262,7 @@ moc_card_farthest_stage: "最高关卡: {stage}"
 moc_quick_clear: 快速通关
 monday: 星期一
 mondstadt: 蒙德
+nod_krai: 挪德卡莱
 namecards: 名片
 next_page_option_label: 下一页
 nickname_modal_label: 昵称
@@ -301,11 +302,21 @@ notes_available: "{emoji} 在 {in_time} 后可用"
 notes_command_description: 查看实时便笺
 notif.embed.footer: 使用 /note 调配提醒
 notif_modal.enabled.label: 开
+notif_modal.type_one.description: |
+  体力每隔“通知间隔”分钟检查一次，当体力大于或等于“阈值”时开始发送通知。
+
+  一旦达到“最大通知数”，通知将停止。
+
+  一旦你消耗的体力小于“阈值”，通知计数将重置，并继续发送通知。
 notif_modal.max_notif_count.label: 最大通知数
-notif_modal.notify_interval.label: 通知间隔（分钟）
-notif_modal.notify_time.label: "在服务器重置时间（4:00 AM）前 X 小时通知"
+notif_modal.max_notif_count.description: "最大发送通知数量。"
+notif_modal.notify_interval.label: 通知间隔
+notif_modal.notify_interval.description: "每次通知与检查之间间隔（分钟）"
+notif_modal.notify_time.label: "通知时间"
+notif_modal.notify_time.description: "在服务器重置X小时前通知（游戏服务器的凌晨4:00）"
 notif_modal.notify_weekday.label: 星期几通知
 notif_modal.threshold.label: 阈值
+notif_modal.threshold.description: "达到阈值后发送通知。"
 notification_settings_button_label: 通知设定
 notify_on_failure_button_label: 签到失败通知
 notify_on_success_button_label: 签到成功通知
@@ -582,10 +593,14 @@ accounts_added_snackbar_message: "账户添加成功，正在将你重定向回 
 account_add_start_message: "点击下方按钮，并按照指示添加你的游戏账户。完成后使用</accounts>来查看你已添加的账户。如果你遇到问题或需要帮助，请加入我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)。"
 hbls_button_label: 开始！
 gacha_import_url_modal_title: 输入抽卡记录链接
-gacha_import_embed_description: "抽卡记录链接：从游戏内获取一串很长的链接来导入你的抽卡记录，不同游戏的获取方式如下：\n- 安卓：[YouTube 视频](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- 原神：[paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/zh-cn/genshin/wish-import)\n- 崩坏：星穹铁道：[Star Rail Station](https://starrailstation.com/cn/warp#import), [stardb.gg](https://stardb.gg/zh-cn/warp-import)\n- 绝区零：[zzz.rng.moe](https://zzz.rng.moe/zh/tracker/import), [stardb.gg](https://stardb.gg/zh-cn/zzz/signal-import)\n\n如果你有使用下列的服务之一，将你的抽卡记录导出至指定的文件格式后即可使用 </gacha-log upload> 将其上传并导入\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "点击下方按钮获取关于设备所属平台的抽卡链接获取方式。\n\n对于以下服务，你可以将抽卡记录导出为对应的文件格式，并其文件通过</gacha-log upload>上传并导入。\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "无法从链接中提取 authkey，请使用有效链接后重试。"
 extract_authkey_error_title: Authkey 提取失败
 gacha_import_loading_embed_title: 正在导入抽卡记录
+gacha_import_pc_import_embed_desc: "点击“开始”菜单，搜索栏里输入Powershell并打开，然后复制粘贴以下代码至Powershell中并运行。\n此脚本由 Hoyo Buddy 团队编写，可安全使用。"
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: 安卓
+gacha_import_pc_source_code: 源代码
 gacha_import_loading_embed_description: "{loading_emoji} 这需要花费一段时间，请耐心等待..."
 gacha_upload_invalid_file_error_title: 无效文件格式
 gacha_upload_invalid_file_error_message: "只接受 **{file_format}** 文件，请使用正确的文件重试。"
@@ -652,7 +667,7 @@ characters_view_show_max_level_only: 仅显示满级角色
 characters_embed_max_level_characters: 满级角色
 natlan_reputation: "声望等级：{reputation}，部落：{tribes}"
 shiyu_overview: 总览
-shiyu_fastest_clear_time: "当期最快通关时间:"
+shiyu_total_clear_time: "通关总时长："
 shiyu_highest_frontier: "最高通关防线:"
 shiyu_relevant_season: "统计周期:"
 shiyu_1_frontier: 第一防线

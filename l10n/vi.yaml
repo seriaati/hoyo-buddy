@@ -303,17 +303,17 @@ notes_command_description: Xem Ghi Chép Thời Gian Thực
 notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
 notif_modal.enabled.label: Bật
 notif_modal.type_one.description: |
-  Thể lực được kiểm tra mỗi "khoảng thời gian thông báo" phút, và thông báo bắt đầu gửi khi Thể lực lớn hơn hoặc bằng "ngưỡng".
+  Cứ mỗi một khoảng thời gian được định trong "giãn cách nhắc nhở", Hoyo Buddy sẽ kiểm tra mức Thể lực và bắt đầu gửi thông báo nếu Thể lực lớn hơn hoặc bằng mức "ngưỡng".
 
-  Khi đạt đến "số lượng thông báo tối đa", thông báo sẽ dừng lại.
+  Khi số thông báo đạt tới "số lượng thông báo tối đa" thì sẽ dừng gửi thông báo.
 
-  Khi bạn tiêu thụ hết Thể lực của mình đến giá trị nhỏ hơn "ngưỡng", số lần thông báo sẽ được đặt lại và quá trình gửi thông báo sẽ tiếp tục.
+  Khi bạn tiêu thụ Thể lực của mình đến giá trị nhỏ hơn mức "ngưỡng", số lần thông báo sẽ được đặt lại và quá trình gửi thông báo sẽ tiếp tục.
 notif_modal.max_notif_count.label: Số lần nhắc nhở tối đa
 notif_modal.max_notif_count.description: "Số lượng thông báo tối đa có thể gửi."
-notif_modal.notify_interval.label: Khoảng thời gian thông báo
+notif_modal.notify_interval.label: Giãn cách nhắc nhở
 notif_modal.notify_interval.description: "Khoảng thời gian giữa mỗi thông báo và lần kiểm tra (tính bằng phút)"
 notif_modal.notify_time.label: "Thời gian Nhắc nhở"
-notif_modal.notify_time.description: "Thông báo vào x tiếng trước khi máy chủ reset (4:00 SA theo mủi giờ máy chủ game)"
+notif_modal.notify_time.description: "Thông báo X tiếng trước khi máy chủ reset (4:00 SA theo múi giờ máy chủ game)"
 notif_modal.notify_weekday.label: Ngày trong tuần muốn nhắc
 notif_modal.threshold.label: Nhắc khi đạt ngưỡng
 notif_modal.threshold.description: "Thông báo sẽ được gửi khi đạt được mức ngưỡng"
@@ -597,7 +597,7 @@ gacha_import_embed_description: "Nhấn nút bên dưới để lấy hướng d
 extract_authkey_error_message: "Không thể trích xuất khóa xác thực từ đường link, vui lòng thử lại bằng đường link hợp lệ."
 extract_authkey_error_title: Trích xuất Khóa xác thực Thất bại
 gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
-gacha_import_pc_import_embed_desc: "Tìm kiếm và mở ứng dụng PowerShell trong Start Menu, sau đó sao bà dán đoạn mã bên dưới vào.\n Script này được viết bởi đội ngữ Hoyo Buddy và an toàn để chạy và sử dụng."
+gacha_import_pc_import_embed_desc: "Tìm kiếm và mở ứng dụng PowerShell trong Start Menu, sau đó sao chép và dán đoạn mã bên dưới vào.\n Script này được viết bởi đội ngữ Hoyo Buddy và an toàn để chạy và sử dụng."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
 gacha_import_pc_source_code: Mã Nguồn

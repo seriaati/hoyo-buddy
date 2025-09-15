@@ -38,7 +38,9 @@ class Label[T](discord.ui.Label):
     def translate(self, locale: Locale) -> None:
         self.text = translator.translate(self.locale_str_text, locale)
         if self.locale_str_description:
-            self.description = translator.translate(self.locale_str_description, locale)
+            self.description = translator.translate(
+                self.locale_str_description, locale, max_length=100
+            )
 
         if isinstance(self.component, (Select, TextInput)):
             self.component.translate(locale)

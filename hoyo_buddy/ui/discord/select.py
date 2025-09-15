@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
     from .view import View
 
-__all__ = ("PaginatorSelect", "Select", "SelectOption")
+__all__ = ("BooleanSelect", "PaginatorSelect", "Select", "SelectOption", "WeekdaySelect")
 
 
 class SelectOption(discord.SelectOption):
@@ -261,6 +261,21 @@ class BooleanSelect[V_co: View](Select):
         options = [
             SelectOption(label=LocaleStr(key="yes_choice"), value="1", emoji=emojis.CHECK),
             SelectOption(label=LocaleStr(key="no_choice"), value="0", emoji=emojis.CLOSE),
+        ]
+        super().__init__(options=options, **kwargs)
+        self.view: V_co
+
+
+class WeekdaySelect[V_co: View](Select):
+    def __init__(self, **kwargs) -> None:
+        options = [
+            SelectOption(label=LocaleStr(key="monday"), value="1"),
+            SelectOption(label=LocaleStr(key="tuesday"), value="2"),
+            SelectOption(label=LocaleStr(key="wednesday"), value="3"),
+            SelectOption(label=LocaleStr(key="thursday"), value="4"),
+            SelectOption(label=LocaleStr(key="friday"), value="5"),
+            SelectOption(label=LocaleStr(key="saturday"), value="6"),
+            SelectOption(label=LocaleStr(key="sunday"), value="7"),
         ]
         super().__init__(options=options, **kwargs)
         self.view: V_co

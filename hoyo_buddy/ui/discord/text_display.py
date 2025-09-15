@@ -18,4 +18,4 @@ class TextDisplay(discord.ui.TextDisplay):
         self.locale_str_content = content
 
     def translate(self, locale: Locale) -> None:
-        self.content = translator.translate(self.locale_str_content, locale)
+        self.content = translator.translate(self.locale_str_content, locale, max_length=4000)

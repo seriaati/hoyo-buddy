@@ -2,35 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.constants import DB_SMALLINT_MAX
-from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Label, Modal, TextInput
-from hoyo_buddy.ui.discord.select import BooleanSelect
+from hoyo_buddy.ui import Modal
+
+from .components import ENABLED, MAX_NOTIF_COUNT, NOTIFY_INTERVAL, NOTIFY_TIME, NOTIFY_WEEKDAY
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import NotesNotify
+    from hoyo_buddy.l10n import LocaleStr
 
 
 class TypeFourModal(Modal):
-    enabled: Label[BooleanSelect] = Label(
-        text=LocaleStr(key="notif_modal.enabled.label"), component=BooleanSelect()
-    )
-    notify_interval: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.notify_interval.label"),
-        component=TextInput(is_digit=True, min_value=10, max_value=DB_SMALLINT_MAX),
-    )
-    max_notif_count: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.max_notif_count.label"),
-        component=TextInput(is_digit=True, min_value=1, max_value=DB_SMALLINT_MAX),
-    )
-    notify_time: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.notify_time.label"),
-        component=TextInput(is_digit=True, min_value=1, max_value=24),
-    )
-    notify_weekday: Label[TextInput] = Label(
-        text=LocaleStr(key="notif_modal.notify_weekday.label"),
-        component=TextInput(is_digit=True, min_value=1, max_value=7),
-    )
+    enabled = ENABLED
+    notify_interval = NOTIFY_INTERVAL
+    max_notif_count = MAX_NOTIF_COUNT
+    notify_time = NOTIFY_TIME
+    notify_weekday = NOTIFY_WEEKDAY
 
     def __init__(
         self, notes_notify: NotesNotify | None, *, title: LocaleStr, min_notify_interval: int

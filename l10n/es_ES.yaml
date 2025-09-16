@@ -262,6 +262,7 @@ moc_card_farthest_stage: "Etapa alcanzada: {stage}"
 moc_quick_clear: Borrado rápido
 monday: Lunes
 mondstadt: Mondstadt
+nod_krai: Nod Krai
 namecards: Tarjetas de presentación
 next_page_option_label: Siguiente página
 nickname_modal_label: Nombre de imagen
@@ -301,11 +302,21 @@ notes_available: "{emoji} Disponible en {in_time}"
 notes_command_description: Ver notas en tiempo real
 notif.embed.footer: Usa /notes para configurar recordatorios
 notif_modal.enabled.label: Activado
+notif_modal.type_one.description: |
+  La Stamina se verifica cada "intervalo de notificación" en minutos, y las notificaciones comienzan a enviarse cuando la Stamina es mayor o igual al "limite". 
+
+  Una vez que se alcanza el "máximo de notificaciones", estas se detienen. 
+
+  Cuando consumes tu Stamina por debajo del "limite", el contador de notificaciones se reinicia y el envío de notificaciones se reanuda. 
 notif_modal.max_notif_count.label: Número máximo de notificaciones
-notif_modal.notify_interval.label: Intervalo de notificación (en minutos)
-notif_modal.notify_time.label: "Notificar X h antes del reinicio (4:00 a. m.)"
+notif_modal.max_notif_count.description: "Número máximo de notificaciones a enviar. "
+notif_modal.notify_interval.label: Intervalo de notificación
+notif_modal.notify_interval.description: "Intervalo entre cada notificación y comprobación (en minutos). "
+notif_modal.notify_time.label: "Tiempo de notificación"
+notif_modal.notify_time.description: "Notificar X horas antes del reinicio del servidor (4:00 AM hora del servidor). "
 notif_modal.notify_weekday.label: Día de la semana para notificar
 notif_modal.threshold.label: Límite
+notif_modal.threshold.description: "La notificación se envía al alcanzar el limite"
 notification_settings_button_label: Configurar notificaciones
 notify_on_failure_button_label: Notificar reclamo de Login Diario fallido
 notify_on_success_button_label: Notificar reclamo de Login Diario exitoso
@@ -582,10 +593,14 @@ accounts_added_snackbar_message: "Cuentas agregadas exitosamente, redireccionán
 account_add_start_message: "Haz clic en el botón de abajo y sigue las instrucciones para agregar tus cuentas. Cuando termines, usa el comando </accounts> para ver las cuentas que has agregado. Únete a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>) si necesitas ayuda."
 hbls_button_label: ¡Empecemos!
 gacha_import_url_modal_title: Ingresa la URL de los registros del gacha
-gacha_import_embed_description: "URL del registro del gachapón: Obtén una URL muy larga del juego para importar tus registros de gacha, las guías para diferentes juegos están abajo:\n\nAndroid: [Video de Youtube](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\nGenshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\nHonkai: Star Rail: Star Rail Station, [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\nZenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\nPara los servicios a continuación, exporta tus registros de gacha en el formato de archivo especificado y súbelo a través de:\n</gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "Haz clic en el botón de abajo para ver cómo obtener la URL del registro del gacha en tu dispositivo.\n\nPara los servicios listados, exporta tus registros en el formato indicado y súbelos: </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "No se puede extraer la clave de autorización de la URL; inténtelo nuevamente con una URL válida."
 extract_authkey_error_title: Error en la extracción de clave de autorización
 gacha_import_loading_embed_title: Importando registros del gacha
+gacha_import_pc_import_embed_desc: "Busca y abre PowerShell desde el menú de inicio, luego copia y pega el siguiente código.\nEste script fue creado por el equipo de Hoyo Buddy y es seguro de usar."
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: Android
+gacha_import_pc_source_code: Código fuente
 gacha_import_loading_embed_description: "{loading_emoji} Esto puede tardar un poco, por favor tenga paciencia..."
 gacha_upload_invalid_file_error_title: Formato de archivo no válido
 gacha_upload_invalid_file_error_message: "Solo se aceptan archivos **{file_format}**. Por favor intenta otra vez con un formato valido"
@@ -652,7 +667,7 @@ characters_view_show_max_level_only: Mostrar solo personajes con nivel máximo
 characters_embed_max_level_characters: Personajes con nivel máximo
 natlan_reputation: "Reputación Tribal: {tribes}"
 shiyu_overview: Resumen
-shiyu_fastest_clear_time: "Tiempo de finalización más rápido de esta temporada:"
+shiyu_total_clear_time: "Tiempo total de completado:"
 shiyu_highest_frontier: "Frente más alto alcanzado:"
 shiyu_relevant_season: "Estadísticas de la temporada:"
 shiyu_1_frontier: Frente N° 1
@@ -831,3 +846,5 @@ fetching_accounts: Por favor espera mientras obtenemos tus cuentas...
 fetching_accounts_stuck: "Si estás atascado en esta página, por favor intenta ejecutar el comando de nuevo o contáctanos para solucionar el problema."
 aaa_acronym: Acu. Auto. de Adrenalina
 changelog_command_desc: Vé los últimos cambios y actualizaciones
+account_game_mismatch_error_title: La cuenta del juego no coincide
+account_game_mismatch_error_message: "La cuenta que usas no es una cuenta de {game}"

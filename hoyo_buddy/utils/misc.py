@@ -117,7 +117,8 @@ async def upload_image(
         raise ValueError(msg)
 
     api = "https://img.seria.moe/upload"
-    data = {"key": CONFIG.img_upload_api_key}
+    headers = {"Authorization": f"Bearer {CONFIG.img_upload_api_key}"}
+    data = {}
 
     if image is not None:
         # Encode image into base64 string
@@ -126,7 +127,7 @@ async def upload_image(
     if image_url is not None:
         data["source"] = image_url
 
-    async with session.post(api, json=data) as resp:
+    async with session.post(api, json=data, headers=headers) as resp:
         if resp.status == 413:  # Payload too large
             raise ImageFileTooLargeError
 

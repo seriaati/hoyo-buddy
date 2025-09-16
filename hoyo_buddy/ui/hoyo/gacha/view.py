@@ -121,7 +121,7 @@ class ViewGachaLogView(View):
         five_stars = (
             await GachaHistory.filter(account=self.account, rarity=5, banner_type=self.banner_type)
             .order_by("wish_id")
-            .only("item_id", "time")
+            .only("item_id", "time", "banner_id")
         )
         if not five_stars:
             return 0, 0

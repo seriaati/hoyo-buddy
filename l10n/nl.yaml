@@ -262,6 +262,7 @@ moc_card_farthest_stage: "Verste Fase: {stage}"
 moc_quick_clear: Quick Clear
 monday: Maandag
 mondstadt: Mondstadt
+nod_krai: Nod-Krai
 namecards: Naamkaartjes
 next_page_option_label: Volgende pagina
 nickname_modal_label: Bijnaam
@@ -301,11 +302,21 @@ notes_available: "{emoji} Beschikbaar in {in_time}"
 notes_command_description: Bekijk real-time notities
 notif.embed.footer: Gebruik /notes om herinneringen te configureren
 notif_modal.enabled.label: Ingeschakeld
+notif_modal.type_one.description: |
+  Stamina wordt elke minuut van het "meldingsinterval" gecontroleerd en er wordt een melding verzonden wanneer stamina groter is dan of gelijk is aan het "llimiet".
+
+  Zodra het "max. aantal meldingen" is bereikt, stoppen de meldingen.
+
+  Zodra je stamina hebt verbruikt tot een waarde die lager is dan het "limiet", wordt het aantal meldingen opnieuw ingesteld en wordt het verzenden van meldingen hervat.
 notif_modal.max_notif_count.label: Max Aantal Meldingen
-notif_modal.notify_interval.label: Interval Melding (in minuten)
-notif_modal.notify_time.label: "Waarschuw X uur voor serverreset (4:00 AM)"
+notif_modal.max_notif_count.description: "Maximaal aantal te verzenden meldingen."
+notif_modal.notify_interval.label: Interval melden
+notif_modal.notify_interval.description: "Interval tussen elke melding en controle (in minuten)"
+notif_modal.notify_time.label: "Tijd voor meldeningen"
+notif_modal.notify_time.description: "Meld om X uur voordat de server wordt gereset (04:00 uur in de tijdzone van de gameserver)."
 notif_modal.notify_weekday.label: De weekdag om te melden
 notif_modal.threshold.label: Drempel
+notif_modal.threshold.description: "Er wordt een melding verzonden nadat het limiet is bereikt."
 notification_settings_button_label: Instellingen meldingen
 notify_on_failure_button_label: Melden bij mislukte inchecken
 notify_on_success_button_label: Melding bij succesvol inchecken
@@ -582,10 +593,14 @@ accounts_added_snackbar_message: "Accounts zijn succesvol toegevoegd, je wordt t
 account_add_start_message: "Klik op de onderstaande knop en volg de instructies om je accounts toe te voegen. Als je klaar bent, gebruik de </accounts> opdracht om de accounts die je hebt toegevoegd te bekijken.\nWord lid van onze [Discord server](<https://link.seria.moe/hb-dc>) als je hulp nodig hebt."
 hbls_button_label: Laten we beginnen!
 gacha_import_url_modal_title: Voer gacha log URL in
-gacha_import_embed_description: "Gacha log URL: Verkrijg een zeer lange URL van het spel om je gacha records te importeren, gidsen voor verschillende spellen staan hieronder:\n- Android: [YouTube video](https://youtu.be/CeQQoFKLwPY?si=xTuPGRjGyqGIvCVE)\n- Genshin Impact: [paimon.moe](https://paimon.moe/wish/import), [stardb.gg](https://stardb.gg/en/genshin/wish-import)\n- Honkai: Star Rail: [Star Rail Station](https://starrailstation.com/en/warp#import), [stardb.gg](https://stardb.gg/en/warp-import)\n- Zenless Zone Zero: [zzz.rng.moe](https://zzz.rng.moe/en/tracker/import), [stardb.gg](https://stardb.gg/en/zzz/signal-import)\n\nVoor onderstaande services exporteer je je gacha-records als het opgegeven bestandsformaat en upload je ze via </gacha-log upload> \n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_embed_description: "Klik op de onderstaande knop voor instructies over hoe je de gacha-log-URL voor het platform van je apparaat kunt krijgen.\n\nVoor de onderstaande services exporteer je gacha-records in het opgegeven bestandsformaat en uploadt je deze via </gacha-log upload> \n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Authkey kan niet uit de URL worden gehaald. Probeer het opnieuw met een geldige URL."
 extract_authkey_error_title: Authkey Extractie Mislukt
 gacha_import_loading_embed_title: Gacha Logs importeren
+gacha_import_pc_import_embed_desc: "Zoek en open Powershell met het startmenu en kopieer en plak de volgende code erin.\n Dit script is geschreven door het Hoyo Buddy team en is veilig te gebruiken."
+gacha_import_pc_player_button_label: Windows
+gacha_import_android_button_label: Android
+gacha_import_pc_source_code: Source code
 gacha_import_loading_embed_description: "{loading_emoji} Dit kan even duren, wees geduldig..."
 gacha_upload_invalid_file_error_title: Ongeldig bestandsformaat
 gacha_upload_invalid_file_error_message: "Alleen **{file_format}** bestanden worden geaccepteerd, probeer het opnieuw met een geldig bestand."
@@ -652,7 +667,7 @@ characters_view_show_max_level_only: Toon alleen maximale niveau karakters
 characters_embed_max_level_characters: Maximaal Niveau Karakters
 natlan_reputation: "Reputatieniveau: {reputation}, Stammen: {tribes}"
 shiyu_overview: Overzicht
-shiyu_fastest_clear_time: "Snelste Voltooiingstijd Dit Seizoen:"
+shiyu_total_clear_time: "Totale Clear-Tijd:"
 shiyu_highest_frontier: "Hoogste Frontier Voltooid:"
 shiyu_relevant_season: "Relevant Seizoen:"
 shiyu_1_frontier: Eerste Frontier

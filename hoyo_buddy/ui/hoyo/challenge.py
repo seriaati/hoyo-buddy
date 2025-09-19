@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 import discord
+import hakushin
 from ambr.utils import remove_html_tags
 from genshin.models import (
     ChallengeBuff,
@@ -23,7 +24,12 @@ from genshin.models import Character as GICharacter
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
+from hoyo_buddy.constants import (
+    GAME_CHALLENGE_TYPES,
+    GPY_LANG_TO_LOCALE,
+    TRAVELER_IDS,
+    locale_to_hakushin_lang,
+)
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
     draw_apc_shadow_card,
@@ -440,11 +446,17 @@ class ChallengeView(View):
         if isinstance(self.challenge, DeadlyAssault):
             return await draw_assault_card(draw_input, self.challenge, uid)
         if isinstance(self.challenge, HardChallenge):
+            async with hakushin.HakushinAPI(
+                hakushin.Game.GI, lang=locale_to_hakushin_lang(locale)
+            ) as api:
+                stygian_detail = await api.fetch_stygian_detail(self.challenge.season.id)
+
             return await draw_hard_challenge(
                 draw_input,
                 self.challenge,
                 str(self.uid) if self.show_uid else blur_uid(self.uid),
                 mode=self.hard_challenge_mode,
+                stygian_detail=stygian_detail,
             )
         # ShiyuDefense
         return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)

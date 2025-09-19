@@ -813,16 +813,36 @@ async def draw_assault_card(
 
 
 async def draw_hard_challenge(
-    draw_input: DrawInput, data: genshin.models.HardChallenge, uid: str, *, mode: HardChallengeMode
+    draw_input: DrawInput,
+    data: genshin.models.HardChallenge,
+    uid: str,
+    *,
+    mode: HardChallengeMode,
+    stygian_detail: hakushin.gi.StygianDetail,
 ) -> File:
     urls: list[str] = []
     challenges = data.single_player.challenges if mode == "single" else data.multi_player.challenges
     for challenge in challenges:
         urls.append(challenge.enemy.icon)
         urls.extend(char.icon for char in challenge.team)
+
+    for level in stygian_detail.levels.values():
+        for e in level.enemies.values():
+            if e.recommendation is None:
+                continue
+
+            for rec in {e.recommendation.recommend, e.recommendation.dont_recommend}:
+                if rec is None:
+                    continue
+
+                presets = hakushin.utils.extract_sprite_presets(rec)
+                urls.extend(p[1] for p in presets)
+
     await download_images(urls, draw_input.session)
 
-    card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale, mode=mode)
+    card = funcs.genshin.HardChallengeCard(
+        data, uid, draw_input.locale, mode=mode, stygian_detail=stygian_detail
+    )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

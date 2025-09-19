@@ -17,6 +17,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import HardChallengeMode
 
 LIGHT_PURPLE = (196, 181, 253)
+LEYLINE_ICON_KEYWORD = "UI_LeyLineChallenge_Icon"
+LEYLINE_ICON_SIZE = (36, 36)
+DEFAULT_ICON_SIZE = (32, 32)
 
 
 class HardChallengeCard:
@@ -34,6 +37,12 @@ class HardChallengeCard:
         self._locale = locale
         self._mode = mode
         self._stygian_detail = stygian_detail
+        self._enemy_recommendations = {
+            enemy_id: enemy.recommendation
+            for level in self._stygian_detail.levels.values()
+            for enemy_id, enemy in level.enemies.items()
+            if enemy.recommendation is not None
+        }
 
     def _write_period(self, drawer: Drawer) -> None:
         season = self._data.season
@@ -293,7 +302,10 @@ class HardChallengeCard:
 
             icon = (
                 drawer.open_static(
-                    icon_url, size=(36, 36) if "UI_LeyLineChallenge_Icon" in icon_url else (32, 32)
+                    icon_url,
+                    size=LEYLINE_ICON_SIZE
+                    if LEYLINE_ICON_KEYWORD in icon_url
+                    else DEFAULT_ICON_SIZE,
                 )
                 if icon_url
                 else None
@@ -422,15 +434,7 @@ class HardChallengeCard:
         self._draw_challenge_team(drawer, im, pos, challenge)
         self._draw_challenge_stats(drawer, im, pos, challenge)
 
-        recommendation = next(
-            (
-                enemy.recommendation
-                for level in self._stygian_detail.levels.values()
-                for enemy_id, enemy in level.enemies.items()
-                if enemy_id == challenge.enemy.id
-            ),
-            None,
-        )
+        recommendation = self._enemy_recommendations.get(challenge.enemy.id)
         if recommendation is not None:
             self._draw_enemy_weaknesses(drawer, im, pos, recommendation)
 

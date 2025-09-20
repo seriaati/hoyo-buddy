@@ -283,13 +283,7 @@ class HardChallengeCard:
         if recommendation is None:
             return
 
-        text = LocaleStr(
-            key="hard_challenge_advantage" if is_advantage else "hard_challenge_disadvantage"
-        )
-        pill = self._create_pill(drawer, is_advantage=is_advantage, text=text)
         pill_pos = (pos[0] + 48, pos[1] + (752 if is_advantage else 829))
-        im.paste(pill, pill_pos, pill)
-        pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
 
         for rec in recommendation.split(" | "):
             presets = hakushin.utils.extract_sprite_presets(rec)

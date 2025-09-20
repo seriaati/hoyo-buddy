@@ -42,4 +42,8 @@ class GachaHistory(BaseModel):
 
     @classmethod
     async def bulk_create(cls, records: list[Self], **kwargs) -> None:
+        for record in records:
+            if record.game is Game.ZZZ:
+                record.rarity += 1
+
         return await super().bulk_create(records, batch_size=5000, ignore_conflicts=True, **kwargs)

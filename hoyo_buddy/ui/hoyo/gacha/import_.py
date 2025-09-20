@@ -206,7 +206,7 @@ class URLImport(Button[GachaImportView]):
                 records.append(
                     GachaHistory(
                         wish_id=signal.id,
-                        rarity=signal.rarity + 1,  # ZZZ uses 2~4, we use 3~5
+                        rarity=signal.rarity,
                         time=signal.time,
                         banner_type=signal.banner_type,
                         item_id=signal.item_id,

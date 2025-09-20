@@ -159,7 +159,7 @@ class GachaCommand:
             [
                 GachaHistory(
                     wish_id=record.id,
-                    rarity=record.rarity + 1,  # rng.moe uses 2~4, we use 3~5
+                    rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
@@ -493,7 +493,7 @@ class GachaCommand:
             [
                 GachaHistory(
                     wish_id=record.id,
-                    rarity=record.rarity + 1,  # starward ZZZ uses 2~4, we use 3~5
+                    rarity=record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,

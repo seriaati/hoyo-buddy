@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import string
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -67,10 +68,11 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Builds, Interaction
 
 
-GI_CARD_ENDPOINTS = {
+CARD_API_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
     "enkacard": "http://localhost:7652/enka-card",
+    "src": "http://localhost:7652/star-rail-card",
 }
 
 
@@ -130,6 +132,18 @@ class ProfileView(View, PlayerEmbedMixin):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
+
+    async def _request_draw_card_api(
+        self, template: str, *, payload: dict[str, Any], session: aiohttp.ClientSession
+    ) -> BytesIO:
+        endpoint = CARD_API_ENDPOINTS.get(template.rstrip(string.digits))
+        if endpoint is None:
+            msg = f"Invalid template: {template}"
+            raise ValueError(msg)
+
+        async with session.post(endpoint, json=payload) as resp:
+            resp.raise_for_status()
+            return BytesIO(await resp.read())
 
     async def _fix_invalid_template(self, card_settings: CardSettings) -> None:
         if self.game not in TEMPLATES or card_settings.template not in TEMPLATES[self.game]:
@@ -301,13 +315,7 @@ class ProfileView(View, PlayerEmbedMixin):
             assert self._account is not None
             payload["cookies"] = self._account.cookies
 
-        endpoint = "http://localhost:7652/star-rail-card"
-
-        async with session.post(endpoint, json=payload) as resp:
-            # API returns a png image
-            if resp.status != 200:
-                raise ValueError(await resp.text())
-            return BytesIO(await resp.read())
+        return await self._request_draw_card_api(template, payload=payload, session=session)
 
     async def _draw_enka_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
@@ -335,16 +343,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 "build_id": self._build_id,
             }
 
-        endpoint = GI_CARD_ENDPOINTS.get(template[:-1])
-        if endpoint is None:
-            msg = f"Invalid template: {template}"
-            raise ValueError(msg)
-
-        async with session.post(endpoint, json=payload) as resp:
-            # API returns a png image
-            if resp.status != 200:
-                raise ValueError(await resp.text())
-            return BytesIO(await resp.read())
+        return await self._request_draw_card_api(template, payload=payload, session=session)
 
     async def _draw_hb_hsr_character_card(
         self, character: Character, card_settings: CardSettings, draw_input: DrawInput

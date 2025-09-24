@@ -846,3 +846,5 @@ aaa_acronym: AAA
 changelog_command_desc: View the latest changes and updates
 account_game_mismatch_error_title: Account Game Mismatch
 account_game_mismatch_error_message: "The account you are using is not a {game} account"
+enka_api_error_title: Enka API Error
+enka_api_error_description: "There was an error while fetching data from Enka Network, please try again later."

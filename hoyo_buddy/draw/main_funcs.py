@@ -802,7 +802,7 @@ async def draw_assault_card(
         urls.extend((challenge.boss.icon, challenge.boss.badge_icon))
         urls.extend(buff.icon for buff in challenge.buffs)
         urls.extend(agent.icon for agent in challenge.agents)
-        if challenge.bangboo is not None:
+        if challenge.bangboo is not None and hasattr(challenge.bangboo, "icon"):
             urls.append(challenge.bangboo.icon)
     await download_images(urls, draw_input.session)
 

@@ -414,7 +414,7 @@ class ChallengeView(View):
             dark_mode=self.dark_mode,
             locale=locale,
             session=session,
-            filename="challenge.webp",
+            filename="challenge.png",
             executor=executor,
             loop=loop,
         )
@@ -486,7 +486,7 @@ class ChallengeView(View):
             return
 
         embed = DefaultEmbed(self.locale).add_acc_info(self.account)
-        embed.set_image(url="attachment://challenge.webp")
+        embed.set_image(url="attachment://challenge.png")
 
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
 
@@ -531,7 +531,7 @@ class ChallengeView(View):
         self.check_challenge_data(self.challenge)
         file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
         embed = DefaultEmbed(self.locale).add_acc_info(self.account)
-        embed.set_image(url="attachment://challenge.webp")
+        embed.set_image(url="attachment://challenge.png")
 
         self.message = await i.edit_original_response(
             embed=embed, attachments=[file_], view=self, content=await get_dyk(i)

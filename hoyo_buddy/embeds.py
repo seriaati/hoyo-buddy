@@ -82,6 +82,11 @@ class Embed(discord.Embed):
             self.description += f"\n{translated_description}"
         return self
 
+    def set_image(self, url: str | discord.File | None = None) -> Self:
+        if isinstance(url, discord.File):
+            url = f"attachment://{url.filename}"
+        return super().set_image(url=url)
+
 
 class DefaultEmbed(Embed):
     def __init__(

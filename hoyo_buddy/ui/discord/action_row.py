@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
     from .view import View
 
+__all__ = ("ActionRow",)
+
 
 class ActionRow[V: View](discord.ui.ActionRow):
     def __init__(self, *children: Button[V] | Select[V], id: int | None = None) -> None:  # noqa: A002

@@ -11,35 +11,55 @@ from hoyo_buddy.db import get_locale
 from hoyo_buddy.embeds import ErrorEmbed
 from hoyo_buddy.l10n import LocaleStr, translator
 
+from .action_row import ActionRow
 from .button import Button
+from .container import Container
+from .section import Section
 from .select import Select
+from .text_display import TextDisplay
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
-__all__ = ("URLButtonView", "View")
+__all__ = ("LayoutView", "URLButtonView", "View")
 
 
-class View(discord.ui.View):
-    def __init__(self, *, author: User, locale: Locale) -> None:
-        super().__init__(timeout=600)
-        self.author = author
-        self.locale = locale
-        self.message: discord.Message | None = None
-        self.item_states: dict[str, bool] = {}
+class ViewMixin:
+    children: list[discord.ui.Item[Any]]
+    author: User
+    message: discord.Message | None
+    locale: Locale
+    clear_items: Callable[[], None]
 
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
 
-    def add_items(self, items: Iterable[Button | Select]) -> Self:
-        for item in items:
-            self.add_item(item)
-        return self
+    @staticmethod
+    async def absolute_send(i: Interaction, **kwargs) -> None:
+        with contextlib.suppress(discord.HTTPException):
+            if not i.response.is_done():
+                await i.response.send_message(**kwargs)
+            else:
+                await i.followup.send(**kwargs)
+
+    @staticmethod
+    async def absolute_edit(i: Interaction, **kwargs) -> None:
+        with contextlib.suppress(discord.HTTPException):
+            if not i.response.is_done():
+                await i.response.edit_message(**kwargs)
+            else:
+                await i.edit_original_response(**kwargs)
+
+    @staticmethod
+    def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
+        if message:
+            return message.embeds
+        return None
 
     async def on_timeout(self) -> None:
         all_url_buttons = all(
@@ -48,7 +68,7 @@ class View(discord.ui.View):
         if self.message is not None and not all_url_buttons:
             self.clear_items()
             with contextlib.suppress(discord.HTTPException):
-                await self.message.edit(view=self)
+                await self.message.edit(view=self)  # pyright: ignore[reportArgumentType]
 
         if self.message is None and not all_url_buttons:
             logger.warning(f"View {self!r} timed out without a set message")
@@ -80,6 +100,28 @@ class View(discord.ui.View):
             return False
         return True
 
+    def get_item(self, custom_id: str) -> Any:
+        for item in self.children:
+            if isinstance(item, Button | Select) and item.custom_id == custom_id:
+                return item
+
+        msg = f"No item found with custom_id {custom_id!r}"
+        raise ValueError(msg)
+
+
+class View(discord.ui.View, ViewMixin):
+    def __init__(self, *, author: User, locale: Locale) -> None:
+        super().__init__(timeout=600)
+        self.author = author
+        self.locale = locale
+        self.message: discord.Message | None = None
+        self.item_states: dict[str, bool] = {}
+
+    def add_items(self, items: Iterable[Button | Select]) -> Self:
+        for item in items:
+            self.add_item(item)
+        return self
+
     def disable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
@@ -108,40 +150,10 @@ class View(discord.ui.View):
             item.translate(self.locale)
         return super().add_item(item)
 
-    def get_item(self, custom_id: str) -> Any:
-        for item in self.children:
-            if isinstance(item, Button | Select) and item.custom_id == custom_id:
-                return item
-
-        msg = f"No item found with custom_id {custom_id!r}"
-        raise ValueError(msg)
-
     def translate_items(self) -> None:
         for item in self.children:
             if isinstance(item, Button | Select):
                 item.translate(self.locale)
-
-    @staticmethod
-    async def absolute_send(i: Interaction, **kwargs) -> None:
-        with contextlib.suppress(discord.HTTPException):
-            if not i.response.is_done():
-                await i.response.send_message(**kwargs)
-            else:
-                await i.followup.send(**kwargs)
-
-    @staticmethod
-    async def absolute_edit(i: Interaction, **kwargs) -> None:
-        with contextlib.suppress(discord.HTTPException):
-            if not i.response.is_done():
-                await i.response.edit_message(**kwargs)
-            else:
-                await i.edit_original_response(**kwargs)
-
-    @staticmethod
-    def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
-        if message:
-            return message.embeds
-        return None
 
 
 class URLButtonView(discord.ui.View):
@@ -159,3 +171,19 @@ class URLButtonView(discord.ui.View):
                 label=translator.translate(label, locale) if label else None, url=url, emoji=emoji
             )
         )
+
+
+class LayoutView(discord.ui.LayoutView, ViewMixin):
+    def __init__(self, *, author: User, locale: Locale) -> None:
+        super().__init__(timeout=600)
+        self.author = author
+        self.locale = locale
+        self.message: discord.Message | None = None
+        self.item_states: dict[str, bool] = {}
+
+        self.translate(locale)
+
+    def translate(self, locale: Locale) -> None:
+        for child in self.children:
+            if isinstance(child, (ActionRow, Container, Section, TextDisplay)):
+                child.translate(locale)

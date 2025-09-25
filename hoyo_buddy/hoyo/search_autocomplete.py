@@ -285,7 +285,7 @@ class AutocompleteSetup:
                             continue
 
                         # only hakushin has beta items
-                        if category is ZZZItemCategory and str(item.id) in beta_ids:
+                        if isinstance(category, ZZZItemCategory) and str(item.id) in beta_ids:
                             continue
 
                         cls._result[game][category][locale].append(

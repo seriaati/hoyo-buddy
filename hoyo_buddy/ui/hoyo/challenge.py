@@ -48,6 +48,7 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
 from hoyo_buddy.ui import Button, Select, SelectOption, ToggleButton, View
+from hoyo_buddy.ui.discord.select import PaginatorSelect
 from hoyo_buddy.utils import blur_uid, get_floor_difficulty
 
 if TYPE_CHECKING:
@@ -538,7 +539,7 @@ class ChallengeView(View):
         )
 
 
-class PhaseSelect(Select[ChallengeView]):
+class PhaseSelect(PaginatorSelect[ChallengeView]):
     def __init__(self) -> None:
         super().__init__(
             placeholder=LocaleStr(key="abyss.phase_select.placeholder"),

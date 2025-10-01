@@ -35,6 +35,7 @@ dependencies = [
   "apscheduler>=3.11.0",
   "redis[hiredis]>=6.2.0",
   "chompjs>=1.4.0",
+  "anyio>=4.11.0",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

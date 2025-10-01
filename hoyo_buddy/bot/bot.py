@@ -5,11 +5,11 @@ import atexit
 import contextlib
 import os
 from collections import defaultdict
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import aiocache
 import aiosqlite
+import anyio
 import asyncpg_listen
 import discord
 import enka
@@ -178,8 +178,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         await asyncio.gather(*tasks)
 
     async def _load_cogs(self) -> None:
-        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
-            cog_name = Path(filepath).stem
+        async for filepath in anyio.Path("hoyo_buddy/cogs").glob("**/*.py"):
+            cog_name = anyio.Path(filepath).stem
 
             if not self.config.schedule and cog_name == "schedule":
                 continue

@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -646,8 +646,8 @@ speed = [
 
 [[package]]
 name = "enka"
-version = "2.5.10"
-source = { git = "https://github.com/seriaati/enka-py#77abc8ef0d78720f3e89793765b6f949b105bc90" }
+version = "2.5.11"
+source = { git = "https://github.com/seriaati/enka-py#7f68290470bc9dcec47813f9d9b004d11f9f19bb" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

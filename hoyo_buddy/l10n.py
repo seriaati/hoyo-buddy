@@ -308,9 +308,9 @@ class Translator:
         string_key = self._get_string_key(string)
 
         if string.mi18n_game is not None:
-            source_string = self._mi18n[SOURCE_LANG, string.mi18n_game][string_key]  # pyright: ignore[reportArgumentType]
+            source_string = self._mi18n[SOURCE_LANG, string.mi18n_game].get(string_key)  # pyright: ignore[reportArgumentType]
         elif string.game is not None:
-            source_string = self._game_textmaps[SOURCE_LANG, string.game][string_key]
+            source_string = self._game_textmaps[SOURCE_LANG, string.game].get(string_key)
         else:
             source_string = self._l10n[SOURCE_LANG].get(string_key)
 

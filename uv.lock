@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -646,8 +646,8 @@ speed = [
 
 [[package]]
 name = "enka"
-version = "2.5.10"
-source = { git = "https://github.com/seriaati/enka-py#77abc8ef0d78720f3e89793765b6f949b105bc90" }
+version = "2.5.11"
+source = { git = "https://github.com/seriaati/enka-py#7f68290470bc9dcec47813f9d9b004d11f9f19bb" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -898,6 +898,7 @@ dependencies = [
     { name = "aiofiles" },
     { name = "akasha-py" },
     { name = "ambr-py" },
+    { name = "anyio" },
     { name = "apscheduler" },
     { name = "asyncpg" },
     { name = "asyncpg-listen" },
@@ -944,6 +945,7 @@ requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "akasha-py", specifier = ">=0.2.9" },
     { name = "ambr-py", git = "https://github.com/seriaati/ambr" },
+    { name = "anyio", specifier = ">=4.11.0" },
     { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "asyncpg-listen", specifier = ">=0.0.6" },

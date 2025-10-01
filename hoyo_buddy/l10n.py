@@ -3,13 +3,13 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import datetime
-import pathlib
 import random
 import re
 from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
 
 import aiofiles
 import ambr
+import anyio
 import genshin
 import orjson
 import yatta
@@ -48,8 +48,8 @@ Mi18nGame: TypeAlias = Literal["mimo"] | Game
 COMMAND_REGEX = r"</[^>]+>"
 DOCS_REGEX = r":docs/[^:\s]+:"
 SOURCE_LANG = "en_US"
-L10N_PATH = pathlib.Path("./l10n")
-BOT_DATA_PATH = pathlib.Path("./hoyo_buddy/bot/data")
+L10N_PATH = anyio.Path("./l10n")
+BOT_DATA_PATH = anyio.Path("./hoyo_buddy/bot/data")
 GAME_MI18N_FILES: dict[Mi18nGame, tuple[str, str]] = {
     Game.GENSHIN: ("https://fastcdn.hoyoverse.com/mi18n/bbs_oversea", "m11241040191111"),
     Game.STARRAIL: (
@@ -185,7 +185,7 @@ class Translator:
             asyncio.run(self.load())
 
     async def load_l10n_files(self) -> None:
-        for file_path in L10N_PATH.glob("*.yaml"):
+        async for file_path in L10N_PATH.glob("*.yaml"):
             lang = file_path.stem
             self._l10n[lang] = await read_yaml(file_path.as_posix())
 
@@ -223,8 +223,8 @@ class Translator:
         logger.info("Fetched mi18n files")
 
     async def load_mi18n_files(self) -> None:
-        for file_path in BOT_DATA_PATH.glob("mi18n_*.json"):
-            if not file_path.exists():
+        async for file_path in BOT_DATA_PATH.glob("mi18n_*.json"):
+            if not await file_path.exists():
                 continue
 
             filename, lang = file_path.stem.split("_")[1:]

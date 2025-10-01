@@ -135,9 +135,15 @@ class ImgTheaterCard:
         else:
             fastest_text = ""
 
-        title = LocaleStr(
-            key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id
-        ).translate(self.locale)
+        if act.is_arcana:
+            title = LocaleStr(
+                key=f"holy_card_challenge_{act.arcana_number}", mi18n_game=Game.GENSHIN
+            ).translate(self.locale)
+        else:
+            title = LocaleStr(
+                key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id
+            ).translate(self.locale)
+
         self._drawer.write(
             title + fastest_text, size=32, style="bold", position=(pos[0] + 21, pos[1] + 10)
         )
@@ -229,7 +235,11 @@ class ImgTheaterCard:
         x_padding = 601
         y_padding = 255
 
-        for i, act in enumerate(self._theater.acts):
+        # Sort acts by arcana_number from lowest to highest
+        acts = list(self._theater.acts)
+        acts.sort(key=lambda act: act.arcana_number or act.round_id)
+
+        for i, act in enumerate(acts):
             self._draw_act_block(
                 act, (start_pos[0] + i % 2 * x_padding, start_pos[1] + i // 2 * y_padding)
             )

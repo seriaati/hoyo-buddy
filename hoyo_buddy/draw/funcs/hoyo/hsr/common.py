@@ -6,9 +6,44 @@ import enka
 from discord.utils import get as dget
 
 from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
+from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
+    from PIL import Image
+
     from hoyo_buddy import models as hb_models
+
+
+def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:
+    return stat.type.value if isinstance(stat, enka.hsr.Stat) else stat.icon
+
+
+def get_stat_icon(
+    stat: enka.hsr.Stat | hb_models.Stat | None = None,
+    filename: str | None = None,
+    *,
+    size: tuple[int, int],
+    mask_color: tuple[int, int, int] | None = None,
+) -> Image.Image:
+    if stat is None and filename is None:
+        msg = "Either 'stat' or 'filename' must be provided."
+        raise ValueError(msg)
+
+    if filename is None and stat is not None:
+        filename = get_stat_icon_filename(stat)
+
+    assert filename is not None
+
+    filename = filename.removeprefix("Icon").removesuffix(".png")
+
+    if filename == "EnergyRecovery":
+        filename = "sPRatio"
+    elif filename == "BreakUp":
+        filename = "breakDamageAddedRatio"
+
+    return Drawer.open_image(
+        f"hoyo-buddy-assets/assets/hsr-stats/{filename}.png", size=size, mask_color=mask_color
+    )
 
 
 def get_character_stats(
@@ -34,23 +69,23 @@ def get_character_stats(
             stat = character.stats.get(stat_type)
             if stat is None:
                 continue
-            stats[stat.icon] = stat.formatted_value
+            stats[get_stat_icon_filename(stat)] = stat.formatted_value
 
         max_dmg_add = character.highest_dmg_bonus_stat
-        stats[max_dmg_add.icon] = max_dmg_add.formatted_value
+        stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
     else:
         attr_types = (1, 2, 5, 10, 58, 9, 3, 4, 6, 11, 7)
         for attr_type in attr_types:
             stat = next((s for s in character.stats if s.type == attr_type), None)
             if stat is None:
                 continue
-            stats[stat.icon] = stat.formatted_value
+            stats[get_stat_icon_filename(stat)] = stat.formatted_value
 
         # Get max damage addition
         dmg_additions = [s for s in character.stats if s.type in HSR_ELEMENT_DMG_PROPS]
         if dmg_additions:
             max_dmg_add = max(dmg_additions, key=lambda a: a.formatted_value)
-            stats[max_dmg_add.icon] = max_dmg_add.formatted_value
+            stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
         else:
             max_dmg_add = None
 

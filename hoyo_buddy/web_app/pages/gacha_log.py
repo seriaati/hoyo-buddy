@@ -289,7 +289,8 @@ class FilterDialog(ft.AlertDialog):
                             for banner_type in BANNER_TYPE_NAMES[game]
                         ],
                         value=translator.translate(
-                            LocaleStr(key=BANNER_TYPE_NAMES[game].get(params.banner_type, "")), locale
+                            LocaleStr(key=BANNER_TYPE_NAMES[game].get(params.banner_type, "")),
+                            locale,
                         ),
                         on_change=self.on_banner_type_dropdown_change,
                     ),

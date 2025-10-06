@@ -199,7 +199,7 @@ def get_error_embed(error: Exception, locale: Locale) -> tuple[ErrorEmbed | Defa
             else:
                 embed = ErrorEmbed(locale, title=title, description=description)
 
-            if image is not None:
+            if image is not None and isinstance(image, str):
                 embed.set_image(url=image)
 
     if embed is None:

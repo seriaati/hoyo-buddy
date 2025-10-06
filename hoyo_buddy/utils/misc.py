@@ -89,9 +89,9 @@ def get_now(tz: datetime.timezone | None = None) -> datetime.datetime:
 
 
 async def test_url_validity(url: str, session: aiohttp.ClientSession) -> bool:
-    """Test if a URL is valid by sending a HEAD request."""
+    """Test if a URL is valid by sending a GET request."""
     try:
-        async with session.head(url) as resp:
+        async with session.get(url) as resp:
             return resp.status == 200
     except aiohttp.ClientError:
         return False

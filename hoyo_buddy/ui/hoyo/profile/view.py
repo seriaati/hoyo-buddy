@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import string
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal
@@ -62,6 +63,7 @@ if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
 
+    import yatta
     from discord import Member, User
     from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats
 
@@ -133,6 +135,21 @@ class ProfileView(View, PlayerEmbedMixin):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
+
+    async def _batch_fetch_lc_details(
+        self, api: YattaAPIClient, lc_ids: list[int]
+    ) -> dict[int, yatta.LightConeDetail]:
+        return_dict: dict[int, yatta.LightConeDetail] = {}
+        tasks = [asyncio.create_task(api.fetch_light_cone_detail(lc_id)) for lc_id in lc_ids]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for result in results:
+            if isinstance(result, BaseException):
+                logger.error(f"Failed to fetch light cone detail: {result}")
+                continue
+            return_dict[result.id] = result
+
+        return return_dict
 
     async def _request_draw_card_api(
         self, template: str, *, payload: dict[str, Any], session: aiohttp.ClientSession
@@ -625,6 +642,29 @@ class ProfileView(View, PlayerEmbedMixin):
                 or self._card_data[char_id]["primary"]
                 for char_id in self.character_ids
             }
+
+            # Batch fetch
+            fetch_ids = [
+                int(char.light_cone.id)
+                for char in characters
+                if isinstance(char, HoyolabHSRCharacter) and char.light_cone is not None
+            ]
+            if fetch_ids:
+                async with YattaAPIClient() as api:
+                    manual_avatars = await api.fetch_manual_avatar()
+                    lc_details = await self._batch_fetch_lc_details(api, fetch_ids)
+
+                for char in characters:
+                    if (
+                        isinstance(char, HoyolabHSRCharacter)
+                        and char.light_cone is not None
+                        and char.light_cone.id in lc_details
+                    ):
+                        lc_detail = lc_details[char.light_cone.id]
+                        char.light_cone.stats = GenshinClient.get_lc_stats(
+                            char.light_cone, lc_detail, manual_avatars
+                        )
+
             return await draw_hsr_team_card(
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]

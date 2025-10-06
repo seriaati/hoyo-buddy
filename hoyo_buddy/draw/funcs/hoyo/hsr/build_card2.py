@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import enka
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
@@ -15,6 +14,8 @@ from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
     from io import BytesIO
+
+    import enka
 
     from hoyo_buddy.models import HoyolabHSRCharacter
 

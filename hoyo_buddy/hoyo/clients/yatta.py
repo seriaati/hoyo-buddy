@@ -7,9 +7,11 @@ from typing import TYPE_CHECKING, Any
 
 import discord.utils as dutils
 import yatta
+from aiohttp_client_cache.backends.redis import RedisBackend
 from seria.utils import create_bullet_list
 from yatta import Language
 
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import LOCALE_TO_YATTA_LANG, TRAILBLAZER_IDS, YATTA_PATH_TO_HSR_PATH
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_hsr_element_emoji, get_hsr_path_emoji
@@ -45,7 +47,11 @@ class YattaAPIClient(yatta.YattaAPI):
     def __init__(
         self, locale: Locale = Locale.american_english, session: aiohttp.ClientSession | None = None
     ) -> None:
-        super().__init__(lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN), session=session)
+        super().__init__(
+            lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN),
+            session=session,
+            cache_backend=RedisBackend(address=CONFIG.redis_url) if CONFIG.redis_url else None,
+        )
         self.locale = locale
 
     def _process_description_params(

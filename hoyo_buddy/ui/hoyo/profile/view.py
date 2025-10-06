@@ -14,7 +14,6 @@ from loguru import logger
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    YATTA_PROP_TYPE_TO_GPY_TYPE,
     ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_DISC_SUBSTATS,
@@ -42,7 +41,6 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.models.hoyolab_hsr import Stat
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
@@ -135,39 +133,6 @@ class ProfileView(View, PlayerEmbedMixin):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
-
-    async def _calc_hoyolab_hsr_lc_stats(self, lc_id: int, lc_level: int) -> list[Stat]:
-        async with YattaAPIClient() as api:
-            lc_detail = await api.fetch_light_cone_detail(lc_id)
-            manual_avatar = await api.fetch_manual_avatar()
-
-        lc_stats: list[Stat] = []
-        stat_values = YattaAPIClient.calculate_lc_stat_values(lc_detail, lc_level)
-
-        for stat_id, value in stat_values.items():
-            converted_stat_id = YattaAPIClient.convert_upgrade_stat_key(stat_id)
-
-            if converted_stat_id not in YATTA_PROP_TYPE_TO_GPY_TYPE:
-                logger.error(
-                    f"Unknown stat ID {converted_stat_id} for Light Cone {lc_detail.name} ({lc_detail.id})"
-                )
-                continue
-
-            if converted_stat_id not in manual_avatar:
-                logger.error(
-                    f"Stat ID {converted_stat_id} not found in manual avatar for Light Cone {lc_detail.name} ({lc_detail.id})"
-                )
-                continue
-
-            lc_stats.append(
-                Stat(
-                    type=YATTA_PROP_TYPE_TO_GPY_TYPE[converted_stat_id],
-                    icon=manual_avatar[converted_stat_id].get("icon", ""),
-                    formatted_value=str(int(value)),
-                )
-            )
-
-        return lc_stats
 
     async def _request_draw_card_api(
         self, template: str, *, payload: dict[str, Any], session: aiohttp.ClientSession
@@ -387,6 +352,15 @@ class ProfileView(View, PlayerEmbedMixin):
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
 
+        if character.light_cone is not None and isinstance(character, HoyolabHSRCharacter):
+            async with YattaAPIClient() as api:
+                manual_avatar = await api.fetch_manual_avatar()
+                lc_detail = await api.fetch_light_cone_detail(character.light_cone.id)
+
+            character.light_cone.stats = GenshinClient.get_lc_stats(
+                character.light_cone, lc_detail, manual_avatar
+            )
+
         character_id = str(character.id)
         character_data = self._card_data.get(character_id)
         if character_data is None:
@@ -395,11 +369,6 @@ class ProfileView(View, PlayerEmbedMixin):
         image_url = card_settings.current_image or get_default_art(
             character, is_team=False, use_m3_art=card_settings.use_m3_art
         )
-
-        if isinstance(character, HoyolabHSRCharacter) and character.light_cone is not None:
-            character.light_cone.stats = await self._calc_hoyolab_hsr_lc_stats(
-                character.light_cone.id, character.light_cone.level
-            )
 
         if card_settings.custom_primary_color is None:
             primary: str = character_data["primary"]
@@ -656,12 +625,6 @@ class ProfileView(View, PlayerEmbedMixin):
                 or self._card_data[char_id]["primary"]
                 for char_id in self.character_ids
             }
-            for character in characters:
-                assert isinstance(character, (HoyolabHSRCharacter | enka.hsr.Character))
-                if isinstance(character, HoyolabHSRCharacter) and character.light_cone is not None:
-                    character.light_cone.stats = await self._calc_hoyolab_hsr_lc_stats(
-                        character.light_cone.id, character.light_cone.level
-                    )
             return await draw_hsr_team_card(
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]

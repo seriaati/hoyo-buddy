@@ -4,15 +4,14 @@ import contextlib
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import ambr
-import enka
 import hakushin
-import yatta
 from discord import File
 from genshin.models import ZZZFullAgent
 
 from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
     DoubleBlock,
@@ -32,6 +31,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
+    import enka
     import genshin
     from genshin.models import (
         FullBattlesuit,
@@ -105,7 +105,7 @@ async def draw_hsr_build_card(
             primary_hex,
         )
 
-    async with yatta.YattaAPI() as api:
+    async with YattaAPIClient() as api:
         yatta_character = await api.fetch_character_detail(int(character.id))
         en_name = yatta_character.name
 

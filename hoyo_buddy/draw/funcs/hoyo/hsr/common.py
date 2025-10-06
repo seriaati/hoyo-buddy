@@ -41,6 +41,10 @@ def get_stat_icon(
     elif filename == "BreakUp":
         filename = "breakDamageAddedRatio"
 
+    # Handle cases for Enka stats which start with uppercase letters (e.g., "Attack", "Defence")
+    # but the actual filenames start with lowercase letters (e.g., "attack", "defence")
+    filename = filename[0].lower() + filename[1:]
+
     return Drawer.open_image(
         f"hoyo-buddy-assets/assets/hsr-stats/{filename}.png", size=size, mask_color=mask_color
     )

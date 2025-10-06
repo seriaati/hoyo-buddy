@@ -389,6 +389,7 @@ class Drawer:
         locale: Locale | None = None,
         no_write: bool = False,
         title_case: bool = False,
+        upper: bool = False,
         sans: bool = False,
         gothic: bool = False,
         stroke_width: int = 0,
@@ -407,6 +408,9 @@ class Drawer:
             translated_text = translator.translate(
                 text, locale or self.locale, title_case=title_case
             )
+
+        if upper:
+            translated_text = translated_text.upper()
 
         if dynamic_fontsize:
             if max_width is None:

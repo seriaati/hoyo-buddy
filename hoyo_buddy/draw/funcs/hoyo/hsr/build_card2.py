@@ -6,7 +6,11 @@ import enka
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
+    get_character_skills,
+    get_character_stats,
+    get_stat_icon,
+)
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
@@ -169,22 +173,21 @@ class HSRBuildCard2:
             drawer.write(text, size=30, style="medium", position=(747, 1200), color=self.color1)
 
             # Stats
-            if isinstance(lc, enka.hsr.LightCone):
-                start_pos = (786, 1271)
+            start_pos = (786, 1271)
 
-                for stat in lc.stats[:2]:
-                    tbox = drawer.write(
-                        stat.formatted_value,
-                        size=34,
-                        style="medium",
-                        position=start_pos,
-                        color=self.color1,
-                        anchor="ra",
-                    )
-                    icon = drawer.open_static(stat.icon, size=(66, 66), mask_color=self.color1)
-                    im.alpha_composite(icon, (tbox.left - 75, start_pos[1] - 12))
+            for stat in lc.stats[:2]:
+                tbox = drawer.write(
+                    stat.formatted_value,
+                    size=34,
+                    style="medium",
+                    position=start_pos,
+                    color=self.color1,
+                    anchor="ra",
+                )
+                icon = get_stat_icon(stat, size=(66, 66), mask_color=self.color1)
+                im.alpha_composite(icon, (tbox.left - 75, start_pos[1] - 12))
 
-                    start_pos = (tbox.left - 101, start_pos[1])
+                start_pos = (tbox.left - 101, start_pos[1])
 
         # Traces
         traces, main_bubbles, sub_bubbles = get_character_skills(character)
@@ -273,7 +276,7 @@ class HSRBuildCard2:
         attributes, _ = get_character_stats(character)
 
         for index, (icon, value) in enumerate(attributes.items()):
-            icon_ = drawer.open_static(icon, size=(85, 85), mask_color=self.color1)
+            icon_ = get_stat_icon(filename=icon, size=(85, 85), mask_color=self.color1)
             im.paste(icon_, start_pos, icon_)
 
             drawer.write(
@@ -305,9 +308,7 @@ class HSRBuildCard2:
 
             # Relic main stat
             main_stat = relic.main_stat
-            main_stat_icon = drawer.open_static(
-                main_stat.icon, size=(80, 80), mask_color=self.color1
-            )
+            main_stat_icon = get_stat_icon(main_stat, size=(60, 60), mask_color=self.color1)
             im.alpha_composite(main_stat_icon, (start_pos[0] + 180, start_pos[1] + 108))
             drawer.write(
                 main_stat.formatted_value,
@@ -326,9 +327,7 @@ class HSRBuildCard2:
             sub_pos = (start_pos[0] + 21, start_pos[1] + 207)
 
             for sub_index, sub_stat in enumerate(sub_stats):
-                sub_stat_icon = drawer.open_static(
-                    sub_stat.icon, size=(55, 55), mask_color=self.color6
-                )
+                sub_stat_icon = get_stat_icon(sub_stat, size=(55, 55), mask_color=self.color6)
                 im.alpha_composite(sub_stat_icon, sub_pos)
                 drawer.write(
                     sub_stat.formatted_value,

@@ -32,6 +32,7 @@ class LightCone:
     name: str
     max_level: int
     rarity: int
+    stats: list[Stat]
 
     @property
     def icon(self) -> LightConeIcon:

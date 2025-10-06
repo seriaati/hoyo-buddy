@@ -81,23 +81,13 @@ async def draw_hsr_build_card(
     urls: list[str] = []
     urls.append(image_url)
     urls.extend(trace.icon for trace in character.traces)
-
-    stats = (
-        character.stats if isinstance(character, HoyolabHSRCharacter) else character.stats.values()
-    )
-    urls.extend(stat.icon for stat in stats)
-
-    for relic in character.relics:
-        urls.extend((relic.icon, relic.main_stat.icon))
-        urls.extend(sub_stat.icon for sub_stat in relic.sub_stats)
+    urls.extend(relic.icon for relic in character.relics)
 
     if character.light_cone is not None:
         if template == 2:
             urls.append(character.light_cone.icon.item)
         else:
             urls.append(character.light_cone.icon.image)
-        if isinstance(character, enka.hsr.Character):
-            urls.extend(stat.icon for stat in character.light_cone.stats)
 
     if template == 2:
         urls.extend(e.icon for e in character.eidolons)
@@ -681,16 +671,9 @@ async def draw_hsr_team_card(
     for character in characters:
         if character.light_cone is not None:
             urls.append(character.light_cone.icon.image)
-            if isinstance(character, enka.hsr.Character):
-                urls.extend(stat.icon for stat in character.light_cone.stats)
 
         urls.extend(trace.icon for trace in character.traces)
         urls.extend(relic.icon for relic in character.relics)
-
-        if isinstance(character, enka.hsr.Character):
-            urls.extend(stat.icon for stat in character.stats.values())
-        else:
-            urls.extend(stat.icon for stat in character.stats)
 
     await download_images(urls, draw_input.session)
 

@@ -86,7 +86,8 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return description
 
-    def _convert_upgrade_stat_key(self, key: str) -> str:
+    @staticmethod
+    def convert_upgrade_stat_key(key: str) -> str:
         return KEY_DICT.get(key, key)
 
     async def fetch_element_char_counts(self) -> dict[str, int]:
@@ -142,7 +143,7 @@ class YattaAPIClient(yatta.YattaAPI):
         for key, value in upgrade.skill_base.items():
             add = upgrade.skill_add.get(key.replace("Base", "Add"), 0)
             final_value = value + add * (level - 1)
-            key_ = self._convert_upgrade_stat_key(key)
+            key_ = self.convert_upgrade_stat_key(key)
             stat_name = manual_avatar[key_]["name"]
             if stat_name is None:
                 continue
@@ -314,19 +315,8 @@ class YattaAPIClient(yatta.YattaAPI):
 
         return embed
 
-    def get_light_cone_embed(
-        self, lc: yatta.LightConeDetail, level: int, superimpose: int, manual_avatar: dict[str, Any]
-    ) -> DefaultEmbed:
-        level_str = translator.translate(LevelStr(level), self.locale)
-
-        lc_path = yatta.PathType(lc.type.id)
-        path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
-        embed = DefaultEmbed(
-            self.locale,
-            title=f"{lc.name} ({level_str})",
-            description=f"{'★' * lc.rarity}\n{path_emoji} {lc.type.name}",
-        )
-
+    @staticmethod
+    def calculate_lc_stat_values(lc: yatta.LightConeDetail, level: int) -> dict[str, float]:
         upgrade: yatta.LightConeUpgrade | None = None
 
         for upgrade in lc.upgrades:
@@ -341,13 +331,32 @@ class YattaAPIClient(yatta.YattaAPI):
         for key, value in upgrade.skill_base.items():
             add = upgrade.skill_add.get(key.replace("Base", "Add"), 0)
             final_value = value + add * (level - 1)
-            key_ = self._convert_upgrade_stat_key(key)
-            stat_name = manual_avatar[key_]["name"]
-            stat_values[stat_name] = int(final_value)
+            stat_values[key] = int(final_value)
+
+        return stat_values
+
+    def get_light_cone_embed(
+        self, lc: yatta.LightConeDetail, level: int, superimpose: int, manual_avatar: dict[str, Any]
+    ) -> DefaultEmbed:
+        level_str = translator.translate(LevelStr(level), self.locale)
+
+        lc_path = yatta.PathType(lc.type.id)
+        path_emoji = get_hsr_path_emoji(YATTA_PATH_TO_HSR_PATH[lc_path].value)
+        embed = DefaultEmbed(
+            self.locale,
+            title=f"{lc.name} ({level_str})",
+            description=f"{'★' * lc.rarity}\n{path_emoji} {lc.type.name}",
+        )
+
+        stat_values = self.calculate_lc_stat_values(lc, level)
+        converted_stat_values = {
+            manual_avatar[self.convert_upgrade_stat_key(k)]["name"]: v
+            for k, v in stat_values.items()
+        }
 
         embed.add_field(
             name=LocaleStr(key="stats_embed_field_name"),
-            value="\n".join(f"{k}: {v}" for k, v in stat_values.items()),
+            value="\n".join(f"{k}: {v}" for k, v in converted_stat_values.items()),
             inline=False,
         )
         embed.add_field(

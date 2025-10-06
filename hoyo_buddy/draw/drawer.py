@@ -344,7 +344,10 @@ class Drawer:
 
     @staticmethod
     def open_image(
-        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
+        file_path: pathlib.Path | str,
+        size: tuple[int, int] | None = None,
+        mask_color: tuple[int, int, int] | None = None,
+        opacity: float = 1.0,
     ) -> Image.Image:
         image: Image.Image | None = None
 
@@ -368,6 +371,20 @@ class Drawer:
 
         if size is not None:
             image = image.resize(size, Image.Resampling.LANCZOS)
+
+        if mask_color:
+            image = Drawer.mask_image_with_color(image, mask_color, opacity=opacity)
+        elif opacity < 1.0:
+            data = np.array(image)
+
+            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
+            data[black_pixels] = [0, 0, 0, 0]
+
+            non_transparent = data[:, :, 3] > 0
+            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
+
+            image = Image.fromarray(data)
+
         return image
 
     @staticmethod
@@ -478,22 +495,9 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        image = self.open_image(get_static_img_path(url), size)
-
-        if mask_color is not None:
-            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
-        elif opacity < 1.0:
-            data = np.array(image)
-
-            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
-            data[black_pixels] = [0, 0, 0, 0]
-
-            non_transparent = data[:, :, 3] > 0
-            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
-
-            image = Image.fromarray(data)
-
-        return image
+        return self.open_image(
+            get_static_img_path(url), size, mask_color=mask_color, opacity=opacity
+        )
 
     def open_asset(
         self,
@@ -506,10 +510,7 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
-        image = self.open_image(path, size)
-        if mask_color:
-            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
-        return image
+        return self.open_image(path, size, mask_color=mask_color, opacity=opacity)
 
     @classmethod
     def circular_crop(cls, image: Image.Image) -> Image.Image:

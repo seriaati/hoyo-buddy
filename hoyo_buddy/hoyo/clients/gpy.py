@@ -319,7 +319,7 @@ class GenshinClient(ProxyGenshinClient):
         prop_icons: dict[int, str] = {
             YATTA_PROP_TYPE_TO_GPY_TYPE[stat_id]: manual_avatar[stat_id].get("icon", "")
             for stat_id in manual_avatar
-            if stat_id in YATTA_PROP_TYPE_TO_GPY_TYPE and stat_id in manual_avatar
+            if stat_id in YATTA_PROP_TYPE_TO_GPY_TYPE
         }
         prop_icons = {k: v for k, v in prop_icons.items() if v}  # remove empty icons
 

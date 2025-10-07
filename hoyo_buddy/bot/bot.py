@@ -77,6 +77,8 @@ def init_worker() -> None:
     """Initializes the translator in a new process."""
     logger.info(f"Initializing worker process {os.getpid()}...")
     translator.load_sync()
+    if image_cache is not None:
+        image_cache.connect()
 
     atexit.register(cleanup_worker)
 

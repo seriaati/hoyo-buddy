@@ -79,7 +79,7 @@ class Search(commands.Cog):
                 self.bot.search_autofill,
                 self._beta_id_to_category,
                 self.bot.beta_search_autofill,
-            ) = await AutocompleteSetup.start(self.bot.cache_session)
+            ) = await AutocompleteSetup.start(self.bot.session)
         except Exception as e:
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)

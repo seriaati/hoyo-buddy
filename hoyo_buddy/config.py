@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from dotenv import load_dotenv
+from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 type EnvType = Literal["dev", "test", "prod"]
@@ -23,9 +24,14 @@ class Config(BaseSettings):
     hoyo_codes_api_key: str | None = None
     img_upload_api_key: str | None = None
 
+    # Sentry DSNs
+    bot_sentry_dsn: str | None = None
+    web_server_sentry_dsn: str | None = None
+    web_app_sentry_dsn: str | None = None
+    scheduler_sentry_dsn: str | None = None
+
     # Misc
     env: EnvType = "dev"
-    sentry_dsn: str | None = None
     db_url: str
     fernet_key: str
     proxy: str | None = None
@@ -71,3 +77,4 @@ class Config(BaseSettings):
 
 load_dotenv()
 CONFIG = Config()  # pyright: ignore[reportCallIssue]
+logger.info(f"CLI args: {CONFIG.cli_args}")

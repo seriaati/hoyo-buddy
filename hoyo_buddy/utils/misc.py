@@ -79,7 +79,6 @@ __all__ = (
     "sleep",
     "test_url_validity",
     "upload_image",
-    "wrap_task_factory",
 )
 
 
@@ -312,45 +311,6 @@ def remove_html_tags(content: str) -> str:
     content = content.replace('t class="t_lc"', "")
     content = content.replace('contenteditable="false"', "")
     return content.replace("/t", "")
-
-
-_tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
-
-
-def wrap_task_factory() -> None:
-    loop = asyncio.get_running_loop()
-    original_factory = loop.get_task_factory()
-
-    async def coro_wrapper(coro: asyncio._CoroutineLike[Any], coro_name: str | None = None) -> Any:
-        try:
-            return await coro
-        except Exception as e:
-            if not should_ignore_error(e):
-                name = coro_name or getattr(coro, "__name__", str(coro))
-                if CONFIG.sentry:
-                    logger.warning(f"Error in task {name!r}: {e}, capturing exception")
-                    sentry_sdk.capture_exception(e)
-                else:
-                    logger.exception(f"Error in task {name!r}: {e}")
-
-            # Still raise the exception, so errors like `StopAsyncIteration` can work properly
-            raise
-
-    def new_factory(
-        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs
-    ) -> asyncio.Task[Any] | asyncio.Future[Any]:
-        wrapped_coro = coro_wrapper(coro, coro_name=kwargs.get("name"))
-
-        if original_factory is not None:
-            t = original_factory(loop, wrapped_coro, **kwargs)
-        else:
-            t = asyncio.Task(wrapped_coro, loop=loop, **kwargs)
-
-        _tasks_set.add(t)
-        t.add_done_callback(_tasks_set.discard)
-        return t
-
-    loop.set_task_factory(new_factory)
 
 
 def convert_chara_id_to_ambr_format(character_id: int, element: str) -> str:

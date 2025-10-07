@@ -87,7 +87,7 @@ def setup_sentry(sentry_dsn: str | None) -> None:
 
     sentry_sdk.init(
         dsn=sentry_dsn,
-        disabled_integrations=[LoggingIntegration()],
+        disabled_integrations=[LoggingIntegration()],  # To avoid duplicate logs with loguru
         environment=CONFIG.env,
         release=get_project_version(),
         enable_logs=True,

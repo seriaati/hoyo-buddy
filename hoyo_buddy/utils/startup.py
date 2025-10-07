@@ -90,7 +90,6 @@ def setup_sentry(sentry_dsn: str | None) -> None:
         disabled_integrations=[LoggingIntegration()],
         environment=CONFIG.env,
         release=get_project_version(),
-        enable_logs=True,
         send_default_pii=True,
     )
 

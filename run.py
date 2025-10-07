@@ -18,12 +18,7 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import POOL_MAX_WORKERS
 from hoyo_buddy.db.pgsql import Database
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils.start import (
-    setup_async_event_loop,
-    setup_logging,
-    setup_sentry,
-    wrap_task_factory,
-)
+from hoyo_buddy.utils import setup_async_event_loop, setup_logging, setup_sentry, wrap_task_factory
 
 tracemalloc.start()
 
@@ -45,10 +40,10 @@ async def main() -> None:
 
     if CONFIG.redis_url is not None:
         backend = RedisBackend(
-            url=CONFIG.redis_url, namespace="hoyo_buddy_cache", expire_after=3600
+            url=CONFIG.redis_url, namespace="hoyo_buddy_cache", expire_after=CACHE_EXPIRE
         )
     else:
-        backend = SQLiteBackend(cache_name="hoyo_buddy_cache", expire_after=3600, fast_save=True)
+        backend = SQLiteBackend(cache_name="hoyo_buddy_cache", expire_after=CACHE_EXPIRE)
 
     with (
         executor,

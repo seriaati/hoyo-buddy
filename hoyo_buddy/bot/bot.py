@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import atexit
 import contextlib
 import os
 from collections import defaultdict
@@ -77,14 +76,6 @@ def init_worker() -> None:
     """Initializes the translator in a new process."""
     logger.info(f"Initializing worker process {os.getpid()}...")
     translator.load_sync()
-
-    atexit.register(cleanup_worker)
-
-
-def cleanup_worker() -> None:
-    logger.info(f"Cleaning up worker process {os.getpid()}...")
-    if image_cache is not None:
-        image_cache.disconnect()
 
 
 class HoyoBuddy(commands.AutoShardedBot):
@@ -201,6 +192,10 @@ class HoyoBuddy(commands.AutoShardedBot):
 
     async def setup_hook(self) -> None:
         await self.start_process_pool()
+
+        # Initialize Redis image cache
+        if image_cache is not None:
+            image_cache.start()
 
         # Initialize genshin.py sqlite cache
         async with aiosqlite.connect("genshin_py.db") as conn:

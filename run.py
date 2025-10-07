@@ -40,7 +40,7 @@ async def main() -> None:
 
     if CONFIG.redis_url is not None:
         backend = RedisBackend(
-            url=CONFIG.redis_url, namespace="hoyo_buddy", expire_after=CACHE_EXPIRE
+            url=CONFIG.redis_url, cache_name="hoyo_buddy", expire_after=CACHE_EXPIRE
         )
     else:
         backend = SQLiteBackend(cache_name=".cache/hoyo_buddy", expire_after=CACHE_EXPIRE)

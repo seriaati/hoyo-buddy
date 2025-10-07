@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
 
-SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
+SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ)
 
 
 class AutoMimoMixin(AutoTaskMixin):

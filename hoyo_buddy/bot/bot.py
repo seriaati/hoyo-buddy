@@ -65,6 +65,7 @@ if TYPE_CHECKING:
 
     import asyncpg
     from aiohttp import ClientSession
+    from aiohttp_client_cache.session import CachedSession
 
     from hoyo_buddy.config import Config
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
@@ -91,6 +92,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self,
         *,
         session: ClientSession,
+        cache_session: CachedSession,
         pool: asyncpg.Pool,
         config: Config,
         executor: concurrent.futures.Executor,
@@ -116,6 +118,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
         self.session = session
+        self.cache_session = cache_session
         self.uptime = get_now()
         self.env = config.env
         self.deployment = config.deployment

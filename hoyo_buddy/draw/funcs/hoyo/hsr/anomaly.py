@@ -234,8 +234,10 @@ class AnomalyArbitrationCard:
         checkmark = drawer.open_asset("small_checkmark.png")
         star = drawer.open_asset("star.png", size=(40, 40))
 
+        mini_boss_map = {mb.id: mb for mb in self._record.mini_bosses}
+
         for record in self._record.mini_boss_records:
-            mini_boss = next((mb for mb in self._record.mini_bosses if mb.id == record.id), None)
+            mini_boss = mini_boss_map.get(record.id)
             if mini_boss is None:
                 continue
 

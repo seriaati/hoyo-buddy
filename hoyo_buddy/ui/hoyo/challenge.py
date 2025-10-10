@@ -607,6 +607,11 @@ class PhaseSelect(PaginatorSelect[ChallengeView]):
         self.options = options
 
     async def callback(self, i: Interaction) -> None:
+        changed = self.update_page()
+        if changed:
+            await i.response.edit_message(view=self.view)
+            return
+
         self.view.season_id = int(self.values[0])
         await self.set_loading_state(i)
         await self.view.update(self, i)

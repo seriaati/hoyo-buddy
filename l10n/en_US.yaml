@@ -850,3 +850,6 @@ enka_api_error_title: Enka API Error
 enka_api_error_description: "There was an error while fetching data from Enka Network, please try again later."
 anomaly_arbitration_title: "Anomaly Arbitration"
 challenge_attempts: "Challenge Attempts: {attempts}"
+cleared: Cleared
+challenge_command_anomaly_desc: Generate Anomaly Arbitration card
+anomaly_arbitration: Anomaly Arbitration

@@ -81,6 +81,8 @@ class ChallengeHistory(BaseModel):
             return genshin.models.StarRailPureFiction(**raw_copy)
         if challenge_type is ChallengeType.HARD_CHALLENGE:
             return genshin.models.HardChallenge(**raw_copy)
+        if challenge_type is ChallengeType.ANOMALY:
+            return genshin.models.AnomalyRecord(**raw_copy)
 
     @classmethod
     async def add_data(
@@ -110,6 +112,11 @@ class ChallengeHistory(BaseModel):
             season = data.season
             start_time = season.start_at
             end_time = season.end_at
+            name = season.name
+        elif isinstance(data, genshin.models.AnomalyRecord):
+            season = data.season
+            start_time = season.begin_time.datetime
+            end_time = season.end_time.datetime
             name = season.name
         else:
             season = next((season for season in data.seasons if season.id == season_id), None)

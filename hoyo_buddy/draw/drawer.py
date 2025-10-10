@@ -369,7 +369,7 @@ class Drawer:
                 if image_cache is not None:
                     image_cache.set_background(str(file_path), image)
 
-        if size is not None:
+        if size is not None and image.size != size:
             image = image.resize(size, Image.Resampling.LANCZOS)
 
         if mask_color:

@@ -7,6 +7,7 @@ import discord
 import hakushin
 from ambr.utils import remove_html_tags
 from genshin.models import (
+    AnomalyRecord,
     ChallengeBuff,
     DeadlyAssault,
     DeadlyAssaultBuff,
@@ -32,6 +33,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import (
+    draw_anomaly_card,
     draw_apc_shadow_card,
     draw_assault_card,
     draw_hard_challenge,
@@ -44,6 +46,7 @@ from hoyo_buddy.draw.main_funcs import (
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.exceptions import NoChallengeDataError
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
@@ -71,6 +74,7 @@ ShowUIDChallenge: TypeAlias = (
     | StarRailChallenge
     | StarRailPureFiction
     | StarRailAPCShadow
+    | AnomalyRecord
 )
 
 
@@ -140,6 +144,15 @@ class BuffView(View):
                     buff_usage[buff.name].append(challenge.boss.name)
                     if buff.name not in buffs:
                         buffs[buff.name] = buff
+        elif isinstance(self._challenge, AnomalyRecord):
+            record = self._challenge.boss_record
+            if record is not None:
+                buff = record.buff
+                boss = self._challenge.boss
+                floor_name = boss.game_mode_name
+                buff_usage[buff.name].append(floor_name)
+                if buff.name not in buffs:
+                    buffs[buff.name] = buff
         else:
             for act in reversed(self._challenge.acts):
                 act_buffs = list(act.wondroud_booms) + list(act.mystery_caches)
@@ -230,6 +243,8 @@ class ChallengeView(View):
         if isinstance(challenge, DeadlyAssault):
             return challenge.id
         if isinstance(challenge, HardChallenge):
+            return challenge.season.id
+        if isinstance(challenge, AnomalyRecord):
             return challenge.season.id
 
         index = 1 if previous else 0
@@ -371,6 +386,15 @@ class ChallengeView(View):
         if self.challenge_type is ChallengeType.ASSAULT:
             return await client.get_deadly_assault(self.account.uid, previous=previous, raw=True)
 
+        if self.challenge_type is ChallengeType.ANOMALY:
+            records = (
+                await client.get_anomaly_arbitration(self.account.uid, previous=previous, raw=True)
+            ).get("challenge_peak_records", [])
+            if not records:
+                raise NoChallengeDataError(ChallengeType.ANOMALY)
+
+            return records[0]
+
         msg = f"Data fetching for {self.challenge_type!r} is not implemented"
         raise NotImplementedError(msg)
 
@@ -387,12 +411,21 @@ class ChallengeView(View):
                 raise exc
             if self.hard_challenge_mode == "multi" and not challenge.multi_player.has_data:
                 raise exc
+        elif isinstance(challenge, AnomalyRecord):
+            if not challenge.mini_boss_records:
+                raise exc
         elif not challenge.has_data:
             raise exc
 
     def get_season(self, challenge: Challenge) -> StarRailChallengeSeason:
         if isinstance(
-            challenge, SpiralAbyss | ImgTheaterData | ShiyuDefense | DeadlyAssault | HardChallenge
+            challenge,
+            SpiralAbyss
+            | ImgTheaterData
+            | ShiyuDefense
+            | DeadlyAssault
+            | HardChallenge
+            | AnomalyRecord,
         ):
             msg = f"Can't get season for {self.challenge_type}"
             raise TypeError(msg)
@@ -459,8 +492,14 @@ class ChallengeView(View):
                 mode=self.hard_challenge_mode,
                 stygian_detail=stygian_detail,
             )
-        # ShiyuDefense
-        return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
+        if isinstance(self.challenge, ShiyuDefense):
+            return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
+
+        # AnomalyRecord
+        async with YattaAPIClient() as client:
+            characters = await client.fetch_characters()
+        char_names = {char.id: char.name.lower() for char in characters}
+        return await draw_anomaly_card(draw_input, self.challenge, char_names, uid)
 
     def _add_items(self) -> None:
         self.add_item(

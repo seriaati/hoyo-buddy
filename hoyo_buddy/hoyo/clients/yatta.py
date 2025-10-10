@@ -33,6 +33,7 @@ KEY_DICT: dict[str, str] = {
     "baseAggro": "aggro",
 }
 AUDIO_LANGUAGES = ("EN", "CN", "JP", "KR")
+CACHE_EXPIRE = 12 * 3600  # 12 hours
 
 
 class ItemCategory(StrEnum):
@@ -50,7 +51,9 @@ class YattaAPIClient(yatta.YattaAPI):
         super().__init__(
             lang=LOCALE_TO_YATTA_LANG.get(locale, Language.EN),
             session=session,
-            cache_backend=RedisBackend(address=CONFIG.redis_url) if CONFIG.redis_url else None,
+            cache_backend=RedisBackend(address=CONFIG.redis_url, expire_after=CACHE_EXPIRE)
+            if CONFIG.redis_url
+            else None,
         )
         self.locale = locale
 

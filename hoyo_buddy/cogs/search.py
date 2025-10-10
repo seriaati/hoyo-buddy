@@ -70,54 +70,19 @@ class Search(commands.Cog):
     async def before_update_search_autofill(self) -> None:
         await self.bot.wait_until_ready()
 
-    def _get_serialized_search_autofill(self) -> dict[str, Any]:
-        return {
-            game.value: {
-                category.value: {locale.value: [{"name": choice.name, "value": choice.value}]}
-            }
-            for game, game_data in self.bot.search_autofill.items()
-            for category, category_data in game_data.items()
-            for locale, choices in category_data.items()
-            for choice in choices
-        }
-
-    def _set_cached_search_autofill(self, data: dict[str, Any]) -> None:
-        self.bot.search_autofill = {
-            Game(game): {
-                category: {
-                    Locale(locale): [app_commands.Choice(**choice) for choice in choices]
-                    for locale, choices in category_data.items()
-                }
-                for category, category_data in game_data.items()
-            }
-            for game, game_data in data.items()
-        }
-
     async def _setup_search_autofill(self) -> None:
-        cache_key = "search_autocomplete_choices"
-
         logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
-
-        # cached_autofill = await self.bot.cache.get(cache_key)
-        # if cached_autofill is not None:
-        #     logger.info("Using cached search autocomplete choices")
-        #     self._set_cached_search_autofill(cached_autofill)
-        #     return
 
         try:
             (
                 self.bot.search_autofill,
                 self._beta_id_to_category,
                 self.bot.beta_search_autofill,
-            ) = await AutocompleteSetup.start(self.bot.session)
+            ) = await AutocompleteSetup.start(self.bot.cache_session)
         except Exception as e:
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)
-
-        await self.bot.cache.set(
-            cache_key, self._get_serialized_search_autofill(), ttl=60 * 60 * 24
-        )
 
         logger.info(
             f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"

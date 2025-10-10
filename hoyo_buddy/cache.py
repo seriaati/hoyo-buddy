@@ -30,9 +30,23 @@ class OrjsonSerializer(BaseSerializer):
 
 class RedisImageCache:
     def __init__(self, redis_url: str) -> None:
-        logger.info(f"Process {os.getpid()} creating redis connection pool...")
-        self.redis = redis.ConnectionPool.from_url(redis_url)
-        self.bg_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="RedisCacheWorker")
+        self._redis_url = redis_url
+        self._redis: redis.ConnectionPool | None = None
+        self._bg_executor: ThreadPoolExecutor | None = None
+
+    @property
+    def redis(self) -> redis.ConnectionPool:
+        if self._redis is None:
+            msg = "Redis connection pool is not initialized. Call start() first."
+            raise RuntimeError(msg)
+        return self._redis
+
+    @property
+    def bg_executor(self) -> ThreadPoolExecutor:
+        if self._bg_executor is None:
+            msg = "Background executor is not initialized. Call start() first."
+            raise RuntimeError(msg)
+        return self._bg_executor
 
     def set(self, key: str, image: Image.Image) -> None:
         try:
@@ -57,10 +71,15 @@ class RedisImageCache:
         else:
             return Image.open(io.BytesIO(image_data))  # pyright: ignore[reportArgumentType]
 
+    def connect(self) -> None:
+        logger.info(f"Image cache in {os.getpid()} connected to Redis")
+        self._redis = redis.ConnectionPool.from_url(self._redis_url)
+        self._bg_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="RedisCacheWorker")
+
     def disconnect(self) -> None:
         self.bg_executor.shutdown(wait=True, cancel_futures=True)
         self.redis.disconnect()
-        logger.info(f"Process {os.getpid()} disconnected from Redis")
+        logger.info(f"Image cache in {os.getpid()} disconnected from Redis")
 
 
 image_cache = RedisImageCache(redis_url=CONFIG.redis_url) if CONFIG.redis_url else None

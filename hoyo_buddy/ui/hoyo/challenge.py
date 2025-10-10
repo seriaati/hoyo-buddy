@@ -495,11 +495,14 @@ class ChallengeView(View):
         if isinstance(self.challenge, ShiyuDefense):
             return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
 
-        # AnomalyRecord
-        async with YattaAPIClient() as client:
-            characters = await client.fetch_characters()
-        char_names = {char.id: char.name.lower() for char in characters}
-        return await draw_anomaly_card(draw_input, self.challenge, char_names, uid)
+        if isinstance(self.challenge, AnomalyRecord):  # pyright: ignore[reportUnnecessaryIsInstance]
+            async with YattaAPIClient() as client:
+                characters = await client.fetch_characters()
+            char_names = {char.id: char.name.lower() for char in characters}
+            return await draw_anomaly_card(draw_input, self.challenge, char_names, uid)
+
+        msg = f"Drawing for {self.challenge_type!r} is not implemented"
+        raise NotImplementedError(msg)
 
     def _add_items(self) -> None:
         self.add_item(

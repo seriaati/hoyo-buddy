@@ -179,6 +179,20 @@ class PaginatorSelect[V_co: View](Select):
             f"<{self.__class__.__name__} custom_id={self.custom_id!r} page_index={self.page_index}>"
         )
 
+    @property
+    def options(self) -> list[SelectOption]:
+        return self._underlying.options  # pyright: ignore [reportReturnType]
+
+    @options.setter
+    def options(self, value: list[SelectOption]) -> None:
+        if not value:
+            value = [SelectOption(label="placeholder", value="0")]
+            self.disabled = True
+
+        self.options_before_split = value
+        self.page_index = 0
+        self._underlying.options = self.process_options()  # pyright: ignore[reportAttributeAccessIssue]
+
     @staticmethod
     def remove_duplicate_options(
         options: list[SelectOption], existing_options: list[SelectOption]

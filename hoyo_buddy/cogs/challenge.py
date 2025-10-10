@@ -147,6 +147,22 @@ class Challenge(
     ) -> None:
         await self.challenge_command(i, ChallengeType.APC_SHADOW, user, account)
 
+    @hsr.command(
+        name=app_commands.locale_str("anomaly"),
+        description=COMMANDS["challenge hsr anomaly"].description,
+    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
+    async def anomaly_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["challenge hsr anomaly"].games)
+        ] = None,
+    ) -> None:
+        await self.challenge_command(i, ChallengeType.ANOMALY, user, account)
+
     @zzz.command(
         name=app_commands.locale_str("shiyu"),
         description=COMMANDS["challenge zzz shiyu"].description,

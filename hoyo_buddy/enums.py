@@ -130,6 +130,7 @@ class ChallengeType(StrEnum):
     SHIYU_DEFENSE = "Shiyu defense"
     ASSAULT = "zzz_deadly_assault"
     HARD_CHALLENGE = "hard_challenge"
+    ANOMALY = "anomaly_arbitration"
 
 
 class ZZZElement(StrEnum):

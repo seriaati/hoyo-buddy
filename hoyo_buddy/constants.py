@@ -521,7 +521,12 @@ GAME_CHALLENGE_TYPES: Final[dict[Game, tuple[ChallengeType, ...]]] = {
         ChallengeType.IMG_THEATER,
         ChallengeType.HARD_CHALLENGE,
     ),
-    Game.STARRAIL: (ChallengeType.MOC, ChallengeType.PURE_FICTION, ChallengeType.APC_SHADOW),
+    Game.STARRAIL: (
+        ChallengeType.MOC,
+        ChallengeType.PURE_FICTION,
+        ChallengeType.APC_SHADOW,
+        ChallengeType.ANOMALY,
+    ),
     Game.ZZZ: (ChallengeType.SHIYU_DEFENSE, ChallengeType.ASSAULT),
 }
 CHALLENGE_TYPE_GAMES = {

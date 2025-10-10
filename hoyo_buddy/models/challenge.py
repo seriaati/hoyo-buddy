@@ -3,6 +3,7 @@ from __future__ import annotations
 import genshin.models
 
 __all__ = (
+    "AnomalyRecord",
     "DeadlyAssault",
     "HardChallenge",
     "ImgTheaterData",
@@ -43,4 +44,8 @@ class DeadlyAssault(genshin.models.DeadlyAssault):
 
 
 class HardChallenge(genshin.models.HardChallenge):
+    lang: str
+
+
+class AnomalyRecord(genshin.models.AnomalyRecord):
     lang: str

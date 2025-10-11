@@ -604,7 +604,10 @@ class PhaseSelect(PaginatorSelect[ChallengeView]):
                 options.append(
                     SelectOption(label=history.duration_str, value=str(history.season_id))
                 )
-        self.options = options
+
+        self.options_before_split = options
+        self.page_index = 0
+        self.options = self.process_options()
 
     async def callback(self, i: Interaction) -> None:
         changed = self.update_page()

@@ -837,9 +837,7 @@ hard_challenge_team_composition: "Đội Hình Ra Trận"
 hard_challenge_combat_statistics: "Thống Kê Chiến Đấu"
 hard_challenge_strongest_strike: "Một đòn mạnh nhất"
 hard_challenge_damage_dealt: "Sát thương cao nhất"
-hard_challenge_enemy_weakness: "Điểm Yếu Kẻ Địch"
-hard_challenge_advantage: "Điểm yếu"
-hard_challenge_disadvantage: "Kháng tính"
+hard_challenge_enemy_weakness: "Điểm yếu và sức mạnh của kẻ địch"
 hard_challenge_command_desc: Tạo thẻ Ảo Cảnh Hiểm Ác
 hard_challenge: "Ảo Cảnh Hiểm Ác"
 fetching_accounts: "Đang truy vấn tài khoản, vui lòng chờ..."
@@ -848,3 +846,8 @@ aaa_acronym: Tự Tích Thiểm Năng
 changelog_command_desc: Xem những thay đổi và cập nhật mới nhất
 account_game_mismatch_error_title: Tài khoản game không khớp
 account_game_mismatch_error_message: "Tài khoản bạn đang sử dụng không phải là tài khoản {game}"
+enka_api_error_title: Lỗi API Enka
+enka_api_error_description: "Đã có lỗi xảy ra trong quá trình lấy dữ liệu từ Enka Network, hãy thử lại sau."
+cleared: Đã vượt ải
+challenge_command_anomaly_desc: Tạo thẻ Trọng Tài Dị Tướng
+anomaly_arbitration: Trọng Tài Dị Tướng

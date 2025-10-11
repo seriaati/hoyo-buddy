@@ -104,6 +104,7 @@ class AnomalyArbitrationCard:
             position=text_pos,
             style="bold",
             max_width=538,
+            locale=self._locale,
         )
 
         record = self._record.boss_record
@@ -138,6 +139,7 @@ class AnomalyArbitrationCard:
             size=30,
             anchor="lm",
             position=pos,
+            locale=self._locale,
         )
 
         # Buff name and icon
@@ -150,6 +152,7 @@ class AnomalyArbitrationCard:
             position=(917 + buff_icon.width + 10, 379 + buff_icon.height / 2),
             max_lines=2,
             max_width=459,
+            locale=self._locale,
         )
 
     def _draw_boss_record(self, drawer: Drawer, im: Image.Image) -> None:
@@ -244,7 +247,13 @@ class AnomalyArbitrationCard:
             # Name
             text = mini_boss.level_name
             tbox = drawer.write(
-                text, size=44, position=pos, anchor="lm", style="bold", max_width=449
+                text,
+                size=44,
+                position=pos,
+                anchor="lm",
+                style="bold",
+                max_width=449,
+                locale=self._locale,
             )
 
             # Cleared
@@ -275,6 +284,7 @@ class AnomalyArbitrationCard:
                 size=24,
                 position=(pos[0] + width, pos[1] + 123),
                 anchor="rm",
+                locale=self._locale,
             )
 
             # Characters

@@ -837,9 +837,7 @@ hard_challenge_team_composition: "Composición del equipo"
 hard_challenge_combat_statistics: "Estadísticas del combate"
 hard_challenge_strongest_strike: "Ataque más fuerte"
 hard_challenge_damage_dealt: "Mayor daño total"
-hard_challenge_enemy_weakness: "Debilidad del enemigo"
-hard_challenge_advantage: "Debilidad"
-hard_challenge_disadvantage: "Inmunidad"
+hard_challenge_enemy_weakness: "Debilidades y Fortalezas del enemigo"
 hard_challenge_command_desc: Generar tarjeta de Conflagración Estigia
 hard_challenge: "Conflagración Estigia"
 fetching_accounts: Por favor espera mientras obtenemos tus cuentas...
@@ -848,3 +846,8 @@ aaa_acronym: Acu. Auto. de Adrenalina
 changelog_command_desc: Vé los últimos cambios y actualizaciones
 account_game_mismatch_error_title: La cuenta del juego no coincide
 account_game_mismatch_error_message: "La cuenta que usas no es una cuenta de {game}"
+enka_api_error_title: Error en la API de Enka
+enka_api_error_description: "Se ha producido un error al recuperar datos de Enka Network. Inténtalo de nuevo más tarde."
+cleared: Terminado
+challenge_command_anomaly_desc: Generar tarjeta de Arbitraje atípico
+anomaly_arbitration: Arbitraje atípico

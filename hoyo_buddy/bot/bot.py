@@ -5,11 +5,11 @@ import atexit
 import contextlib
 import os
 from collections import defaultdict
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import aiocache
 import aiosqlite
+import anyio
 import asyncpg_listen
 import discord
 import enka
@@ -65,6 +65,7 @@ if TYPE_CHECKING:
 
     import asyncpg
     from aiohttp import ClientSession
+    from aiohttp_client_cache.session import CachedSession
 
     from hoyo_buddy.config import Config
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
@@ -76,6 +77,8 @@ def init_worker() -> None:
     """Initializes the translator in a new process."""
     logger.info(f"Initializing worker process {os.getpid()}...")
     translator.load_sync()
+    if image_cache is not None:
+        image_cache.connect()
 
     atexit.register(cleanup_worker)
 
@@ -91,6 +94,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         self,
         *,
         session: ClientSession,
+        cache_session: CachedSession,
         pool: asyncpg.Pool,
         config: Config,
         executor: concurrent.futures.Executor,
@@ -116,6 +120,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         )
 
         self.session = session
+        self.cache_session = cache_session
         self.uptime = get_now()
         self.env = config.env
         self.deployment = config.deployment
@@ -178,8 +183,8 @@ class HoyoBuddy(commands.AutoShardedBot):
         await asyncio.gather(*tasks)
 
     async def _load_cogs(self) -> None:
-        for filepath in Path("hoyo_buddy/cogs").glob("**/*.py"):
-            cog_name = Path(filepath).stem
+        async for filepath in anyio.Path("hoyo_buddy/cogs").glob("**/*.py"):
+            cog_name = anyio.Path(filepath).stem
 
             if not self.config.schedule and cog_name == "schedule":
                 continue

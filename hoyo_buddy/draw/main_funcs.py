@@ -4,15 +4,14 @@ import contextlib
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import ambr
-import enka
 import hakushin
-import yatta
 from discord import File
 from genshin.models import ZZZFullAgent
 
-from hoyo_buddy.constants import TRAVELER_IDS
+from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
     DoubleBlock,
@@ -32,6 +31,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
+    import enka
     import genshin
     from genshin.models import (
         FullBattlesuit,
@@ -81,23 +81,13 @@ async def draw_hsr_build_card(
     urls: list[str] = []
     urls.append(image_url)
     urls.extend(trace.icon for trace in character.traces)
-
-    stats = (
-        character.stats if isinstance(character, HoyolabHSRCharacter) else character.stats.values()
-    )
-    urls.extend(stat.icon for stat in stats)
-
-    for relic in character.relics:
-        urls.extend((relic.icon, relic.main_stat.icon))
-        urls.extend(sub_stat.icon for sub_stat in relic.sub_stats)
+    urls.extend(relic.icon for relic in character.relics)
 
     if character.light_cone is not None:
         if template == 2:
             urls.append(character.light_cone.icon.item)
         else:
             urls.append(character.light_cone.icon.image)
-        if isinstance(character, enka.hsr.Character):
-            urls.extend(stat.icon for stat in character.light_cone.stats)
 
     if template == 2:
         urls.extend(e.icon for e in character.eidolons)
@@ -115,7 +105,7 @@ async def draw_hsr_build_card(
             primary_hex,
         )
 
-    async with yatta.YattaAPI() as api:
+    async with YattaAPIClient() as api:
         yatta_character = await api.fetch_character_detail(int(character.id))
         en_name = yatta_character.name
 
@@ -681,16 +671,9 @@ async def draw_hsr_team_card(
     for character in characters:
         if character.light_cone is not None:
             urls.append(character.light_cone.icon.image)
-            if isinstance(character, enka.hsr.Character):
-                urls.extend(stat.icon for stat in character.light_cone.stats)
 
         urls.extend(trace.icon for trace in character.traces)
         urls.extend(relic.icon for relic in character.relics)
-
-        if isinstance(character, enka.hsr.Character):
-            urls.extend(stat.icon for stat in character.stats.values())
-        else:
-            urls.extend(stat.icon for stat in character.stats)
 
     await download_images(urls, draw_input.session)
 
@@ -802,7 +785,7 @@ async def draw_assault_card(
         urls.extend((challenge.boss.icon, challenge.boss.badge_icon))
         urls.extend(buff.icon for buff in challenge.buffs)
         urls.extend(agent.icon for agent in challenge.agents)
-        if challenge.bangboo is not None:
+        if challenge.bangboo is not None and hasattr(challenge.bangboo, "icon"):
             urls.append(challenge.bangboo.icon)
     await download_images(urls, draw_input.session)
 
@@ -843,6 +826,28 @@ async def draw_hard_challenge(
     card = funcs.genshin.HardChallengeCard(
         data, uid, draw_input.locale, mode=mode, stygian_detail=stygian_detail
     )
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_anomaly_card(
+    draw_input: DrawInput,
+    data: genshin.models.AnomalyRecord,
+    char_names: dict[int, str],
+    uid: int | None,
+) -> File:
+    urls = [data.boss.icon]
+    if data.boss_record and data.boss_record.has_data:
+        urls.append(data.boss_record.buff.icon)
+        urls.extend(HSR_DEFAULT_ART_URL.format(char_id=c.id) for c in data.boss_record.characters)
+
+    for r in data.mini_boss_records:
+        urls.extend(c.icon for c in r.characters)
+
+    await download_images(urls, draw_input.session)
+
+    card = funcs.hsr.AnomalyArbitrationCard(data, draw_input.locale, char_names, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

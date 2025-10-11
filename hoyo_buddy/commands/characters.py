@@ -68,7 +68,7 @@ class CharactersCommand:
             dark_mode=settings.dark_mode,
             locale=draw_locale(locale, account),
             session=i.client.session,
-            filename="characters.webp",
+            filename="characters.png",
             executor=i.client.executor,
             loop=i.client.loop,
         )

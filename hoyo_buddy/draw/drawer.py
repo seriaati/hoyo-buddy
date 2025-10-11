@@ -344,7 +344,10 @@ class Drawer:
 
     @staticmethod
     def open_image(
-        file_path: pathlib.Path | str, size: tuple[int, int] | None = None
+        file_path: pathlib.Path | str,
+        size: tuple[int, int] | None = None,
+        mask_color: tuple[int, int, int] | None = None,
+        opacity: float = 1.0,
     ) -> Image.Image:
         image: Image.Image | None = None
 
@@ -366,8 +369,22 @@ class Drawer:
                 if image_cache is not None:
                     image_cache.set_background(str(file_path), image)
 
-        if size is not None:
+        if size is not None and image.size != size:
             image = image.resize(size, Image.Resampling.LANCZOS)
+
+        if mask_color:
+            image = Drawer.mask_image_with_color(image, mask_color, opacity=opacity)
+        elif opacity < 1.0:
+            data = np.array(image)
+
+            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
+            data[black_pixels] = [0, 0, 0, 0]
+
+            non_transparent = data[:, :, 3] > 0
+            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
+
+            image = Image.fromarray(data)
+
         return image
 
     @staticmethod
@@ -389,6 +406,7 @@ class Drawer:
         locale: Locale | None = None,
         no_write: bool = False,
         title_case: bool = False,
+        upper: bool = False,
         sans: bool = False,
         gothic: bool = False,
         stroke_width: int = 0,
@@ -407,6 +425,9 @@ class Drawer:
             translated_text = translator.translate(
                 text, locale or self.locale, title_case=title_case
             )
+
+        if upper:
+            translated_text = translated_text.upper()
 
         if dynamic_fontsize:
             if max_width is None:
@@ -478,22 +499,9 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        image = self.open_image(get_static_img_path(url), size)
-
-        if mask_color is not None:
-            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
-        elif opacity < 1.0:
-            data = np.array(image)
-
-            black_pixels = (data[:, :, 0] < 10) & (data[:, :, 1] < 10) & (data[:, :, 2] < 10)
-            data[black_pixels] = [0, 0, 0, 0]
-
-            non_transparent = data[:, :, 3] > 0
-            data[non_transparent, 3] = (data[non_transparent, 3] * opacity).astype(np.uint8)
-
-            image = Image.fromarray(data)
-
-        return image
+        return self.open_image(
+            get_static_img_path(url), size, mask_color=mask_color, opacity=opacity
+        )
 
     def open_asset(
         self,
@@ -506,10 +514,7 @@ class Drawer:
     ) -> Image.Image:
         folder = folder or self.folder
         path = pathlib.Path(f"hoyo-buddy-assets/assets/{folder}/{filename}")
-        image = self.open_image(path, size)
-        if mask_color:
-            image = self.mask_image_with_color(image, mask_color, opacity=opacity)
-        return image
+        return self.open_image(path, size, mask_color=mask_color, opacity=opacity)
 
     @classmethod
     def circular_crop(cls, image: Image.Image) -> Image.Image:
@@ -665,7 +670,7 @@ class Drawer:
         """Save an image to a BytesIO object, resizing it if it exceeds the Discord file size limit."""
         while True:
             bytes_obj = io.BytesIO()
-            img.save(bytes_obj, format="WEBP", lossless=True)
+            img.save(bytes_obj, format="PNG", optimize=True)
             size_in_bytes = bytes_obj.tell()
 
             if size_in_bytes < DC_MAX_FILESIZE:

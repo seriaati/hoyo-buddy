@@ -159,10 +159,11 @@ class AssaultCard:
                 bangboo_mask = drawer.open_asset("bangboo_mask.png")
                 bangboo_level_flair = drawer.open_asset("bangboo_level_flair.png")
 
-                bangboo_icon = drawer.open_static(challenge.bangboo.icon)
-                bangboo_icon = drawer.middle_crop(bangboo_icon.resize((250, 250)), (160, 115))
-                bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
-                im.alpha_composite(bangboo_icon, (start_pos[0] + 972, start_pos[1] + 316))
+                if hasattr(challenge.bangboo, "icon"):
+                    bangboo_icon = drawer.open_static(challenge.bangboo.icon)
+                    bangboo_icon = drawer.middle_crop(bangboo_icon.resize((250, 250)), (160, 115))
+                    bangboo_icon = drawer.mask_image_with_image(bangboo_icon, bangboo_mask)
+                    im.alpha_composite(bangboo_icon, (start_pos[0] + 972, start_pos[1] + 316))
 
                 im.alpha_composite(bangboo_level_flair, (start_pos[0] + 972, start_pos[1] + 404))
                 drawer.write(

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import string
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -36,6 +38,7 @@ from hoyo_buddy.exceptions import (
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
@@ -60,6 +63,7 @@ if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
 
+    import yatta
     from discord import Member, User
     from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats
 
@@ -67,10 +71,11 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Builds, Interaction
 
 
-GI_CARD_ENDPOINTS = {
+CARD_API_ENDPOINTS = {
     "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
     "enkacard": "http://localhost:7652/enka-card",
+    "src": "http://localhost:7652/star-rail-card",
 }
 
 
@@ -130,6 +135,33 @@ class ProfileView(View, PlayerEmbedMixin):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
+
+    async def _batch_fetch_lc_details(
+        self, api: YattaAPIClient, lc_ids: list[int]
+    ) -> dict[int, yatta.LightConeDetail]:
+        return_dict: dict[int, yatta.LightConeDetail] = {}
+        tasks = [asyncio.create_task(api.fetch_light_cone_detail(lc_id)) for lc_id in lc_ids]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for result in results:
+            if isinstance(result, BaseException):
+                logger.error(f"Failed to fetch light cone detail: {result}")
+                continue
+            return_dict[result.id] = result
+
+        return return_dict
+
+    async def _request_draw_card_api(
+        self, template: str, *, payload: dict[str, Any], session: aiohttp.ClientSession
+    ) -> BytesIO:
+        endpoint = CARD_API_ENDPOINTS.get(template.rstrip(string.digits))
+        if endpoint is None:
+            msg = f"Invalid template: {template}"
+            raise ValueError(msg)
+
+        async with session.post(endpoint, json=payload) as resp:
+            resp.raise_for_status()
+            return BytesIO(await resp.read())
 
     async def _fix_invalid_template(self, card_settings: CardSettings) -> None:
         if self.game not in TEMPLATES or card_settings.template not in TEMPLATES[self.game]:
@@ -234,7 +266,7 @@ class ProfileView(View, PlayerEmbedMixin):
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
-        embed.set_image(url="attachment://card.webp")
+        embed.set_image(url="attachment://card.png")
         if self._account is not None:
             embed.add_acc_info(self._account)
         else:
@@ -301,13 +333,7 @@ class ProfileView(View, PlayerEmbedMixin):
             assert self._account is not None
             payload["cookies"] = self._account.cookies
 
-        endpoint = "http://localhost:7652/star-rail-card"
-
-        async with session.post(endpoint, json=payload) as resp:
-            # API returns a png image
-            if resp.status != 200:
-                raise ValueError(await resp.text())
-            return BytesIO(await resp.read())
+        return await self._request_draw_card_api(template, payload=payload, session=session)
 
     async def _draw_enka_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
@@ -335,22 +361,22 @@ class ProfileView(View, PlayerEmbedMixin):
                 "build_id": self._build_id,
             }
 
-        endpoint = GI_CARD_ENDPOINTS.get(template[:-1])
-        if endpoint is None:
-            msg = f"Invalid template: {template}"
-            raise ValueError(msg)
-
-        async with session.post(endpoint, json=payload) as resp:
-            # API returns a png image
-            if resp.status != 200:
-                raise ValueError(await resp.text())
-            return BytesIO(await resp.read())
+        return await self._request_draw_card_api(template, payload=payload, session=session)
 
     async def _draw_hb_hsr_character_card(
         self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
+
+        if character.light_cone is not None and isinstance(character, HoyolabHSRCharacter):
+            async with YattaAPIClient() as api:
+                manual_avatar = await api.fetch_manual_avatar()
+                lc_detail = await api.fetch_light_cone_detail(character.light_cone.id)
+
+            character.light_cone.stats = GenshinClient.get_lc_stats(
+                character.light_cone, lc_detail, manual_avatar
+            )
 
         character_id = str(character.id)
         character_data = self._card_data.get(character_id)
@@ -494,7 +520,7 @@ class ProfileView(View, PlayerEmbedMixin):
             dark_mode=card_settings.dark_mode,
             locale=await self.get_character_locale(character),
             session=i.client.session,
-            filename="card.webp",
+            filename="card.png",
             executor=i.client.executor,
             loop=i.client.loop,
         )
@@ -537,7 +563,7 @@ class ProfileView(View, PlayerEmbedMixin):
             dark_mode=settings.team_card_dark_mode,
             locale=locale,
             session=i.client.session,
-            filename="card.webp",
+            filename="card.png",
             executor=i.client.executor,
             loop=i.client.loop,
         )
@@ -616,6 +642,29 @@ class ProfileView(View, PlayerEmbedMixin):
                 or self._card_data[char_id]["primary"]
                 for char_id in self.character_ids
             }
+
+            # Batch fetch
+            fetch_ids = [
+                int(char.light_cone.id)
+                for char in characters
+                if isinstance(char, HoyolabHSRCharacter) and char.light_cone is not None
+            ]
+            if fetch_ids:
+                async with YattaAPIClient() as api:
+                    manual_avatars = await api.fetch_manual_avatar()
+                    lc_details = await self._batch_fetch_lc_details(api, fetch_ids)
+
+                for char in characters:
+                    if (
+                        isinstance(char, HoyolabHSRCharacter)
+                        and char.light_cone is not None
+                        and char.light_cone.id in lc_details
+                    ):
+                        lc_detail = lc_details[char.light_cone.id]
+                        char.light_cone.stats = GenshinClient.get_lc_stats(
+                            char.light_cone, lc_detail, manual_avatars
+                        )
+
             return await draw_hsr_team_card(
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
@@ -698,7 +747,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 raise ThirdPartyCardTempError from e
             raise
 
-        attachments = [File(bytes_obj, filename="card.webp")]
+        attachments = [File(bytes_obj, filename="card.png")]
 
         if unset_loading_state and item is not None:
             await item.unset_loading_state(

@@ -13,6 +13,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_ZZZ_ENKA_LANG,
 )
 from hoyo_buddy.draw.card_data import CARD_DATA
+from hoyo_buddy.utils.misc import capture_exception
 
 from ..ui.hoyo.profile.view import ProfileView
 
@@ -100,7 +101,11 @@ class ProfileCommand:
             enka_data = None
 
         if enka_data is not None and enka_data.owner is not None:
-            builds = await client.fetch_builds(enka_data.owner)
+            try:
+                builds = await client.fetch_builds(enka_data.owner)
+            except Exception as e:
+                capture_exception(e)
+                builds = None
         else:
             builds = None
 

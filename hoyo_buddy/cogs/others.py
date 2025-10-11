@@ -197,9 +197,9 @@ class Others(commands.Cog):
         # brand image
         image_ = discord.File(
             SettingsUI.get_brand_img_filename("DARK" if settings.dark_mode else "LIGHT", locale),
-            filename="brand.webp",
+            filename="brand.png",
         )
-        embed.set_image(url="attachment://brand.webp")
+        embed.set_image(image_)
 
         view.message = await i.edit_original_response(
             embed=embed, attachments=[image_], view=view, content=await get_dyk(i)

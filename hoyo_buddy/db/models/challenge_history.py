@@ -20,6 +20,18 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Challenge, ChallengeWithLang
 
+CHALLENGE_MODELS: dict[ChallengeType, type[Challenge]] = {
+    ChallengeType.SPIRAL_ABYSS: genshin.models.SpiralAbyss,
+    ChallengeType.IMG_THEATER: genshin.models.ImgTheaterData,
+    ChallengeType.SHIYU_DEFENSE: genshin.models.ShiyuDefense,
+    ChallengeType.ASSAULT: genshin.models.DeadlyAssault,
+    ChallengeType.APC_SHADOW: genshin.models.StarRailAPCShadow,
+    ChallengeType.MOC: genshin.models.StarRailChallenge,
+    ChallengeType.PURE_FICTION: genshin.models.StarRailPureFiction,
+    ChallengeType.HARD_CHALLENGE: genshin.models.HardChallenge,
+    ChallengeType.ANOMALY: genshin.models.AnomalyRecord,
+}
+
 
 class ChallengeHistory(BaseModel):
     uid = fields.BigIntField(index=True)
@@ -65,22 +77,12 @@ class ChallengeHistory(BaseModel):
         # Create a deep copy to prevent Pydantic field validators from modifying the original data
         raw_copy = copy.deepcopy(raw)
 
-        if challenge_type is ChallengeType.SPIRAL_ABYSS:
-            return genshin.models.SpiralAbyss(**raw_copy)
-        if challenge_type is ChallengeType.IMG_THEATER:
-            return genshin.models.ImgTheaterData(**raw_copy)
-        if challenge_type is ChallengeType.SHIYU_DEFENSE:
-            return genshin.models.ShiyuDefense(**raw_copy)
-        if challenge_type is ChallengeType.ASSAULT:
-            return genshin.models.DeadlyAssault(**raw_copy)
-        if challenge_type is ChallengeType.APC_SHADOW:
-            return genshin.models.StarRailAPCShadow(**raw_copy)
-        if challenge_type is ChallengeType.MOC:
-            return genshin.models.StarRailChallenge(**raw_copy)
-        if challenge_type is ChallengeType.PURE_FICTION:
-            return genshin.models.StarRailPureFiction(**raw_copy)
-        if challenge_type is ChallengeType.HARD_CHALLENGE:
-            return genshin.models.HardChallenge(**raw_copy)
+        model = CHALLENGE_MODELS.get(challenge_type)
+        if model is None:
+            msg = f"Loading data for {challenge_type} is not implemented."
+            raise NotImplementedError(msg)
+
+        return model.model_validate(raw_copy)
 
     @classmethod
     async def add_data(
@@ -110,6 +112,11 @@ class ChallengeHistory(BaseModel):
             season = data.season
             start_time = season.start_at
             end_time = season.end_at
+            name = season.name
+        elif isinstance(data, genshin.models.AnomalyRecord):
+            season = data.season
+            start_time = season.begin_time.datetime
+            end_time = season.end_time.datetime
             name = season.name
         else:
             season = next((season for season in data.seasons if season.id == season_id), None)

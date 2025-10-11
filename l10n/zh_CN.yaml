@@ -837,9 +837,7 @@ hard_challenge_team_composition: "使用队伍"
 hard_challenge_combat_statistics: "战斗数据"
 hard_challenge_strongest_strike: "最强一击"
 hard_challenge_damage_dealt: "最高总伤害"
-hard_challenge_enemy_weakness: "敌人弱点"
-hard_challenge_advantage: "元素优势"
-hard_challenge_disadvantage: "元素劣势"
+hard_challenge_enemy_weakness: "优势增益 & 劣势增益"
 hard_challenge_command_desc: 生成幽境危战卡片
 hard_challenge: "幽境危战"
 fetching_accounts: 请稍等，我们正在获取你的账户.......
@@ -848,3 +846,8 @@ aaa_acronym: 闪能自动累计
 changelog_command_desc: 查看最新更改和更新
 account_game_mismatch_error_title: 账户游戏不匹配
 account_game_mismatch_error_message: "你正在使用的不是{game}账户。"
+enka_api_error_title: Enka API错误
+enka_api_error_description: "在从Enka Network获取数据时出错，请稍候重试。"
+cleared: 已通关
+challenge_command_anomaly_desc: 生成异相仲裁卡片
+anomaly_arbitration: 异相仲裁

@@ -15,6 +15,7 @@ type CommandName = Literal[
     "challenge hsr moc",
     "challenge hsr pure-fiction",
     "challenge hsr apc-shadow",
+    "challenge hsr anomaly",
     "challenge zzz shiyu",
     "challenge zzz assault",
     "characters genshin",
@@ -95,6 +96,12 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         games=(Game.STARRAIL,),
         description=locale_str(
             "Generate Apocalyptic Shadow card", key="challenge_command_apc_shadow_desc"
+        ),
+    ),
+    "challenge hsr anomaly": CommandConfig(
+        games=(Game.STARRAIL,),
+        description=locale_str(
+            "Generate Anomaly Arbitration card", key="challenge_command_anomaly_desc"
         ),
     ),
     "challenge zzz shiyu": CommandConfig(

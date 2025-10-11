@@ -82,7 +82,7 @@ class GIBuildView(ui.View):
     def _get_use_rate_embed(self, key: str) -> DefaultEmbed:
         return (
             DefaultEmbed(self.locale, title=LocaleStr(key=key))
-            .set_image(url="attachment://use_rate.webp")
+            .set_image(url="attachment://use_rate.png")
             .set_author(name=self.character.name, icon_url=self.character.icon)
             .set_footer(text="genshin.aza.gg")
         )
@@ -152,7 +152,7 @@ class GIBuildView(ui.View):
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
-                filename="use_rate.webp",
+                filename="use_rate.png",
             ),
             [list(chunk) for chunk in chunked_blocks],
         )
@@ -209,7 +209,7 @@ class GIBuildView(ui.View):
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
-                filename="use_rate.webp",
+                filename="use_rate.png",
             ),
             [list(chunk) for chunk in chunked_blocks],
         )
@@ -259,7 +259,7 @@ class GIBuildView(ui.View):
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
-                filename="synergy_team.webp",
+                filename="synergy_team.png",
             ),
             block_lists,
         )
@@ -295,7 +295,7 @@ class GIBuildView(ui.View):
         synergy = self.guide.gw_data.synergies
         embed = DefaultEmbed(self.locale, title=synergy.title)
         embed.set_footer(text=f"{synergy.credits}\nGenshin Wizard")
-        embed.set_image(url="attachment://synergy_team.webp")
+        embed.set_image(url="attachment://synergy_team.png")
         embed.set_author(name=self.character.name, icon_url=self.character.icon)
 
         if synergy.info:

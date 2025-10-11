@@ -2,14 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import enka
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
+    get_character_skills,
+    get_character_stats,
+    get_stat_icon,
+)
 
 if TYPE_CHECKING:
     import io
+
+    import enka
 
     import hoyo_buddy.models as hb_models
     from hoyo_buddy.enums import Locale
@@ -201,7 +206,7 @@ def draw_hsr_build_card(
     padding = 13
 
     for index, (icon, value) in enumerate(attributes.items()):
-        icon_ = drawer.open_static(icon, size=(80, 80), mask_color=dark_primary)
+        icon_ = get_stat_icon(filename=icon, size=(80, 80), mask_color=dark_primary)
         im.paste(icon_, (x, y), icon_)
 
         drawer.write(
@@ -284,31 +289,30 @@ def draw_hsr_build_card(
             style="medium",
         )
 
-        if isinstance(cone, enka.hsr.LightCone):
-            box_bottom_pos = box_y + height
-            x = text_left_pos
-            y = box_bottom_pos + 20
-            text_padding = 17
-            second_attr_x = 0
-            for i, stat in enumerate((cone.stats)[:4]):
-                icon = drawer.open_static(stat.icon, size=(50, 50), mask_color=dark_primary)
-                im.paste(icon, (x, y), icon)
+        box_bottom_pos = box_y + height
+        x = text_left_pos
+        y = box_bottom_pos + 20
+        text_padding = 17
+        second_attr_x = 0
+        for i, stat in enumerate((cone.stats)[:4]):
+            icon = get_stat_icon(stat, size=(50, 50), mask_color=dark_primary)
+            im.paste(icon, (x, y), icon)
 
-                textbbox = drawer.write(
-                    stat.formatted_value,
-                    size=32,
-                    position=(x + icon.width + 2, round(icon.height / 2) + y - 1),
-                    color=dark_primary,
-                    anchor="lm",
-                )
+            textbbox = drawer.write(
+                stat.formatted_value,
+                size=32,
+                position=(x + icon.width + 2, round(icon.height / 2) + y - 1),
+                color=dark_primary,
+                anchor="lm",
+            )
 
-                if i == 1:
-                    x = text_left_pos
-                    y += icon.height + 20
-                elif i == 2:
-                    x = second_attr_x
-                else:
-                    second_attr_x = x = textbbox[2] + text_padding
+            if i == 1:
+                x = text_left_pos
+                y += icon.height + 20
+            elif i == 2:
+                x = second_attr_x
+            else:
+                second_attr_x = x = textbbox[2] + text_padding
 
     # relic
     relics = character.relics
@@ -344,7 +348,7 @@ def draw_hsr_build_card(
                 )
 
             # main stat
-            icon = drawer.open_static(relic.main_stat.icon, size=(50, 50), mask_color=dark_primary)
+            icon = get_stat_icon(relic.main_stat, size=(50, 50), mask_color=dark_primary)
             icon_y = y + 15
             im.paste(icon, (relic_icon_right_pos + 5, icon_y), icon)
             # text
@@ -386,7 +390,7 @@ def draw_hsr_build_card(
             stat_y_padding = 10
 
             for i, stat in enumerate(relic.sub_stats):
-                icon = drawer.open_static(stat.icon, size=(40, 40), mask_color=dark_primary)
+                icon = get_stat_icon(stat, size=(40, 40), mask_color=dark_primary)
                 im.paste(icon, (stat_x, stat_y), icon)
                 sub_stat_icon_right_pos = stat_x + icon.width
 

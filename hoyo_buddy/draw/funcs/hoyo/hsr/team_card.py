@@ -2,16 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import enka
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_character_skills, get_character_stats
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
+    get_character_skills,
+    get_character_stats,
+    get_stat_icon,
+)
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
+
+    import enka
 
     from hoyo_buddy.models import HoyolabHSRCharacter as HSRCharacter
 
@@ -86,7 +91,7 @@ class HSRTeamCard:
 
         for i, stat in enumerate(stats.values()):
             if i == len(stats.values()) - 1 and max_dmg_add is not None:
-                icon = drawer.open_static(max_dmg_add.icon, size=(52, 48), mask_color=WHITE)
+                icon = get_stat_icon(max_dmg_add, size=(52, 48), mask_color=WHITE)
                 im.alpha_composite(icon, (494, 402))
 
             drawer.write(stat, size=26, position=start_pos, style="regular", anchor="lm")
@@ -199,7 +204,7 @@ class HSRTeamCard:
 
                 # Relic main stat
                 main_stat = relic.main_stat
-                main_stat_icon = drawer.open_static(main_stat.icon, size=(30, 30))
+                main_stat_icon = get_stat_icon(main_stat, size=(30, 30))
                 main_stat_pos = (start_pos[0] - 133, start_pos[1] - 11)
                 im.alpha_composite(main_stat_icon, main_stat_pos)
                 drawer.write(
@@ -216,7 +221,7 @@ class HSRTeamCard:
                 # Relic sub stats
                 sub_start_pos = (start_pos[0] - 133, start_pos[1] + 27)
                 for j, sub_stat in enumerate(relic.sub_stats):
-                    icon = drawer.open_static(sub_stat.icon, size=(20, 20))
+                    icon = get_stat_icon(sub_stat, size=(20, 20))
                     im.alpha_composite(icon, sub_start_pos)
                     drawer.write(
                         sub_stat.formatted_value,
@@ -282,23 +287,19 @@ class HSRTeamCard:
             locale=Locale(self._locale),
         )
 
-        if isinstance(lc, enka.hsr.LightCone):
-            # Light cone stats
-            start_pos = (168, 620)
-            for i, stat in enumerate(lc.stats):
-                stat_icon = drawer.open_static(stat.icon, size=(30, 30))
-                im.alpha_composite(stat_icon, start_pos)
-                tbox = drawer.write(
-                    stat.formatted_value,
-                    size=16,
-                    position=(
-                        start_pos[0] + stat_icon.width + 5,
-                        start_pos[1] + stat_icon.height // 2,
-                    ),
-                    style="regular",
-                    anchor="lm",
-                )
-                start_pos = (168, 655) if i == 1 else (tbox.right + 20, start_pos[1])
+        # Light cone stats
+        start_pos = (168, 620)
+        for i, stat in enumerate(lc.stats):
+            stat_icon = get_stat_icon(stat, size=(30, 30))
+            im.alpha_composite(stat_icon, start_pos)
+            tbox = drawer.write(
+                stat.formatted_value,
+                size=16,
+                position=(start_pos[0] + stat_icon.width + 5, start_pos[1] + stat_icon.height // 2),
+                style="regular",
+                anchor="lm",
+            )
+            start_pos = (168, 655) if i == 1 else (tbox.right + 20, start_pos[1])
 
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/background.png")

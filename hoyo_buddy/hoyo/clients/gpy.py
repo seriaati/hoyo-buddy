@@ -24,6 +24,7 @@ from hoyo_buddy.constants import (
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
+    YATTA_PROP_TYPE_TO_GPY_TYPE,
     ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
     ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
     ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
@@ -37,11 +38,14 @@ from hoyo_buddy.db import HoyoAccount, JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement, Locale
 from hoyo_buddy.exceptions import HoyoBuddyError
+from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
+
+    import yatta
 
 
 class MimoClaimTaksResult(NamedTuple):
@@ -276,17 +280,51 @@ class GenshinClient(ProxyGenshinClient):
         )
 
     @staticmethod
+    def get_lc_stats(
+        lc: models.LightCone, detail: yatta.LightConeDetail, manual_avatar: dict[str, Any]
+    ) -> list[models.Stat]:
+        lc_stats: list[models.Stat] = []
+        stat_values = YattaAPIClient.calculate_lc_stat_values(detail, lc.level)
+
+        for stat_id, value in stat_values.items():
+            converted_stat_id = YattaAPIClient.convert_upgrade_stat_key(stat_id)
+
+            if converted_stat_id not in YATTA_PROP_TYPE_TO_GPY_TYPE:
+                logger.error(
+                    f"Unknown stat ID {converted_stat_id} for Light Cone {lc.name} ({lc.id})"
+                )
+                continue
+
+            if converted_stat_id not in manual_avatar:
+                logger.error(
+                    f"Stat ID {converted_stat_id} not found in manual avatar for Light Cone {lc.name} ({lc.id})"
+                )
+                continue
+
+            lc_stats.append(
+                models.Stat(
+                    type=YATTA_PROP_TYPE_TO_GPY_TYPE[converted_stat_id],
+                    icon=manual_avatar[converted_stat_id].get("icon", ""),
+                    formatted_value=str(int(value)),
+                )
+            )
+
+        return lc_stats
+
+    @staticmethod
     def convert_hsr_character(
-        c: genshin.models.StarRailDetailCharacter,
-        property_info: dict[str, genshin.models.PropertyInfo],
+        c: genshin.models.StarRailDetailCharacter, manual_avatar: dict[str, Any]
     ) -> models.HoyolabHSRCharacter:
         """Convert StarRailDetailCharacter from gpy to HoyolabHSRCharacter that's used for drawing cards."""
         prop_icons: dict[int, str] = {
-            prop.property_type: prop.icon for prop in property_info.values()
+            YATTA_PROP_TYPE_TO_GPY_TYPE[stat_id]: manual_avatar[stat_id].get("icon", "")
+            for stat_id in manual_avatar
+            if stat_id in YATTA_PROP_TYPE_TO_GPY_TYPE
         }
+        prop_icons = {k: v for k, v in prop_icons.items() if v}  # remove empty icons
 
-        light_cone = (
-            models.LightCone(
+        if c.equip is not None:
+            light_cone = models.LightCone(
                 id=c.equip.id,
                 level=c.equip.level,
                 superimpose=c.equip.rank,
@@ -298,10 +336,11 @@ class GenshinClient(ProxyGenshinClient):
                     hakushin.Game.HSR,
                 ),
                 rarity=c.equip.rarity,
+                stats=[],  # to be filled in later by add_lc_stats
             )
-            if c.equip is not None
-            else None
-        )
+        else:
+            light_cone = None
+
         relics = [
             models.Relic(
                 id=relic.id,
@@ -336,9 +375,9 @@ class GenshinClient(ProxyGenshinClient):
             relics=relics,
             stats=[
                 models.Stat(
+                    type=prop.property_type,
                     icon=prop_icons[prop.property_type],
                     formatted_value=prop.final,
-                    type=prop.property_type,
                 )
                 for prop in c.properties
             ],
@@ -442,10 +481,11 @@ class GenshinClient(ProxyGenshinClient):
     async def get_hoyolab_hsr_characters(self) -> list[models.HoyolabHSRCharacter]:
         """Get characters in HoyolabHSR format."""
         data = await self.get_starrail_characters(self.uid)
-        return [
-            self.convert_hsr_character(chara, dict(data.property_info))
-            for chara in data.avatar_list
-        ]
+
+        async with YattaAPIClient() as yatta_client:
+            manual_avatar = await yatta_client.fetch_manual_avatar()
+
+        return [self.convert_hsr_character(c, manual_avatar) for c in data.avatar_list]
 
     async def get_zzz_agents(
         self, uid: int | None = None

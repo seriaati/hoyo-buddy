@@ -62,13 +62,14 @@ class Scheduler:
             id="auto_tasks",
             next_run_time=get_now(datetime.UTC),
         )
-        self.scheduler.add_job(
-            self.send_heartbeat,
-            "interval",
-            minutes=1,
-            id="heartbeat",
-            next_run_time=get_now(datetime.UTC),
-        )
+        if CONFIG.scheduler_heartbeat_url is not None:
+            self.scheduler.add_job(
+                self.send_heartbeat,
+                "interval",
+                minutes=1,
+                id="heartbeat",
+                next_run_time=get_now(datetime.UTC),
+            )
         self.scheduler.start()
 
     def shutdown(self) -> None:

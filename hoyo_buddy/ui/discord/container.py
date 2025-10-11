@@ -7,23 +7,28 @@ import discord
 from .action_row import ActionRow
 from .section import Section
 from .text_display import TextDisplay
-from .view import View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
-__all__ = ("Container",)
+    from .view import LayoutView
+
+__all__ = ("Container", "DefaultContainer")
+
+type ContainerItem = (
+    ActionRow
+    | TextDisplay
+    | Section
+    | discord.ui.MediaGallery
+    | discord.ui.File
+    | discord.ui.Separator
+)
 
 
-class Container[V: View](discord.ui.Container):
+class Container[V: LayoutView](discord.ui.Container):
     def __init__(
         self,
-        *children: ActionRow
-        | TextDisplay
-        | Section
-        | discord.ui.MediaGallery
-        | discord.ui.File
-        | discord.ui.Separator,
+        *children: ContainerItem,
         accent_color: discord.Color | int | None = None,
         spoiler: bool = False,
         id: int | None = None,  # noqa: A002
@@ -35,3 +40,14 @@ class Container[V: View](discord.ui.Container):
         for child in self.children:
             if isinstance(child, (TextDisplay, ActionRow, Section)):
                 child.translate(locale)
+
+
+class DefaultContainer[V: LayoutView](Container):
+    def __init__(
+        self,
+        *children: ContainerItem,
+        spoiler: bool = False,
+        id: int | None = None,  # noqa: A002
+    ) -> None:
+        super().__init__(*children, accent_color=discord.Color(6649080), spoiler=spoiler, id=id)
+        self.view: V

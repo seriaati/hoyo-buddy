@@ -6,10 +6,11 @@ import discord
 
 from .button import Button
 from .text_display import TextDisplay
-from .view import View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
+
+    from .view import View
 
 __all__ = ("Section",)
 

@@ -26,6 +26,16 @@ if TYPE_CHECKING:
 
 __all__ = ("LayoutView", "URLButtonView", "View")
 
+type LayoutViewItem = (
+    ActionRow
+    | TextDisplay
+    | Section
+    | Container
+    | discord.ui.MediaGallery
+    | discord.ui.File
+    | discord.ui.Separator
+)
+
 
 class ViewMixin:
     children: list[discord.ui.Item[Any]]
@@ -33,6 +43,7 @@ class ViewMixin:
     message: discord.Message | None
     locale: Locale
     clear_items: Callable[[], None]
+    item_states: dict[str, bool]
 
     def __repr__(self) -> str:
         return (
@@ -108,20 +119,6 @@ class ViewMixin:
         msg = f"No item found with custom_id {custom_id!r}"
         raise ValueError(msg)
 
-
-class View(discord.ui.View, ViewMixin):
-    def __init__(self, *, author: User, locale: Locale) -> None:
-        super().__init__(timeout=600)
-        self.author = author
-        self.locale = locale
-        self.message: discord.Message | None = None
-        self.item_states: dict[str, bool] = {}
-
-    def add_items(self, items: Iterable[Button | Select]) -> Self:
-        for item in items:
-            self.add_item(item)
-        return self
-
     def disable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
@@ -145,6 +142,20 @@ class View(discord.ui.View, ViewMixin):
                     # Cannot determine the original state of the item
                     child.disabled = False
 
+
+class View(discord.ui.View, ViewMixin):
+    def __init__(self, *, author: User, locale: Locale) -> None:
+        super().__init__(timeout=600)
+        self.author = author
+        self.locale = locale
+        self.message: discord.Message | None = None
+        self.item_states: dict[str, bool] = {}
+
+    def add_items(self, items: Iterable[Button | Select]) -> Self:
+        for item in items:
+            self.add_item(item)
+        return self
+
     def add_item(self, item: Button | Select, *, translate: bool = True) -> Self:
         if translate:
             item.translate(self.locale)
@@ -154,6 +165,15 @@ class View(discord.ui.View, ViewMixin):
         for item in self.children:
             if isinstance(item, Button | Select):
                 item.translate(self.locale)
+
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
+        return await ViewMixin.on_error(self, i, error, item)
+
+    async def on_timeout(self) -> None:
+        return await ViewMixin.on_timeout(self)
+
+    async def interaction_check(self, i: Interaction) -> bool:
+        return await ViewMixin.interaction_check(self, i)
 
 
 class URLButtonView(discord.ui.View):
@@ -187,3 +207,17 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
         for child in self.children:
             if isinstance(child, (ActionRow, Container, Section, TextDisplay)):
                 child.translate(locale)
+
+    def add_item(self, item: LayoutViewItem, *, translate: bool = True) -> Self:
+        if translate and isinstance(item, (ActionRow, Container, Section, TextDisplay)):
+            item.translate(self.locale)
+        return super().add_item(item)
+
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
+        return await ViewMixin.on_error(self, i, error, item)
+
+    async def on_timeout(self) -> None:
+        return await ViewMixin.on_timeout(self)
+
+    async def interaction_check(self, i: Interaction) -> bool:
+        return await ViewMixin.interaction_check(self, i)

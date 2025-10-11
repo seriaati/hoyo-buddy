@@ -17,9 +17,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
-    from .view import View
+    from .view import LayoutView, View
 
-__all__ = ("Button", "GoBackButton", "ToggleButton", "ToggleUIButton")
+__all__ = ("Button", "EmojiToggleButton", "GoBackButton", "ToggleButton", "ToggleUIButton")
 
 
 class Button[V_co: View](discord.ui.Button):
@@ -163,6 +163,19 @@ class ToggleButton[V_co: View](Button):
         self.update_style()
         if edit:
             await i.response.edit_message(view=self.view, **kwargs)
+
+
+class EmojiToggleButton[V_co: View | LayoutView](Button):
+    def __init__(self, *, current: bool, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.current = current
+        self.update_style()
+
+        self.view: V_co
+
+    def update_style(self) -> None:
+        self.emoji = emojis.TOGGLE_EMOJIS[self.current]
+        self.style = discord.ButtonStyle.green if self.current else discord.ButtonStyle.gray
 
 
 class ToggleUIButton[V_co: View](Button):

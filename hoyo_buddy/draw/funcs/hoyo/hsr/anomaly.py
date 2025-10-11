@@ -31,7 +31,7 @@ class AnomalyArbitrationCard:
 
     def _write_titles(self, drawer: Drawer) -> None:
         tbox = drawer.write(
-            LocaleStr(key="anomaly_arbitration_title"),
+            LocaleStr(key="anomaly_arbitration"),
             size=110,
             position=(55, 39),
             style="bold",

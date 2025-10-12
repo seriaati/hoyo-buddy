@@ -15,47 +15,59 @@ if TYPE_CHECKING:
     from .view import SettingsView  # noqa: F401
 
 
-class PublicToggleButton(ui.EmojiToggleButton["SettingsView"]):
+class AccountToggleButton(ui.EmojiToggleButton["SettingsView"]):
+    def __init__(self, *, attr: str, current: bool, **kwargs) -> None:
+        self.attr = attr
+        super().__init__(current=current, **kwargs)
+
     async def callback(self, i: Interaction) -> None:
         self.current = not self.current
         self.update_style()
 
-        self.view.account.public = self.current
-        await self.view.account.save(update_fields=("public",))
+        setattr(self.view.account, self.attr, self.current)
+        await self.view.account.save(update_fields=(self.attr,))
 
         await i.response.edit_message(view=self.view)
 
 
-class DailyCheckinToggleButton(ui.EmojiToggleButton["SettingsView"]):
+class MinimumMimoPointModal(ui.Modal):
+    points = ui.Label(
+        text=LocaleStr(key="mimo_minimum_point_label"), component=ui.TextInput(is_digit=True)
+    )
+
+
+class MinimumPointsButton(ui.Button["SettingsView"]):
+    def __init__(self, *, current: int) -> None:
+        super().__init__(style=discord.ButtonStyle.blurple, label=str(current))
+        self.current = current
+
     async def callback(self, i: Interaction) -> None:
-        self.current = not self.current
-        self.update_style()
+        modal = MinimumMimoPointModal(title=LocaleStr(key="mimo_minimum_point_modal_title"))
+        modal.points.default = str(self.current)
+        modal.translate(self.view.locale)
+        await i.response.send_modal(modal)
 
-        self.view.account.daily_checkin = self.current
-        await self.view.account.save(update_fields=("daily_checkin",))
+        timed_out = await modal.wait()
+        if timed_out:
+            return
 
-        await i.response.edit_message(view=self.view)
+        points = int(modal.points.value)
+        self.current = points
 
+        self.view.account.mimo_minimum_point = points
+        await self.view.account.save(update_fields=("mimo_minimum_point",))
 
-class RedeemCodeToggleButton(ui.EmojiToggleButton["SettingsView"]):
-    async def callback(self, i: Interaction) -> None:
-        self.current = not self.current
-        self.update_style()
-
-        self.view.account.auto_redeem = self.current
-        await self.view.account.save(update_fields=("auto_redeem",))
-
-        await i.response.edit_message(view=self.view)
+        await self.view.update(i)
 
 
 class AccountSelect(ui.Select["SettingsView"]):
-    def __init__(self, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, *, current: HoyoAccount, accounts: list[HoyoAccount]) -> None:
         options = [
             ui.SelectOption(
                 label=str(account),
                 value=str(account.id),
                 emoji=get_game_emoji(account.game),
-                default=account.current,
+                default=current.id == account.id,
             )
             for account in accounts
         ]
@@ -71,14 +83,6 @@ class AccountSelect(ui.Select["SettingsView"]):
         account = next((acc for acc in self.accounts if str(acc.id) == self.values[0]), None)
         assert account is not None
         self.view.account = account
-
-        # 'current' is already saved here
-        await account.user.set_acc_as_current(account)
-
-        # this is for updating the dropdown default selection
-        for acc in self.view.accounts:
-            acc.current = acc.id == account.id
-
         await self.view.update(i)
 
 
@@ -102,7 +106,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                         desc=LocaleStr(key="public_account_desc"),
                     )
                 ),
-                accessory=PublicToggleButton(current=account.public),
+                accessory=AccountToggleButton(attr="public", current=account.public),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
@@ -114,7 +118,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                         desc=LocaleStr(key="daily_checkin_desc"),
                     )
                 ),
-                accessory=DailyCheckinToggleButton(current=account.daily_checkin),
+                accessory=AccountToggleButton(attr="daily_checkin", current=account.daily_checkin),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
@@ -122,15 +126,179 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                 ui.TextDisplay(
                     content=LocaleStr(
                         custom_str="### {emoji} {desc}",
-                        emoji=emojis.GIFT_OUTLINE,
+                        emoji=emojis.REDEEM_GIFT,
                         desc=LocaleStr(key="redeem_code_desc"),
                     )
                 ),
-                accessory=RedeemCodeToggleButton(
-                    current=account.auto_redeem, disabled=not account.can_redeem_code
+                accessory=AccountToggleButton(
+                    attr="auto_redeem",
+                    current=account.auto_redeem,
+                    disabled=not account.can_redeem_code,
                 ),
             ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(AccountSelect(accounts)),
+            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+        )
+
+
+class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
+    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+        super().__init__(
+            ui.TextDisplay(
+                content=LocaleStr(custom_str="# {title}", title=LocaleStr(key="mimo_title"))
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {title}\n{desc}",
+                        emoji=emojis.GIFT_OUTLINE,
+                        title=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
+                        desc=LocaleStr(key="mimo_auto_finish_and_claim_desc"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="mimo_auto_task", current=account.mimo_auto_task
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {title}\n{desc}",
+                        emoji=emojis.SHOPPING_CART,
+                        title=LocaleStr(key="mimo_auto_buy_button_label"),
+                        desc=LocaleStr(key="mimo_auto_buy_desc"),
+                    )
+                ),
+                accessory=AccountToggleButton(attr="mimo_auto_buy", current=account.mimo_auto_buy),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {title}\n{desc}",
+                        emoji=emojis.PAYMENTS,
+                        title=LocaleStr(key="mimo_auto_draw_button_label"),
+                        desc=LocaleStr(key="mimo_auto_draw_desc"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="mimo_auto_draw", current=account.mimo_auto_draw
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {title}\n{desc}",
+                        emoji=emojis.PUBLISH,
+                        title=LocaleStr(key="mimo_minimum_point_label"),
+                        desc=LocaleStr(key="mimo_minimum_point_desc"),
+                    )
+                ),
+                accessory=MinimumPointsButton(current=account.mimo_minimum_point),
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
+            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+        )
+
+
+class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
+    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+        super().__init__(
+            ui.TextDisplay(
+                content=LocaleStr(
+                    custom_str="# {title}\n{desc}",
+                    title=LocaleStr(key="notification_settings_button_label"),
+                    desc=LocaleStr(key="notification_settings_desc"),
+                )
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="notify_on_success_button_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.notify_on_checkin_success",
+                    current=account.notif_settings.notify_on_checkin_success,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="notify_on_failure_button_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.notify_on_checkin_failure",
+                    current=account.notif_settings.notify_on_checkin_failure,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="mimo_auto_task_success_notify_toggle_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.mimo_task_success",
+                    current=account.notif_settings.mimo_task_success,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="mimo_auto_task_failure_notify_toggle_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.mimo_task_failure",
+                    current=account.notif_settings.mimo_task_failure,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="mimo_auto_buy_success_notify_toggle_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.mimo_buy_success",
+                    current=account.notif_settings.mimo_buy_success,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {desc}",
+                        desc=LocaleStr(key="mimo_auto_buy_failure_notify_toggle_label"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.mimo_buy_failure",
+                    current=account.notif_settings.mimo_buy_failure,
+                ),
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
+            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )

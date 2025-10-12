@@ -6,10 +6,16 @@ from typing import TYPE_CHECKING
 from hoyo_buddy import ui
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
+from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
+from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.settings.account import AccountSettingsContainer
+from hoyo_buddy.ui.settings.account import (
+    AccountSettingsContainer,
+    MimoSettingsContainer,
+    NotificationSettingsContainer,
+)
 from hoyo_buddy.ui.settings.user import UserSettingsContainer
 
 if TYPE_CHECKING:
@@ -19,6 +25,8 @@ if TYPE_CHECKING:
 class SettingsCategory(StrEnum):
     USER_SETTINGS = "user_settings_title"
     ACCOUNT_SETTINGS = "account_settings_title"
+    MIMO_SETTINGS = "mimo_title"
+    NOTIFICATION_SETTINGS = "notification_settings_button_label"
 
 
 class CategorySelect(ui.Select["SettingsView"]):
@@ -57,6 +65,12 @@ class SettingsView(ui.LayoutView):
         if self.category is SettingsCategory.ACCOUNT_SETTINGS:
             return AccountSettingsContainer(**kwargs)
 
+        if self.category is SettingsCategory.MIMO_SETTINGS:
+            return MimoSettingsContainer(**kwargs)
+
+        if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
+            return NotificationSettingsContainer(**kwargs)
+
         msg = f"Unknown settings category: {self.category}"
         raise ValueError(msg)
 
@@ -68,15 +82,33 @@ class SettingsView(ui.LayoutView):
             settings, _ = await Settings.get_or_create(user_id=i.user.id)
             return {"settings": settings}
 
-        if self.category is SettingsCategory.ACCOUNT_SETTINGS:
+        if self.category in {
+            SettingsCategory.ACCOUNT_SETTINGS,
+            SettingsCategory.MIMO_SETTINGS,
+            SettingsCategory.NOTIFICATION_SETTINGS,
+        }:
             if hasattr(self, "accounts") and hasattr(self, "account"):
-                return {"account": self.account, "accounts": self.accounts}
+                account = self.account
+                accounts = self.accounts
+            else:
+                accounts = await HoyoAccount.filter(user_id=i.user.id).prefetch_related(
+                    "user", "notif_settings"
+                )
+                if not accounts:
+                    raise NoAccountFoundError(list(Game))
 
-            accounts = await HoyoAccount.filter(user_id=i.user.id).prefetch_related("user")
-            if not accounts:
-                raise NoAccountFoundError(list(Game))
+                account = next((acc for acc in accounts if acc.current), accounts[0])
 
-            account = next((acc for acc in accounts if acc.current), accounts[0])
+            if self.category is SettingsCategory.MIMO_SETTINGS:
+                accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
+                account = next((acc for acc in accounts if acc.current), accounts[0])
+
+            if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
+                for acc in accounts:
+                    if acc.notif_settings is None:  # pyright: ignore[reportUnnecessaryComparison]
+                        await AccountNotifSettings.create(account=acc)
+                        await acc.fetch_related("notif_settings")  # pyright: ignore[reportGeneralTypeIssues]
+
             return {"account": account, "accounts": accounts}
 
         msg = f"Unknown settings category: {self.category}"
@@ -87,6 +119,13 @@ class SettingsView(ui.LayoutView):
             self.settings = kwargs["settings"]
 
         if self.category is SettingsCategory.ACCOUNT_SETTINGS:
+            self.account = kwargs["account"]
+            self.accounts = kwargs["accounts"]
+
+        if self.category is SettingsCategory.MIMO_SETTINGS:
+            self.account = kwargs["account"]
+
+        if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
             self.account = kwargs["account"]
             self.accounts = kwargs["accounts"]
 

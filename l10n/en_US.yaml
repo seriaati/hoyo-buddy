@@ -317,13 +317,14 @@ notif_modal.notify_time.description: "Notify at X hours before the server resets
 notif_modal.notify_weekday.label: The weekday to notify
 notif_modal.threshold.label: Threshold
 notif_modal.threshold.description: "Notification is sent after the threshold is reached."
-notification_settings_button_label: Notification settings
+notification_settings_button_label: Notification Settings
+notification_settings_desc: "Configure notifications for auto task success and failure."
 notify_on_failure_button_label: Notify on check-in failure
 notify_on_success_button_label: Notify on check-in success
-mimo_auto_task_success_notify_toggle_label: Notify on auto finish task success
-mimo_auto_task_failure_notify_toggle_label: Notify on auto finish task failure
-mimo_auto_buy_success_notify_toggle_label: Notify on auto buy rewards success
-mimo_auto_buy_failure_notify_toggle_label: Notify on auto buy rewards failure
+mimo_auto_task_success_notify_toggle_label: "Traveling Mimo: Notify on auto finish task success"
+mimo_auto_task_failure_notify_toggle_label: "Traveling Mimo: Notify on auto finish task failure"
+mimo_auto_buy_success_notify_toggle_label: "Traveling Mimo: Notify on auto buy rewards success"
+mimo_auto_buy_failure_notify_toggle_label: "Traveling Mimo: Notify on auto buy rewards failure"
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"
@@ -858,10 +859,11 @@ daily_checkin_desc: "Auto daily check-in\nAutomatically claims rewards on the we
 redeem_code_desc: "Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
 user_settings_title: "User Settings"
 user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
-dark_theme_desc: "Dark Theme\nMake infographics use a dark color scheme, not all infographics support this feature."
+dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all infographics support this feature."
 language_desc: "Language\nHoyo Buddy will respond to you in this language. Some texts might still be in English, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
 language_select_placeholder: Select a language
-dyk_settings_desc: "\"Did you know?\" Messages\nShow random useful tips when you use bot commands."
+dyk_settings_desc: "\"Did you know?\" messages\nShow random useful tips when you use bot commands."
 layout_view_edited: Interactive components have been disabled to save system resources, rerun the command if you want to use them.
-mimo_title: Traveling Mimo
-mimo_auto_task: Auto finish tasks and claim points
+mimo_title: Traveling Mimo Settings
+mimo_minimum_point_label: Minimum points to keep
+mimo_minimum_point_desc: "When auto drawing, Hoyo Buddy will make sure your points stay above this value, set to 0 to draw whenever possible."

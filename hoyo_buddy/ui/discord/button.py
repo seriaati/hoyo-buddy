@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 __all__ = ("Button", "EmojiToggleButton", "GoBackButton", "ToggleButton", "ToggleUIButton")
 
 
-class Button[V_co: View](discord.ui.Button):
+class Button[V_co: View | LayoutView](discord.ui.Button):
     def __init__(
         self,
         *,

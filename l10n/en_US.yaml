@@ -853,9 +853,9 @@ challenge_command_anomaly_desc: Generate Anomaly Arbitration card
 anomaly_arbitration: Anomaly Arbitration
 account_settings_title: "Account Settings"
 account_settings_desc: "Settings here are unique for each game account."
-public_account_desc: "### Set account as public\nIf enabled, other people can see your account's data in some commands, like /profile."
-daily_checkin_desc: "### Auto daily check-in\nAutomatically claims rewards on the web check-in event."
-redeem_code_desc: "### Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
+public_account_desc: "Set account as public\nIf enabled, other people can see your account's data in some commands, like </profile>."
+daily_checkin_desc: "Auto daily check-in\nAutomatically claims rewards on the web check-in event."
+redeem_code_desc: "Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
 user_settings_title: "User Settings"
 user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
 dark_theme_desc: "Dark Theme\nMake infographics use a dark color scheme, not all infographics support this feature."
@@ -863,3 +863,5 @@ language_desc: "Language\nHoyo Buddy will respond to you in this language. Some 
 language_select_placeholder: Select a language
 dyk_settings_desc: "\"Did you know?\" Messages\nShow random useful tips when you use bot commands."
 layout_view_edited: Interactive components have been disabled to save system resources, rerun the command if you want to use them.
+mimo_title: Traveling Mimo
+mimo_auto_task: Auto finish tasks and claim points

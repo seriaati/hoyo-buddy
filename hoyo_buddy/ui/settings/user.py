@@ -29,10 +29,10 @@ class DarkThemeToggleButton(ui.EmojiToggleButton["SettingsView"]):
 
 class DYKTolggle(ui.EmojiToggleButton["SettingsView"]):
     async def callback(self, i: Interaction) -> None:
-        self.current_toggle = not self.current_toggle
+        self.current = not self.current
         self.update_style()
 
-        self.view.settings.enable_dyk = self.current_toggle
+        self.view.settings.enable_dyk = self.current
         await self.view.settings.save(update_fields=("enable_dyk",))
 
         await i.response.edit_message(view=self.view)
@@ -77,7 +77,8 @@ class LanguageSelect(ui.Select["SettingsView"]):
         await self.view.settings.save(update_fields=("lang",))
 
         self.update_options_defaults()
-        await i.response.edit_message(view=self.view)
+
+        await self.view.update(i)
 
 
 class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):

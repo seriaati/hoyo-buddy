@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from hoyo_buddy import ui
+from hoyo_buddy import emojis, ui
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.l10n import LocaleStr
 
@@ -95,19 +95,37 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="public_account_desc")),
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.LANGUAGE,
+                        desc=LocaleStr(key="public_account_desc"),
+                    )
+                ),
                 accessory=PublicToggleButton(current=account.public),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="daily_checkin_desc")),
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.FREE_CANCELLATION,
+                        desc=LocaleStr(key="daily_checkin_desc"),
+                    )
+                ),
                 accessory=DailyCheckinToggleButton(current=account.daily_checkin),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="redeem_code_desc")),
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.GIFT_OUTLINE,
+                        desc=LocaleStr(key="redeem_code_desc"),
+                    )
+                ),
                 accessory=RedeemCodeToggleButton(
                     current=account.auto_redeem, disabled=not account.can_redeem_code
                 ),

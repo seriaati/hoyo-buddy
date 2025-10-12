@@ -102,4 +102,4 @@ class SettingsView(ui.LayoutView):
         container.add_item(ui.ActionRow(CategorySelect(self.category)))
         self.add_item(container)
 
-        await i.edit_original_response(view=self)
+        self.message = await i.edit_original_response(view=self)

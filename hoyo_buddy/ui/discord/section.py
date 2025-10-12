@@ -31,3 +31,13 @@ class Section[V: View](discord.ui.Section):
                 child.translate(locale)
         if isinstance(self.accessory, Button):
             self.accessory.translate(locale)
+
+    def disable_items(self) -> None:
+        if isinstance(self.accessory, Button):
+            if self.accessory.custom_id is not None:
+                self.view.item_states[self.accessory.custom_id] = self.accessory.disabled
+
+            if self.accessory.url:
+                return
+
+            self.accessory.disabled = True

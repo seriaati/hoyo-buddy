@@ -41,6 +41,11 @@ class Container[V: LayoutView](discord.ui.Container):
             if isinstance(child, (TextDisplay, ActionRow, Section)):
                 child.translate(locale)
 
+    def disable_items(self) -> None:
+        for child in self.children:
+            if isinstance(child, (ActionRow, Section)):
+                child.disable_items()
+
 
 class DefaultContainer[V: LayoutView](Container):
     def __init__(

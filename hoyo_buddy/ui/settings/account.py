@@ -92,14 +92,20 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     desc=LocaleStr(key="account_settings_desc"),
                 )
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(content=LocaleStr(key="public_account_desc")),
                 accessory=PublicToggleButton(current=account.public),
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(content=LocaleStr(key="daily_checkin_desc")),
                 accessory=DailyCheckinToggleButton(current=account.daily_checkin),
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(content=LocaleStr(key="redeem_code_desc")),
                 accessory=RedeemCodeToggleButton(
@@ -108,4 +114,5 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
             ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.ActionRow(AccountSelect(accounts)),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )

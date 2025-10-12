@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from hoyo_buddy import ui
+from hoyo_buddy import emojis, ui
 from hoyo_buddy.constants import HOYO_BUDDY_LOCALES
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
@@ -90,15 +90,39 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     desc=LocaleStr(key="user_settings_desc"),
                 )
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="dark_theme_desc")),
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.DARK_MODE,
+                        desc=LocaleStr(key="dark_theme_desc"),
+                    )
+                ),
                 accessory=DarkThemeToggleButton(current=settings.dark_mode),
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="dyk_settings_desc")),
+                ui.TextDisplay(
+                    content=LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.LIVE_HELP,
+                        desc=LocaleStr(key="dyk_settings_desc"),
+                    )
+                ),
                 accessory=DYKTolggle(current=settings.enable_dyk),
             ),
-            ui.TextDisplay(content=LocaleStr(key="language_desc")),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.TextDisplay(
+                content=LocaleStr(
+                    custom_str="### {emoji} {desc}",
+                    emoji=emojis.LANGUAGE,
+                    desc=LocaleStr(key="language_desc"),
+                )
+            ),
             ui.ActionRow(LanguageSelect(settings.locale)),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
         )

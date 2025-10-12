@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Self
 import discord
 from loguru import logger
 
+from hoyo_buddy import emojis
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.embeds import ErrorEmbed
@@ -71,18 +72,6 @@ class ViewMixin:
         if message:
             return message.embeds
         return None
-
-    async def on_timeout(self) -> None:
-        all_url_buttons = all(
-            item.url for item in self.children if isinstance(item, (discord.ui.Button))
-        )
-        if self.message is not None and not all_url_buttons:
-            self.clear_items()
-            with contextlib.suppress(discord.HTTPException):
-                await self.message.edit(view=self)  # pyright: ignore[reportArgumentType]
-
-        if self.message is None and not all_url_buttons:
-            logger.warning(f"View {self!r} timed out without a set message")
 
     async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)
@@ -170,7 +159,16 @@ class View(discord.ui.View, ViewMixin):
         return await ViewMixin.on_error(self, i, error, item)
 
     async def on_timeout(self) -> None:
-        return await ViewMixin.on_timeout(self)
+        all_url_buttons = all(
+            item.url for item in self.children if isinstance(item, (discord.ui.Button))
+        )
+        if self.message is not None and not all_url_buttons:
+            self.clear_items()
+            with contextlib.suppress(discord.HTTPException):
+                await self.message.edit(view=self)
+
+        if self.message is None and not all_url_buttons:
+            logger.warning(f"View {self!r} timed out without a set message")
 
     async def interaction_check(self, i: Interaction) -> bool:
         return await ViewMixin.interaction_check(self, i)
@@ -200,6 +198,7 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
         self.locale = locale
         self.message: discord.Message | None = None
         self.item_states: dict[str, bool] = {}
+        self.children: list[LayoutViewItem]
 
         self.translate(locale)
 
@@ -213,11 +212,32 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
             item.translate(self.locale)
         return super().add_item(item)
 
+    def disable_items(self) -> None:
+        for child in self.children:
+            if isinstance(child, (Container, Section, ActionRow)):
+                child.disable_items()
+
     async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         return await ViewMixin.on_error(self, i, error, item)
 
     async def on_timeout(self) -> None:
-        return await ViewMixin.on_timeout(self)
+        self.disable_items()
+
+        # with contextlib.suppress(discord.HTTPException):
+        if self.message is not None:
+            self.add_item(
+                TextDisplay(
+                    content=LocaleStr(
+                        custom_str="-# {emoji} {text}",
+                        emoji=emojis.INFO,
+                        text=LocaleStr(key="layout_view_edited"),
+                    )
+                )
+            )
+            await self.message.edit(view=self)
+
+        if self.message is None:
+            logger.warning(f"View {self!r} timed out without a set message")
 
     async def interaction_check(self, i: Interaction) -> bool:
         return await ViewMixin.interaction_check(self, i)

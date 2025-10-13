@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 
 class Characters(
     commands.GroupCog,
-    name=app_commands.locale_str("characters"),  # pyright: ignore[reportArgumentType]
-    description=app_commands.locale_str("Characters commands"),  # pyright: ignore[reportArgumentType]
+    name=app_commands.locale_str("characters"),
+    description=app_commands.locale_str("Characters commands"),
 ):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot

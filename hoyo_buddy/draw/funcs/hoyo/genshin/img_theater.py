@@ -135,9 +135,10 @@ class ImgTheaterCard:
         else:
             fastest_text = ""
 
-        if act.is_arcana:
+        if getattr(act, "is_arcana", False):
             title = LocaleStr(
-                key=f"holy_card_challenge_{act.arcana_number}", mi18n_game=Game.GENSHIN
+                key=f"holy_card_challenge_{getattr(act, 'arcana_number', 0)}",
+                mi18n_game=Game.GENSHIN,
             ).translate(self.locale)
         else:
             title = LocaleStr(
@@ -237,7 +238,7 @@ class ImgTheaterCard:
 
         # Sort acts by arcana_number from lowest to highest
         acts = list(self._theater.acts)
-        acts.sort(key=lambda act: act.arcana_number or act.round_id)
+        acts.sort(key=lambda act: getattr(act, "arcana_number", None) or act.round_id)
 
         for i, act in enumerate(acts):
             self._draw_act_block(

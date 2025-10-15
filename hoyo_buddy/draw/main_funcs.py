@@ -832,10 +832,7 @@ async def draw_hard_challenge(
 
 
 async def draw_anomaly_card(
-    draw_input: DrawInput,
-    data: genshin.models.AnomalyRecord,
-    char_names: dict[int, str],
-    uid: int | None,
+    draw_input: DrawInput, data: genshin.models.AnomalyRecord, uid: int | None
 ) -> File:
     urls = [data.boss.icon]
     if data.boss_record and data.boss_record.has_data:
@@ -847,7 +844,7 @@ async def draw_anomaly_card(
 
     await download_images(urls, draw_input.session)
 
-    card = funcs.hsr.AnomalyArbitrationCard(data, draw_input.locale, char_names, uid)
+    card = funcs.hsr.AnomalyArbitrationCard(data, draw_input.locale, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

@@ -17,16 +17,9 @@ if TYPE_CHECKING:
 
 
 class AnomalyArbitrationCard:
-    def __init__(
-        self,
-        data: AnomalyRecord,
-        locale: Locale,
-        char_names: dict[int, str],
-        uid: int | None = None,
-    ) -> None:
+    def __init__(self, data: AnomalyRecord, locale: Locale, uid: int | None = None) -> None:
         self._record = data
         self._locale = locale
-        self._char_names = char_names
         self._uid = uid
 
     def _write_titles(self, drawer: Drawer) -> None:
@@ -169,8 +162,6 @@ class AnomalyArbitrationCard:
         mask = drawer.open_asset("boss_char_mask.png")
 
         for char in record.characters:
-            name = self._char_names.get(char.id, "")
-
             char_im = drawer.open_asset("boss_char_bg.png")
 
             # Character image
@@ -178,28 +169,6 @@ class AnomalyArbitrationCard:
             char_image = drawer.resize_crop(char_image, (162, 326))
             char_image = drawer.mask_image_with_image(char_image, mask)
             char_im.alpha_composite(char_image, (0, 0))
-
-            # Name (rotated)
-            tbox = drawer.write(
-                name, size=105, style="bold", position=(0, 0), no_write=True, anchor="lt"
-            )
-            text_im = Image.new("RGBA", tbox.size)
-            text_im_drawer = Drawer(
-                ImageDraw.Draw(text_im), folder="anomaly-arbitration", dark_mode=True, sans=True
-            )
-            text_im_drawer.write(
-                name,
-                size=105,
-                style="bold",
-                position=(0, 0),
-                anchor="lt",
-                color=(240, 240, 240),
-                emphasis="medium",
-            )
-
-            text_im = text_im.rotate(90, expand=True)
-            char_im.alpha_composite(text_im, (90, char_im.height - text_im.height))
-            char_im = drawer.mask_image_with_image(char_im, mask)
 
             # Level and Rank flairs
             char_im.alpha_composite(level_flair, (0, 297))

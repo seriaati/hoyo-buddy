@@ -297,7 +297,7 @@ class HardChallengeCard:
             presets = hakushin.utils.extract_sprite_presets(rec)
 
             for keyword, icon_url in presets:
-                rec_text = rec.replace("{" + keyword + "}", "").strip()
+                rec_text = rec_text.replace("{" + keyword + "}", "").strip()
                 icon_urls.append(icon_url)
 
             icons: list[Image.Image] = []

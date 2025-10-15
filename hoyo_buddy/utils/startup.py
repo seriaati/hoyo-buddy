@@ -8,6 +8,7 @@ from typing import Any
 import sentry_sdk
 from loguru import logger
 from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.logging import InterceptHandler
@@ -87,7 +88,10 @@ def setup_sentry(sentry_dsn: str | None) -> None:
 
     sentry_sdk.init(
         dsn=sentry_dsn,
-        disabled_integrations=[LoggingIntegration()],  # To avoid duplicate logs with loguru
+        disabled_integrations=[
+            LoggingIntegration(),  # To avoid duplicate logs with loguru
+            RedisIntegration(),  # Too noisy
+        ],
         environment=CONFIG.env,
         release=get_project_version(),
         enable_logs=True,

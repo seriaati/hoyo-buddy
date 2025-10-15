@@ -1182,7 +1182,7 @@ DC_MAX_FILESIZE = 10 * 1024 * 1024  # 10 MB
 NO_MASKED_LINK_GUILDS = {998109815521947678}
 """Discord servers that have masked links AutoMod rules."""
 
-OPEN_GAME_BASE_URL = URL("https://st-direct.pages.dev/event")
+OPEN_GAME_BASE_URL = URL("https://launch.seria.moe/event")
 OPEN_GAME_URLS: dict[OpenGameRegion, dict[OpenGameGame, URL]] = {
     "global": {
         "gi": OPEN_GAME_BASE_URL / "genshin",

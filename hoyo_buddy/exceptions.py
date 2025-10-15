@@ -57,7 +57,7 @@ class NoAccountFoundError(HoyoBuddyError):
 
 
 class CardNotReadyError(HoyoBuddyError):
-    def __init__(self, character_name: str) -> None:
+    def __init__(self, character_name: str, character_id: str) -> None:
         super().__init__(
             title=LocaleStr(
                 key="exceptions.card_not_ready_error.title", character_name=character_name
@@ -65,6 +65,7 @@ class CardNotReadyError(HoyoBuddyError):
             message=LocaleStr(key="exceptions.card_not_ready_error.message"),
         )
         self.character_name = character_name
+        self.character_id = character_id
 
 
 class InvalidImageURLError(HoyoBuddyError):

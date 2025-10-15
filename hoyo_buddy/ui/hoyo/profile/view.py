@@ -200,7 +200,7 @@ class ProfileView(View, PlayerEmbedMixin):
     def _check_card_data(self) -> None:
         for char_id in self.character_ids:
             if char_id not in self._card_data:
-                raise CardNotReadyError(self.characters[char_id].name)
+                raise CardNotReadyError(self.characters[char_id].name, char_id)
 
     def _set_characters_with_enka(
         self, game: Literal[Game.STARRAIL, Game.GENSHIN, Game.ZZZ]
@@ -381,7 +381,7 @@ class ProfileView(View, PlayerEmbedMixin):
         character_id = str(character.id)
         character_data = self._card_data.get(character_id)
         if character_data is None:
-            raise CardNotReadyError(character.name)
+            raise CardNotReadyError(character.name, character_id)
 
         image_url = card_settings.current_image or get_default_art(
             character, is_team=False, use_m3_art=card_settings.use_m3_art
@@ -457,7 +457,7 @@ class ProfileView(View, PlayerEmbedMixin):
             agent = await client.get_zzz_agent_info(character.id)
 
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
-        exc = CardNotReadyError(agent.name)
+        exc = CardNotReadyError(agent.name, str(agent.id))
 
         if template_num == 2:
             agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
@@ -736,7 +736,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 await card_settings.save(update_fields=(attr,))
 
             if isinstance(e, CardNotReadyError):
-                logger.error(f"Card not ready for {e.character_name}")
+                logger.error(f"Card not ready for {e.character_id}")
 
             if "hb" not in card_settings.template:
                 logger.warning("Failed to draw card")

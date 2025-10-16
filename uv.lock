@@ -188,7 +188,7 @@ wheels = [
 [[package]]
 name = "ambr-py"
 version = "1.8.8"
-source = { git = "https://github.com/seriaati/ambr#8196853bc2ecc7222ee6db57f5cfd0926a6f15d7" }
+source = { git = "https://github.com/seriaati/ambr#2e1ebc121fd30b8a18d8f28803b8e289d53a8acf" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -871,7 +871,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.5.1"
-source = { git = "https://github.com/seriaati/hakushin-py#34434bfa321ec4b7ec8ac7ba6761d9b5cb3dd468" }
+source = { git = "https://github.com/seriaati/hakushin-py#e1fa8b61ed3e06c2db72c2af84d93242d362f9d1" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -2430,7 +2430,7 @@ wheels = [
 [[package]]
 name = "yatta-py"
 version = "1.3.15"
-source = { git = "https://github.com/seriaati/yatta#52db4b03989c64e9c274ddcfa71105910aea6f71" }
+source = { git = "https://github.com/seriaati/yatta#d7847d8a89b5b3af7b371d7908079416a41260c2" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

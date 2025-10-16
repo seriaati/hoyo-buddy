@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
+    import aiohttp
     import enka
     import genshin
     from genshin.models import (
@@ -105,7 +106,7 @@ async def draw_hsr_build_card(
             primary_hex,
         )
 
-    async with YattaAPIClient() as api:
+    async with YattaAPIClient(session=draw_input.session) as api:
         yatta_character = await api.fetch_character_detail(int(character.id))
         en_name = yatta_character.name
 
@@ -148,7 +149,7 @@ async def draw_gi_build_card(
     urls.extend(const.icon for const in character.constellations)
 
     if template == 2:
-        async with ambr.AmbrAPI() as api:
+        async with ambr.AmbrAPI(session=draw_input.session) as api:
             characters = await api.fetch_characters()
             ambr_char = next((char for char in characters if str(character.id) in char.id), None)
             if ambr_char is None:
@@ -267,7 +268,7 @@ async def draw_hsr_characters_card(
 async def draw_spiral_abyss_card(
     draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character]
 ) -> File:
-    async with ambr.AmbrAPI() as api:
+    async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }
@@ -368,7 +369,7 @@ async def draw_img_theater_card(
     chara_consts: dict[int, int],
     traveler_element: str | None,
 ) -> File:
-    async with ambr.AmbrAPI() as api:
+    async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }
@@ -421,6 +422,7 @@ async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     *,
     template: Literal[1, 2, 3, 4],
+    session: aiohttp.ClientSession,
     use_m3_art: bool = False,
 ) -> ZZZDrawData:
     name_datas_path = "zzz_name_data.json"
@@ -461,7 +463,7 @@ async def fetch_zzz_draw_data(
             agent_images=agent_images,
         )
 
-    async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
         # Fetch name data
         if fetch_name_data:
             for agent in agents:
@@ -527,7 +529,9 @@ async def draw_zzz_build_card(
     hl_special_stats: bool,
     use_m3_art: bool,
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
+    draw_data = await fetch_zzz_draw_data(
+        [agent], template=template, use_m3_art=use_m3_art, session=draw_input.session
+    )
 
     if template == 1:
         image = draw_data.agent_images[agent.outfit_id or agent.id]
@@ -639,7 +643,7 @@ async def draw_zzz_team_card(
     agent_hl_substat_map: dict[int, list[int]],
     hl_special_stats: dict[int, bool],
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data(agents, template=3)
+    draw_data = await fetch_zzz_draw_data(agents, template=3, session=draw_input.session)
 
     urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
@@ -723,7 +727,7 @@ async def draw_shiyu_card(
         if bangboo is not None
     ]
     if any(not hasattr(bangboo, "icon") for bangboo in bangboos):
-        async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+        async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=draw_input.session) as api:
             bangboo_icons = {bangboo.id: bangboo.icon for bangboo in await api.fetch_bangboos()}
 
         for bangboo in bangboos:

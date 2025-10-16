@@ -585,17 +585,25 @@ class ProfileView(View, PlayerEmbedMixin):
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
                 for char_id in self.character_ids
             }
+
             # Only one card setting is stored per character, no matter the outfit.
             # However, since different outfits have different default colors,
             # we need to use the outfit_id to get the correct color.
             # Outfit data doesn't always have 'color' field, so we default to the main character color.
-            agent_colors = {
-                a.id: agent_card_settings[a.id].custom_primary_color
-                or self._card_data[
-                    f"{a.id}_{a.outfit_id}" if a.outfit_id is not None else str(a.id)
-                ].get("color", self._card_data[str(a.id)]["color"])
-                for a in agents
-            }
+            agent_colors: dict[int, str] = {}
+
+            for a in agents:
+                settings = agent_card_settings.get(a.id)
+                if settings is not None and settings.custom_primary_color:
+                    agent_colors[a.id] = settings.custom_primary_color
+                else:
+                    key = f"{a.id}_{a.outfit_id}" if a.outfit_id is not None else str(a.id)
+                    agent_data = self._card_data.get(key) or self._card_data.get(str(a.id))
+                    if agent_data and "color" in agent_data:
+                        agent_colors[a.id] = agent_data["color"]
+                    else:
+                        raise CardNotReadyError(a.name, key)
+
             show_substat_rolls = {
                 int(char_id): agent_card_settings[int(char_id)].show_substat_rolls
                 for char_id in self.character_ids

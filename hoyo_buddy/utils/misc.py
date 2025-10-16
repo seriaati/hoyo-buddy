@@ -642,3 +642,16 @@ def get_changelog_url(locale: Locale | None = None) -> str:
     if lang_code is None:
         return "https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/docs/changelog.md"
     return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/i18n/{lang_code}/docusaurus-plugin-content-docs/current/changelog.md"
+
+
+async def get_zzz_latest_stable_version(session: aiohttp.ClientSession) -> str | None:
+    api_url = "https://hun.seria.moe/games/U5hbdsT9W7/version"
+
+    try:
+        async with session.get(api_url) as resp:
+            resp.raise_for_status()
+            data = await resp.json()
+            return data.get("version").rsplit(".", 1)[0]
+    except Exception as e:
+        capture_exception(e)
+        return None

@@ -647,7 +647,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.12"
-source = { git = "https://github.com/seriaati/enka-py#ecbce6d8b3d96f222ef7c8f07704370e5ebf4dca" }
+source = { git = "https://github.com/seriaati/enka-py#dd62561af65cbd8c8f085fd05b639ea0356756eb" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -840,7 +840,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.19"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#64d45c76869c0a19b91e8be1d91c1636b78a1500" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#ceb094a3ed2204496003e132ab73b9bbce7395dc" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -871,7 +871,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.5.1"
-source = { git = "https://github.com/seriaati/hakushin-py#e1fa8b61ed3e06c2db72c2af84d93242d362f9d1" }
+source = { git = "https://github.com/seriaati/hakushin-py#11e071e50e1ca000fcb2fbd7ba4301a7e4c7f465" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

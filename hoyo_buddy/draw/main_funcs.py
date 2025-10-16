@@ -24,6 +24,7 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
+from hoyo_buddy.utils.misc import get_zzz_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
@@ -463,14 +464,18 @@ async def fetch_zzz_draw_data(
             agent_images=agent_images,
         )
 
+    version: str | None = None
+
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
         # Fetch name data
         if fetch_name_data:
+            version = await get_zzz_latest_stable_version(session)
+
             for agent in agents:
                 if agent.id in name_datas:
                     continue
 
-                detail = await api.fetch_character_detail(agent.id)
+                detail = await api.fetch_character_detail(agent.id, version=version)
                 full_name = detail.info.full_name if detail.info is not None else detail.name
                 name_datas[agent.id] = AgentNameData(
                     short_name=detail.name, full_name=full_name
@@ -481,7 +486,9 @@ async def fetch_zzz_draw_data(
         # Fetch agent images
         if fetch_agent_images and template in {1, 2}:
             template = cast("Literal[1, 2]", template)
-            characters = await api.fetch_characters()
+            if version is None:
+                version = await get_zzz_latest_stable_version(session)
+            characters = await api.fetch_characters(version=version)
 
             if template == 2:
                 agent_images = {

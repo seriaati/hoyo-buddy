@@ -92,10 +92,11 @@ class ImgTheaterCard:
         start_pos = (870, 86)
 
         for character, key in characters:
-            if character is not None:
-                icon = self._drawer.open_static(
-                    self._character_icons[str(character.id)], size=(45, 45)
-                )
+            if (
+                character is not None
+                and (url := self._character_icons.get(str(character.id))) is not None
+            ):
+                icon = self._drawer.open_static(url, size=(45, 45))
                 icon = self._drawer.circular_crop(icon)
                 self._im.alpha_composite(icon, start_pos)
 

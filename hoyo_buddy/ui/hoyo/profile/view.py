@@ -744,7 +744,13 @@ class ProfileView(View, PlayerEmbedMixin):
                 await card_settings.save(update_fields=(attr,))
 
             if isinstance(e, CardNotReadyError):
-                logger.error(f"Card not ready for {e.character_id}")
+                logger.error(
+                    f"Card not ready for {e.character_id}",
+                    user_id=i.user.id,
+                    uid=self.uid,
+                    is_cookies=bool(self._account),
+                    game=self.game.value,
+                )
 
             if "hb" not in card_settings.template:
                 logger.warning("Failed to draw card")

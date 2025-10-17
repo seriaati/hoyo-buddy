@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import string
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import aiohttp
 import akasha
@@ -50,6 +50,7 @@ from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSett
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
+from hoyo_buddy.utils.misc import get_template_num
 
 from .card_settings import get_card_settings, get_default_color
 from .image_settings import get_default_art, get_default_collection, get_team_image
@@ -423,7 +424,8 @@ class ProfileView(View, PlayerEmbedMixin):
         else:
             primary = card_settings.custom_primary_color
 
-        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2]", template_num)
 
         return await draw_hsr_build_card(
             draw_input, character, image_url, primary, template=template_num
@@ -439,7 +441,9 @@ class ProfileView(View, PlayerEmbedMixin):
             character, is_team=False, use_m3_art=card_settings.use_m3_art
         )
 
-        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2]", template_num)
+
         if template_num == 2:
             zoom = 0.7 if card_settings.current_image is None else 1.0
         else:
@@ -485,40 +489,29 @@ class ProfileView(View, PlayerEmbedMixin):
             client.set_lang(self.locale)
             agent = await client.get_zzz_agent_info(character.id)
 
-        template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        key = str(agent.id)
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2, 3, 4]", template_num)
 
         if template_num == 2:
-            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
-            if agent_temp2_data is None:
-                raise NoCardDataError(agent.name, str(agent.id))
+            agent_temp_data = CARD_DATA.zzz2.get(key)
+            if agent_temp_data is None:
+                raise NoCardDataError(agent.name, key)
 
-            color = agent_temp2_data.color
-
-            if not color:
-                agent_temp1_data = CARD_DATA.zzz.get(str(agent.id))
+            if not agent_temp_data.color:
+                agent_temp1_data = CARD_DATA.zzz.get(key)
                 if agent_temp1_data is None:
-                    raise NoCardDataError(agent.name, str(agent.id))
+                    raise NoCardDataError(agent.name, key)
 
-                color = agent_temp1_data.color
-
-            agent_temp_data = ZZZTemp1CardData(
-                color=color, **agent_temp2_data.model_dump(exclude={"color"})
-            )
-
+                agent_temp_data.color = agent_temp1_data.color
         else:
             # 1, 3, 4
-            agent_temp_data = CARD_DATA.zzz.get(str(agent.id))
-
-            if agent_temp_data is not None and agent.outfit_id is not None:
+            if agent.outfit_id is not None:
                 key = f"{agent.id}_{agent.outfit_id}"
-                agent_temp_data = CARD_DATA.zzz.get(key)
-                if agent_temp_data is None:
-                    raise NoCardDataError(agent.name, key)
-            else:
-                agent_temp_data = CARD_DATA.zzz.get(str(agent.id))
+            agent_temp_data = CARD_DATA.zzz.get(key)
 
         if agent_temp_data is None:
-            raise NoCardDataError(agent.name, str(agent.id))
+            raise NoCardDataError(agent.name, key)
 
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON

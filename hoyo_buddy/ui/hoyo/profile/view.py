@@ -20,7 +20,7 @@ from hoyo_buddy.constants import (
     ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
-from hoyo_buddy.draw.card_data import CARD_DATA
+from hoyo_buddy.draw.card_data import CARD_DATA, CardDataDict
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
     draw_gi_team_card,
@@ -42,7 +42,8 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.types import Builds, Character, HoyolabCharacter
+from hoyo_buddy.models.draw import GICardData, HSRCardData, ZZZCardData
+from hoyo_buddy.types import Builds, CardData, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
@@ -84,7 +85,7 @@ class ProfileView(View, PlayerEmbedMixin):
         self,
         uid: int,
         game: Game,
-        card_data: dict[str, Any],
+        card_data: CardDataDict[CardData],
         *,
         # Hoyolab data
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
@@ -379,7 +380,7 @@ class ProfileView(View, PlayerEmbedMixin):
             )
 
         character_id = str(character.id)
-        character_data = self._card_data.get(character_id)
+        character_data = self._card_data.get(character_id, HSRCardData)
         if character_data is None:
             raise CardNotReadyError(character.name, character_id)
 
@@ -388,9 +389,9 @@ class ProfileView(View, PlayerEmbedMixin):
         )
 
         if card_settings.custom_primary_color is None:
-            primary: str = character_data["primary"]
-            if "primary-dark" in character_data and card_settings.dark_mode:
-                primary: str = character_data["primary-dark"]
+            primary: str = character_data.primary
+            if card_settings.dark_mode:
+                primary: str = character_data.primary_dark or primary
         else:
             primary = card_settings.custom_primary_color
 
@@ -460,22 +461,24 @@ class ProfileView(View, PlayerEmbedMixin):
         exc = CardNotReadyError(agent.name, str(agent.id))
 
         if template_num == 2:
-            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
+            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id), ZZZCardData)
             if agent_temp2_data is None:
                 raise exc
 
-            if not agent_temp2_data.get("color"):
-                agent_temp1_data = self._card_data.get(str(agent.id))
+            if not agent_temp2_data.color:
+                agent_temp1_data = self._card_data.get(str(agent.id), ZZZCardData)
                 if agent_temp1_data is None:
                     raise exc
-                agent_temp2_data["color"] = agent_temp1_data["color"]
+                agent_temp2_data.color = agent_temp1_data.color
             agent_temp_data = agent_temp2_data
         else:
             # 1, 3, 4
-            agent_temp_data: dict[str, Any] | None = self._card_data.get(str(agent.id))
+            agent_temp_data = self._card_data.get(str(agent.id), ZZZCardData)
 
             if agent_temp_data is not None and agent.outfit_id is not None:
-                agent_outfit_data = self._card_data.get(f"{agent.id}_{agent.outfit_id}")
+                agent_outfit_data = self._card_data.get(
+                    f"{agent.id}_{agent.outfit_id}", ZZZCardData
+                )
                 if agent_outfit_data is None:
                     raise exc
                 agent_temp_data.update(agent_outfit_data)

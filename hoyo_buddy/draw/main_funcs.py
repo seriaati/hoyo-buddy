@@ -24,6 +24,7 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
+from hoyo_buddy.models.draw import ZZZCardData
 from hoyo_buddy.utils.misc import get_zzz_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
@@ -526,7 +527,7 @@ async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
-    card_data: dict[str, Any],
+    card_data: ZZZCardData,
     custom_color: str | None,
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
@@ -559,7 +560,7 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZTeamCard(
             locale=draw_input.locale,
             agents=[agent],
-            agent_colors={agent.id: custom_color or card_data["color"]},
+            agent_colors={agent.id: custom_color or card_data.color},
             agent_images={agent.id: image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,

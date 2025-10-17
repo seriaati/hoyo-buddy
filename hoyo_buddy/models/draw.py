@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from attr import dataclass
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 if TYPE_CHECKING:
     import asyncio
@@ -24,6 +24,9 @@ __all__ = (
     "SingleBlock",
     "TopPadding",
     "ZZZDrawData",
+    "ZZZCardData",
+    "GICardData",
+    "HSRCardData",
 )
 
 
@@ -104,3 +107,33 @@ class DoubleBlock:
     flair_text1: LocaleStr | str | None = None
     flair_text2: LocaleStr | str | None = None
     bottom_text: LocaleStr | str | None = None
+
+
+class ZZZCardData(BaseModel):
+    image_x: int
+    image_y: int
+    image_w: int
+    image_h: int
+
+    level_x: int
+    level_y: int
+
+    color: str | None = None
+    name_x: int | None = None
+    name_y: int | None = None
+
+    level_stroke: bool = False
+    level_flip: bool = False
+    flip: bool = False
+    zzz_text: bool = True
+    full_name: bool = True
+
+
+class GICardData(BaseModel):
+    arts: list[str]
+
+
+class HSRCardData(BaseModel):
+    arts: list[str] = Field(default_factory=list)
+    primary: str
+    primary_dark: str | None = Field(default=None, alias="primary-dark")

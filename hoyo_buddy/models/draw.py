@@ -19,14 +19,15 @@ __all__ = (
     "DoubleBlock",
     "DrawInput",
     "DynamicBKInput",
+    "GICardData",
+    "HSRCardData",
     "ItemWithDescription",
     "ItemWithTrailing",
     "SingleBlock",
     "TopPadding",
     "ZZZDrawData",
-    "ZZZCardData",
-    "GICardData",
-    "HSRCardData",
+    "ZZZTemp1CardData",
+    "ZZZTemp2CardData",
 )
 
 
@@ -109,7 +110,7 @@ class DoubleBlock:
     bottom_text: LocaleStr | str | None = None
 
 
-class ZZZCardData(BaseModel):
+class ZZZTemp1CardData(BaseModel):
     image_x: int
     image_y: int
     image_w: int
@@ -118,15 +119,19 @@ class ZZZCardData(BaseModel):
     level_x: int
     level_y: int
 
-    color: str | None = None
+    color: str
     name_x: int | None = None
     name_y: int | None = None
 
-    level_stroke: bool = False
-    level_flip: bool = False
-    flip: bool = False
-    zzz_text: bool = True
-    full_name: bool = True
+    level_stroke: bool
+    level_flip: bool
+    flip: bool
+    zzz_text: bool
+    full_name: bool
+
+
+class ZZZTemp2CardData(ZZZTemp1CardData):
+    color: str | None = None
 
 
 class GICardData(BaseModel):

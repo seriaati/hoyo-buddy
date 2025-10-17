@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 import ambr
 import hakushin
@@ -24,7 +24,6 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
-from hoyo_buddy.models.draw import ZZZCardData
 from hoyo_buddy.utils.misc import get_zzz_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
@@ -50,6 +49,7 @@ if TYPE_CHECKING:
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.models.draw import ZZZCardData
     from hoyo_buddy.types import HardChallengeMode
 
 

@@ -7,6 +7,7 @@ from typing import Any
 
 import sentry_sdk
 from loguru import logger
+from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
@@ -91,6 +92,7 @@ def setup_sentry(sentry_dsn: str | None) -> None:
         disabled_integrations=[
             LoggingIntegration(),  # To avoid duplicate logs with loguru
             RedisIntegration(),  # Too noisy
+            AsyncPGIntegration(),  # Too noisy
         ],
         environment=CONFIG.env,
         release=get_project_version(),

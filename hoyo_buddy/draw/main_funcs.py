@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 import ambr
 import hakushin
@@ -49,6 +49,7 @@ if TYPE_CHECKING:
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.models.draw import ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -526,7 +527,7 @@ async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
-    card_data: dict[str, Any],
+    card_data: ZZZTemp1CardData,
     custom_color: str | None,
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
@@ -559,7 +560,7 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZTeamCard(
             locale=draw_input.locale,
             agents=[agent],
-            agent_colors={agent.id: custom_color or card_data["color"]},
+            agent_colors={agent.id: custom_color or card_data.color},
             agent_images={agent.id: image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
@@ -575,7 +576,7 @@ async def draw_zzz_build_card(
             name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             disc_icons=draw_data.disc_icons,
-            color=custom_color or card_data["color"],
+            color=custom_color or card_data.color,
             show_substat_rolls=show_substat_rolls,
             agent_special_stats=agent_special_stats,
             hl_substats=hl_substats,

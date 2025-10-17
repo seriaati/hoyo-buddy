@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 from discord import utils as dutils
 from genshin.models import ZZZFullAgent, ZZZSkillType
@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
+    from hoyo_buddy.models.draw import ZZZTemp1CardData
 
 
 class ZZZAgentCard:
@@ -27,7 +28,7 @@ class ZZZAgentCard:
         *,
         locale: str,
         image_url: str,
-        card_data: dict[str, Any],
+        card_data: ZZZTemp1CardData,
         disc_icons: dict[int, str],
         name_data: AgentNameData | None,
         color: str | None,
@@ -51,10 +52,8 @@ class ZZZAgentCard:
         self._hl_special_stats = hl_special_stats
 
     def _draw_base(self) -> Image.Image:
-        zzz_text = self._card_data.get("zzz_text", True)
-
         # Base
-        base_card_temp = 2 if not zzz_text else 1
+        base_card_temp = 2 if not self._card_data.zzz_text else 1
         card = Drawer.open_image(
             f"hoyo-buddy-assets/assets/zzz-build-card/card_base{base_card_temp}.png"
         )
@@ -62,7 +61,7 @@ class ZZZAgentCard:
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Colors
-        agent_color = self._color or self._card_data["color"]
+        agent_color = self._color or self._card_data.color
         blob_color = drawer.hex_to_rgb(agent_color)
         z_blob_color = drawer.blend_color(blob_color, (0, 0, 0), 0.85)
 
@@ -90,10 +89,7 @@ class ZZZAgentCard:
 
         # Background big name
         if self._name_data is not None:
-            name_position = (
-                self._card_data.get("name_x", 2234),
-                self._card_data.get("name_y", -64),
-            )
+            name_position = (self._card_data.name_x or 2234, self._card_data.name_y or -64)
             drawer.write(
                 self._name_data.short_name.replace(" ", ""),
                 size=460,
@@ -105,12 +101,12 @@ class ZZZAgentCard:
         # Agent image
         agent_image = drawer.open_static(self._image_url)
         agent_image = drawer.resize_crop(
-            agent_image, (self._card_data["image_w"], self._card_data["image_h"])
+            agent_image, (self._card_data.image_w, self._card_data.image_h)
         )
-        if self._card_data.get("flip", False):
+        if self._card_data.flip:
             # Flip image horizontally
             agent_image = agent_image.transpose(Transpose.FLIP_LEFT_RIGHT)
-        card.alpha_composite(agent_image, (self._card_data["image_x"], self._card_data["image_y"]))
+        card.alpha_composite(agent_image, (self._card_data.image_x, self._card_data.image_y))
 
         # Movie
         movie = drawer.open_asset("movie.png")
@@ -146,11 +142,11 @@ class ZZZAgentCard:
         drawer = Drawer(draw, folder="zzz-build-card", dark_mode=False, sans=True)
 
         # Level
-        level_stroke = self._card_data.get("level_stroke", False)
+        level_stroke = self._card_data.level_stroke
         level_text = f"Lv.{self._agent.level}"
         tbox = drawer.write(
             level_text,
-            position=(self._card_data["level_x"], self._card_data["level_y"]),
+            position=(self._card_data.level_x, self._card_data.level_y),
             size=250,
             color=(41, 41, 41),
             style="black_italic",
@@ -160,14 +156,11 @@ class ZZZAgentCard:
 
         # Media rank
         rank_text = drawer.open_asset(f"rank/M{self._agent.rank}.png")
-        level_flip = self._card_data.get("level_flip", False)
+        level_flip = self._card_data.level_flip
         rank_text_pos = (
-            (
-                self._card_data["level_x"] + tbox.width - rank_text.width,
-                self._card_data["level_y"] + 260,
-            )
+            (self._card_data.level_x + tbox.width - rank_text.width, self._card_data.level_y + 260)
             if level_flip
-            else (self._card_data["level_x"], self._card_data["level_y"] + 260)
+            else (self._card_data.level_x, self._card_data.level_y + 260)
         )
         im.paste(rank_text, rank_text_pos, rank_text)
 
@@ -175,7 +168,7 @@ class ZZZAgentCard:
             not level_flip
             and self._name_data is not None
             and self._template == 1
-            and self._card_data.get("full_name", True)
+            and self._card_data.full_name
         ):
             # Agent full name
             text = self._name_data.full_name.split(" ", maxsplit=1)
@@ -183,8 +176,8 @@ class ZZZAgentCard:
                 drawer.write(
                     "\n".join(text),
                     position=(
-                        self._card_data["level_x"] + rank_text.width + 10,
-                        self._card_data["level_y"] + 290,
+                        self._card_data.level_x + rank_text.width + 10,
+                        self._card_data.level_y + 290,
                     ),
                     size=72,
                     color=(41, 41, 41),
@@ -215,7 +208,7 @@ class ZZZAgentCard:
         # Stats
         start_pos = (2720, 616)
         props = get_props(self._agent)
-        agent_color = self._color or self._card_data["color"]
+        agent_color = self._color or self._card_data.color
 
         for i, prop in enumerate(props):
             assert isinstance(prop.type, PropType)

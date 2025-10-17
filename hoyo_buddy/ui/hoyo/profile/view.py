@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import string
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import aiohttp
 import akasha
@@ -32,9 +32,9 @@ from hoyo_buddy.draw.main_funcs import (
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.exceptions import (
-    CardNotReadyError,
     DownloadImageFailedError,
     FeatureNotImplementedError,
+    NoCardDataError,
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
@@ -49,8 +49,9 @@ from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSett
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
+from hoyo_buddy.utils.misc import get_template_num
 
-from .card_settings import get_card_settings
+from .card_settings import get_card_settings, get_default_color
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -84,7 +85,6 @@ class ProfileView(View, PlayerEmbedMixin):
         self,
         uid: int,
         game: Game,
-        card_data: dict[str, Any],
         *,
         # Hoyolab data
         hoyolab_hsr_characters: list[HoyolabHSRCharacter] | None = None,
@@ -128,13 +128,53 @@ class ProfileView(View, PlayerEmbedMixin):
         self.characters: dict[str, Character] = {}
         self._param_character_ids = character_ids
 
-        self._card_data = card_data
         self._account = account
         self._builds = builds or {}
 
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
+
+    async def _get_hsr_character_color(self, *, user_id: int, character_id: str) -> str:
+        card_setting = await get_card_settings(user_id, character_id, game=self.game)
+
+        if card_setting.custom_primary_color is not None:
+            return card_setting.custom_primary_color
+
+        color = card_setting.custom_primary_color or get_default_color(
+            character_id,
+            game=Game.STARRAIL,
+            template=card_setting.template,
+            dark_mode=card_setting.dark_mode,
+            outfit_id=None,
+        )
+        if color is not None:
+            return color
+
+        raise NoCardDataError(character_id, character_id)
+
+    async def _get_zzz_character_color(
+        self, *, user_id: int, character: ZZZFullAgent | ZZZEnkaCharacter
+    ) -> str:
+        settings = await get_card_settings(user_id, str(character.id), game=self.game)
+
+        color = settings.custom_primary_color or get_default_color(
+            str(character.id),
+            game=Game.ZZZ,
+            template=settings.template,
+            dark_mode=settings.dark_mode,
+            outfit_id=character.outfit_id,
+        )
+
+        if color is not None:
+            return color
+
+        key = (
+            str(character.id)
+            if character.outfit_id is None
+            else f"{character.id}_{character.outfit_id}"
+        )
+        raise NoCardDataError(character.name, key)
 
     async def _batch_fetch_lc_details(
         self, api: YattaAPIClient, lc_ids: list[int]
@@ -196,11 +236,6 @@ class ProfileView(View, PlayerEmbedMixin):
             f" {character_calc.variant.display_name if character_calc.variant is not None else ''}"
         )
         return f"{character_calc.short}{variant_str}\n{ranking}"
-
-    def _check_card_data(self) -> None:
-        for char_id in self.character_ids:
-            if char_id not in self._card_data:
-                raise CardNotReadyError(self.characters[char_id].name, char_id)
 
     def _set_characters_with_enka(
         self, game: Literal[Game.STARRAIL, Game.GENSHIN, Game.ZZZ]
@@ -379,22 +414,23 @@ class ProfileView(View, PlayerEmbedMixin):
             )
 
         character_id = str(character.id)
-        character_data = self._card_data.get(character_id)
+        character_data = CARD_DATA.hsr.get(character_id)
         if character_data is None:
-            raise CardNotReadyError(character.name, character_id)
+            raise NoCardDataError(character.name, character_id)
 
         image_url = card_settings.current_image or get_default_art(
             character, is_team=False, use_m3_art=card_settings.use_m3_art
         )
 
         if card_settings.custom_primary_color is None:
-            primary: str = character_data["primary"]
-            if "primary-dark" in character_data and card_settings.dark_mode:
-                primary: str = character_data["primary-dark"]
+            primary: str = character_data.primary
+            if card_settings.dark_mode:
+                primary: str = character_data.primary_dark or primary
         else:
             primary = card_settings.custom_primary_color
 
-        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2]", template_num)
 
         return await draw_hsr_build_card(
             draw_input, character, image_url, primary, template=template_num
@@ -410,7 +446,9 @@ class ProfileView(View, PlayerEmbedMixin):
             character, is_team=False, use_m3_art=card_settings.use_m3_art
         )
 
-        template_num: Literal[1, 2] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2]", template_num)
+
         if template_num == 2:
             zoom = 0.7 if card_settings.current_image is None else 1.0
         else:
@@ -433,7 +471,7 @@ class ProfileView(View, PlayerEmbedMixin):
             template=template_num,
             top_crop=template_num == 2
             and card_settings.current_image
-            in get_default_collection(str(character.id), self._card_data, game=Game.GENSHIN),
+            in get_default_collection(str(character.id), game=self.game),
             rank=rank,
         )
 
@@ -456,32 +494,31 @@ class ProfileView(View, PlayerEmbedMixin):
             client.set_lang(self.locale)
             agent = await client.get_zzz_agent_info(character.id)
 
-        template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
-        exc = CardNotReadyError(agent.name, str(agent.id))
+        key = str(agent.id)
+        template_num = get_template_num(card_settings.template)
+        template_num = cast("Literal[1, 2, 3, 4]", template_num)
 
         if template_num == 2:
-            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
-            if agent_temp2_data is None:
-                raise exc
+            agent_temp_data = CARD_DATA.zzz2.get(key)
+            if agent_temp_data is None:
+                raise NoCardDataError(agent.name, key)
 
-            if not agent_temp2_data.get("color"):
-                agent_temp1_data = self._card_data.get(str(agent.id))
+            if not agent_temp_data.color:
+                agent_temp1_data = CARD_DATA.zzz.get(key)
                 if agent_temp1_data is None:
-                    raise exc
-                agent_temp2_data["color"] = agent_temp1_data["color"]
-            agent_temp_data = agent_temp2_data
+                    raise NoCardDataError(agent.name, key)
+
+                agent_temp_data = agent_temp_data.model_copy(
+                    update={"color": agent_temp1_data.color}
+                )
         else:
             # 1, 3, 4
-            agent_temp_data: dict[str, Any] | None = self._card_data.get(str(agent.id))
-
-            if agent_temp_data is not None and agent.outfit_id is not None:
-                agent_outfit_data = self._card_data.get(f"{agent.id}_{agent.outfit_id}")
-                if agent_outfit_data is None:
-                    raise exc
-                agent_temp_data.update(agent_outfit_data)
+            if agent.outfit_id is not None:
+                key = f"{agent.id}_{agent.outfit_id}"
+            agent_temp_data = CARD_DATA.zzz.get(key)
 
         if agent_temp_data is None:
-            raise exc
+            raise NoCardDataError(agent.name, key)
 
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON
@@ -529,10 +566,12 @@ class ProfileView(View, PlayerEmbedMixin):
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(character, card_settings, draw_input)
             return await self._draw_src_character_card(i.client.session, character, card_settings)
+
         if self.game is Game.GENSHIN:
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(character, card_settings, draw_input)
             return await self._draw_enka_card(i.client.session, character, card_settings)
+
         if self.game is Game.ZZZ:
             return await self._draw_hb_zzz_character_card(character, card_settings, draw_input)
 
@@ -551,9 +590,6 @@ class ProfileView(View, PlayerEmbedMixin):
 
     async def draw_team_card(self, i: Interaction) -> io.BytesIO:
         """Draw team card for multiple characters."""
-        if self.game is not Game.GENSHIN:
-            self._check_card_data()
-
         locale = (
             draw_locale(self.locale, self._account) if self._account is not None else self.locale
         )
@@ -571,6 +607,7 @@ class ProfileView(View, PlayerEmbedMixin):
 
         if self.game is Game.ZZZ:
             agents: list[ZZZFullAgent | ZZZEnkaCharacter] = []
+
             for char_id in self.character_ids:
                 character = self.characters[char_id]
                 if isinstance(character, ZZZPartialAgent):
@@ -585,24 +622,10 @@ class ProfileView(View, PlayerEmbedMixin):
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
                 for char_id in self.character_ids
             }
-
-            # Only one card setting is stored per character, no matter the outfit.
-            # However, since different outfits have different default colors,
-            # we need to use the outfit_id to get the correct color.
-            # Outfit data doesn't always have 'color' field, so we default to the main character color.
-            agent_colors: dict[int, str] = {}
-
-            for a in agents:
-                settings = agent_card_settings.get(a.id)
-                if settings is not None and settings.custom_primary_color:
-                    agent_colors[a.id] = settings.custom_primary_color
-                else:
-                    key = f"{a.id}_{a.outfit_id}" if a.outfit_id is not None else str(a.id)
-                    agent_data = self._card_data.get(key) or self._card_data.get(str(a.id))
-                    if agent_data and "color" in agent_data:
-                        agent_colors[a.id] = agent_data["color"]
-                    else:
-                        raise CardNotReadyError(a.name, key)
+            agent_colors: dict[int, str] = {
+                a.id: await self._get_zzz_character_color(user_id=i.user.id, character=a)
+                for a in agents
+            }
 
             show_substat_rolls = {
                 int(char_id): agent_card_settings[int(char_id)].show_substat_rolls
@@ -643,13 +666,12 @@ class ProfileView(View, PlayerEmbedMixin):
         }
 
         if self.game is Game.STARRAIL:
-            character_colors = {
-                char_id: (
-                    await get_card_settings(i.user.id, char_id, game=self.game)
-                ).custom_primary_color
-                or self._card_data[char_id]["primary"]
-                for char_id in self.character_ids
-            }
+            character_colors: dict[str, str] = {}
+
+            for char_id in self.character_ids:
+                character_colors[char_id] = await self._get_hsr_character_color(
+                    user_id=i.user.id, character_id=char_id
+                )
 
             # Batch fetch
             fetch_ids = [
@@ -679,6 +701,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 images,
                 character_colors,
             )
+
         if self.game is Game.GENSHIN:
             characters = [self.characters[char_id] for char_id in self.character_ids]
             return await draw_gi_team_card(
@@ -743,7 +766,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 setattr(card_settings, attr, None)
                 await card_settings.save(update_fields=(attr,))
 
-            if isinstance(e, CardNotReadyError):
+            if isinstance(e, NoCardDataError):
                 logger.error(
                     f"Card not ready for {e.character_id}",
                     user_id=i.user.id,

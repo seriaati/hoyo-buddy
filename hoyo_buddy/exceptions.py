@@ -56,7 +56,7 @@ class NoAccountFoundError(HoyoBuddyError):
         self.games = games
 
 
-class CardNotReadyError(HoyoBuddyError):
+class NoCardDataError(HoyoBuddyError):
     def __init__(self, character_name: str, character_id: str) -> None:
         super().__init__(
             title=LocaleStr(

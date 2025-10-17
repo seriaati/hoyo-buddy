@@ -111,3 +111,7 @@ type FontStyle = Literal[
     "black_italic",
 ]
 type HardChallengeMode = Literal["single", "multi"]
+
+type CardData = (
+    models.GICardData | models.HSRCardData | models.ZZZTemp1CardData | models.ZZZTemp2CardData
+)

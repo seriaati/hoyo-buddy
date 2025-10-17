@@ -48,7 +48,6 @@ class ImageSettingsButton(Button[ProfileView]):
         view = ImageSettingsView(
             list(self.view.characters.values()),
             character_id,
-            self.view._card_data,
             card_settings,
             custom_images,
             self.view.game,

@@ -12,7 +12,6 @@ from hoyo_buddy.constants import (
     LOCALE_TO_HSR_ENKA_LANG,
     LOCALE_TO_ZZZ_ENKA_LANG,
 )
-from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.utils.misc import capture_exception
 
 from ..ui.hoyo.profile.view import ProfileView
@@ -137,7 +136,6 @@ class ProfileCommand:
         return ProfileView(
             self._uid,
             self._game,
-            CARD_DATA.gi,
             character_ids=self._character_ids,
             hoyolab_gi_characters=hoyolab_characters,
             hoyolab_gi_user=hoyolab_user,
@@ -178,7 +176,6 @@ class ProfileCommand:
         return ProfileView(
             self._uid,
             self._game,
-            CARD_DATA.hsr,
             character_ids=self._character_ids,
             hoyolab_hsr_characters=hoyolab_characters,
             hoyolab_hsr_user=hoyolab_user,
@@ -220,7 +217,6 @@ class ProfileCommand:
         return ProfileView(
             self._uid,
             self._game,
-            CARD_DATA.zzz,
             character_ids=self._character_ids,
             account=self._account,
             zzz_data=enka_data,

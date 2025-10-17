@@ -84,11 +84,19 @@ def get_default_color(
 ) -> str | None:
     try:
         if game is Game.ZZZ:
-            template_num = get_template_num(template)
             key = character_id if outfit_id is None else f"{character_id}_{outfit_id}"
+            template_num = get_template_num(template)
 
             if template_num == 2:
-                return CARD_DATA.zzz2[key].color
+                try:
+                    color = CARD_DATA.zzz2[key].color
+                except KeyError:
+                    return CARD_DATA.zzz[key].color
+
+                if color is None:
+                    return CARD_DATA.zzz[key].color
+                return color
+
             return CARD_DATA.zzz[key].color
 
         if game is Game.STARRAIL:

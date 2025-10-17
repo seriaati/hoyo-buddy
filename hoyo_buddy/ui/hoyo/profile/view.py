@@ -169,7 +169,12 @@ class ProfileView(View, PlayerEmbedMixin):
         if color is not None:
             return color
 
-        raise NoCardDataError(character.name, str(character.id))
+        key = (
+            str(character.id)
+            if character.outfit_id is None
+            else f"{character.id}_{character.outfit_id}"
+        )
+        raise NoCardDataError(character.name, key)
 
     async def _batch_fetch_lc_details(
         self, api: YattaAPIClient, lc_ids: list[int]

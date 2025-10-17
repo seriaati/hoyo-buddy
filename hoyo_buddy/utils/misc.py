@@ -655,3 +655,11 @@ async def get_zzz_latest_stable_version(session: aiohttp.ClientSession) -> str |
     except Exception as e:
         capture_exception(e)
         return None
+
+
+def get_template_num(template: str) -> int:
+    match = re.search(r"(\d+)$", template)
+    if not match:
+        msg = f"No number at end of string: {template}"
+        raise ValueError(msg)
+    return int(match.group(1))

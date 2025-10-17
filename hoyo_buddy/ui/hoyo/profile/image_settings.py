@@ -16,14 +16,13 @@ from hoyo_buddy.constants import (
     ZZZ_M6_ART_URL,
 )
 from hoyo_buddy.db import CustomImage
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.models.draw import GICardData, HSRCardData
-from hoyo_buddy.types import CardData
 from hoyo_buddy.ui import (
     Button,
     Label,
@@ -42,7 +41,7 @@ from .items.settings_chara_select import CharacterSelect as SettingsCharacterSel
 from .templates import DISABLE_IMAGE
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Sequence
 
     from discord import Member, User
 
@@ -84,12 +83,19 @@ def get_default_art(
     raise TypeError(msg)
 
 
-def get_default_collection(character_id: str, card_data: Mapping[str, CardData]) -> list[str]:
-    char_data = card_data.get(character_id, CardData)
-    if isinstance(char_data, GICardData | HSRCardData):
-        return char_data.arts
+def get_default_collection(character_id: str, *, game: Game) -> list[str]:
+    if game is Game.GENSHIN:
+        card_data = CARD_DATA.gi
+    elif game is Game.STARRAIL:
+        card_data = CARD_DATA.hsr
+    else:
+        return []
 
-    return []
+    char_data = card_data.get(character_id)
+    if char_data is None:
+        return []
+
+    return char_data.arts
 
 
 class ImageSettingsView(View):
@@ -97,7 +103,6 @@ class ImageSettingsView(View):
         self,
         characters: Sequence[Character],
         selected_character_id: str,
-        card_data: dict[str, CardData],
         card_settings: CardSettings,
         custom_images: list[CustomImage],
         game: Game,
@@ -110,7 +115,6 @@ class ImageSettingsView(View):
         super().__init__(author=author, locale=locale)
         self.characters = characters
         self.user_id = author.id
-        self.card_data = card_data
 
         self.game = game
         self.selected_character_id = selected_character_id
@@ -150,7 +154,7 @@ class ImageSettingsView(View):
 
     def _add_items(self) -> None:
         character = self._get_current_character()
-        default_collection = get_default_collection(str(character.id), self.card_data)
+        default_collection = get_default_collection(str(character.id), game=self.game)
         current_image = self.get_current_image()
 
         self.add_item(CharacterSelect(self.characters, self.selected_character_id, row=0))
@@ -245,7 +249,7 @@ class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
         self.view.card_settings = await get_card_settings(
             self.view.user_id, self.values[0], game=self.view.game
         )
-        default_arts = get_default_collection(self.values[0], self.view.card_data)
+        default_arts = get_default_collection(self.values[0], game=self.view.game)
         current_image = self.view.get_current_image()
 
         # Update other item styles
@@ -637,7 +641,7 @@ class ImageTypeSelect(Select[ImageSettingsView]):
         image_select: ImageSelect = self.view.get_item("profile_image_select")
         current_image = self.view.get_current_image()
         default_collection = get_default_collection(
-            self.view.selected_character_id, self.view.card_data
+            self.view.selected_character_id, game=self.view.game
         )
         image_select.update(
             current_image=current_image,

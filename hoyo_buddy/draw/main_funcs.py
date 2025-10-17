@@ -49,7 +49,7 @@ if TYPE_CHECKING:
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
-    from hoyo_buddy.models.draw import ZZZCardData
+    from hoyo_buddy.models.draw import ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -527,7 +527,7 @@ async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
-    card_data: ZZZCardData,
+    card_data: ZZZTemp1CardData,
     custom_color: str | None,
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
@@ -576,7 +576,7 @@ async def draw_zzz_build_card(
             name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             disc_icons=draw_data.disc_icons,
-            color=custom_color or card_data["color"],
+            color=custom_color or card_data.color,
             show_substat_rolls=show_substat_rolls,
             agent_special_stats=agent_special_stats,
             hl_substats=hl_substats,

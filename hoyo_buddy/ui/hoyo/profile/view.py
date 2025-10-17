@@ -32,9 +32,9 @@ from hoyo_buddy.draw.main_funcs import (
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.exceptions import (
-    CardNotReadyError,
     DownloadImageFailedError,
     FeatureNotImplementedError,
+    NoCardDataError,
     ThirdPartyCardTempError,
 )
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
@@ -42,6 +42,7 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
+from hoyo_buddy.models.draw import ZZZTemp1CardData
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
@@ -50,7 +51,7 @@ from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
 
-from .card_settings import get_card_settings
+from .card_settings import get_card_settings, get_default_color
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -140,32 +141,34 @@ class ProfileView(View, PlayerEmbedMixin):
         if card_setting.custom_primary_color is not None:
             return card_setting.custom_primary_color
 
-        char_data = CARD_DATA.hsr.get(character_id)
-        if char_data is None:
-            raise CardNotReadyError(self.characters[character_id].name, character_id)
+        color = card_setting.custom_primary_color or get_default_color(
+            character_id,
+            game=Game.STARRAIL,
+            template=card_setting.template,
+            dark_mode=card_setting.dark_mode,
+        )
+        if color is not None:
+            return color
 
-        if card_setting.dark_mode and char_data.primary_dark is not None:
-            return char_data.primary_dark
-        return char_data.primary
+        raise NoCardDataError(character_id, character_id)
 
     async def _get_zzz_character_color(
         self, *, user_id: int, character: ZZZFullAgent | ZZZEnkaCharacter
     ) -> str:
         settings = await get_card_settings(user_id, str(character.id), game=self.game)
 
-        if settings.custom_primary_color:
-            return settings.custom_primary_color
-
-        key = (
-            f"{character.id}_{character.outfit_id}"
-            if character.outfit_id is not None
-            else str(character.id)
+        color = settings.custom_primary_color or get_default_color(
+            str(character.id),
+            game=Game.ZZZ,
+            template=settings.template,
+            dark_mode=settings.dark_mode,
+            outfit_id=character.outfit_id,
         )
-        agent_data = CARD_DATA.zzz.get(key)
-        if agent_data is not None:
-            return agent_data.color
 
-        raise CardNotReadyError(character.name, key)
+        if color is not None:
+            return color
+
+        raise NoCardDataError(character.name, str(character.id))
 
     async def _batch_fetch_lc_details(
         self, api: YattaAPIClient, lc_ids: list[int]
@@ -407,7 +410,7 @@ class ProfileView(View, PlayerEmbedMixin):
         character_id = str(character.id)
         character_data = CARD_DATA.hsr.get(character_id)
         if character_data is None:
-            raise CardNotReadyError(character.name, character_id)
+            raise NoCardDataError(character.name, character_id)
 
         image_url = card_settings.current_image or get_default_art(
             character, is_team=False, use_m3_art=card_settings.use_m3_art
@@ -459,7 +462,7 @@ class ProfileView(View, PlayerEmbedMixin):
             template=template_num,
             top_crop=template_num == 2
             and card_settings.current_image
-            in get_default_collection(str(character.id), CARD_DATA.hsr),
+            in get_default_collection(str(character.id), game=self.game),
             rank=rank,
         )
 
@@ -485,16 +488,22 @@ class ProfileView(View, PlayerEmbedMixin):
         template_num: Literal[1, 2, 3, 4] = int(card_settings.template[-1])  # pyright: ignore[reportAssignmentType]
 
         if template_num == 2:
-            agent_temp_data = CARD_DATA.zzz2.get(str(agent.id))
-            if agent_temp_data is None:
-                raise CardNotReadyError(agent.name, str(agent.id))
+            agent_temp2_data = CARD_DATA.zzz2.get(str(agent.id))
+            if agent_temp2_data is None:
+                raise NoCardDataError(agent.name, str(agent.id))
 
-            if not agent_temp_data.color:
+            color = agent_temp2_data.color
+
+            if not color:
                 agent_temp1_data = CARD_DATA.zzz.get(str(agent.id))
                 if agent_temp1_data is None:
-                    raise CardNotReadyError(agent.name, str(agent.id))
+                    raise NoCardDataError(agent.name, str(agent.id))
 
-                agent_temp_data.color = agent_temp1_data.color
+                color = agent_temp1_data.color
+
+            agent_temp_data = ZZZTemp1CardData(
+                color=color, **agent_temp2_data.model_dump(exclude={"color"})
+            )
 
         else:
             # 1, 3, 4
@@ -504,12 +513,12 @@ class ProfileView(View, PlayerEmbedMixin):
                 key = f"{agent.id}_{agent.outfit_id}"
                 agent_temp_data = CARD_DATA.zzz.get(key)
                 if agent_temp_data is None:
-                    raise CardNotReadyError(agent.name, key)
+                    raise NoCardDataError(agent.name, key)
             else:
                 agent_temp_data = CARD_DATA.zzz.get(str(agent.id))
 
         if agent_temp_data is None:
-            raise CardNotReadyError(agent.name, str(agent.id))
+            raise NoCardDataError(agent.name, str(agent.id))
 
         agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
             ZZZ_AVATAR_BATTLE_TEMP_JSON
@@ -757,7 +766,7 @@ class ProfileView(View, PlayerEmbedMixin):
                 setattr(card_settings, attr, None)
                 await card_settings.save(update_fields=(attr,))
 
-            if isinstance(e, CardNotReadyError):
+            if isinstance(e, NoCardDataError):
                 logger.error(
                     f"Card not ready for {e.character_id}",
                     user_id=i.user.id,

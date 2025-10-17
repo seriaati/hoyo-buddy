@@ -3,14 +3,13 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, Any
 
-import enka
 from discord import ButtonStyle, TextStyle
-from genshin.models import ZZZPartialAgent
 from loguru import logger
 from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.constants import ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db import CardSettings, Settings
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed, Embed
 from hoyo_buddy.emojis import PALETTE
 from hoyo_buddy.enums import Game, Locale
@@ -18,6 +17,7 @@ from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, Select, SelectOption, TextInput, ToggleButton, View
 from hoyo_buddy.utils import is_valid_hex_color
+from hoyo_buddy.utils.misc import get_template_num
 
 from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
 from .templates import (
@@ -79,13 +79,26 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
     return card_settings
 
 
-def get_default_color(character: Character, card_data: dict[str, Any]) -> str | None:
-    chara_key = str(character.id)
-    with contextlib.suppress(KeyError):
-        if isinstance(character, ZZZPartialAgent):
-            return card_data[chara_key]["color"]
-        if isinstance(character, enka.hsr.Character):
-            return card_data[chara_key]["primary"]
+def get_default_color(
+    character_id: str, *, game: Game, template: str, dark_mode: bool, outfit_id: int | None = None
+) -> str | None:
+    try:
+        if game is Game.ZZZ:
+            template_num = get_template_num(template)
+            key = character_id if outfit_id is None else f"{character_id}_{outfit_id}"
+
+            if template_num == 2:
+                return CARD_DATA.zzz2[key].color
+            return CARD_DATA.zzz[key].color
+
+        if game is Game.STARRAIL:
+            color = CARD_DATA.hsr[character_id].primary
+            if dark_mode:
+                return CARD_DATA.hsr[character_id].primary_dark or color
+            return color
+    except KeyError:
+        return None
+
     return None
 
 
@@ -94,7 +107,6 @@ class CardSettingsView(View):
         self,
         characters: Sequence[Character],
         selected_character_id: str,
-        card_data: dict[str, Any],
         card_settings: CardSettings,
         game: Game,
         settings: Settings,
@@ -108,7 +120,6 @@ class CardSettingsView(View):
 
         self._characters = characters
         self._user_id = author.id
-        self._card_data = card_data
         self._hb_template_only = hb_template_only
         self._is_team = is_team
 
@@ -226,7 +237,12 @@ class CardSettingsView(View):
                 author1=author1,
                 author2=author2,
             )
-        color = card_settings.custom_primary_color or get_default_color(character, self._card_data)
+        color = card_settings.custom_primary_color or get_default_color(
+            str(character.id),
+            game=self.game,
+            template=card_settings.template,
+            dark_mode=card_settings.dark_mode,
+        )
 
         embed = Embed(
             locale=self.locale,

@@ -42,7 +42,6 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.models.draw import ZZZTemp1CardData
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
@@ -147,6 +146,7 @@ class ProfileView(View, PlayerEmbedMixin):
             game=Game.STARRAIL,
             template=card_setting.template,
             dark_mode=card_setting.dark_mode,
+            outfit_id=None,
         )
         if color is not None:
             return color
@@ -503,7 +503,9 @@ class ProfileView(View, PlayerEmbedMixin):
                 if agent_temp1_data is None:
                     raise NoCardDataError(agent.name, key)
 
-                agent_temp_data.color = agent_temp1_data.color
+                agent_temp_data = agent_temp_data.model_copy(
+                    update={"color": agent_temp1_data.color}
+                )
         else:
             # 1, 3, 4
             if agent.outfit_id is not None:

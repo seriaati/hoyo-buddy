@@ -80,7 +80,7 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
 
 
 def get_default_color(
-    character_id: str, *, game: Game, template: str, dark_mode: bool, outfit_id: int | None = None
+    character_id: str, *, game: Game, template: str, dark_mode: bool, outfit_id: int | None
 ) -> str | None:
     try:
         if game is Game.ZZZ:
@@ -242,6 +242,7 @@ class CardSettingsView(View):
             game=self.game,
             template=card_settings.template,
             dark_mode=card_settings.dark_mode,
+            outfit_id=getattr(character, "outfit_id", None),
         )
 
         embed = Embed(

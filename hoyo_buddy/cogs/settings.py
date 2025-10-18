@@ -9,9 +9,10 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.utils import get_locale, show_anniversary_dismissible
+from hoyo_buddy.ui.settings.view import SettingsView
 
 from ..types import Interaction
-from ..ui.settings import SettingsUI
+from ..ui.ssettings import SettingsUI
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
@@ -24,6 +25,10 @@ class Settings(commands.Cog):
     @app_commands.command(name=locale_str("settings"), description=COMMANDS["settings"].description)
     async def settings_command(self, i: Interaction) -> Any:
         await i.response.defer(ephemeral=True)
+
+        view = SettingsView(author=i.user, locale=await get_locale(i))
+        await view.update(i)
+        return
 
         settings = await UserSettings.get(user_id=i.user.id)
         locale = await get_locale(i)

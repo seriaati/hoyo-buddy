@@ -24,7 +24,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..types import Interaction
 from ..ui import Button, View
-from ..ui.settings import SettingsUI
+from ..ui.ssettings import SettingsUI
 from ..utils import ephemeral, get_discord_user_md_link, upload_image
 
 if TYPE_CHECKING:

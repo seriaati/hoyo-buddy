@@ -44,6 +44,7 @@ class HoyoAccount(BaseModel):
     public = fields.BooleanField(default=True)
     """Whether this account can be seen by others."""
     notif_settings: fields.BackwardOneToOneRelation[AccountNotifSettings]
+    mimo_minimum_point = fields.IntField(default=0)
 
     # Auto tasks
     # Future me: Make sure to change AUTO_TASK_TOGGLE_FIELDS in constants.py if you modify this section

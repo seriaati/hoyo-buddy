@@ -217,7 +217,7 @@ class HardChallengeCard:
         *,
         is_advantage: bool,
         text: LocaleStr | str,
-        icon: Image.Image | None = None,
+        icons: list[Image.Image] | None = None,
     ) -> Image.Image:
         if is_advantage:
             pill_color = (45, 60, 85)
@@ -239,8 +239,8 @@ class HardChallengeCard:
         pill_width = tbox.width + x_padding * 2
         pill_height = tbox.height + y_padding * 2
 
-        if icon is not None:
-            pill_width += icon.width + icon_text_padding
+        if icons is not None:
+            pill_width += sum(icon.width for icon in icons) + icon_text_padding * (len(icons) - 1)
 
         pill = Image.new("RGBA", (pill_width, pill_height))
         draw = ImageDraw.Draw(pill)
@@ -252,10 +252,16 @@ class HardChallengeCard:
             width=2,
         )
 
-        if icon is not None:
-            icon_pos = (x_padding, (pill_height - icon.height) // 2)
-            pill.paste(icon, icon_pos, icon)
-            text_x = icon_pos[0] + icon.width + icon_text_padding + tbox.width / 2
+        if icons is not None:
+            text_x = pill_width / 2  # Default value for empty icons list
+
+            for i, icon in enumerate(icons):
+                icon_pos = (
+                    x_padding + sum(icons[j].width + icon_text_padding for j in range(i)),
+                    (pill_height - icon.height) // 2,
+                )
+                pill.paste(icon, icon_pos, icon)
+                text_x = icon_pos[0] + icon.width + icon_text_padding + tbox.width / 2
         else:
             text_x = pill_width / 2
 
@@ -286,25 +292,30 @@ class HardChallengeCard:
         pill_pos = (pos[0] + 48, pos[1] + (752 if is_advantage else 829))
 
         for rec in recommendation.split(" | "):
+            rec_text = rec
+            icon_urls: list[str] = []
             presets = hakushin.utils.extract_sprite_presets(rec)
-            if presets:
-                keyword, icon_url = presets[0]
-                rec_text = rec.replace("{" + keyword + "}", "").strip()
-            else:
-                icon_url = None
-                rec_text = rec
 
-            icon = (
-                drawer.open_static(
-                    icon_url,
-                    size=LEYLINE_ICON_SIZE
-                    if LEYLINE_ICON_KEYWORD in icon_url
-                    else DEFAULT_ICON_SIZE,
+            for keyword, icon_url in presets:
+                rec_text = rec_text.replace("{" + keyword + "}", "").strip()
+                icon_urls.append(icon_url)
+
+            icons: list[Image.Image] = []
+            for icon_url in icon_urls:
+                icon = (
+                    drawer.open_static(
+                        icon_url,
+                        size=LEYLINE_ICON_SIZE
+                        if LEYLINE_ICON_KEYWORD in icon_url
+                        else DEFAULT_ICON_SIZE,
+                    )
+                    if icon_url
+                    else None
                 )
-                if icon_url
-                else None
-            )
-            pill = self._create_pill(drawer, is_advantage=is_advantage, text=rec_text, icon=icon)
+                if icon is not None:
+                    icons.append(icon)
+
+            pill = self._create_pill(drawer, is_advantage=is_advantage, text=rec_text, icons=icons)
             im.paste(pill, pill_pos, pill)
             pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
 

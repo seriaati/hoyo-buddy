@@ -92,10 +92,11 @@ class ImgTheaterCard:
         start_pos = (870, 86)
 
         for character, key in characters:
-            if character is not None:
-                icon = self._drawer.open_static(
-                    self._character_icons[str(character.id)], size=(45, 45)
-                )
+            if (
+                character is not None
+                and (url := self._character_icons.get(str(character.id))) is not None
+            ):
+                icon = self._drawer.open_static(url, size=(45, 45))
                 icon = self._drawer.circular_crop(icon)
                 self._im.alpha_composite(icon, start_pos)
 
@@ -135,9 +136,10 @@ class ImgTheaterCard:
         else:
             fastest_text = ""
 
-        if act.is_arcana:
+        if getattr(act, "is_arcana", False):
             title = LocaleStr(
-                key=f"holy_card_challenge_{act.arcana_number}", mi18n_game=Game.GENSHIN
+                key=f"holy_card_challenge_{getattr(act, 'arcana_number', 0)}",
+                mi18n_game=Game.GENSHIN,
             ).translate(self.locale)
         else:
             title = LocaleStr(
@@ -237,7 +239,7 @@ class ImgTheaterCard:
 
         # Sort acts by arcana_number from lowest to highest
         acts = list(self._theater.acts)
-        acts.sort(key=lambda act: act.arcana_number or act.round_id)
+        acts.sort(key=lambda act: getattr(act, "arcana_number", None) or act.round_id)
 
         for i, act in enumerate(acts):
             self._draw_act_block(

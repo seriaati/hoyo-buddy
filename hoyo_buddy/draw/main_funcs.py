@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 import ambr
 import hakushin
@@ -24,6 +24,7 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
+from hoyo_buddy.utils.misc import get_zzz_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
+    import aiohttp
     import enka
     import genshin
     from genshin.models import (
@@ -47,6 +49,7 @@ if TYPE_CHECKING:
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.models.draw import ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -105,7 +108,7 @@ async def draw_hsr_build_card(
             primary_hex,
         )
 
-    async with YattaAPIClient() as api:
+    async with YattaAPIClient(session=draw_input.session) as api:
         yatta_character = await api.fetch_character_detail(int(character.id))
         en_name = yatta_character.name
 
@@ -148,7 +151,7 @@ async def draw_gi_build_card(
     urls.extend(const.icon for const in character.constellations)
 
     if template == 2:
-        async with ambr.AmbrAPI() as api:
+        async with ambr.AmbrAPI(session=draw_input.session) as api:
             characters = await api.fetch_characters()
             ambr_char = next((char for char in characters if str(character.id) in char.id), None)
             if ambr_char is None:
@@ -267,7 +270,7 @@ async def draw_hsr_characters_card(
 async def draw_spiral_abyss_card(
     draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character]
 ) -> File:
-    async with ambr.AmbrAPI() as api:
+    async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }
@@ -368,7 +371,7 @@ async def draw_img_theater_card(
     chara_consts: dict[int, int],
     traveler_element: str | None,
 ) -> File:
-    async with ambr.AmbrAPI() as api:
+    async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
             character.id.split("-")[0]: character.icon for character in await api.fetch_characters()
         }
@@ -421,6 +424,7 @@ async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     *,
     template: Literal[1, 2, 3, 4],
+    session: aiohttp.ClientSession,
     use_m3_art: bool = False,
 ) -> ZZZDrawData:
     name_datas_path = "zzz_name_data.json"
@@ -461,14 +465,18 @@ async def fetch_zzz_draw_data(
             agent_images=agent_images,
         )
 
-    async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+    version: str | None = None
+
+    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
         # Fetch name data
         if fetch_name_data:
+            version = await get_zzz_latest_stable_version(session)
+
             for agent in agents:
                 if agent.id in name_datas:
                     continue
 
-                detail = await api.fetch_character_detail(agent.id)
+                detail = await api.fetch_character_detail(agent.id, version=version)
                 full_name = detail.info.full_name if detail.info is not None else detail.name
                 name_datas[agent.id] = AgentNameData(
                     short_name=detail.name, full_name=full_name
@@ -479,7 +487,9 @@ async def fetch_zzz_draw_data(
         # Fetch agent images
         if fetch_agent_images and template in {1, 2}:
             template = cast("Literal[1, 2]", template)
-            characters = await api.fetch_characters()
+            if version is None:
+                version = await get_zzz_latest_stable_version(session)
+            characters = await api.fetch_characters(version=version)
 
             if template == 2:
                 agent_images = {
@@ -517,7 +527,7 @@ async def draw_zzz_build_card(
     draw_input: DrawInput,
     agent: ZZZFullAgent | ZZZEnkaCharacter,
     *,
-    card_data: dict[str, Any],
+    card_data: ZZZTemp1CardData,
     custom_color: str | None,
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
@@ -527,7 +537,9 @@ async def draw_zzz_build_card(
     hl_special_stats: bool,
     use_m3_art: bool,
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
+    draw_data = await fetch_zzz_draw_data(
+        [agent], template=template, use_m3_art=use_m3_art, session=draw_input.session
+    )
 
     if template == 1:
         image = draw_data.agent_images[agent.outfit_id or agent.id]
@@ -548,7 +560,7 @@ async def draw_zzz_build_card(
         card = funcs.zzz.ZZZTeamCard(
             locale=draw_input.locale,
             agents=[agent],
-            agent_colors={agent.id: custom_color or card_data["color"]},
+            agent_colors={agent.id: custom_color or card_data.color},
             agent_images={agent.id: image},
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
@@ -564,7 +576,7 @@ async def draw_zzz_build_card(
             name_data=draw_data.name_data.get(agent.id),
             image_url=image,
             disc_icons=draw_data.disc_icons,
-            color=custom_color or card_data["color"],
+            color=custom_color or card_data.color,
             show_substat_rolls=show_substat_rolls,
             agent_special_stats=agent_special_stats,
             hl_substats=hl_substats,
@@ -639,7 +651,7 @@ async def draw_zzz_team_card(
     agent_hl_substat_map: dict[int, list[int]],
     hl_special_stats: dict[int, bool],
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data(agents, template=3)
+    draw_data = await fetch_zzz_draw_data(agents, template=3, session=draw_input.session)
 
     urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
@@ -723,7 +735,7 @@ async def draw_shiyu_card(
         if bangboo is not None
     ]
     if any(not hasattr(bangboo, "icon") for bangboo in bangboos):
-        async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
+        async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=draw_input.session) as api:
             bangboo_icons = {bangboo.id: bangboo.icon for bangboo in await api.fetch_bangboos()}
 
         for bangboo in bangboos:
@@ -832,10 +844,7 @@ async def draw_hard_challenge(
 
 
 async def draw_anomaly_card(
-    draw_input: DrawInput,
-    data: genshin.models.AnomalyRecord,
-    char_names: dict[int, str],
-    uid: int | None,
+    draw_input: DrawInput, data: genshin.models.AnomalyRecord, uid: int | None
 ) -> File:
     urls = [data.boss.icon]
     if data.boss_record and data.boss_record.has_data:
@@ -847,7 +856,7 @@ async def draw_anomaly_card(
 
     await download_images(urls, draw_input.session)
 
-    card = funcs.hsr.AnomalyArbitrationCard(data, draw_input.locale, char_names, uid)
+    card = funcs.hsr.AnomalyArbitrationCard(data, draw_input.locale, uid)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

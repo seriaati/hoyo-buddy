@@ -85,6 +85,9 @@ class EmbedSender:
             try:
                 cls._bot = bot
                 cnt = await DiscordEmbed.all().count()
+                if cnt == 0:
+                    return
+
                 logger.info(f"Starting {cls.__name__} for {cnt} embeds")
 
                 while True:

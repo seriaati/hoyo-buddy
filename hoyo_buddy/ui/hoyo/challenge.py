@@ -46,7 +46,6 @@ from hoyo_buddy.draw.main_funcs import (
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.exceptions import NoChallengeDataError
-from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
@@ -496,10 +495,7 @@ class ChallengeView(View):
             return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
 
         if isinstance(self.challenge, AnomalyRecord):  # pyright: ignore[reportUnnecessaryIsInstance]
-            async with YattaAPIClient() as client:
-                characters = await client.fetch_characters()
-            char_names = {char.id: char.name.lower() for char in characters}
-            return await draw_anomaly_card(draw_input, self.challenge, char_names, uid)
+            return await draw_anomaly_card(draw_input, self.challenge, uid)
 
         msg = f"Drawing for {self.challenge_type!r} is not implemented"
         raise NotImplementedError(msg)

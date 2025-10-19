@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 
 import fastapi
 import flet as ft
@@ -46,9 +47,10 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
-        import uvloop  # pyright: ignore[reportMissingImports]
-    except ImportError:
-        asyncio.run(main())
-    else:
-        uvloop.run(main())
+    with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
+        try:
+            import uvloop  # pyright: ignore[reportMissingImports]
+        except ImportError:
+            asyncio.run(main())
+        else:
+            uvloop.run(main())

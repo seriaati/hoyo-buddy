@@ -94,6 +94,10 @@ class DeviceInfoForm(ft.Column):
             show_error_banner(page, message="无效的 JSON 格式")
             return
 
+        if not isinstance(device_info_dict, dict):
+            show_error_banner(page, message="设备信息必须是一个 JSON 对象")
+            return
+
         aaid_field = self._aaid_ref.current
         if aaid_field.value:
             aaid = aaid_field.value.strip()

@@ -1,10 +1,7 @@
 from tortoise import BaseDBAsyncClient
 
-<<<<<<< Updated upstream
-=======
 RUN_IN_TRANSACTION = True
 
->>>>>>> Stashed changes
 
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
@@ -35,8 +32,6 @@ IMG_THEATER: img_theater_large_block_title
 SHIYU_DEFENSE: Shiyu defense
 ASSAULT: zzz_deadly_assault
 HARD_CHALLENGE: hard_challenge';"""
-<<<<<<< Updated upstream
-=======
 
 
 MODELS_STATE = (
@@ -118,4 +113,3 @@ MODELS_STATE = (
     "kjfGqEsMJMp0NM4iijumF8iGkcZVQPjA2kIKTxnsTbXGqFLufpu82lHui+oilAL4ikFknx"
     "WnIk+IdYVBfWAxx7+vF/Nmjy9g=="
 )
->>>>>>> Stashed changes

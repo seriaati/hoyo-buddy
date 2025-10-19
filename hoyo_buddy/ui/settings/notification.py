@@ -35,9 +35,10 @@ class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(
-                    custom_str="# {title}\n{desc}",
+                    custom_str="# {title}\n{desc}\n-# {note}",
                     title=LocaleStr(key="notification_settings_button_label"),
                     desc=LocaleStr(key="notification_settings_desc"),
+                    note=LocaleStr(key="notification_settings_note"),
                 )
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
@@ -98,9 +99,10 @@ class MimoNotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(
-                    custom_str="# {title}\n{desc}",
+                    custom_str="# {title}\n{desc}\n- {note}",
                     title=LocaleStr(key="mimo_notification_settings"),
                     desc=LocaleStr(key="notification_settings_desc"),
+                    note=LocaleStr(key="notification_settings_note"),
                 )
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),

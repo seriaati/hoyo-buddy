@@ -319,7 +319,8 @@ notif_modal.threshold.label: Threshold
 notif_modal.threshold.description: "Notification is sent after the threshold is reached."
 notification_settings_button_label: Notification Settings
 mimo_notification_settings: Notification Settings for Traveling Mimo
-notification_settings_desc: Hoyo Buddy send notifications using Direct Messages, you can customize this behavior here.
+notification_settings_desc: Configure which notifications to receive.
+notification_settings_note: "Note: Hoyo Buddy sends notifications via direct messages, make sure your DMs are open to receive them."
 notify_on_failure_button_label: Notify on failure
 notify_on_success_button_label: Notify on success
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."

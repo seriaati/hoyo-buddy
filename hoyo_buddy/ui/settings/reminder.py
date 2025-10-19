@@ -374,7 +374,7 @@ class BaseReminderContainer(ui.DefaultContainer["SettingsView"], NotesReminderMi
     def __init__(self, items: Iterable[ReminderItem]) -> None:
         super().__init__(
             ui.TextDisplay(
-                content=LocaleStr(
+                LocaleStr(
                     custom_str="# {title}\n{desc}",
                     title=LocaleStr(key="reminder_settings_title"),
                     desc=LocaleStr(key="reminder_settings_desc"),
@@ -389,7 +389,7 @@ class BaseReminderContainer(ui.DefaultContainer["SettingsView"], NotesReminderMi
             self.add_item(
                 ui.Section(
                     ui.TextDisplay(
-                        content=LocaleStr(
+                        LocaleStr(
                             custom_str="### {emoji}{title}\n{content}",
                             title=item.title,
                             content=self.get_value(

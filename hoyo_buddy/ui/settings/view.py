@@ -14,6 +14,7 @@ from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
+from hoyo_buddy.ui.settings.card import CardSettingsContainer
 from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
     NotificationSettingsContainer,
@@ -24,6 +25,7 @@ from hoyo_buddy.ui.settings.user import UserSettingsContainer
 from ._common import AccountSelect
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db.models.card_settings import CardSettings
     from hoyo_buddy.types import Interaction, User
 
 
@@ -73,6 +75,7 @@ class SettingsView(ui.LayoutView):
         self.settings: Settings
         self.account: HoyoAccount
         self.accounts: list[HoyoAccount]
+        self.card_settings: CardSettings
 
     async def _get_container(self, **kwargs) -> ui.Container:
         account: HoyoAccount = kwargs.get("account")  # pyright: ignore[reportAssignmentType]
@@ -170,6 +173,39 @@ class SettingsView(ui.LayoutView):
 
         container.add_item(ui.ActionRow(CategorySelect(self.category)))
 
+        self.clear_items()
+        self.add_item(container)
+
+        self.message = await i.edit_original_response(view=self)
+
+
+class CardSettingsView(ui.LayoutView):
+    def __init__(
+        self,
+        *,
+        card_settings: CardSettings,
+        settings: Settings,
+        character_name: str,
+        game: Game,
+        author: User,
+        locale: Locale,
+    ) -> None:
+        super().__init__(author=author, locale=locale)
+        self.card_settings = card_settings
+        self.settings = settings
+        self.character_name = character_name
+        self.game = game
+
+    async def update(self, i: Interaction) -> None:
+        if not i.response.is_done():
+            await i.response.defer(ephemeral=True)
+
+        container = CardSettingsContainer(
+            card_settings=self.card_settings,
+            settings=self.settings,
+            character_name=self.character_name,
+            game=self.game,
+        )
         self.clear_items()
         self.add_item(container)
 

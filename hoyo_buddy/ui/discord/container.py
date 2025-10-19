@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 import discord
 
+from hoyo_buddy.utils.misc import is_valid_hex_color
+
 from .action_row import ActionRow
 from .section import Section
 from .text_display import TextDisplay
@@ -29,10 +31,16 @@ class Container[V: LayoutView](discord.ui.Container):
     def __init__(
         self,
         *children: ContainerItem,
-        accent_color: discord.Color | int | None = None,
+        accent_color: discord.Color | int | str | None = None,
         spoiler: bool = False,
         id: int | None = None,  # noqa: A002
     ) -> None:
+        if isinstance(accent_color, str):
+            if not is_valid_hex_color(accent_color):
+                msg = f"Invalid hex color string: {accent_color}"
+                raise ValueError(msg)
+            accent_color = discord.Color(int(str(accent_color).lstrip("#"), 16))
+
         super().__init__(*children, accent_color=accent_color, spoiler=spoiler, id=id)
         self.view: V
 

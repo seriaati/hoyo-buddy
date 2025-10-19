@@ -144,6 +144,8 @@ email_password_modal_password_input_label: password
 enter_email_password_instructions_description: "Email & password refer to **Hoyoverse account's** email and password, not Google, Apple, etc. accounts.\n- [How does this work?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [I don't have a Hoyoverse account (I login with Google, Facebook, etc.)](:docs/Before-Start:)\n- [I am a console player](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Change light cone level
 dark_mode_button_label: Dark mode
+dark_theme: Dark theme
+card_dark_theme_desc: Use a dark color scheme for this character's build card.
 error_footer: "You can find help in our Discord server, link in /about"
 error_title: An Error Occurred
 erudition: Erudition
@@ -529,7 +531,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
 card_settings.modifying_for: "Modifying Card Settings for {name}"
-card_settings.card_color: Card color
+card_settings_modifying_for_desc: All card settings are unique for each character. Some card templates may not support certain settings.
+card_settings.template: Template
+card_settings_template_desc: Some 3rd party templates may not support HoYoLAB/Miyoushe characters. In that case, the bot will use Hoyo Buddy's template.
+card_settings.card_color: Color
 card_settings.no_color: This card template does not support color modification
 card_settings.color_default: Default
 card_settings.current_image: Current image
@@ -538,7 +543,8 @@ card_settings.team_card_image: Team card image
 profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
 card_settings.description: "Use </upload> to get an image URL by uploading the image.\nPixiv is supported, simply copy the artwork's image URL."
-profile.team_dark_mode.button.label: Team card dark mode
+profile.team_dark_mode.button.label: Team card dark theme
+team_card_dark_theme_desc: Use a dark color scheme for team cards. This applies to all team cards, no matter which characters are in.
 profile.character_select.multi.placeholder: Select character(s)...
 zzz_search.agent_info: "Rarity: {rarity}\nSpecialty: {specialty}\nAttack Type: {atk_type}\nFaction: {faction}\nElement: {element}"
 cat_zzz_agents: Agents
@@ -584,7 +590,8 @@ events_view_content_label: View full content
 events_command_game_param_description: Game to view events for
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: Show rank
+profile_view_show_rank_button_label: Show ranking
+profile_view_show_rank_desc: "Display this character's ranking on [akasha.cv](https://akasha.cv)."
 submit_button_label: Submit
 show_tutorial_button_label: Show tutorial
 close_button_label: Close
@@ -705,7 +712,8 @@ lb_view_command_description: View leaderboards
 leaderboard_not_found: Leaderboard not found
 currently_logged_in_as: "You are currently logged in as:"
 not_you_label: "Not you? Click to login with a different account"
-profile_show_substat_rolls: Substat rolls
+profile_show_substat_rolls: Show substat rolls
+profile_show_substat_rolls_desc: Display how many rolls contribute to the final value of a substat.
 team_card_settings_button_label: Team card settings
 team_card_settings_embed_title: Modifying Team Card Settings
 team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."
@@ -716,6 +724,7 @@ redeem_cmd_available_codes: Available codes
 redeem_all_available_codes_button_label: Redeem all available codes
 akasha_show_details: Show leaderboard details
 card_settings_hl_special_stats_button_label: Highlight special stats
+card_settings_hl_stats_desc: Emphasize a character's important stats with color.
 challenge_command_abyss_desc: Generate Spiral Abyss card
 challenge_command_theater_desc: Generate Imaginarium Theater card
 challenge_command_moc_desc: Generate Memory of Chaos card
@@ -867,3 +876,11 @@ mimo_title: Traveling Mimo Settings
 mimo_minimum_point_label: Minimum points to keep
 mimo_minimum_point_desc: "When auto drawing, Hoyo Buddy will make sure your points stay above this value, set to 0 to draw whenever possible."
 disable_all_button_label: Disable all notifications
+apply_template_to_all_chars: Apply current template to all characters
+apply_template_to_all_chars_desc: All **future and current** characters will use **{template}**.
+apply_dark_theme_to_all_chars: Apply current dark theme option to all characters
+apply_dark_theme_to_all_chars_desc: All **future and current** characters will have dark theme **{status}**.
+apply_label: Apply
+card_settings_desc: Modify how your character build cards look like
+card_settings_character_param: Character to modify the card settings for
+disabled_label: Disabled

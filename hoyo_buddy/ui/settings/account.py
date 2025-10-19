@@ -50,7 +50,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
     def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
             ui.TextDisplay(
-                content=LocaleStr(
+                LocaleStr(
                     custom_str="# {title}\n{desc}",
                     title=LocaleStr(key="account_settings_title"),
                     desc=LocaleStr(key="account_settings_desc"),
@@ -60,7 +60,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.LANGUAGE,
                         desc=LocaleStr(key="public_account_desc"),
@@ -72,7 +72,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.FREE_CANCELLATION,
                         desc=LocaleStr(key="daily_checkin_desc"),
@@ -84,7 +84,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.REDEEM_GIFT,
                         desc=LocaleStr(key="redeem_code_desc"),
@@ -102,14 +102,12 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
 class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
     def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
-            ui.TextDisplay(
-                content=LocaleStr(custom_str="# {title}", title=LocaleStr(key="mimo_title"))
-            ),
+            ui.TextDisplay(LocaleStr(custom_str="# {title}", title=LocaleStr(key="mimo_title"))),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {title}\n{desc}",
                         emoji=emojis.GIFT_OUTLINE,
                         title=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
@@ -124,7 +122,7 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {title}\n{desc}",
                         emoji=emojis.SHOPPING_CART,
                         title=LocaleStr(key="mimo_auto_buy_button_label"),
@@ -137,7 +135,7 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {title}\n{desc}",
                         emoji=emojis.PAYMENTS,
                         title=LocaleStr(key="mimo_auto_draw_button_label"),
@@ -152,7 +150,7 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {title}\n{desc}",
                         emoji=emojis.PUBLISH,
                         title=LocaleStr(key="mimo_minimum_point_label"),

@@ -57,14 +57,28 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> C
         }
         template = templates.get(game)
         if template is None:
-            msg = f"Game {game!r} does not have its table column for default card template."
-            raise ValueError(msg)
+            logger.error(
+                f"Game {game!r} does not have its table column for default card template setting."
+            )
+            template = "hb1"
+
+        dark_modes = {
+            Game.GENSHIN: user_settings.gi_dark_mode,
+            Game.STARRAIL: user_settings.hsr_dark_mode,
+            Game.ZZZ: user_settings.zzz_dark_mode,
+        }
+        dark_mode = dark_modes.get(game)
+        if dark_mode is None:
+            logger.error(
+                f"Game {game!r} does not have its table column for default dark mode setting."
+            )
+            dark_mode = False
 
         try:
             card_settings = await CardSettings.create(
                 user_id=user_id,
                 character_id=character_id,
-                dark_mode=False,
+                dark_mode=dark_mode,
                 template=template,
                 game=game,
             )

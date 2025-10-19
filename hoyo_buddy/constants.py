@@ -1378,3 +1378,5 @@ YATTA_PROP_TYPE_TO_GPY_TYPE: dict[str, int] = {
     "speedDelta": 51,
 }
 GPY_TYPE_TO_YATTA_PROP_TYPE = {v: k for k, v in YATTA_PROP_TYPE_TO_GPY_TYPE.items()}
+
+EMPTY_CHAR = "‎ "

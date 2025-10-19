@@ -85,7 +85,7 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
     def __init__(self, *, settings: Settings) -> None:
         super().__init__(
             ui.TextDisplay(
-                content=LocaleStr(
+                LocaleStr(
                     custom_str="# {title}\n{desc}",
                     title=LocaleStr(key="user_settings_title"),
                     desc=LocaleStr(key="user_settings_desc"),
@@ -95,7 +95,7 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.DARK_MODE,
                         desc=LocaleStr(key="dark_theme_desc"),
@@ -107,7 +107,7 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(
-                    content=LocaleStr(
+                    LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.LIVE_HELP,
                         desc=LocaleStr(key="dyk_settings_desc"),
@@ -118,7 +118,7 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.TextDisplay(
-                content=LocaleStr(
+                LocaleStr(
                     custom_str="### {emoji} {desc}",
                     emoji=emojis.LANGUAGE,
                     desc=LocaleStr(key="language_desc"),

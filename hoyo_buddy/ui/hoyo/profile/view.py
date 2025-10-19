@@ -15,11 +15,10 @@ from loguru import logger
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
-    ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
+from hoyo_buddy.db.utils import set_highlight_substats
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -728,18 +727,11 @@ class ProfileView(View, PlayerEmbedMixin):
             if card_settings.highlight_substats:
                 continue
 
-            special_stat_ids = agent_special_stat_map.get(str(character_id), [])
-            special_substat_ids = [
-                ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
-            ]
-
-            hl_substats = [
-                substat_id
-                for _, substat_id, _ in ZZZ_DISC_SUBSTATS
-                if substat_id in special_substat_ids
-            ]
-            card_settings.highlight_substats = hl_substats
-            await card_settings.save(update_fields=("highlight_substats",))
+            await set_highlight_substats(
+                agent_special_stat_map=agent_special_stat_map,
+                card_settings=card_settings,
+                character_id=character_id,
+            )
 
     async def update(
         self,

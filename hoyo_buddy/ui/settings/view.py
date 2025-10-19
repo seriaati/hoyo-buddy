@@ -13,6 +13,7 @@ from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings.account import (
     AccountSettingsContainer,
+    MimoNotificationSettingsContainer,
     MimoSettingsContainer,
     NotificationSettingsContainer,
 )
@@ -27,6 +28,7 @@ class SettingsCategory(StrEnum):
     ACCOUNT_SETTINGS = "account_settings_title"
     MIMO_SETTINGS = "mimo_title"
     NOTIFICATION_SETTINGS = "notification_settings_button_label"
+    MIMO_NOTIFICATION_SETTINGS = "mimo_notification_settings"
 
 
 class CategorySelect(ui.Select["SettingsView"]):
@@ -71,6 +73,9 @@ class SettingsView(ui.LayoutView):
         if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
             return NotificationSettingsContainer(**kwargs)
 
+        if self.category is SettingsCategory.MIMO_NOTIFICATION_SETTINGS:
+            return MimoNotificationSettingsContainer(**kwargs)
+
         msg = f"Unknown settings category: {self.category}"
         raise ValueError(msg)
 
@@ -86,6 +91,7 @@ class SettingsView(ui.LayoutView):
             SettingsCategory.ACCOUNT_SETTINGS,
             SettingsCategory.MIMO_SETTINGS,
             SettingsCategory.NOTIFICATION_SETTINGS,
+            SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
         }:
             if hasattr(self, "accounts") and hasattr(self, "account"):
                 account = self.account
@@ -103,7 +109,10 @@ class SettingsView(ui.LayoutView):
                 accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
                 account = next((acc for acc in accounts if acc.current), accounts[0])
 
-            if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
+            if self.category in {
+                SettingsCategory.NOTIFICATION_SETTINGS,
+                SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
+            }:
                 for acc in accounts:
                     if acc.notif_settings is None:  # pyright: ignore[reportUnnecessaryComparison]
                         await AccountNotifSettings.create(account=acc)
@@ -118,14 +127,16 @@ class SettingsView(ui.LayoutView):
         if self.category is SettingsCategory.USER_SETTINGS:
             self.settings = kwargs["settings"]
 
-        if self.category is SettingsCategory.ACCOUNT_SETTINGS:
-            self.account = kwargs["account"]
-            self.accounts = kwargs["accounts"]
-
         if self.category is SettingsCategory.MIMO_SETTINGS:
             self.account = kwargs["account"]
+            # don't set self.accounts to prevent overwriting of game accounts
+            # because MIMO_SETTINGS only shows a subset of accounts
 
-        if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
+        if self.category in {
+            SettingsCategory.ACCOUNT_SETTINGS,
+            SettingsCategory.NOTIFICATION_SETTINGS,
+            SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
+        }:
             self.account = kwargs["account"]
             self.accounts = kwargs["accounts"]
 

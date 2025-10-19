@@ -318,13 +318,10 @@ notif_modal.notify_weekday.label: The weekday to notify
 notif_modal.threshold.label: Threshold
 notif_modal.threshold.description: "Notification is sent after the threshold is reached."
 notification_settings_button_label: Notification Settings
-notification_settings_desc: "Configure notifications for auto task success and failure."
-notify_on_failure_button_label: Notify on check-in failure
-notify_on_success_button_label: Notify on check-in success
-mimo_auto_task_success_notify_toggle_label: "Traveling Mimo: Notify on auto finish task success"
-mimo_auto_task_failure_notify_toggle_label: "Traveling Mimo: Notify on auto finish task failure"
-mimo_auto_buy_success_notify_toggle_label: "Traveling Mimo: Notify on auto buy rewards success"
-mimo_auto_buy_failure_notify_toggle_label: "Traveling Mimo: Notify on auto buy rewards failure"
+mimo_notification_settings: Notification Settings for Traveling Mimo
+notification_settings_desc: Hoyo Buddy send notifications using Direct Messages, you can customize this behavior here.
+notify_on_failure_button_label: Notify on failure
+notify_on_success_button_label: Notify on success
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"
@@ -867,3 +864,4 @@ layout_view_edited: Interactive components have been disabled to save system res
 mimo_title: Traveling Mimo Settings
 mimo_minimum_point_label: Minimum points to keep
 mimo_minimum_point_desc: "When auto drawing, Hoyo Buddy will make sure your points stay above this value, set to 0 to draw whenever possible."
+disable_all_button_label: Disable all notifications

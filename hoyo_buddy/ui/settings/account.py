@@ -7,7 +7,7 @@ import discord
 from hoyo_buddy import emojis, ui
 from hoyo_buddy.l10n import LocaleStr
 
-from ._common import AccountSelect, AccountToggleButton
+from ._common import AccountToggleButton
 
 if TYPE_CHECKING:
     from hoyo_buddy.db.models.hoyo_account import HoyoAccount
@@ -47,7 +47,7 @@ class MinimumPointsButton(ui.Button["SettingsView"]):
 
 
 class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(
@@ -96,14 +96,11 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     disabled=not account.can_redeem_code,
                 ),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )
 
 
 class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(custom_str="# {title}", title=LocaleStr(key="mimo_title"))
@@ -164,7 +161,4 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
                 ),
                 accessory=MinimumPointsButton(current=account.mimo_minimum_point),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )

@@ -126,5 +126,4 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.ActionRow(LanguageSelect(settings.locale)),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
         )

@@ -8,7 +8,7 @@ from hoyo_buddy import ui
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.l10n import LocaleStr
 
-from ._common import AccountSelect, AccountToggleButton
+from ._common import AccountToggleButton
 
 if TYPE_CHECKING:
     from hoyo_buddy.db.models.hoyo_account import HoyoAccount
@@ -31,7 +31,7 @@ class DisableAllNotificationsButton(ui.Button["SettingsView"]):
 
 
 class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(
@@ -41,7 +41,7 @@ class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     note=LocaleStr(key="notification_settings_note"),
                 )
             ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             # Auto check-in notifications
             ui.TextDisplay(
                 content=LocaleStr(
@@ -86,26 +86,23 @@ class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     current=account.notif_settings.notify_on_checkin_failure,
                 ),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.ActionRow(DisableAllNotificationsButton()),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )
 
 
 class MimoNotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
+    def __init__(self, *, account: HoyoAccount) -> None:
         super().__init__(
             ui.TextDisplay(
                 content=LocaleStr(
-                    custom_str="# {title}\n{desc}\n- {note}",
+                    custom_str="# {title}\n{desc}\n-# {note}",
                     title=LocaleStr(key="mimo_notification_settings"),
                     desc=LocaleStr(key="notification_settings_desc"),
                     note=LocaleStr(key="notification_settings_note"),
                 )
             ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             # Auto task notifications
             ui.TextDisplay(
                 content=LocaleStr(
@@ -174,9 +171,6 @@ class MimoNotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     current=account.notif_settings.mimo_draw_failure,
                 ),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.ActionRow(DisableAllNotificationsButton()),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )

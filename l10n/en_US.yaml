@@ -407,6 +407,7 @@ reminder_settings.reminde.set.type2: "Status: {status}\nNotify Interval: {notify
 reminder_settings.reminde.set.type3: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\n"
 reminder_settings.reminde.set.type4: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\nNotify Weekday: {notify_weekday}"
 reminder_settings_title: Real-Time Notes Reminders
+reminder_settings_desc: Notify you via Direct Message when certain in-game events happen.
 reminder_toggle: Reminder
 resin_discount.embed.description: Weekly boss discounts are not used up yet
 resin_reminder_button.label: Resin reminder

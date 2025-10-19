@@ -3,6 +3,8 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+import discord
+
 from hoyo_buddy import ui
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
@@ -16,7 +18,10 @@ from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
     NotificationSettingsContainer,
 )
+from hoyo_buddy.ui.settings.reminder import ReminderContainer
 from hoyo_buddy.ui.settings.user import UserSettingsContainer
+
+from ._common import AccountSelect
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
@@ -28,6 +33,16 @@ class SettingsCategory(StrEnum):
     MIMO_SETTINGS = "mimo_title"
     NOTIFICATION_SETTINGS = "notification_settings_button_label"
     MIMO_NOTIFICATION_SETTINGS = "mimo_notification_settings"
+    REMINDER_SETTINGS = "reminder_settings_title"
+
+
+ACCOUNT_SELECT_CATEGORIES: set[SettingsCategory] = {
+    SettingsCategory.ACCOUNT_SETTINGS,
+    SettingsCategory.MIMO_SETTINGS,
+    SettingsCategory.NOTIFICATION_SETTINGS,
+    SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
+    SettingsCategory.REMINDER_SETTINGS,
+}
 
 
 class CategorySelect(ui.Select["SettingsView"]):
@@ -59,21 +74,27 @@ class SettingsView(ui.LayoutView):
         self.account: HoyoAccount
         self.accounts: list[HoyoAccount]
 
-    def _get_container(self, **kwargs) -> ui.Container:
+    async def _get_container(self, **kwargs) -> ui.Container:
+        account: HoyoAccount = kwargs.get("account")  # pyright: ignore[reportAssignmentType]
+        settings: Settings = kwargs.get("settings")  # pyright: ignore[reportAssignmentType]
+
         if self.category is SettingsCategory.USER_SETTINGS:
-            return UserSettingsContainer(**kwargs)
+            return UserSettingsContainer(settings=settings)
 
         if self.category is SettingsCategory.ACCOUNT_SETTINGS:
-            return AccountSettingsContainer(**kwargs)
+            return AccountSettingsContainer(account=account)
 
         if self.category is SettingsCategory.MIMO_SETTINGS:
-            return MimoSettingsContainer(**kwargs)
+            return MimoSettingsContainer(account=account)
 
         if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
-            return NotificationSettingsContainer(**kwargs)
+            return NotificationSettingsContainer(account=account)
 
         if self.category is SettingsCategory.MIMO_NOTIFICATION_SETTINGS:
-            return MimoNotificationSettingsContainer(**kwargs)
+            return MimoNotificationSettingsContainer(account=account)
+
+        if self.category is SettingsCategory.REMINDER_SETTINGS:
+            return await ReminderContainer.for_account(account)
 
         msg = f"Unknown settings category: {self.category}"
         raise ValueError(msg)
@@ -86,12 +107,7 @@ class SettingsView(ui.LayoutView):
             settings, _ = await Settings.get_or_create(user_id=i.user.id)
             return {"settings": settings}
 
-        if self.category in {
-            SettingsCategory.ACCOUNT_SETTINGS,
-            SettingsCategory.MIMO_SETTINGS,
-            SettingsCategory.NOTIFICATION_SETTINGS,
-            SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
-        }:
+        if self.category in ACCOUNT_SELECT_CATEGORIES:
             if hasattr(self, "accounts") and hasattr(self, "account"):
                 account = self.account
                 accounts = self.accounts
@@ -105,8 +121,8 @@ class SettingsView(ui.LayoutView):
                 account = next((acc for acc in accounts if acc.current), accounts[0])
 
             if self.category is SettingsCategory.MIMO_SETTINGS:
-                accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
-                account = next((acc for acc in accounts if acc.current), accounts[0])
+                mimo_accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
+                account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
 
             if self.category in {
                 SettingsCategory.NOTIFICATION_SETTINGS,
@@ -126,16 +142,7 @@ class SettingsView(ui.LayoutView):
         if self.category is SettingsCategory.USER_SETTINGS:
             self.settings = kwargs["settings"]
 
-        if self.category is SettingsCategory.MIMO_SETTINGS:
-            self.account = kwargs["account"]
-            # don't set self.accounts to prevent overwriting of game accounts
-            # because MIMO_SETTINGS only shows a subset of accounts
-
-        if self.category in {
-            SettingsCategory.ACCOUNT_SETTINGS,
-            SettingsCategory.NOTIFICATION_SETTINGS,
-            SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
-        }:
+        if self.category in ACCOUNT_SELECT_CATEGORIES:
             self.account = kwargs["account"]
             self.accounts = kwargs["accounts"]
 
@@ -145,10 +152,25 @@ class SettingsView(ui.LayoutView):
 
         kwargs = await self._get_kwargs(i)
         self._set_kwargs(**kwargs)
-        container = self._get_container(**kwargs)
+
+        container = await self._get_container(**kwargs)
+        container.add_item(
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large)
+        )
+
+        if self.category in ACCOUNT_SELECT_CATEGORIES:
+            accounts = self.accounts
+            if self.category is SettingsCategory.MIMO_SETTINGS:
+                accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
+
+            container.add_item(ui.ActionRow(AccountSelect(current=self.account, accounts=accounts)))
+            container.add_item(
+                discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small)
+            )
+
+        container.add_item(ui.ActionRow(CategorySelect(self.category)))
 
         self.clear_items()
-        container.add_item(ui.ActionRow(CategorySelect(self.category)))
         self.add_item(container)
 
         self.message = await i.edit_original_response(view=self)

@@ -5,48 +5,15 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import emojis, ui
-from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
-from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.l10n import LocaleStr
+
+from ._common import AccountSelect, AccountToggleButton
 
 if TYPE_CHECKING:
     from hoyo_buddy.db.models.hoyo_account import HoyoAccount
     from hoyo_buddy.types import Interaction
 
     from .view import SettingsView  # noqa: F401
-
-
-class AccountToggleButton(ui.EmojiToggleButton["SettingsView"]):
-    def __init__(self, *, attr: str, current: bool, **kwargs) -> None:
-        self.attr = attr
-        super().__init__(current=current, **kwargs)
-
-    async def callback(self, i: Interaction) -> None:
-        self.current = not self.current
-        self.update_style()
-
-        if "notif_settings." in self.attr:
-            notif_attr = self.attr.split(".", 1)[1]
-            setattr(self.view.account.notif_settings, notif_attr, self.current)
-            await self.view.account.notif_settings.save(update_fields=(notif_attr,))
-        else:
-            setattr(self.view.account, self.attr, self.current)
-            await self.view.account.save(update_fields=(self.attr,))
-
-        await i.response.edit_message(view=self.view)
-
-
-class DisableAllNotificationsButton(ui.Button["SettingsView"]):
-    def __init__(self) -> None:
-        label = LocaleStr(key="disable_all_button_label")
-        super().__init__(style=discord.ButtonStyle.red, label=label)
-
-    async def callback(self, i: Interaction) -> None:
-        for field in AccountNotifSettings.ALL_FIELDS:
-            setattr(self.view.account.notif_settings, field, False)
-        await self.view.account.notif_settings.save()
-
-        await self.view.update(i)
 
 
 class MinimumMimoPointModal(ui.Modal):
@@ -76,32 +43,6 @@ class MinimumPointsButton(ui.Button["SettingsView"]):
         self.view.account.mimo_minimum_point = points
         await self.view.account.save(update_fields=("mimo_minimum_point",))
 
-        await self.view.update(i)
-
-
-class AccountSelect(ui.Select["SettingsView"]):
-    def __init__(self, *, current: HoyoAccount, accounts: list[HoyoAccount]) -> None:
-        options = [
-            ui.SelectOption(
-                label=str(account),
-                value=str(account.id),
-                emoji=get_game_emoji(account.game),
-                default=current.id == account.id,
-            )
-            for account in accounts
-        ]
-
-        super().__init__(
-            custom_id="account_select",
-            placeholder=LocaleStr(key="account_select_placeholder"),
-            options=options,
-        )
-        self.accounts = accounts
-
-    async def callback(self, i: Interaction) -> None:
-        account = next((acc for acc in self.accounts if str(acc.id) == self.values[0]), None)
-        assert account is not None
-        self.view.account = account
         await self.view.update(i)
 
 
@@ -224,156 +165,6 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
                 accessory=MinimumPointsButton(current=account.mimo_minimum_point),
             ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-        )
-
-
-class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
-        super().__init__(
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="# {title}\n{desc}",
-                    title=LocaleStr(key="notification_settings_button_label"),
-                    desc=LocaleStr(key="notification_settings_desc"),
-                )
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
-            # Auto check-in notifications
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="### {title}", title=LocaleStr(key="auto_checkin_button_label")
-                )
-            ),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_success_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_success",
-                    current=account.notif_settings.notify_on_checkin_success,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_failure_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_failure",
-                    current=account.notif_settings.notify_on_checkin_failure,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            # Auto redeem notifications
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="### {title}", title=LocaleStr(key="auto_redeem_toggle.label")
-                )
-            ),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_success_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_success",
-                    current=account.notif_settings.notify_on_checkin_success,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_failure_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_failure",
-                    current=account.notif_settings.notify_on_checkin_failure,
-                ),
-            ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(DisableAllNotificationsButton()),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-        )
-
-
-class MimoNotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount, accounts: list[HoyoAccount]) -> None:
-        super().__init__(
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="# {title}\n{desc}",
-                    title=LocaleStr(key="mimo_notification_settings"),
-                    desc=LocaleStr(key="notification_settings_desc"),
-                )
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
-            # Auto task notifications
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="### {title}",
-                    title=LocaleStr(key="mimo_auto_finish_and_claim_button_label"),
-                )
-            ),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_success_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_task_success",
-                    current=account.notif_settings.mimo_task_success,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_failure_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_task_failure",
-                    current=account.notif_settings.mimo_task_failure,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            # Auto buy notifications
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="### {title}", title=LocaleStr(key="mimo_auto_buy_button_label")
-                )
-            ),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_success_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_buy_success",
-                    current=account.notif_settings.mimo_buy_success,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_failure_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_buy_failure",
-                    current=account.notif_settings.mimo_buy_failure,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            # Auto draw notifications
-            ui.TextDisplay(
-                content=LocaleStr(
-                    custom_str="### {title}", title=LocaleStr(key="mimo_auto_draw_button_label")
-                )
-            ),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_success_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_draw_success",
-                    current=account.notif_settings.mimo_draw_success,
-                ),
-            ),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.Section(
-                ui.TextDisplay(content=LocaleStr(key="notify_on_failure_button_label")),
-                accessory=AccountToggleButton(
-                    attr="notif_settings.mimo_draw_failure",
-                    current=account.notif_settings.mimo_draw_failure,
-                ),
-            ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
-            ui.ActionRow(DisableAllNotificationsButton()),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.ActionRow(AccountSelect(current=account, accounts=accounts)),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
         )

@@ -11,10 +11,9 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.settings.account import (
-    AccountSettingsContainer,
+from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
+from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
-    MimoSettingsContainer,
     NotificationSettingsContainer,
 )
 from hoyo_buddy.ui.settings.user import UserSettingsContainer

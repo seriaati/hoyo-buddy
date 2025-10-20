@@ -60,28 +60,10 @@ class Settings(commands.Cog):
         view = SettingsView(author=i.user, locale=await get_locale(i))
         await view.update(i)
 
-    @app_commands.command(
-        name=locale_str("card-settings"), description=COMMANDS["card_settings"].description
-    )
-    @app_commands.rename(
-        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
-        character_id=app_commands.locale_str("character", key="akasha_character_param"),
-    )
-    @app_commands.describe(
-        game_value=app_commands.locale_str(
-            "Game to search in", key="search_command_game_param_description"
-        ),
-        character_id=locale_str(
-            "Character to modify the card settings for", key="card_settings_character_param"
-        ),
-    )
-    async def card_settings_command(
-        self, i: Interaction, game_value: str, character_id: str
-    ) -> Any:
+    async def _card_settings_command(self, i: Interaction, game: Game, character_id: str) -> Any:
         await i.response.defer(ephemeral=True)
 
         locale = await get_locale(i)
-        game = Game(game_value)
 
         character_name = self._get_character_name(game, character_id, locale)
         if character_name is None:
@@ -110,24 +92,83 @@ class Settings(commands.Cog):
         )
         await view.update(i)
 
-    @card_settings_command.autocomplete("game_value")
+    card_settings = app_commands.Group(
+        name=locale_str("card-settings"), description="Card settings commands"
+    )
+
+    @card_settings.command(
+        name=locale_str("genshin"), description=COMMANDS["card_settings genshin"].description
+    )
+    @app_commands.rename(
+        character_id=app_commands.locale_str("character", key="akasha_character_param")
+    )
+    @app_commands.describe(
+        character_id=locale_str(
+            "Character to modify the card settings for", key="card_settings_character_param"
+        )
+    )
+    async def gi_card_settings_command(self, i: Interaction, character_id: str) -> Any:
+        await self._card_settings_command(i, Game.GENSHIN, character_id)
+
+    @card_settings.command(
+        name=locale_str("hsr"), description=COMMANDS["card_settings hsr"].description
+    )
+    @app_commands.rename(
+        character_id=app_commands.locale_str("character", key="akasha_character_param")
+    )
+    @app_commands.describe(
+        character_id=locale_str(
+            "Character to modify the card settings for", key="card_settings_character_param"
+        )
+    )
+    async def hsr_card_settings_command(self, i: Interaction, character_id: str) -> Any:
+        await self._card_settings_command(i, Game.STARRAIL, character_id)
+
+    @card_settings.command(
+        name=locale_str("zzz"), description=COMMANDS["card_settings zzz"].description
+    )
+    @app_commands.rename(
+        character_id=app_commands.locale_str("character", key="akasha_character_param")
+    )
+    @app_commands.describe(
+        character_id=locale_str(
+            "Character to modify the card settings for", key="card_settings_character_param"
+        )
+    )
+    async def zzz_card_settings_command(self, i: Interaction, character_id: str) -> Any:
+        await self._card_settings_command(i, Game.ZZZ, character_id)
+
+    @gi_card_settings_command.autocomplete("character_id")
     @handle_autocomplete_errors
-    async def search_command_game_autocomplete(
+    async def gi_query_autocomplete(
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
+        choices = [
+            c for c in self._get_choices(locale, Game.GENSHIN) if current.lower() in c.name.lower()
+        ]
+        return choices[:25]
 
-    @card_settings_command.autocomplete("character_id")
+    @hsr_card_settings_command.autocomplete("character_id")
     @handle_autocomplete_errors
-    async def query_autocomplete(self, i: Interaction, current: str) -> list[app_commands.Choice]:
+    async def hsr_query_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        try:
-            game = Game(i.namespace.game)
-        except ValueError:
-            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+        choices = [
+            c for c in self._get_choices(locale, Game.STARRAIL) if current.lower() in c.name.lower()
+        ]
+        return choices[:25]
 
-        choices = [c for c in self._get_choices(locale, game) if current.lower() in c.name.lower()]
+    @zzz_card_settings_command.autocomplete("character_id")
+    @handle_autocomplete_errors
+    async def zzz_query_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
+        choices = [
+            c for c in self._get_choices(locale, Game.ZZZ) if current.lower() in c.name.lower()
+        ]
         return choices[:25]
 
 

@@ -287,7 +287,13 @@ class CardTemplateSelect(ui.Select["CardSettingsView"]):
 
 class CardSettingsContainer(ui.Container):
     def __init__(
-        self, *, card_settings: CardSettings, settings: Settings, character_name: str, game: Game
+        self,
+        *,
+        card_settings: CardSettings,
+        settings: Settings,
+        character_name: str,
+        game: Game,
+        icon_url: str,
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
@@ -295,6 +301,7 @@ class CardSettingsContainer(ui.Container):
         self.game = game
         self.character_id = card_settings.character_id
         self.character_name = character_name
+        self.icon_url = icon_url
 
         default_color = get_default_color(
             card_settings.character_id,
@@ -319,12 +326,15 @@ class CardSettingsContainer(ui.Container):
             color_desc = card_settings.custom_primary_color
 
         super().__init__(
-            ui.TextDisplay(
-                LocaleStr(
-                    custom_str="# {title}\n{desc}",
-                    title=LocaleStr(key="card_settings.modifying_for", name=character_name),
-                    desc=LocaleStr(key="card_settings_modifying_for_desc"),
-                )
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="# {title}\n{desc}",
+                        title=LocaleStr(key="card_settings.modifying_for", name=character_name),
+                        desc=LocaleStr(key="card_settings_modifying_for_desc"),
+                    )
+                ),
+                accessory=discord.ui.Thumbnail(media=icon_url),
             ),
             # Template
             ui.TextDisplay(

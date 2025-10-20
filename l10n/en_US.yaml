@@ -506,7 +506,7 @@ profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
 set_cur_temp_as_default.done_desc: "Your default template for {game} is set to {template}"
 remove_from_cache_finish_embed_desc: Rerun the /profile command to see the changes
-third_party_card_temp_error_title: This 3rd Party Card Template Errored
+third_party_card_temp_error_title: This Third Party Card Template Errored
 third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template. If this error persists, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account has been locked for 20 minutes
 account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you're unable to set up your account, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
@@ -533,7 +533,7 @@ about_command.designers: Designers
 card_settings.modifying_for: "Modifying Card Settings for {name}"
 card_settings_modifying_for_desc: All card settings are unique for each character. Some card templates may not support certain settings.
 card_settings.template: Template
-card_settings_template_desc: Some 3rd party templates may not support HoYoLAB/Miyoushe characters. In that case, the bot will use Hoyo Buddy's template.
+card_settings_template_desc: Some third party templates may not support HoYoLAB/Miyoushe characters. In that case, the bot will use Hoyo Buddy's template.
 card_settings.card_color: Color
 card_settings.no_color: This card template does not support color modification
 card_settings.color_default: Default
@@ -881,6 +881,8 @@ apply_template_to_all_chars_desc: All **future and current** characters will use
 apply_dark_theme_to_all_chars: Apply current dark theme option to all characters
 apply_dark_theme_to_all_chars_desc: All **future and current** characters will have dark theme **{status}**.
 apply_label: Apply
-card_settings_desc: Modify how your character build cards look like
+card_settings_genshin_desc: Modify how your Genshin Impact character build cards look like
+card_settings_hsr_desc: Modify how your Honkai Star Rail character build cards look like
+card_settings_zzz_desc: Modify how your Zenless Zone Zero character build cards look like
 card_settings_character_param: Character to modify the card settings for
 disabled_label: Disabled

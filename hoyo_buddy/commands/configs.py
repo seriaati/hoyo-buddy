@@ -52,7 +52,9 @@ type CommandName = Literal[
     "invite",
     "help",
     "changelog",
-    "card_settings",
+    "card_settings genshin",
+    "card_settings hsr",
+    "card_settings zzz",
 ]
 
 
@@ -296,9 +298,22 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     "changelog": CommandConfig(
         description=locale_str("View the latest changes and updates", key="changelog_command_desc")
     ),
-    "card_settings": CommandConfig(
+    "card_settings genshin": CommandConfig(
         description=locale_str(
-            "Modify how your character build cards look like", key="card_settings_desc"
+            "Modify how your Genshin Impact character build cards look like",
+            key="card_settings_genshin_desc",
+        )
+    ),
+    "card_settings hsr": CommandConfig(
+        description=locale_str(
+            "Modify how your Honkai Star Rail character build cards look like",
+            key="card_settings_hsr_desc",
+        )
+    ),
+    "card_settings zzz": CommandConfig(
+        description=locale_str(
+            "Modify how your Zenless Zone Zero character build cards look like",
+            key="card_settings_zzz_desc",
         )
     ),
 }

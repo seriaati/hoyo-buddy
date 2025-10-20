@@ -21,6 +21,7 @@ from hoyo_buddy.ui.settings.notification import (
 )
 from hoyo_buddy.ui.settings.reminder import ReminderContainer
 from hoyo_buddy.ui.settings.user import UserSettingsContainer
+from hoyo_buddy.web_app.utils import get_gacha_icon
 
 from ._common import AccountSelect
 
@@ -205,6 +206,9 @@ class CardSettingsView(ui.LayoutView):
             settings=self.settings,
             character_name=self.character_name,
             game=self.game,
+            icon_url=await get_gacha_icon(
+                game=self.game, item_id=int(self.card_settings.character_id)
+            ),
         )
         self.clear_items()
         self.add_item(container)

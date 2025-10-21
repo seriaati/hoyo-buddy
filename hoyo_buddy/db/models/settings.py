@@ -28,6 +28,10 @@ class Settings(CachedModel):
     team_card_dark_mode = fields.BooleanField(default=False)
     enable_dyk = fields.BooleanField(default=True)
 
+    gi_dark_mode = fields.BooleanField(default=False)
+    hsr_dark_mode = fields.BooleanField(default=False)
+    zzz_dark_mode = fields.BooleanField(default=False)
+
     @property
     def locale(self) -> Locale | None:
         return Locale(self.lang) if self.lang else None

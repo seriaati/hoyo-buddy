@@ -663,3 +663,11 @@ def get_template_num(template: str) -> int:
         msg = f"No number at end of string: {template}"
         raise ValueError(msg)
     return int(match.group(1))
+
+
+def get_template_name(template: str) -> str:
+    match = re.search(r"^(.*?)(\d+)$", template)
+    if not match:
+        msg = f"No number at end of string: {template}"
+        raise ValueError(msg)
+    return match.group(1)

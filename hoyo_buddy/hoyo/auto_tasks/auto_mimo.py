@@ -251,7 +251,7 @@ class AutoMimoMixin(AutoTaskMixin):
             results: list[genshin.models.MimoLotteryResult] = []
 
             for _ in range(count):
-                if point < info.cost:
+                if point < info.cost or (point - info.cost) < account.mimo_minimum_point:
                     break
 
                 try:

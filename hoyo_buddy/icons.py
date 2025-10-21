@@ -29,6 +29,7 @@ GI_ROCK_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Rock.png"
 GI_ELECTRO_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Electric.png"
 GI_ICE_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Ice.png"
 GI_GRASS_ICON = "https://gi.yatta.moe/assets/UI/UI_Buff_Element_Grass.png"
+GI_OMNI_ICON = "https://img.seria.moe/IDztDFBtkggtAtXr.png"
 
 
 def get_game_icon(game: Game | GameEnum) -> str:
@@ -62,3 +63,5 @@ def get_element_icon(element: ambr.Element) -> str:
         return GI_ICE_ICON
     if element is ambr.Element.DENDRO:
         return GI_GRASS_ICON
+    if element is ambr.Element.NONE:
+        return GI_OMNI_ICON

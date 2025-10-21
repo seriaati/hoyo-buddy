@@ -6,13 +6,18 @@ from typing import TYPE_CHECKING, Literal
 
 from tortoise.expressions import Q
 
-from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS, PLATFORM_TO_REGION
+from hoyo_buddy.constants import (
+    NO_MASKED_LINK_GUILDS,
+    PLATFORM_TO_REGION,
+    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
+    ZZZ_DISC_SUBSTATS,
+)
 from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
 from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.models import Dismissible
 from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
 
-from .models import GachaHistory, HoyoAccount, Settings, User
+from .models import CardSettings, GachaHistory, HoyoAccount, Settings, User
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -218,3 +223,18 @@ def build_account_query(
     if kwargs:
         query &= Q(**kwargs)
     return query
+
+
+async def set_highlight_substats(
+    *, agent_special_stat_map: dict[str, list[int]], card_settings: CardSettings, character_id: int
+) -> None:
+    special_stat_ids = agent_special_stat_map.get(str(character_id), [])
+    special_substat_ids = [
+        ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
+    ]
+
+    hl_substats = [
+        substat_id for _, substat_id, _ in ZZZ_DISC_SUBSTATS if substat_id in special_substat_ids
+    ]
+    card_settings.highlight_substats = hl_substats
+    await card_settings.save(update_fields=("highlight_substats",))

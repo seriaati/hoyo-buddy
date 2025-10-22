@@ -238,7 +238,15 @@ class GenshinClient(ProxyGenshinClient):
                                 gacha=AMBR_UI_URL.format(filename=costume_data["Art"])
                             )
                         )
-            talent_order = client._assets.character_data[str(character.id)]["SkillOrder"]
+
+            if "10000117" in str(character.id):
+                key = "10000117-11702"
+            elif "10000118" in str(character.id):
+                key = "10000118-11802"
+            else:
+                key = str(character.id)
+
+            talent_order = client._assets.character_data[key]["SkillOrder"]
 
         if "10000005" in str(character.id):  # PlayerBoy
             gacha_art = PLAYER_BOY_GACHA_ART

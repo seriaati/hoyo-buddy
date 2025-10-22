@@ -53,6 +53,8 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-hydro": "10000007-703",
 }
 
+MANIKEN_IDS = {10000117, 10000118}
+
 TRAILBLAZER_IDS = {
     8001,  # Physics male
     8002,  # Physics female
@@ -69,6 +71,10 @@ TRAILBLAZER_IDS = {
 
 def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
+
+
+def contains_maniken_id(character_id: str) -> bool:
+    return any(str(maniken_id) in character_id for maniken_id in MANIKEN_IDS)
 
 
 SERVER_RESET_HOURS: dict[str, int] = {

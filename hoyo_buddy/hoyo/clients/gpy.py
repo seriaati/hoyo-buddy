@@ -235,7 +235,7 @@ class GenshinClient(ProxyGenshinClient):
                     if costume_data:
                         costume = models.HoyolabGICostume(
                             icon=models.HoyolabGICharacterIcon(
-                                gacha=AMBR_UI_URL.format(filename=costume_data["art"])
+                                gacha=AMBR_UI_URL.format(filename=costume_data["Art"])
                             )
                         )
             talent_order = client._assets.character_data[str(character.id)]["SkillOrder"]

@@ -235,7 +235,12 @@ class GenshinClient(ProxyGenshinClient):
                     if costume_data:
                         costume = models.HoyolabGICostume(
                             icon=models.HoyolabGICharacterIcon(
-                                gacha=AMBR_UI_URL.format(filename=costume_data["Art"])
+                                # New format in Enka API docs: /ui/UI_Costume_AyakaCostumeFruhling.png
+                                gacha=AMBR_UI_URL.format(
+                                    filename=costume_data["Art"]
+                                    .replace("/ui/", "")
+                                    .replace(".png", "")
+                                )
                             )
                         )
 

@@ -21,6 +21,8 @@ from hoyo_buddy.constants import (
     GPY_PATH_TO_EKNA_PATH,
     HB_GAME_TO_GPY_GAME,
     LOCALE_TO_GPY_LANG,
+    MANIKEN_BOY_GACHA_ART,
+    MANIKEN_GIRL_GACHA_ART,
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
@@ -242,6 +244,10 @@ class GenshinClient(ProxyGenshinClient):
             gacha_art = PLAYER_BOY_GACHA_ART
         elif "10000007" in str(character.id):  # PlayerGirl
             gacha_art = PLAYER_GIRL_GACHA_ART
+        elif "10000117" in str(character.id):  # Maniken Boy
+            gacha_art = MANIKEN_BOY_GACHA_ART
+        elif "10000118" in str(character.id):  # Maniken Girl
+            gacha_art = MANIKEN_GIRL_GACHA_ART
         else:
             gacha_art = character.gacha_art
 

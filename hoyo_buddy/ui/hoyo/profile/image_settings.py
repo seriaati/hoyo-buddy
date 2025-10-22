@@ -10,6 +10,8 @@ from seria.utils import read_json
 
 from hoyo_buddy.constants import (
     HSR_DEFAULT_ART_URL,
+    MANIKEN_BOY_GACHA_ART,
+    MANIKEN_GIRL_GACHA_ART,
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     ZZZ_M3_ART_URL,
@@ -74,6 +76,10 @@ def get_default_art(
             return PLAYER_BOY_GACHA_ART
         if "10000007" in str(character.id):  # PlayerGirl
             return PLAYER_GIRL_GACHA_ART
+        if "10000117" in str(character.id):  # Maniken Boy
+            return MANIKEN_BOY_GACHA_ART
+        if "10000118" in str(character.id):  # Maniken Girl
+            return MANIKEN_GIRL_GACHA_ART
         return character.icon.gacha
 
     if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):  # pyright: ignore[reportUnnecessaryIsInstance]

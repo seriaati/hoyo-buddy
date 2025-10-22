@@ -1034,6 +1034,8 @@ def get_docs_url(page: str, *, locale: Locale) -> str:
 AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"
 PLAYER_GIRL_GACHA_ART = "https://img.seria.moe/EiTcXToCGWUYtfDe.png"
 PLAYER_BOY_GACHA_ART = "https://img.seria.moe/BPFICCXWkbOJrsqe.png"
+MANIKEN_BOY_GACHA_ART = "https://img.seria.moe/qHxdPBofvTwhgZOH.png"
+MANIKEN_GIRL_GACHA_ART = "https://img.seria.moe/LkmEGzDtnXnULMOu.png"
 
 RELIC_PROP_ID_TO_ENKA_TYPE: dict[int, enka.hsr.StatType] = {
     27: enka.hsr.StatType.HP_DELTA,

@@ -681,7 +681,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.13"
-source = { git = "https://github.com/seriaati/enka-py#fb5a03098eb79fdd039ec0a1b9bcc4975a04a0a7" }
+source = { git = "https://github.com/seriaati/enka-py#c38ffb5010803544d333b26530a8c625a47dcefa" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -698,16 +698,16 @@ redis = [
 
 [[package]]
 name = "fastapi"
-version = "0.119.0"
+version = "0.119.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/f9/5c5bcce82a7997cc0eb8c47b7800f862f6b56adc40486ed246e5010d443b/fastapi-0.119.0.tar.gz", hash = "sha256:451082403a2c1f0b99c6bd57c09110ed5463856804c8078d38e5a1f1035dbbb7", size = 336756, upload-time = "2025-10-11T17:13:40.53Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/f4/152127681182e6413e7a89684c434e19e7414ed7ac0c632999c3c6980640/fastapi-0.119.1.tar.gz", hash = "sha256:a5e3426edce3fe221af4e1992c6d79011b247e3b03cc57999d697fe76cbf8ae0", size = 338616, upload-time = "2025-10-20T11:30:27.734Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/70/584c4d7cad80f5e833715c0a29962d7c93b4d18eed522a02981a6d1b6ee5/fastapi-0.119.0-py3-none-any.whl", hash = "sha256:90a2e49ed19515320abb864df570dd766be0662c5d577688f1600170f7f73cf2", size = 107095, upload-time = "2025-10-11T17:13:39.048Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/26/e6d959b4ac959fdb3e9c4154656fc160794db6af8e64673d52759456bf07/fastapi-0.119.1-py3-none-any.whl", hash = "sha256:0b8c2a2cce853216e150e9bd4faaed88227f8eb37de21cb200771f491586a27f", size = 108123, upload-time = "2025-10-20T11:30:26.185Z" },
 ]
 
 [[package]]
@@ -874,7 +874,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.19"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#bf6ffa946f1a29ec166af909d096a0d88f5cae33" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#e4a1a37e5bc1973c7617357c2b149abf52944b29" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -905,7 +905,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.5.1"
-source = { git = "https://github.com/seriaati/hakushin-py#11e071e50e1ca000fcb2fbd7ba4301a7e4c7f465" }
+source = { git = "https://github.com/seriaati/hakushin-py#6fe2fdbe7ffc3b4b0c1a9b15aa3f2c16de380e2e" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
@@ -2032,15 +2032,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.42.0"
+version = "2.42.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c9/b2/7481156cf42b7f66cffb371e504b7ace12b4f016b8872ffcf0873ae9534b/sentry_sdk-2.42.0.tar.gz", hash = "sha256:91c69c9372fb5fb4df0ac39456ccf7286f0428b3ee1cdd389f9dd36c04e0f5c9", size = 351242, upload-time = "2025-10-15T07:41:15.577Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/31/04/ec8c1dd9250847303d98516e917978cb1c7083024770d86d657d2ccb5a70/sentry_sdk-2.42.1.tar.gz", hash = "sha256:8598cc6edcfe74cb8074ba6a7c15338cdee93d63d3eb9b9943b4b568354ad5b6", size = 354839, upload-time = "2025-10-20T12:38:40.45Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/4a/9810a246ec5d1df2ae066efefeecfa91d3c548fa2bd5390184e016112887/sentry_sdk-2.42.0-py2.py3-none-any.whl", hash = "sha256:1a7986e638306ff158f52dd47d9480a4055e6c289388caa90628acb2563fe7bd", size = 379496, upload-time = "2025-10-15T07:41:13.802Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/cb/c21b96ff379923310b4fb2c06e8d560d801e24aeb300faa72a04776868fc/sentry_sdk-2.42.1-py2.py3-none-any.whl", hash = "sha256:f8716b50c927d3beb41bc88439dc6bcd872237b596df5b14613e2ade104aee02", size = 380952, upload-time = "2025-10-20T12:38:38.88Z" },
 ]
 
 [[package]]
@@ -2508,7 +2508,7 @@ wheels = [
 [[package]]
 name = "yatta-py"
 version = "1.3.15"
-source = { git = "https://github.com/seriaati/yatta#d7847d8a89b5b3af7b371d7908079416a41260c2" }
+source = { git = "https://github.com/seriaati/yatta#ab15354562c65df53fcd8c260941754be7ff6379" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

@@ -70,4 +70,4 @@ tortoise_orm = "hoyo_buddy.db.config.DB_CONFIG"
 
 [dependency-groups]
 lint = ["ruff>=0.12.3"]
-type-check = ["pyright[nodejs]>=1.1.403, <1.1.407"]
+type-check = ["pyright[nodejs]>=1.1.407, <1.1.408"]

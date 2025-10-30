@@ -620,21 +620,6 @@ gacha_view_gacha_detail_title: Gacha Item Details
 gacha_view_gacha_detail: "ID: {id}\nNaam: {name}\nPull tijd: {time}"
 gacha_view_num_since_last: "{pull} pulls sinds laatste {rarity} ★"
 gacha_view_filter_dialog_title: Gacha Logs Filters
-banner_type_beginners_wish: Beginner's Wish
-banner_type_standard_banner: Standaard Banner
-banner_type_character_event: Karakter Evenement
-banner_type_weapon_event: Wapen Evenement
-banner_type_chronicled_wish: Chronicled Wish
-banner_type_stellar_warp: Stellar Warp
-banner_type_departure_warp: Departure Warp
-banner_type_character_warp: Karakter Warp
-banner_type_light_cone_warp: Light Cone Warp
-banner_type_standard_channel: Stable Channel
-banner_type_exclusive_channel: Exclusive Channel
-banner_type_w_engine_channel: W-Engine Channel
-banner_type_bangboo_channel: Bangboo Channel
-banner_type_fgo_character: Karakter Collaboration Warp
-banner_type_fgo_light_cone: Light Cone Collaboration Warp
 cancel_button_label: Annuleren
 gacha_view_filter_size_field_label: Items per pagina
 gacha_view_page_field_label: Pagina

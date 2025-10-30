@@ -620,21 +620,6 @@ gacha_view_gacha_detail_title: Chi tiết vật phẩm gacha
 gacha_view_gacha_detail: "ID: {id}\nTên: {name}\nThời gian quay: {time}"
 gacha_view_num_since_last: "Nhận được sau {pull} lần quay tính từ {rarity} ★ trước đó."
 gacha_view_filter_dialog_title: Lọc Nhật Ký Gacha
-banner_type_beginners_wish: Cầu Nguyện Người Mới
-banner_type_standard_banner: Cầu Nguyện Vĩnh Viễn
-banner_type_character_event: Cầu Nguyện Nhân Vật
-banner_type_weapon_event: Cầu Nguyện Vũ Khí
-banner_type_chronicled_wish: Sử Ký Cầu Nguyện
-banner_type_stellar_warp: Bước Nhảy Chòm Sao
-banner_type_departure_warp: Bước Nhảy Đầu Tiên
-banner_type_character_warp: Bước Nhảy Nhân Vật
-banner_type_light_cone_warp: Bước Nhảy Nón Ánh Sáng
-banner_type_standard_channel: Kênh Thường Trực
-banner_type_exclusive_channel: Kênh Độc Quyền
-banner_type_w_engine_channel: Kênh W-Engine
-banner_type_bangboo_channel: Kênh Bangboo
-banner_type_fgo_character: Bước Nhảy Nhân Vật Hợp Tác
-banner_type_fgo_light_cone: Bước Nhảy Nón Anh Sáng Hợp Tác
 cancel_button_label: Hủy bỏ
 gacha_view_filter_size_field_label: Số vật phẩm mỗi trang
 gacha_view_page_field_label: Trang

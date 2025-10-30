@@ -26,6 +26,13 @@ PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
 IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
 
+MW_EVENT_BANNER_TYPES = {
+    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT1,
+    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT2,
+    genshin.models.MWBannerType.EVENT_MALE_OUTFIT1,
+    genshin.models.MWBannerType.EVENT_MALE_OUTFIT2,
+}
+
 
 class GachaImportView(View):
     def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
@@ -185,15 +192,7 @@ class URLImport(Button[GachaImportView]):
                 self._check_uid(wish)
 
                 banner_type = (
-                    2000
-                    if wish.banner_type
-                    in {
-                        genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT1,
-                        genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT2,
-                        genshin.models.MWBannerType.EVENT_MALE_OUTFIT1,
-                        genshin.models.MWBannerType.EVENT_MALE_OUTFIT2,
-                    }
-                    else wish.banner_type
+                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
                 )
 
                 records.append(

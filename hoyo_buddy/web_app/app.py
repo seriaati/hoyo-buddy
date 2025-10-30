@@ -562,7 +562,7 @@ class WebApp:
         if any(str(g.item_id) not in cached_gacha_icons for g in gachas):
             cached_gacha_icons = await fetch_gacha_icons()
 
-        asyncio.create_task(self._page.client_storage.set_async("gacha_icons", cached_gacha_icons))
+        asyncio.create_task(self._page.client_storage.set_async("hb.gacha_icons", cached_gacha_icons))
         return {int(g.item_id): cached_gacha_icons.get(str(g.item_id), "") for g in gachas}
 
     async def fetch_user_data(self) -> dict[str, Any] | None:

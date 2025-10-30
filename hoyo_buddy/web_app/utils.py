@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 import ambr
 import asyncpg
 import flet as ft
+import hakushin
 import orjson
 from cryptography.fernet import Fernet
 
@@ -128,7 +129,7 @@ async def fetch_json_file(filename: str) -> Any:
         await conn.close()
 
 
-async def get_gacha_names(
+async def fetch_gacha_names(
     page: ft.Page, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
 ) -> dict[int, str]:
     cached_gacha_names: dict[str, str] = (
@@ -160,6 +161,11 @@ async def get_gacha_names(
         elif game is Game.GENSHIN:
             async with AmbrAPIClient(locale) as client:
                 item_names = await client.fetch_item_id_to_name_map()
+            async with hakushin.HakushinAPI(hakushin.Game.GI) as client:
+                mw_costumes = await client.fetch_mw_costumes()
+                mw_items = await client.fetch_mw_items()
+                item_names.update({costume.id: costume.name for costume in mw_costumes})
+                item_names.update({item.id: item.name for item in mw_items})
         else:
             msg = f"Unsupported game: {game} for fetching gacha names"
             raise ValueError(msg)
@@ -177,19 +183,34 @@ async def get_gacha_names(
     return result
 
 
-async def get_gacha_icon(*, game: Game, item_id: int) -> str:
+async def fetch_gacha_icons() -> dict[str, str]:
+    gacha_icons: dict[str, str] = {}
+
+    async with ambr.AmbrAPI() as api:
+        weapons = await api.fetch_weapons()
+        characters = await api.fetch_characters()
+
+        gacha_icons.update({character.id: character.icon for character in characters})
+        gacha_icons.update({str(weapon.id): weapon.icon for weapon in weapons})
+
+    async with hakushin.HakushinAPI(hakushin.Game.GI) as client:
+        mw_costumes = await client.fetch_mw_costumes()
+        mw_items = await client.fetch_mw_items()
+
+        # Costume takes precedence over item icon if both exist
+        gacha_icons.update({str(item.id): item.icon for item in mw_items if item.icon is not None})
+        gacha_icons.update({str(costume.id): costume.icon for costume in mw_costumes})
+
+    return gacha_icons
+
+
+def get_gacha_icon(*, game: Game, item_id: int, gacha_icons: dict[str, str]) -> str | None:
     """Get the icon URL for a gacha item."""
     if game is Game.ZZZ:
         return f"https://stardb.gg/api/static/zzz/{item_id}.png"
 
     if game is Game.GENSHIN:
-        async with ambr.AmbrAPI() as api:
-            if len(str(item_id)) == 5:  # weapon
-                weapon = await api.fetch_weapon_detail(item_id)
-                return weapon.icon
-
-            character = await api.fetch_character_detail(str(item_id))
-            return character.icon
+        return gacha_icons.get(str(item_id))
 
     if game is Game.STARRAIL:
         if len(str(item_id)) == 5:  # light cone

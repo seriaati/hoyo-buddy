@@ -726,6 +726,8 @@ BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
         200: "banner_type_standard_banner",
         500: "banner_type_chronicled_wish",
         100: "banner_type_beginners_wish",
+        1000: "banner_type_mw_standard",
+        2000: "banner_type_mw_event",
     },
     Game.STARRAIL: {
         11: "banner_type_character_warp",
@@ -750,7 +752,7 @@ BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
 }
 
 BANNER_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
-    Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20},
+    Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20, 1000: 70, 2000: 70},
     Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50, 21: 90, 22: 80},
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
 }

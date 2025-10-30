@@ -8,7 +8,7 @@ import flet as ft
 from hoyo_buddy.constants import BANNER_TYPE_NAMES
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.web_app.utils import get_gacha_names, show_error_banner
+from hoyo_buddy.web_app.utils import fetch_gacha_names, show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -100,7 +100,7 @@ class GachaLogPage(ft.View):
 
     @property
     def gacha_log_controls(self) -> list[ft.Container]:
-        rarity_colors: dict[int, str] = {3: "#3e4857", 4: "#4d3e66", 5: "#915537"}
+        rarity_colors: dict[int, str] = {2: "#3e5741", 3: "#3e4857", 4: "#4d3e66", 5: "#915537"}
         paddings: dict[Game, int] = {Game.GENSHIN: 0, Game.ZZZ: 8, Game.STARRAIL: 0}
         result: list[ft.Container] = []
 
@@ -109,7 +109,9 @@ class GachaLogPage(ft.View):
                 ft.Container(
                     ft.Image(src=self.gacha_icons[gacha.item_id], border_radius=8),
                     padding=ft.padding.all(paddings[self.game]),
-                ),
+                )
+                if self.gacha_icons.get(gacha.item_id)
+                else ft.Container(),
                 ft.Column(
                     [
                         ft.Row(
@@ -127,7 +129,7 @@ class GachaLogPage(ft.View):
                     alignment=ft.MainAxisAlignment.END,
                 ),
             ]
-            if gacha.rarity != 3:
+            if gacha.rarity >= 4:
                 stack_controls.append(
                     ft.Column(
                         [
@@ -166,7 +168,7 @@ class GachaLogPage(ft.View):
             show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
             return
 
-        gacha_names = await get_gacha_names(
+        gacha_names = await fetch_gacha_names(
             page, gachas=[gacha], locale=self.locale, game=self.game
         )
 
@@ -275,7 +277,7 @@ class FilterDialog(ft.AlertDialog):
                                 data=rarity,
                                 on_change=self.on_rarity_checkbox_change,
                             )
-                            for rarity in (3, 4, 5)
+                            for rarity in (2, 3, 4, 5)
                         ]
                     ),
                     ft.Dropdown(

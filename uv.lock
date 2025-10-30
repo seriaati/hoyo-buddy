@@ -884,7 +884,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.19"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#41b830b417fbf5d6567cec0f545fa4c033e51cc6" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#c54c0b35c0df0344a77dc40f191bb44a0cbc5e4f" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -915,7 +915,7 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.5.1"
-source = { git = "https://github.com/seriaati/hakushin-py#6fe2fdbe7ffc3b4b0c1a9b15aa3f2c16de380e2e" }
+source = { git = "https://github.com/seriaati/hakushin-py#86383a515a42fd7ef32c3001f510a8bda5a93de4" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },

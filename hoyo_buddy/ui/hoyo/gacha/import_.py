@@ -26,6 +26,13 @@ PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
 IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
 
+MW_EVENT_BANNER_TYPES = {
+    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT1,
+    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT2,
+    genshin.models.MWBannerType.EVENT_MALE_OUTFIT1,
+    genshin.models.MWBannerType.EVENT_MALE_OUTFIT2,
+}
+
 
 class GachaImportView(View):
     def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
@@ -105,7 +112,11 @@ class URLImport(Button[GachaImportView]):
         self.account = account
 
     def _check_uid(
-        self, record: genshin.models.Wish | genshin.models.Warp | genshin.models.SignalSearch
+        self,
+        record: genshin.models.Wish
+        | genshin.models.Warp
+        | genshin.models.SignalSearch
+        | genshin.models.MWWish,
     ) -> None:
         if record.uid != self.account.uid:
             raise UIDMismatchError(record.uid)
@@ -147,8 +158,8 @@ class URLImport(Button[GachaImportView]):
             ]
             wishes.sort(key=lambda x: x.id)
 
-            client = AmbrAPIClient(session=i.client.session)
-            item_ids = await client.fetch_item_name_to_id_map()
+            ambr = AmbrAPIClient(session=i.client.session)
+            item_ids = await ambr.fetch_item_name_to_id_map()
 
             for wish in wishes:
                 self._check_uid(wish)
@@ -168,6 +179,31 @@ class URLImport(Button[GachaImportView]):
                         item_id=item_id,
                         account=self.account,
                         banner_id=None,
+                        game=Game.GENSHIN,
+                    )
+                )
+
+            mw_wishes: list[genshin.models.MWWish] = [
+                history async for history in client.mw_wish_history(authkey=authkey)
+            ]
+            mw_wishes.sort(key=lambda x: x.id)
+
+            for wish in mw_wishes:
+                self._check_uid(wish)
+
+                banner_type = (
+                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
+                )
+
+                records.append(
+                    GachaHistory(
+                        wish_id=wish.id,
+                        rarity=wish.rarity,
+                        time=wish.time,
+                        banner_type=banner_type,
+                        item_id=wish.item_id,
+                        account=self.account,
+                        banner_id=wish.banner_id,
                         game=Game.GENSHIN,
                     )
                 )

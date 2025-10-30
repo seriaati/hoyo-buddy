@@ -620,21 +620,6 @@ gacha_view_gacha_detail_title: Detalle de los ítems del gacha
 gacha_view_gacha_detail: "ID: {id}\nNombre: {name}\nHora de obtención: {time}"
 gacha_view_num_since_last: "{pull} tiradas desde el último {rarity} ★"
 gacha_view_filter_dialog_title: Filtros de registros del gacha
-banner_type_beginners_wish: Gachapón de principiante
-banner_type_standard_banner: Gachapón Permanente
-banner_type_character_event: Gachapón Promocional de personaje
-banner_type_weapon_event: Gachapón Promocional de arma
-banner_type_chronicled_wish: Gachapón Recopilatorio
-banner_type_stellar_warp: Salto Estelar
-banner_type_departure_warp: Salto de Partida
-banner_type_character_warp: Salto de Evento de personaje
-banner_type_light_cone_warp: Salto de Evento de cono de luz
-banner_type_standard_channel: Canal Estable
-banner_type_exclusive_channel: Canal Exclusivo
-banner_type_w_engine_channel: Canal Amplificado
-banner_type_bangboo_channel: Canal Bangbú
-banner_type_fgo_character: Salto de colaboración de personaje
-banner_type_fgo_light_cone: Salto de colaboración de cono de luz
 cancel_button_label: Cancelar
 gacha_view_filter_size_field_label: Ítems por página
 gacha_view_page_field_label: Página

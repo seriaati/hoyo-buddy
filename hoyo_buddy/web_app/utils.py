@@ -201,6 +201,11 @@ async def fetch_gacha_icons() -> dict[str, str]:
         gacha_icons.update({str(item.id): item.icon for item in mw_items if item.icon is not None})
         gacha_icons.update({str(costume.id): costume.icon for costume in mw_costumes})
 
+        for item in mw_items:
+            if "Component Catalog" in item.name:
+                costume_id = item.id - 10000
+                gacha_icons[str(item.id)] = gacha_icons.get(str(costume_id), "")
+
     return gacha_icons
 
 

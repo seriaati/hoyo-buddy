@@ -45,7 +45,7 @@ class GachaParams(BaseModel):
             msg = "At least one rarity must be selected"
             raise ValueError(msg)
 
-        if any(rarity not in {3, 4, 5} for rarity in rarities):
+        if any(rarity not in {2, 3, 4, 5} for rarity in rarities):
             msg = "Invalid rarity"
             raise ValueError(msg)
 

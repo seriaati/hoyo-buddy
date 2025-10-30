@@ -30,8 +30,8 @@ from .utils import (
     clear_storage,
     decrypt_string,
     encrypt_string,
-    get_gacha_icon,
-    get_gacha_names,
+    fetch_gacha_icons,
+    fetch_gacha_names,
     refresh_page_view,
     show_error_banner,
     show_loading_snack_bar,
@@ -476,7 +476,7 @@ class WebApp:
                 game = await self._get_account_game(params.account_id)
 
                 if params.name_contains:
-                    gacha_names = await get_gacha_names(
+                    gacha_names = await fetch_gacha_names(
                         self._page, gachas=gacha_logs, locale=locale, game=game
                     )
                     gacha_logs = [
@@ -558,16 +558,12 @@ class WebApp:
         cached_gacha_icons: dict[str, str] = (
             await self._page.client_storage.get_async("hb.gacha_icons") or {}
         )
-        result: dict[int, str] = {}
-        for gacha in gachas:
-            if str(gacha.item_id) in cached_gacha_icons:
-                result[gacha.item_id] = cached_gacha_icons[str(gacha.item_id)]
-            else:
-                result[gacha.item_id] = await get_gacha_icon(game=gacha.game, item_id=gacha.item_id)
-                cached_gacha_icons[str(gacha.item_id)] = result[gacha.item_id]
+
+        if any(str(g.item_id) not in cached_gacha_icons for g in gachas):
+            cached_gacha_icons = await fetch_gacha_icons()
 
         asyncio.create_task(self._page.client_storage.set_async("gacha_icons", cached_gacha_icons))
-        return result
+        return {int(g.item_id): cached_gacha_icons.get(str(g.item_id), "") for g in gachas}
 
     async def fetch_user_data(self) -> dict[str, Any] | None:
         page = self._page

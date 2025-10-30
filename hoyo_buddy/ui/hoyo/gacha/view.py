@@ -96,7 +96,7 @@ class ViewGachaLogView(View):
             locale=self.locale.value,
             account_id=self.account.id,
             banner_type=self.banner_type,
-            rarities=[3, 4, 5],
+            rarities=[2, 3, 4, 5],
         )
         return f"{WEB_APP_URLS[CONFIG.env]}/gacha_log?{params.to_query_string()}"
 

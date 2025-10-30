@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from hoyo_buddy.constants import BANNER_TYPE_NAMES
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr, translator
 from hoyo_buddy.web_app.utils import fetch_gacha_names, show_error_banner
 
 if TYPE_CHECKING:
@@ -283,17 +282,12 @@ class FilterDialog(ft.AlertDialog):
                     ft.Dropdown(
                         options=[
                             ft.dropdown.Option(
-                                text=translator.translate(
-                                    LocaleStr(key=BANNER_TYPE_NAMES[game][banner_type]), locale
-                                ),
+                                text=translator.get_banner_type_name(game, banner_type, locale),
                                 data=str(banner_type),
                             )
                             for banner_type in BANNER_TYPE_NAMES[game]
                         ],
-                        value=translator.translate(
-                            LocaleStr(key=BANNER_TYPE_NAMES[game].get(params.banner_type, "")),
-                            locale,
-                        ),
+                        value=translator.get_banner_type_name(game, params.banner_type, locale),
                         on_change=self.on_banner_type_dropdown_change,
                     ),
                     ft.TextField(
@@ -310,7 +304,7 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_banner_type_dropdown_change(self, e: ft.ControlEvent) -> None:
         banner_type_name_to_value = {
-            translator.translate(LocaleStr(key=v), self.locale): k
+            translator.get_banner_type_name(self.game, k, self.locale): k
             for k, v in BANNER_TYPE_NAMES[self.game].items()
         }
         self.params.banner_type = banner_type_name_to_value[e.control.value]

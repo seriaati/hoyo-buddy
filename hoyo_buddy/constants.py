@@ -719,31 +719,6 @@ UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.ZZZ: "nap",
 }
 
-BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
-    Game.GENSHIN: {
-        301: "banner_type_character_event",
-        302: "banner_type_weapon_event",
-        200: "banner_type_standard_banner",
-        500: "banner_type_chronicled_wish",
-        100: "banner_type_beginners_wish",
-        1000: "banner_type_mw_standard",
-        2000: "banner_type_mw_event",
-    },
-    Game.STARRAIL: {
-        11: "banner_type_character_warp",
-        12: "banner_type_light_cone_warp",
-        1: "banner_type_stellar_warp",
-        2: "banner_type_departure_warp",
-        21: "banner_type_fgo_character",
-        22: "banner_type_fgo_light_cone",
-    },
-    Game.ZZZ: {
-        2: "banner_type_exclusive_channel",
-        3: "banner_type_w_engine_channel",
-        1: "banner_type_standard_channel",
-        5: "banner_type_bangboo_channel",
-    },
-}
 
 BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {301: "50/50", 302: "50/50", 500: "50/50"},

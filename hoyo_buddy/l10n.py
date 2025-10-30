@@ -5,7 +5,7 @@ import contextlib
 import datetime
 import random
 import re
-from typing import TYPE_CHECKING, Any, Literal, Self, TypeAlias
+from typing import TYPE_CHECKING, Any, Final, Literal, Self, TypeAlias
 
 import aiofiles
 import ambr
@@ -43,14 +43,14 @@ if TYPE_CHECKING:
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
 
-Mi18nGame: TypeAlias = Literal["mimo"] | Game
+Mi18nGame: TypeAlias = Literal["mimo", "gacha-gi", "gacha-hsr", "gacha-zzz"] | Game
 
 COMMAND_REGEX = r"</[^>]+>"
 DOCS_REGEX = r":docs/[^:\s]+:"
 SOURCE_LANG = "en_US"
 L10N_PATH = anyio.Path("./l10n")
 BOT_DATA_PATH = anyio.Path("./hoyo_buddy/bot/data")
-GAME_MI18N_FILES: dict[Mi18nGame, tuple[str, str]] = {
+GAME_MI18N_FILES: Final[dict[Mi18nGame, tuple[str, str]]] = {
     Game.GENSHIN: ("https://fastcdn.hoyoverse.com/mi18n/bbs_oversea", "m11241040191111"),
     Game.STARRAIL: (
         "https://webstatic.hoyoverse.com/admin/mi18n/bbs_oversea",
@@ -59,8 +59,11 @@ GAME_MI18N_FILES: dict[Mi18nGame, tuple[str, str]] = {
     Game.ZZZ: ("https://fastcdn.hoyoverse.com/mi18n/nap_global", "m20240410hy38foxb7k"),
     Game.HONKAI: ("https://fastcdn.hoyoverse.com/mi18n/bbs_oversea", "m20240627hy298aaccg"),
     "mimo": ("https://webstatic.hoyoverse.com/admin/mi18n/bbs_oversea", "m20230908hy169078qo"),
+    "gacha-gi": ("https://webstatic.mihoyo.com/admin/mi18n/hk4e_cn", "m20250904hy2dmxqebk"),
+    "gacha-hsr": ("https://webstatic.hoyoverse.com/admin/mi18n/hkrpg_cn", "m12211711281351"),
+    "gacha-zzz": ("https://webstatic.hoyoverse.com/admin/mi18n/nap_cn", "m20230424hy34uw5h4w"),
 }
-FILENAME_TO_GAME: dict[str, Mi18nGame] = {v[1]: k for k, v in GAME_MI18N_FILES.items()}
+FILENAME_TO_GAME: Final[dict[str, Mi18nGame]] = {v[1]: k for k, v in GAME_MI18N_FILES.items()}
 
 
 def gen_string_key(string: str) -> str:
@@ -134,6 +137,33 @@ class UnlocksInStr(LocaleStr):
 class RarityStr(LocaleStr):
     def __init__(self, rarity: int) -> None:
         super().__init__(key="rarity_str", rarity=rarity)
+
+
+BANNER_TYPE_NAMES: Final[dict[Game, dict[int, LocaleStr]]] = {
+    Game.GENSHIN: {
+        301: LocaleStr(mi18n_game="gacha-gi", key="gacha_301_title"),
+        302: LocaleStr(mi18n_game="gacha-gi", key="gacha_302_title"),
+        200: LocaleStr(mi18n_game="gacha-gi", key="gacha_200_title"),
+        500: LocaleStr(mi18n_game="gacha-gi", key="gacha_500_title"),
+        100: LocaleStr(mi18n_game="gacha-gi", key="gacha_100_title"),
+        1000: LocaleStr(mi18n_game="gacha-gi", key="beyond_gacha_type_1000"),
+        2000: LocaleStr(mi18n_game="gacha-gi", key="beyond_gacha_type_2000"),
+    },
+    Game.STARRAIL: {
+        11: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_11_text"),
+        12: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_12_text"),
+        1: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_1_text"),
+        2: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_2_text"),
+        21: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_21_text"),
+        22: LocaleStr(mi18n_game="gacha-hsr", key="gacha_type_22_text"),
+    },
+    Game.ZZZ: {
+        2: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_2"),
+        3: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_3"),
+        1: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_1"),
+        5: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_5"),
+    },
+}
 
 
 class Translator:
@@ -424,6 +454,14 @@ class Translator:
         return str_timedelta.replace(
             "days", self.translate(LocaleStr(key="days"), locale), 1
         ).replace(", 0:00:00", "")
+
+    def get_banner_type_name(self, game: Game, banner_type: int, locale: Locale) -> str:
+        banner_type_str = BANNER_TYPE_NAMES.get(game, {}).get(banner_type)
+        if banner_type_str is None:
+            logger.warning(f"Banner type name for {game.name} banner type {banner_type} is missing")
+            return str(banner_type)
+
+        return self.translate(banner_type_str, locale)
 
 
 class AppCommandTranslator(app_commands.Translator):

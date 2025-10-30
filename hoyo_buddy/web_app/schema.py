@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
 
-from hoyo_buddy.constants import BANNER_TYPE_NAMES
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES
 
 from ..enums import Platform
 

@@ -7,7 +7,6 @@ from loguru import logger
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
-    BANNER_TYPE_NAMES,
     BANNER_WIN_RATE_TITLES,
     STANDARD_ITEMS,
     WEB_APP_URLS,
@@ -18,7 +17,7 @@ from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.gacha import (
@@ -313,10 +312,8 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
         super().__init__(
             placeholder=LocaleStr(key="gacha_log_view_banner_type_selector_placeholder"),
             options=[
-                SelectOption(
-                    label=LocaleStr(key=key), value=str(banner_type), default=banner_type == current
-                )
-                for banner_type, key in BANNER_TYPE_NAMES[game].items()
+                SelectOption(label=name, value=str(banner_type), default=banner_type == current)
+                for banner_type, name in BANNER_TYPE_NAMES[game].items()
             ],
         )
 

@@ -34,7 +34,6 @@ class PlayerInfoButton(Button[ProfileView]):
         disable_btns = (
             "profile_card_settings",
             "profile_image_settings",
-            "profile_team_card_settings",
             "profile_build_select",
             "profile_redraw_card",
         )

@@ -9,7 +9,8 @@ from hoyo_buddy.emojis import SETTINGS
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import HoyolabGICharacter
 from hoyo_buddy.ui import Button
-from hoyo_buddy.ui.hoyo.profile.card_settings import CardSettingsView, get_card_settings
+from hoyo_buddy.ui.hoyo.profile.card_settings import get_card_settings
+from hoyo_buddy.ui.settings.view import CardSettingsView
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -38,14 +39,11 @@ class CardSettingsButton(Button[ProfileView]):
         settings = await Settings.get(user_id=i.user.id)
         character = self.view.characters[character_id]
         view = CardSettingsView(
-            list(self.view.characters.values()),
-            character_id,
-            card_settings,
-            self.view.game,
-            settings,
-            hb_template_only=isinstance(character, HoyolabGICharacter),
-            is_team=len(self.view.character_ids) > 1,
+            card_settings=card_settings,
+            settings=settings,
+            character_name=character.name,
+            game=self.view.game,
             author=i.user,
             locale=self.view.locale,
         )
-        await view.start(i)
+        await view.update(i, followup=True)

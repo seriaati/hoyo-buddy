@@ -197,7 +197,7 @@ class CardSettingsView(ui.LayoutView):
         self.character_name = character_name
         self.game = game
 
-    async def update(self, i: Interaction) -> None:
+    async def update(self, i: Interaction, *, followup: bool = False) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=True)
 
@@ -210,4 +210,8 @@ class CardSettingsView(ui.LayoutView):
         self.clear_items()
         self.add_item(container)
 
-        self.message = await i.edit_original_response(view=self)
+        if followup:
+            await i.followup.send(view=self, ephemeral=True)
+            self.message = await i.original_response()
+        else:
+            self.message = await i.edit_original_response(view=self)

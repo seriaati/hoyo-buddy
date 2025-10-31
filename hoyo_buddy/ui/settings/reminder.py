@@ -55,6 +55,7 @@ NOTIFY_TYPE_TO_MODAL_TYPE: dict[NotesNotifyType, type[ReminderModal]] = {
     NotesNotifyType.ZZZ_DAILY: modals.TypeThreeModal,
     NotesNotifyType.SCRATCH_CARD: modals.TypeThreeModal,
     NotesNotifyType.VIDEO_STORE: modals.TypeTwoModal,
+    NotesNotifyType.STAMINA: modals.TypeOneModal,
     NotesNotifyType.RIDU_POINTS: modals.TypeFourModal,
     NotesNotifyType.ZZZ_BOUNTY: modals.TypeFourModal,
 }

@@ -10,12 +10,11 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.models.json_file import JSONFile
-from hoyo_buddy.db.utils import get_locale, set_highlight_substats
+from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.ui.settings.view import CardSettingsView, SettingsView
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 

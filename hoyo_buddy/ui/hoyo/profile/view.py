@@ -18,7 +18,7 @@ from hoyo_buddy.constants import (
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
-from hoyo_buddy.db.utils import set_highlight_substats
+from hoyo_buddy.db.utils import get_card_settings, get_default_color, set_highlight_substats
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -48,7 +48,6 @@ from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
 from hoyo_buddy.utils.misc import get_template_num
-from hoyo_buddy.db.utils import get_card_settings, get_default_color
 
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect

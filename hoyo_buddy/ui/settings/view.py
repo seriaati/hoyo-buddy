@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 import discord
 
@@ -13,7 +13,6 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.types import CardImageType
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
 from hoyo_buddy.ui.settings.card import CardSettingsContainer
 from hoyo_buddy.ui.settings.notification import (

@@ -236,7 +236,7 @@ class ViewGachaLogView(View):
         current_four_star_pity = last_gacha_num - last_four_star_num
         # Standard Ode has a 70 pull pity for 4 stars
         max_four_star_pity = 70 if is_standard_ode else 10
-        if current_four_star_pity > max_four_star_pity:
+        if not is_standard_ode and current_four_star_pity > max_four_star_pity:
             current_four_star_pity = last_gacha_num - last_five_star_num
 
         # Three star pity
@@ -299,129 +299,113 @@ class ViewGachaLogView(View):
             currency_emoji = CURRENCY_EMOJIS[self.account.game]
 
         # Personal stats
-        personal_stats = ""
+        personal_stats_parts: list[str] = []
+        pity_data = {
+            "gacha_log_personal_stats_pity": {
+                5: (current_five_star_pity, max_five_star_pity),
+                4: (current_four_star_pity, max_four_star_pity),
+                3: (current_three_star_pity, max_three_star_pity),
+            },
+            "gacha_log_personal_stats_rarity_total": {
+                5: total_five_stars,
+                4: total_four_stars,
+                3: total_three_stars,
+            },
+            "gacha_log_personal_stats_rarity_average": {
+                5: five_star_avg_pulls,
+                4: four_star_avg_pulls,
+                3: three_star_avg_pulls,
+            },
+        }
 
         # The total pulls on MW banners are already lifetime pulls for that banner
         if self.banner_type not in MW_BANNER_TYPES:
-            lifetime = LocaleStr(
-                key="gacha_log_personal_stats_lifetime",
-                pulls=lifetime_pulls,
-                currency=f"{lifetime_currency:,}",
+            personal_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_personal_stats_lifetime",
+                    pulls=lifetime_pulls,
+                    currency=f"{lifetime_currency:,}",
+                    emoji=currency_emoji,
+                ).translate(self.locale)
+            )
+
+        personal_stats_parts.append(
+            LocaleStr(
+                key="gacha_log_personal_stats_banner_total",
+                pulls=banner_total_pulls,
+                currency=f"{banner_total_currency:,}",
                 emoji=currency_emoji,
             ).translate(self.locale)
-            personal_stats += f"{lifetime}\n"
-
-        banner_total = LocaleStr(
-            key="gacha_log_personal_stats_banner_total",
-            pulls=banner_total_pulls,
-            currency=f"{banner_total_currency:,}",
-            emoji=currency_emoji,
-        ).translate(self.locale)
-        personal_stats += f"{banner_total}\n"
+        )
 
         # Standard Ode only drops 4 and 3 star items
         first_rarity = 4 if is_standard_ode else 5
         second_rarity = first_rarity - 1
         rarities_to_show = {first_rarity, second_rarity}
 
-        if 5 in rarities_to_show:
-            star5_pity = LocaleStr(
-                key="gacha_log_personal_stats_pity",
-                rarity=5,
-                cur=current_five_star_pity,
-                max=max_five_star_pity,
-            ).translate(self.locale)
-            personal_stats += f"{star5_pity}\n"
+        for part_key, rarity_data in pity_data.items():
+            for rarity, data in rarity_data.items():
+                if rarity in rarities_to_show:
+                    if part_key == "gacha_log_personal_stats_pity":
+                        cur, max_ = data
+                        part = LocaleStr(key=part_key, rarity=rarity, cur=cur, max=max_).translate(
+                            self.locale
+                        )
+                    elif part_key == "gacha_log_personal_stats_rarity_total":
+                        total = data
+                        part = LocaleStr(key=part_key, rarity=rarity, total=total).translate(
+                            self.locale
+                        )
+                    elif part_key == "gacha_log_personal_stats_rarity_average":
+                        avg = round(data, 1)
+                        part = LocaleStr(key=part_key, rarity=rarity, avg=avg).translate(
+                            self.locale
+                        )
+                    else:
+                        continue
 
-        if 4 in rarities_to_show:
-            star4_pity = LocaleStr(
-                key="gacha_log_personal_stats_pity", rarity=4, cur=current_four_star_pity, max=10
-            ).translate(self.locale)
-            personal_stats += f"{star4_pity}\n"
+                    personal_stats_parts.append(part)
 
-        if 3 in rarities_to_show:
-            star3_pity = LocaleStr(
-                key="gacha_log_personal_stats_pity",
-                rarity=3,
-                cur=current_three_star_pity,
-                max=max_three_star_pity,
-            ).translate(self.locale)
-            personal_stats += f"{star3_pity}\n"
-
-        if 5 in rarities_to_show:
-            star5_total = LocaleStr(
-                key="gacha_log_personal_stats_rarity_total", rarity=5, total=total_five_stars
-            ).translate(self.locale)
-            personal_stats += f"{star5_total}\n"
-
-        if 4 in rarities_to_show:
-            star4_total = LocaleStr(
-                key="gacha_log_personal_stats_rarity_total", rarity=4, total=total_four_stars
-            ).translate(self.locale)
-            personal_stats += f"{star4_total}\n"
-
-        if 3 in rarities_to_show:
-            star3_total = LocaleStr(
-                key="gacha_log_personal_stats_rarity_total", rarity=3, total=total_three_stars
-            ).translate(self.locale)
-            personal_stats += f"{star3_total}\n"
-
-        if 5 in rarities_to_show:
-            star5_average = LocaleStr(
-                key="gacha_log_personal_stats_rarity_average",
-                rarity=5,
-                avg=round(five_star_avg_pulls, 1),
-            ).translate(self.locale)
-            personal_stats += f"{star5_average}\n"
-
-        if 4 in rarities_to_show:
-            star4_average = LocaleStr(
-                key="gacha_log_personal_stats_rarity_average",
-                rarity=4,
-                avg=round(four_star_avg_pulls, 1),
-            ).translate(self.locale)
-            personal_stats += f"{star4_average}\n"
-
-        if 3 in rarities_to_show:
-            star3_average = LocaleStr(
-                key="gacha_log_personal_stats_rarity_average",
-                rarity=3,
-                avg=round(three_star_avg_pulls, 1),
-            ).translate(self.locale)
-            personal_stats += f"{star3_average}\n"
+        personal_stats = "\n".join(personal_stats_parts)
 
         # Global stats
-        global_stats = ""
+        global_stats_parts: list[str] = []
 
-        global_lifetime = LocaleStr(
-            key="gacha_log_global_stats_lifetime",
-            lifetime=await self.get_ranking_str(pool, stat="lifetime_pulls"),
-        ).translate(self.locale)
-        global_stats += f"{global_lifetime}\n"
+        global_stats_parts.append(
+            LocaleStr(
+                key="gacha_log_global_stats_lifetime",
+                lifetime=await self.get_ranking_str(pool, stat="lifetime_pulls"),
+            ).translate(self.locale)
+        )
 
         if 5 in rarities_to_show:
-            global_star5_luck = LocaleStr(
-                key="gacha_log_global_stats_luck",
-                rarity=5,
-                luck=await self.get_ranking_str(pool, stat="avg_5star_pulls"),
-            ).translate(self.locale)
-            global_stats += f"{global_star5_luck}\n"
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=5,
+                    luck=await self.get_ranking_str(pool, stat="avg_5star_pulls"),
+                ).translate(self.locale)
+            )
 
         if 4 in rarities_to_show:
-            global_star4_luck = LocaleStr(
-                key="gacha_log_global_stats_luck",
-                rarity=4,
-                luck=await self.get_ranking_str(pool, stat="avg_4star_pulls"),
-            ).translate(self.locale)
-            global_stats += f"{global_star4_luck}\n"
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=4,
+                    luck=await self.get_ranking_str(pool, stat="avg_4star_pulls"),
+                ).translate(self.locale)
+            )
 
         if 3 in rarities_to_show:
-            global_star3_luck = LocaleStr(
-                key="gacha_log_global_stats_luck",
-                rarity=3,
-                luck=await self.get_ranking_str(pool, stat="avg_3star_pulls"),
-            ).translate(self.locale)
-            global_stats += f"{global_star3_luck}\n"
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=3,
+                    luck=await self.get_ranking_str(pool, stat="avg_3star_pulls"),
+                ).translate(self.locale)
+            )
+
+        global_stats = "\n".join(global_stats_parts)
 
         if (title := BANNER_WIN_RATE_TITLES[self.account.game].get(self.banner_type)) is not None:
             personal_win_rate_stats = LocaleStr(

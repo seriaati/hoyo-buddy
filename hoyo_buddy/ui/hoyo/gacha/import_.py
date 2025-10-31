@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 import genshin
 
+from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
 from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
@@ -25,13 +26,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
 IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
-
-MW_EVENT_BANNER_TYPES = {
-    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT1,
-    genshin.models.MWBannerType.EVENT_FEMALE_OUTFIT2,
-    genshin.models.MWBannerType.EVENT_MALE_OUTFIT1,
-    genshin.models.MWBannerType.EVENT_MALE_OUTFIT2,
-}
 
 
 class GachaImportView(View):

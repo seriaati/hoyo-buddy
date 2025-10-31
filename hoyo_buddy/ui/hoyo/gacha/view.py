@@ -4,10 +4,13 @@ from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
 from loguru import logger
 
+from hoyo_buddy import emojis
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_GUARANTEE_NUMS,
     BANNER_WIN_RATE_TITLES,
+    MW_BANNER_TYPES,
+    MW_EVENT_BANNER_TYPES,
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
@@ -250,11 +253,19 @@ class ViewGachaLogView(View):
             else None,
         )
 
+        if self.banner_type in MW_BANNER_TYPES and self.account.game is Game.GENSHIN:
+            if self.banner_type in MW_EVENT_BANNER_TYPES:
+                currency_emoji = emojis.ARCANE_EMOJI
+            else:
+                currency_emoji = emojis.GEODE_EMOJI
+        else:
+            currency_emoji = CURRENCY_EMOJIS[self.account.game]
+
         personal_stats = LocaleStr(
             key="gacha_log_personal_stats",
             lifetime_pulls=lifetime_pulls,
             lifetime_currency=f"{lifetime_currency:,}",
-            currency_emoji=CURRENCY_EMOJIS[self.account.game],
+            currency_emoji=currency_emoji,
             total_pulls=banner_total_pulls,
             total_currency=f"{banner_total_currency:,}",
             star5_pity_cur=current_five_star_pity,

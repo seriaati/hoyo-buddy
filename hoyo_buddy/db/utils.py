@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
+from loguru import logger
+from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Q
 
 from hoyo_buddy.constants import (
@@ -12,12 +14,14 @@ from hoyo_buddy.constants import (
     ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_DISC_SUBSTATS,
 )
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
 from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.models import Dismissible
 from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
+from hoyo_buddy.utils.misc import get_template_num
 
-from .models import CardSettings, GachaHistory, HoyoAccount, Settings, User
+from . import models
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -43,7 +47,7 @@ __all__ = (
 
 
 async def get_locale(i: Interaction) -> Locale:
-    settings = await Settings.get_or_none(user_id=i.user.id)
+    settings = await models.Settings.get_or_none(user_id=i.user.id)
     return (
         settings.locale or Locale.american_english
         if settings is not None
@@ -52,7 +56,7 @@ async def get_locale(i: Interaction) -> Locale:
 
 
 async def get_enable_dyk(i: Interaction) -> bool:
-    settings = await Settings.get_or_none(user_id=i.user.id)
+    settings = await models.Settings.get_or_none(user_id=i.user.id)
     return settings.enable_dyk if settings is not None else True
 
 
@@ -69,7 +73,7 @@ async def get_dyk(i: Interaction) -> str:
 
 
 async def get_last_gacha_num(
-    account: HoyoAccount, *, banner: int, rarity: int | None = None, num_lt: int | None = None
+    account: models.HoyoAccount, *, banner: int, rarity: int | None = None, num_lt: int | None = None
 ) -> int:
     filter_kwrargs = {"account": account, "banner_type": banner}
     if rarity is not None:
@@ -77,11 +81,11 @@ async def get_last_gacha_num(
     if num_lt is not None:
         filter_kwrargs["num__lt"] = num_lt
 
-    last_gacha = await GachaHistory.filter(**filter_kwrargs).first().only("num")
+    last_gacha = await models.GachaHistory.filter(**filter_kwrargs).first().only("num")
     return last_gacha.num if last_gacha else 0
 
 
-async def get_num_since_last(account: HoyoAccount, *, banner: int, num: int, rarity: int) -> int:
+async def get_num_since_last(account: models.HoyoAccount, *, banner: int, num: int, rarity: int) -> int:
     """Return the number of pulls since the last 5 or 4 star pull."""
     if rarity == 3:
         return 0
@@ -129,7 +133,7 @@ WHERE gachahistory.wish_id = pw.wish_id
 """
 
 
-async def update_gacha_nums(pool: asyncpg.Pool, *, account: HoyoAccount) -> None:
+async def update_gacha_nums(pool: asyncpg.Pool, *, account: models.HoyoAccount) -> None:
     """Update the num and num_since_last fields of the gacha histories."""
     async with pool.acquire() as conn:
         await conn.execute(UPDATE_NUM_SQL, account.id)
@@ -167,14 +171,14 @@ async def update_lb_ranks(
         await conn.execute(UPDATE_LB_RANK_SQL.format(order=order), game, type_)
 
 
-def draw_locale(locale: Locale, account: HoyoAccount) -> Locale:
+def draw_locale(locale: Locale, account: models.HoyoAccount) -> Locale:
     if account.platform is Platform.MIYOUSHE:
         return Locale.chinese
     return locale
 
 
 async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
-    user = await User.get(id=i.user.id)
+    user = await models.User.get(id=i.user.id)
     if dismissible.id in user.dismissibles:
         return
 
@@ -226,7 +230,7 @@ def build_account_query(
 
 
 async def set_highlight_substats(
-    *, agent_special_stat_map: dict[str, list[int]], card_settings: CardSettings, character_id: int
+    *, agent_special_stat_map: dict[str, list[int]], card_settings: models.CardSettings, character_id: int
 ) -> None:
     special_stat_ids = agent_special_stat_map.get(str(character_id), [])
     special_substat_ids = [
@@ -238,3 +242,86 @@ async def set_highlight_substats(
     ]
     card_settings.highlight_substats = hl_substats
     await card_settings.save(update_fields=("highlight_substats",))
+
+
+async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> models.CardSettings:
+    card_settings = await models.CardSettings.get_or_none(
+        user_id=user_id, character_id=character_id, game=game
+    )
+    if card_settings is None:
+        card_settings = await models.CardSettings.get_or_none(user_id=user_id, character_id=character_id)
+
+    if card_settings is None:
+        user_settings = await models.Settings.get(user_id=user_id)
+        templates = {
+            Game.GENSHIN: user_settings.gi_card_temp,
+            Game.STARRAIL: user_settings.hsr_card_temp,
+            Game.ZZZ: user_settings.zzz_card_temp,
+        }
+        template = templates.get(game)
+        if template is None:
+            logger.error(
+                f"Game {game!r} does not have its table column for default card template setting."
+            )
+            template = "hb1"
+
+        dark_modes = {
+            Game.GENSHIN: user_settings.gi_dark_mode,
+            Game.STARRAIL: user_settings.hsr_dark_mode,
+            Game.ZZZ: user_settings.zzz_dark_mode,
+        }
+        dark_mode = dark_modes.get(game)
+        if dark_mode is None:
+            logger.error(
+                f"Game {game!r} does not have its table column for default dark mode setting."
+            )
+            dark_mode = False
+
+        try:
+            card_settings = await models.CardSettings.create(
+                user_id=user_id,
+                character_id=character_id,
+                dark_mode=dark_mode,
+                template=template,
+                game=game,
+            )
+        except IntegrityError:
+            card_settings = await models.CardSettings.get(
+                user_id=user_id, character_id=character_id, game=game
+            )
+    elif card_settings.game is None:
+        card_settings.game = game
+        await card_settings.save(update_fields=("game",))
+
+    return card_settings
+
+
+def get_default_color(
+    character_id: str, *, game: Game, template: str, dark_mode: bool, outfit_id: int | None
+) -> str | None:
+    try:
+        if game is Game.ZZZ:
+            key = character_id if outfit_id is None else f"{character_id}_{outfit_id}"
+            template_num = get_template_num(template)
+
+            if template_num == 2:
+                try:
+                    color = CARD_DATA.zzz2[key].color
+                except KeyError:
+                    return CARD_DATA.zzz[key].color
+
+                if color is None:
+                    return CARD_DATA.zzz[key].color
+                return color
+
+            return CARD_DATA.zzz[key].color
+
+        if game is Game.STARRAIL:
+            color = CARD_DATA.hsr[character_id].primary
+            if dark_mode:
+                return CARD_DATA.hsr[character_id].primary_dark or color
+            return color
+    except KeyError:
+        return None
+
+    return None

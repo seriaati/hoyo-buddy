@@ -8,10 +8,10 @@ from loguru import logger
 from hoyo_buddy import emojis, ui
 from hoyo_buddy.constants import EMPTY_CHAR, ZZZ_DISC_SUBSTATS
 from hoyo_buddy.db.models import CardSettings
+from hoyo_buddy.db.utils import get_default_color
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_default_color
 from hoyo_buddy.ui.hoyo.profile.templates import (
     DISABLE_COLOR,
     DISABLE_DARK_MODE,

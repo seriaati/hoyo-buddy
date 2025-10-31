@@ -7,13 +7,13 @@ import genshin
 from genshin import Game
 
 from hoyo_buddy import emojis
-from hoyo_buddy.db import AccountNotifSettings, User, draw_locale, get_dyk
+from hoyo_buddy.db import User, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_checkin_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, Reward
-from hoyo_buddy.ui import Button, GoBackButton, ToggleButton, View
+from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral, get_now
 
 if TYPE_CHECKING:
@@ -66,8 +66,6 @@ class CheckInUI(View):
                     label=LocaleStr(key="make_up_for_checkin_button_label"),
                 )
             )
-        self.add_item(AutoCheckInToggle(self.account.daily_checkin))
-        self.add_item(NotificationSettingsButton())
 
     async def _get_rewards(self) -> tuple[list[Reward], DailyRewardInfo]:
         client = self.client
@@ -181,61 +179,3 @@ class CheckInButton(Button[CheckInUI]):
         await i.edit_original_response(embed=embed, attachments=[file_])
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, blur=True)
         await i.followup.send(embed=embed)
-
-
-class AutoCheckInToggle(ToggleButton[CheckInUI]):
-    def __init__(self, current_toggle: bool) -> None:
-        super().__init__(current_toggle, LocaleStr(key="auto_checkin_button_label"))
-
-    async def callback(self, i: Interaction) -> Any:
-        await super().callback(i)
-        self.view.account.daily_checkin = self.current_toggle
-        await self.view.account.save(update_fields=("daily_checkin",))
-
-
-class NotificationSettingsButton(Button[CheckInUI]):
-    def __init__(self) -> None:
-        super().__init__(
-            label=LocaleStr(key="notification_settings_button_label"), emoji=emojis.SETTINGS, row=1
-        )
-
-    async def callback(self, i: Interaction) -> Any:
-        await self.view.account.fetch_related("notif_settings")
-        go_back_button = GoBackButton(
-            self.view.children, self.view.get_embeds(i.message), self.view._bytes_obj
-        )
-        self.view.clear_items()
-        self.view.add_item(go_back_button)
-        self.view.add_item(
-            NotifyOnFailureToggle(
-                current_toggle=self.view.account.notif_settings.notify_on_checkin_failure
-            )
-        )
-        self.view.add_item(
-            NotifyOnSuccessToggle(
-                current_toggle=self.view.account.notif_settings.notify_on_checkin_success
-            )
-        )
-        await i.response.edit_message(view=self.view)
-
-
-class NotifyOnFailureToggle(ToggleButton[CheckInUI]):
-    def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(current_toggle, LocaleStr(key="notify_on_failure_button_label"))
-
-    async def callback(self, i: Interaction) -> Any:
-        await super().callback(i)
-        await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_failure=self.current_toggle
-        )
-
-
-class NotifyOnSuccessToggle(ToggleButton[CheckInUI]):
-    def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(current_toggle, LocaleStr(key="notify_on_success_button_label"))
-
-    async def callback(self, i: Interaction) -> Any:
-        await super().callback(i)
-        await AccountNotifSettings.filter(account=self.view.account).update(
-            notify_on_checkin_success=self.current_toggle
-        )

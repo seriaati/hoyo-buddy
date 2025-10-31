@@ -10,7 +10,6 @@ from hoyo_buddy.ui import View
 
 from .. import SelectOption
 from .items.acc_select import AccountSelect
-from .items.acc_settings import AccountPublicToggle, AutoCheckinToggle, AutoRedeemToggle
 from .items.add_acc_btn import AddAccountButton
 from .items.del_acc_btn import DeleteAccountButton
 from .items.edit_nickname_btn import EditNicknameButton
@@ -68,9 +67,6 @@ class AccountManager(View):
             self.add_item(AddAccountButton())
             self.add_item(EditNicknameButton())
             self.add_item(DeleteAccountButton())
-            self.add_item(AutoRedeemToggle(self.selected_account.auto_redeem))
-            self.add_item(AutoCheckinToggle(self.selected_account.daily_checkin))
-            self.add_item(AccountPublicToggle(self.selected_account.public))
         else:
             self.add_item(AddAccountButton())
 
@@ -107,17 +103,4 @@ class AccountManager(View):
             )
             await view.start(i)
         else:
-            assert self.selected_account is not None
-            auto_redeem_toggle: AutoRedeemToggle = self.get_item("auto_redeem_toggle")
-            auto_redeem_toggle.current_toggle = self.selected_account.auto_redeem
-            auto_redeem_toggle.update_style()
-
-            auto_checkin_toggle: AutoCheckinToggle = self.get_item("auto_checkin_toggle")
-            auto_checkin_toggle.current_toggle = self.selected_account.daily_checkin
-            auto_checkin_toggle.update_style()
-
-            acc_public_toggle: AccountPublicToggle = self.get_item("public_account_toggle")
-            acc_public_toggle.current_toggle = self.selected_account.public
-            acc_public_toggle.update_style()
-
             await self.absolute_edit(i, embed=self._acc_embed, view=self)

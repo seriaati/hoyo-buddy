@@ -18,6 +18,7 @@ from hoyo_buddy.constants import (
     ZZZ_M6_ART_URL,
 )
 from hoyo_buddy.db import CustomImage
+from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
@@ -38,8 +39,6 @@ from hoyo_buddy.ui import (
 )
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
-from .card_settings import get_card_settings
-from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
 from .templates import DISABLE_IMAGE
 
 if TYPE_CHECKING:

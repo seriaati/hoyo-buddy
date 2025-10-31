@@ -11,7 +11,7 @@ from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import TOGGLE_EMOJIS
 from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr, WeekdayStr
-from hoyo_buddy.ui.hoyo.notes import modals
+from hoyo_buddy.ui.settings import reminder_modals as modals
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -6,52 +6,72 @@ from typing import TYPE_CHECKING, Any, Self
 import discord
 from loguru import logger
 
+from hoyo_buddy import emojis
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.embeds import ErrorEmbed
 from hoyo_buddy.l10n import LocaleStr, translator
 
+from .action_row import ActionRow
 from .button import Button
+from .container import Container
+from .section import Section
 from .select import Select
+from .text_display import TextDisplay
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
-__all__ = ("URLButtonView", "View")
+__all__ = ("LayoutView", "URLButtonView", "View")
+
+type LayoutViewItem = (
+    ActionRow
+    | TextDisplay
+    | Section
+    | Container
+    | discord.ui.MediaGallery
+    | discord.ui.File
+    | discord.ui.Separator
+)
 
 
-class View(discord.ui.View):
-    def __init__(self, *, author: User, locale: Locale) -> None:
-        super().__init__(timeout=600)
-        self.author = author
-        self.locale = locale
-        self.message: discord.Message | None = None
-        self.item_states: dict[str, bool] = {}
+class ViewMixin:
+    children: list[discord.ui.Item[Any]]
+    author: User
+    message: discord.Message | None
+    locale: Locale
+    clear_items: Callable[[], None]
+    item_states: dict[str, bool]
 
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__module__.replace('hoyo_buddy.ui.', '')}.{self.__class__.__name__}"
         )
 
-    def add_items(self, items: Iterable[Button | Select]) -> Self:
-        for item in items:
-            self.add_item(item)
-        return self
+    @staticmethod
+    async def absolute_send(i: Interaction, **kwargs) -> None:
+        with contextlib.suppress(discord.HTTPException):
+            if not i.response.is_done():
+                await i.response.send_message(**kwargs)
+            else:
+                await i.followup.send(**kwargs)
 
-    async def on_timeout(self) -> None:
-        all_url_buttons = all(
-            item.url for item in self.children if isinstance(item, (discord.ui.Button))
-        )
-        if self.message is not None and not all_url_buttons:
-            self.clear_items()
-            with contextlib.suppress(discord.HTTPException):
-                await self.message.edit(view=self)
+    @staticmethod
+    async def absolute_edit(i: Interaction, **kwargs) -> None:
+        with contextlib.suppress(discord.HTTPException):
+            if not i.response.is_done():
+                await i.response.edit_message(**kwargs)
+            else:
+                await i.edit_original_response(**kwargs)
 
-        if self.message is None and not all_url_buttons:
-            logger.warning(f"View {self!r} timed out without a set message")
+    @staticmethod
+    def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
+        if message:
+            return message.embeds
+        return None
 
     async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         locale = await get_locale(i)
@@ -80,6 +100,14 @@ class View(discord.ui.View):
             return False
         return True
 
+    def get_item(self, custom_id: str) -> Any:
+        for item in self.children:
+            if isinstance(item, Button | Select) and item.custom_id == custom_id:
+                return item
+
+        msg = f"No item found with custom_id {custom_id!r}"
+        raise ValueError(msg)
+
     def disable_items(self) -> None:
         for child in self.children:
             if isinstance(child, discord.ui.Button | discord.ui.Select):
@@ -103,45 +131,47 @@ class View(discord.ui.View):
                     # Cannot determine the original state of the item
                     child.disabled = False
 
+
+class View(discord.ui.View, ViewMixin):
+    def __init__(self, *, author: User, locale: Locale) -> None:
+        super().__init__(timeout=600)
+        self.author = author
+        self.locale = locale
+        self.message: discord.Message | None = None
+        self.item_states: dict[str, bool] = {}
+
+    def add_items(self, items: Iterable[Button | Select]) -> Self:
+        for item in items:
+            self.add_item(item)
+        return self
+
     def add_item(self, item: Button | Select, *, translate: bool = True) -> Self:
         if translate:
             item.translate(self.locale)
         return super().add_item(item)
-
-    def get_item(self, custom_id: str) -> Any:
-        for item in self.children:
-            if isinstance(item, Button | Select) and item.custom_id == custom_id:
-                return item
-
-        msg = f"No item found with custom_id {custom_id!r}"
-        raise ValueError(msg)
 
     def translate_items(self) -> None:
         for item in self.children:
             if isinstance(item, Button | Select):
                 item.translate(self.locale)
 
-    @staticmethod
-    async def absolute_send(i: Interaction, **kwargs) -> None:
-        with contextlib.suppress(discord.HTTPException):
-            if not i.response.is_done():
-                await i.response.send_message(**kwargs)
-            else:
-                await i.followup.send(**kwargs)
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
+        return await ViewMixin.on_error(self, i, error, item)
 
-    @staticmethod
-    async def absolute_edit(i: Interaction, **kwargs) -> None:
-        with contextlib.suppress(discord.HTTPException):
-            if not i.response.is_done():
-                await i.response.edit_message(**kwargs)
-            else:
-                await i.edit_original_response(**kwargs)
+    async def on_timeout(self) -> None:
+        all_url_buttons = all(
+            item.url for item in self.children if isinstance(item, (discord.ui.Button))
+        )
+        if self.message is not None and not all_url_buttons:
+            self.clear_items()
+            with contextlib.suppress(discord.HTTPException):
+                await self.message.edit(view=self)
 
-    @staticmethod
-    def get_embeds(message: discord.Message | None) -> list[discord.Embed] | None:
-        if message:
-            return message.embeds
-        return None
+        if self.message is None and not all_url_buttons:
+            logger.warning(f"View {self!r} timed out without a set message")
+
+    async def interaction_check(self, i: Interaction) -> bool:
+        return await ViewMixin.interaction_check(self, i)
 
 
 class URLButtonView(discord.ui.View):
@@ -159,3 +189,55 @@ class URLButtonView(discord.ui.View):
                 label=translator.translate(label, locale) if label else None, url=url, emoji=emoji
             )
         )
+
+
+class LayoutView(discord.ui.LayoutView, ViewMixin):
+    def __init__(self, *, author: User, locale: Locale) -> None:
+        super().__init__(timeout=600)
+        self.author = author
+        self.locale = locale
+        self.message: discord.Message | None = None
+        self.item_states: dict[str, bool] = {}
+        self.children: list[LayoutViewItem]
+
+        self.translate(locale)
+
+    def translate(self, locale: Locale) -> None:
+        for child in self.children:
+            if isinstance(child, (ActionRow, Container, Section, TextDisplay)):
+                child.translate(locale)
+
+    def add_item(self, item: LayoutViewItem, *, translate: bool = True) -> Self:
+        if translate and isinstance(item, (ActionRow, Container, Section, TextDisplay)):
+            item.translate(self.locale)
+        return super().add_item(item)
+
+    def disable_items(self) -> None:
+        for child in self.children:
+            if isinstance(child, (Container, Section, ActionRow)):
+                child.disable_items()
+
+    async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
+        return await ViewMixin.on_error(self, i, error, item)
+
+    async def on_timeout(self) -> None:
+        self.disable_items()
+
+        # with contextlib.suppress(discord.HTTPException):
+        if self.message is not None:
+            self.add_item(
+                TextDisplay(
+                    content=LocaleStr(
+                        custom_str="-# {emoji} {text}",
+                        emoji=emojis.INFO,
+                        text=LocaleStr(key="layout_view_edited"),
+                    )
+                )
+            )
+            await self.message.edit(view=self)
+
+        if self.message is None:
+            logger.warning(f"View {self!r} timed out without a set message")
+
+    async def interaction_check(self, i: Interaction) -> bool:
+        return await ViewMixin.interaction_check(self, i)

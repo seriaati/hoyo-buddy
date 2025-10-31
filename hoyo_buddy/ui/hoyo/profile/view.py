@@ -15,11 +15,10 @@ from loguru import logger
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
-    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
-    ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
+from hoyo_buddy.db.utils import get_card_settings, get_default_color, set_highlight_substats
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -45,13 +44,11 @@ from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
-from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
 from hoyo_buddy.utils.misc import get_template_num
 
-from .card_settings import get_card_settings, get_default_color
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -311,7 +308,6 @@ class ProfileView(View, PlayerEmbedMixin):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton(row=0))
         self.add_item(CardSettingsButton(row=0))
-        self.add_item(TeamCardSettingsButton(row=1))
         self.add_item(ImageSettingsButton(row=1))
         self.add_item(RedrawCardButton(row=1))
 
@@ -728,18 +724,11 @@ class ProfileView(View, PlayerEmbedMixin):
             if card_settings.highlight_substats:
                 continue
 
-            special_stat_ids = agent_special_stat_map.get(str(character_id), [])
-            special_substat_ids = [
-                ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
-            ]
-
-            hl_substats = [
-                substat_id
-                for _, substat_id, _ in ZZZ_DISC_SUBSTATS
-                if substat_id in special_substat_ids
-            ]
-            card_settings.highlight_substats = hl_substats
-            await card_settings.save(update_fields=("highlight_substats",))
+            await set_highlight_substats(
+                agent_special_stat_map=agent_special_stat_map,
+                card_settings=card_settings,
+                character_id=character_id,
+            )
 
     async def update(
         self,

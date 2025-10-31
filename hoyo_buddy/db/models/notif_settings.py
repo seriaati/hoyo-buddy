@@ -12,6 +12,19 @@ if TYPE_CHECKING:
 
 
 class AccountNotifSettings(BaseModel):
+    ALL_FIELDS = (
+        "notify_on_checkin_failure",
+        "notify_on_checkin_success",
+        "mimo_task_success",
+        "mimo_task_failure",
+        "mimo_buy_success",
+        "mimo_buy_failure",
+        "mimo_draw_success",
+        "mimo_draw_failure",
+        "redeem_success",
+        "redeem_failure",
+    )
+
     # Future me: Make sure to change NOTIF_SETTING_FIELDS in constants.py if you modify this section
     notify_on_checkin_failure = fields.BooleanField(default=True)
     notify_on_checkin_success = fields.BooleanField(default=True)

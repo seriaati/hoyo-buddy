@@ -1364,5 +1364,6 @@ YATTA_PROP_TYPE_TO_GPY_TYPE: dict[str, int] = {
 }
 GPY_TYPE_TO_YATTA_PROP_TYPE = {v: k for k, v in YATTA_PROP_TYPE_TO_GPY_TYPE.items()}
 
+EMPTY_CHAR = "‎ "
 MW_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType}
 MW_EVENT_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType if "EVENT" in e.name}

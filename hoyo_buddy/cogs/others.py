@@ -24,7 +24,6 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..types import Interaction
 from ..ui import Button, View
-from ..ui.settings import SettingsUI
 from ..utils import ephemeral, get_discord_user_md_link, upload_image
 
 if TYPE_CHECKING:
@@ -90,7 +89,7 @@ class Others(commands.Cog):
         if not guild.chunked:
             await guild.chunk()
 
-        settings = await UserSettings.get(user_id=i.user.id)
+        await UserSettings.get(user_id=i.user.id)
         locale = await get_locale(i)
         embed = DefaultEmbed(
             locale=locale,
@@ -196,8 +195,7 @@ class Others(commands.Cog):
 
         # brand image
         image_ = discord.File(
-            SettingsUI.get_brand_img_filename("DARK" if settings.dark_mode else "LIGHT", locale),
-            filename="brand.png",
+            "hoyo-buddy-assets/assets/brand/LIGHT-en_US.png", filename="brand.png"
         )
         embed.set_image(image_)
 

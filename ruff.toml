@@ -84,6 +84,7 @@ ignore = [
 "test_*.py" = ["ALL"]
 "test.py" = ["ALL"]
 "restart.py" = ["T201", "S602", "S404", "S603"]
+"tools/*.py" = ["T201"]
 
 [lint.flake8-type-checking]
 quote-annotations = true

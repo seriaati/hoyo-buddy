@@ -13,7 +13,7 @@ __all__ = ("TextDisplay",)
 
 
 class TextDisplay(discord.ui.TextDisplay):
-    def __init__(self, *, content: LocaleStr | str) -> None:
+    def __init__(self, content: LocaleStr | str) -> None:
         super().__init__(content=content if isinstance(content, str) else "#NoTrans")
         self.locale_str_content = content
 

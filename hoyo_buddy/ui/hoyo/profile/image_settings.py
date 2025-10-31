@@ -18,6 +18,7 @@ from hoyo_buddy.constants import (
     ZZZ_M6_ART_URL,
 )
 from hoyo_buddy.db import CustomImage
+from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
@@ -38,8 +39,6 @@ from hoyo_buddy.ui import (
 )
 from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
 
-from .card_settings import get_card_settings
-from .items.settings_chara_select import CharacterSelect as SettingsCharacterSelect
 from .templates import DISABLE_IMAGE
 
 if TYPE_CHECKING:
@@ -163,7 +162,6 @@ class ImageSettingsView(View):
         default_collection = get_default_collection(str(character.id), game=self.game)
         current_image = self.get_current_image()
 
-        self.add_item(CharacterSelect(self.characters, self.selected_character_id, row=0))
         self.add_item(ImageTypeSelect(self.image_type, row=1))
         self.add_item(
             ImageSelect(
@@ -242,40 +240,6 @@ class ImageSettingsView(View):
         embed = self.get_settings_embed()
         await i.response.send_message(embed=embed, view=self, ephemeral=True)
         self.message = await i.original_response()
-
-
-class CharacterSelect(SettingsCharacterSelect[ImageSettingsView]):
-    async def callback(self, i: Interaction) -> Any:
-        changed = self.update_page()
-        if changed:
-            return await i.response.edit_message(view=self.view)
-
-        self.update_options_defaults()
-        self.view.selected_character_id = self.values[0]
-        self.view.card_settings = await get_card_settings(
-            self.view.user_id, self.values[0], game=self.view.game
-        )
-        default_arts = get_default_collection(self.values[0], game=self.view.game)
-        current_image = self.view.get_current_image()
-
-        # Update other item styles
-        image_select: ImageSelect = self.view.get_item("profile_image_select")
-        image_select.update(
-            current_image=current_image,
-            custom_images=self.view.custom_images,
-            default_collection=default_arts,
-        )
-
-        # Disable the edit and remove image button if the image is not custom
-        is_not_custom = current_image is None or current_image in default_arts
-        edit_image_button: EditImageButton = self.view.get_item("profile_edit_image")
-        edit_image_button.disabled = is_not_custom
-        remove_image_button: RemoveImageButton = self.view.get_item("profile_remove_image")
-        remove_image_button.disabled = is_not_custom
-
-        embed = self.view.get_settings_embed()
-        await i.response.edit_message(embed=embed, view=self.view)
-        return None
 
 
 class RemoveImageButton(Button[ImageSettingsView]):

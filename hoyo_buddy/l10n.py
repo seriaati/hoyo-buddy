@@ -345,7 +345,7 @@ class Translator:
             source_string = self._l10n[SOURCE_LANG].get(string_key)
 
         if string.translate_ and source_string is None and string.custom_str is None:
-            logger.warning(f"String {string_key!r} is missing in source lang file")
+            logger.error(f"String {string_key!r} is missing in source lang file")
 
         lang = locale.value.replace("-", "_")
         if lang == "en-GB":

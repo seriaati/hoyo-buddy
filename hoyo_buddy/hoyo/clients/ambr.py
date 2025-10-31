@@ -28,16 +28,16 @@ AUDIO_LANGUAGES = ("EN", "CHS", "JP", "KR")
 
 class ItemCategory(StrEnum):
     CHARACTERS = "characters"
-    WEAPONS = "Weapons"
-    ARTIFACT_SETS = "Artifact Sets"
-    FOOD = "Food"
-    MATERIALS = "Materials"
-    FURNISHINGS = "Furnishings"
-    FURNISHING_SETS = "Furnishing Sets"
-    NAMECARDS = "Namecards"
-    LIVING_BEINGS = "Living Beings"
-    BOOKS = "Books"
-    TCG = "TCG"
+    WEAPONS = "weapons"
+    ARTIFACT_SETS = "artifact_sets"
+    FOOD = "food"
+    MATERIALS = "materials"
+    FURNISHINGS = "furnishings"
+    FURNISHING_SETS = "furnishing_sets"
+    NAMECARDS = "namecards"
+    LIVING_BEINGS = "living_beings"
+    BOOKS = "books"
+    TCG = "tcg"
     # SPIRAL_ABYSS = "Spiral Abyss"
 
 

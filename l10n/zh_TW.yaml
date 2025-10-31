@@ -158,9 +158,9 @@ exploration.common_chests: 普通
 exploration.exquisite_chests: 精緻
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離'
+  - 鍾離"
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -772,7 +772,7 @@ image_settings_use_m3_art: 使用意象影畫 3 繪圖
 remembrance: 記憶
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此訊息只會顯示一次
-dismissible_m3_art_desc: '你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。'
+dismissible_m3_art_desc: "你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 個 HoYoLAB 裝飾"
 zzz_deadly_assault: 危局強襲戰
 challenge_command_assault_desc: 生成危局強襲戰卡片
@@ -836,3 +836,4 @@ enka_api_error_description: "從 Enka Network 獲取資料時出錯，請稍後�
 cleared: 已通關
 challenge_command_anomaly_desc: 生成異相仲裁卡片
 anomaly_arbitration: 異相仲裁
+user_settings_title: 使用者設定

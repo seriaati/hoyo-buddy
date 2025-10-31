@@ -8,7 +8,7 @@ from seria.utils import create_bullet_list
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import GIFT_OUTLINE, LOADING, REDEEM_GIFT
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Label, Modal, TextInput, ToggleButton, View
+from hoyo_buddy.ui import Button, Label, Modal, TextInput, View
 
 if TYPE_CHECKING:
     import aiohttp
@@ -97,9 +97,6 @@ class RedeemUI(View):
     def _add_items(self) -> None:
         self.add_item(RedeemCodesButton())
         self.add_item(RedeemAllAvailableCodesButton())
-        self.add_item(AutoRedeemToggle(current_toggle=self.account.auto_redeem))
-        self.add_item(RedeemSuccess(current_toggle=self.account.notif_settings.redeem_success))
-        self.add_item(RedeemFailure(current_toggle=self.account.notif_settings.redeem_failure))
 
     async def redeem_codes(self, i: Interaction, *, codes: list[str], button: Button) -> None:
         await button.set_loading_state(i, embed=self.cooldown_embed)
@@ -141,16 +138,6 @@ class RedeemCodesButton(Button[RedeemUI]):
         await self.view.redeem_codes(i, codes=codes, button=self)
 
 
-class AutoRedeemToggle(ToggleButton[RedeemUI]):
-    def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(current_toggle, LocaleStr(key="auto_redeem_toggle.label"), row=0)
-
-    async def callback(self, i: Interaction) -> None:
-        await super().callback(i)
-        self.view.account.auto_redeem = self.current_toggle
-        await self.view.account.save(update_fields=("auto_redeem",))
-
-
 class RedeemAllAvailableCodesButton(Button[RedeemUI]):
     def __init__(self) -> None:
         super().__init__(
@@ -161,27 +148,3 @@ class RedeemAllAvailableCodesButton(Button[RedeemUI]):
 
     async def callback(self, i: Interaction) -> None:
         await self.view.redeem_codes(i, codes=self.view.available_codes, button=self)
-
-
-class RedeemSuccess(ToggleButton[RedeemUI]):
-    def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle, toggle_label=LocaleStr(key="redeem_success_notify_toggle_label"), row=4
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        await super().callback(i)
-        self.view.account.notif_settings.redeem_success = self.current_toggle
-        await self.view.account.notif_settings.save(update_fields=("redeem_success",))
-
-
-class RedeemFailure(ToggleButton[RedeemUI]):
-    def __init__(self, *, current_toggle: bool) -> None:
-        super().__init__(
-            current_toggle, toggle_label=LocaleStr(key="redeem_failure_notify_toggle_label"), row=4
-        )
-
-    async def callback(self, i: Interaction) -> None:
-        await super().callback(i)
-        self.view.account.notif_settings.redeem_failure = self.current_toggle
-        await self.view.account.notif_settings.save(update_fields=("redeem_failure",))

@@ -2,7 +2,6 @@ about_command.contribute: Contribute
 about_command.developer: Developer
 about_command.discord_server: Discord server
 about_command.guild_count: Guild count
-about_command.latest_changes: Latest changes
 about_command.ram_usage: RAM Usage
 about_command.support: Donate
 about_command.translators: Translators
@@ -17,6 +16,7 @@ abyss.floor: "Floor {val}"
 abyss.overview: Spiral Abyss Overview
 abyss.damage: DAMAGE INFO
 abyss.stats: STATS
+honkai:_star_rail: "Honkai: Star Rail"
 abyss.phase_select.placeholder: Select a phase
 abyss.total_stars: "Total Stars: {val}"
 abyss_chamber.challenge_target.embed.field.name: Challenge Target
@@ -143,7 +143,8 @@ email_password_modal_email_input_label: email or username
 email_password_modal_password_input_label: password
 enter_email_password_instructions_description: "Email & password refer to **Hoyoverse account's** email and password, not Google, Apple, etc. accounts.\n- [How does this work?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [I don't have a Hoyoverse account (I login with Google, Facebook, etc.)](:docs/Before-Start:)\n- [I am a console player](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Change light cone level
-dark_mode_button_label: Dark mode
+dark_theme: Dark theme
+card_dark_theme_desc: Use a dark color scheme for this character's build card.
 error_footer: "You can find help in our Discord server, link in /about"
 error_title: An Error Occurred
 erudition: Erudition
@@ -200,7 +201,6 @@ furnishings: Furnishings
 furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Load: {load}\nTrust: {trust}\nCreation Time: {hour}h"
 game_maintenance_description: Please try again later
 game_maintenance_title: Game is Under Maintenance
-game_value_incomplete_param_error_message: You must specify the game of the UID
 geeetest_verification_complete: Verification complete
 geetest.embed.title: CAPTCHA verification required before logging in
 geetest.no_need: No need for geetest
@@ -216,7 +216,6 @@ gi_daily.embed.description: Daily commisions or adventure encounters are not com
 gift_code_modal.code_input.label: "Code {num}"
 gift_code_modal.title: Enter gift codes
 harmony: Harmony
-honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
 hsr_daily.embed.description: Daily trainings are not completed yet
@@ -237,7 +236,6 @@ invalid_email_password_title: Invalid Email or Password
 invalid_game_selected: Invalid game selected
 invalid_image_url_error_message: "A valid image URL needs to be a direct URL to an image file that contains an image extension, and is publicly accessible."
 invalid_image_url_error_title: Invalid image URL
-invalid_input.input_needs_to_be_bool: "Input `{input}` needs to be either `0` (for false) or `1` (for true)"
 invalid_input.input_needs_to_be_int: "Input `{input}` needs to be an integer"
 invalid_input.input_out_of_range.max_value: "Input `{input}` needs to be less than or equal to {max_value}"
 invalid_input.input_out_of_range.min_value: "Input `{input}` needs to be greater than or equal to {min_value}"
@@ -317,13 +315,12 @@ notif_modal.notify_time.description: "Notify at X hours before the server resets
 notif_modal.notify_weekday.label: The weekday to notify
 notif_modal.threshold.label: Threshold
 notif_modal.threshold.description: "Notification is sent after the threshold is reached."
-notification_settings_button_label: Notification settings
-notify_on_failure_button_label: Notify on check-in failure
-notify_on_success_button_label: Notify on check-in success
-mimo_auto_task_success_notify_toggle_label: Notify on auto finish task success
-mimo_auto_task_failure_notify_toggle_label: Notify on auto finish task failure
-mimo_auto_buy_success_notify_toggle_label: Notify on auto buy rewards success
-mimo_auto_buy_failure_notify_toggle_label: Notify on auto buy rewards failure
+notification_settings_button_label: Notification Settings
+mimo_notification_settings: Notification Settings for Traveling Mimo
+notification_settings_desc: Configure which notifications to receive.
+notification_settings_note: "Note: Hoyo Buddy sends notifications via direct messages, make sure your DMs are open to receive them."
+notify_on_failure_button_label: Notify on failure
+notify_on_success_button_label: Notify on success
 nsfw_prompt_error_message: "The prompt contains NSFW content, please try again with a different prompt."
 nsfw_prompt_error_title: NSFW Prompt Detected
 page_footer: "Page {current_page}/{total_pages}"
@@ -347,14 +344,12 @@ profile.card_template_select.enka_classic.label: Classic Enka template
 profile.card_template_select.enkacard.label: "EnkaCard template {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy template {num}"
 profile.card_template_select.placeholder: Select a template
-profile.card_template_select.same_author.description: "Designed and programmed by {author}"
 profile.card_template_select.src.label: "StarRailCard template {num}"
 profile.character_select.genshin: "C{const}R{refine}"
 profile.character_select.hsr: "E{const}R{refine}"
 profile.character_select.zzz: "Mindscape cinema {const}"
 profile.character_select.in_game: "In-game showcase"
 profile.character_select.enka_network.description: Enka Network build
-profile.character_select.placeholder: Select a character
 profile.generate_ai_art.button.label: Generate AI art
 profile.generate_ai_art_modal.negative_prompt.label: Negative Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
@@ -370,17 +365,14 @@ profile.player_info.hoyolab.embed.description: "Trailblaze Level: {level}\nChara
 profile.primary_color.button.label: Change color
 profile.primary_color_modal.color.label: Color (hex code)
 profile.primary_color_modal.title: Change Card Color
-profile.remove_from_cache.button.label: Remove from cache
 profile.remove_image.button.label: Remove custom image
 profile_command_gi_description: Generate Genshin Impact character build cards and team cards
 profile_command_hsr_description: Generate Honkai Star Rail character build cards and team cards
 profile_command_zzz_description: Generate Zenless Zone Zero agent build cards and team cards
-profile_command_game_value_description: Game of the UID
 profile_command_uid_param_description: "UID of the player, this overrides the account parameter if provided"
 pt_button.label: Parametric transformer reminder
 pt_modal.title: Parametric Transformer Reminder Settings
 pt_notify_embed_desc: "Parametric Transformer is ready to be used!"
-public_account_toggle.label: Set account as public
 pure_fiction: Pure fiction
 pyro: Pyro
 quantum: Quantum
@@ -401,13 +393,13 @@ redeem_cooldown_embed.description: "Due to redeem cooldowns, this may take a whi
 redeem_cooldown_embed.title: Redeeming Codes
 refinement_indicator: "Refinement {r}"
 relics: Relics
-reminder_button.label: Reminder settings
 reminder_settings.not_set: Not set
 reminder_settings.reminde.set.type1: "Status: {status}\nThreshold: {threshold}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}"
 reminder_settings.reminde.set.type2: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}"
 reminder_settings.reminde.set.type3: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\n"
 reminder_settings.reminde.set.type4: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {notify_time} hours before the server resets\nNotify Weekday: {notify_weekday}"
 reminder_settings_title: Real-Time Notes Reminders
+reminder_settings_desc: Notify you via Direct Message when certain in-game events happen.
 reminder_toggle: Reminder
 resin_discount.embed.description: Weekly boss discounts are not used up yet
 resin_reminder_button.label: Resin reminder
@@ -488,23 +480,17 @@ img_theater_large_block_title: Imaginarium Theater
 img_theater_stats_line_five: "Total Cast Time: {time}"
 img_theater_legend_block_support_chara: Support Character
 img_theater_legend_block_trial_chara: Trial Character
-img_theater_max_damage: "Most Damage Dealt: {val}"
 img_theater_fastest_team: " (fastest)"
 challenge_view.view_buffs: View buffs
 challenge_view.buff_select.placeholder: Select a buff to view...
 scratch_card.embed.description: Scratch card not scratched yet
 zzz_engagement_button.label: Engagement
 zzz_engagement.embed.description: Today's engagement is not completed yet
-honkai_daily_embed_title: Daily BP Reminder
-honkai_daily_embed_description: "Today's daily BP is not completed yet, {cur}/{max}"
 video_store.embed.description: Video store revenue not claimed yet
 scratch_card.incomplete: Incomplete
 reminder_modal.title: "{notify} Reminder Settings"
-profile_view.set_cur_temp_as_default: Set current template as default
 set_cur_temp_as_default.done: Done
-set_cur_temp_as_default.done_desc: "Your default template for {game} is set to {template}"
-remove_from_cache_finish_embed_desc: Rerun the /profile command to see the changes
-third_party_card_temp_error_title: This 3rd Party Card Template Errored
+third_party_card_temp_error_title: This Third Party Card Template Errored
 third_party_card_temp_error_message: "The card template for this character has been reset to Hoyo Buddy's template. If this error persists, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account has been locked for 20 minutes
 account_locked_description: "You have entered the incorrect password too many times. Please wait 20 minutes and try again. If you're unable to set up your account, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
@@ -529,7 +515,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
 card_settings.modifying_for: "Modifying Card Settings for {name}"
-card_settings.card_color: Card color
+card_settings_modifying_for_desc: All card settings are unique for each character. Some card templates may not support certain settings.
+card_settings.template: Template
+card_settings_template_desc: Some third party templates may not support HoYoLAB/Miyoushe characters. In that case, the bot will use Hoyo Buddy's template.
+card_settings.card_color: Color
 card_settings.no_color: This card template does not support color modification
 card_settings.color_default: Default
 card_settings.current_image: Current image
@@ -538,7 +527,8 @@ card_settings.team_card_image: Team card image
 profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
 card_settings.description: "Use </upload> to get an image URL by uploading the image.\nPixiv is supported, simply copy the artwork's image URL."
-profile.team_dark_mode.button.label: Team card dark mode
+profile.team_dark_mode.button.label: Team card dark theme
+team_card_dark_theme_desc: Use a dark color scheme for team cards. This applies to all team cards, no matter which characters are in.
 profile.character_select.multi.placeholder: Select character(s)...
 zzz_search.agent_info: "Rarity: {rarity}\nSpecialty: {specialty}\nAttack Type: {atk_type}\nFaction: {faction}\nElement: {element}"
 cat_zzz_agents: Agents
@@ -573,7 +563,6 @@ invite_page_btn_label: Invite
 invite_command_desc: Invite Hoyo Buddy to your server or add it to your apps
 help_command_desc: "Need help? View the documentation or join our Discord server"
 title_dyk: "Did you know?"
-button_label_dyk: Did you know messages
 events_view_start_date_embed_field: Start Time
 events_view_end_date_embed_field: End Time
 events_view_ann_select_placeholder: Select an event...
@@ -581,10 +570,10 @@ events_view_banner_type_label: Banners
 events_command_description: View ongoing game events
 events_view_ann_type_select_placeholder: Select an event type...
 events_view_content_label: View full content
-events_command_game_param_description: Game to view events for
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: Show rank
+profile_view_show_rank_button_label: Show ranking
+profile_view_show_rank_desc: "Display this character's ranking on [akasha.cv](https://akasha.cv)."
 submit_button_label: Submit
 show_tutorial_button_label: Show tutorial
 close_button_label: Close
@@ -686,7 +675,6 @@ planar_fissure_label: Planar Fissure
 planar_fissure_desc: "The Planar Fissure event is happening in {hour} hours, remember to save your trailblaze power!"
 notif_modal.hours_before.label: Notify X hours before the event starts
 reminder_settings.reminde.set.type5: "Status: {status}\nNotify Interval: {notify_interval} minutes\nMax Notify Count: {max_notif_count}\nNotify Time: {hours_before} hours before the event starts"
-invalid_lb_selected_error_msg: Invalid leaderboard selected
 chest_lb_title: Opened Chests Leaderboard
 abyss_dmg_lb_title: Spiral Abyss Strongest Single Strike Leaderboard
 theater_dmg_lb_title: Imaginarium Theater Strongest Single Strike Leaderboard
@@ -695,8 +683,8 @@ lb_view_command_description: View leaderboards
 leaderboard_not_found: Leaderboard not found
 currently_logged_in_as: "You are currently logged in as:"
 not_you_label: "Not you? Click to login with a different account"
-profile_show_substat_rolls: Substat rolls
-team_card_settings_button_label: Team card settings
+profile_show_substat_rolls: Show substat rolls
+profile_show_substat_rolls_desc: Display how many rolls contribute to the final value of a substat.
 team_card_settings_embed_title: Modifying Team Card Settings
 team_card_settings_embed_description: "Team card settings are shared accross different games and accounts, changes made to some settings may not be reflected on the card when they are not supported by the card template.\nWhen you're done, click the green button in the message above to redraw the card."
 characters.filter.rarity.placeholder: Filter by rarity...
@@ -706,13 +694,14 @@ redeem_cmd_available_codes: Available codes
 redeem_all_available_codes_button_label: Redeem all available codes
 akasha_show_details: Show leaderboard details
 card_settings_hl_special_stats_button_label: Highlight special stats
+card_settings_hl_stats_desc: Emphasize a character's important stats with color.
 challenge_command_abyss_desc: Generate Spiral Abyss card
 challenge_command_theater_desc: Generate Imaginarium Theater card
 challenge_command_moc_desc: Generate Memory of Chaos card
 challenge_command_pf_desc: Generate Pure Fiction card
 challenge_command_apc_shadow_desc: Generate Apocalyptic Shadow card
 challenge_command_shiyu_desc: Generate Shiyu Defense card
-account_select_placeholder: Select an account...
+account_select_placeholder: Select an account
 guild_only_command_param_name: guild-only
 guild_only_command_param_desc: Only show guild members' rankings in the leaderboard
 yes_choice: "Yes"
@@ -737,13 +726,10 @@ abyss_stats_teammate_use_rate: Teammate Usage Rate
 abyss_stats_weapon_use_rate: Weapon Usage Rate
 abyss_stats_artifact_use_rate: Artifact Usage Rate
 build_cmd_genshin_desc: View a Genshin Impact character's builds and guides
-build_cmd_hsr_desc: View a Honkai Star Rail character's builds and guides
-build_cmd_zzz_desc: View a Zenless Zone Zero agent's builds and guides
 build_cmd_character_param_desc: Character to view the builds for
 guide_title: "{name} Builds and Guides"
 no_guide_available: No guides available for this character yet
 show_playstyle_button_label: Playstyle
-flexible_char: Flexible
 show_synergy_button_label: Synergies
 characters_per_page_modal_title: Characters per page
 characters_per_page_num_label: Number
@@ -784,8 +770,6 @@ challenge_command_assault_desc: Generate Deadly Assault card
 gi_mimo_start_desc: "Please set up the Traveling Mimo event on [HoYoLAB]({url}) first"
 mimo_auto_draw_button_label: Auto prize draw
 mimo_auto_draw_desc: "Hoyo Buddy will draw prizes for you whenever possible; if auto buy and auto prize draw are both enabled, it will try to buy first and draw if there are not enough points to buy."
-mimo_auto_draw_success_notify_toggle_label: Notify on auto prize draw success
-mimo_auto_draw_failure_notify_toggle_label: Notify on auto prize draw failure
 mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
 dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use horizontal images for this template."
 bounty_commission.embed.description: Bounty commissions not completed yet
@@ -797,7 +781,6 @@ web_events_embed_footer: Use /web-events to configure notifications
 auto_task_error_dm_content: "**{feature}** has been **__disabled__** for `{account}` due to an error, you can enable it back using {command}.\nIf this error persists or you don't know how to fix it, please find help in our [Discord server](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Supports custom image
 is_not_support_custom_image_desc: Doesn't support custom image
-template_preview_header: Example look
 missing_permissions_error_title: Hoyo Buddy is Missing Permissions
 missing_permissions_error_message: "Hoyo Buddy requires the following permissions to function properly:\n- Send Messages\n- Embed Links\n- Attach Files\n- Use External Emojis"
 blocked_by_auto_mod_error_title: This Message was Blocked by AutoMod
@@ -809,12 +792,9 @@ open_game_vietnam_label: Open game (Vietnam version)
 gift_code_redeemed: Gift code has been claimed already
 show_ui_button_label: Show UI
 hide_ui_button_label: Hide UI
-redeem_failure_notify_toggle_label: Notify on auto redeem failure
-redeem_success_notify_toggle_label: Notify on auto redeem success
 image_file_too_large_error_title: Image File Too Large
 image_file_too_large_error_message: "The uploaded image file is too large, max filesize is {size}MB."
 api_request_timeout_title: API Request Timed Out
-api_request_timeout_message: Please try again later
 dismissible_one_year_anniversary_title: Hoyo Buddy is 1 Year Old!
 dismissible_one_year_anniversary_desc: "Visit the [special web page](https://one.hb.seria.moe) to join the anniversary giveaway!"
 anniversary_dyk: "Hoyo Buddy is 1 year old! Visit the [special web page](<https://one.hb.seria.moe>) to join the anniversary giveaway!"
@@ -841,3 +821,29 @@ enka_api_error_description: "There was an error while fetching data from Enka Ne
 cleared: Cleared
 challenge_command_anomaly_desc: Generate Anomaly Arbitration card
 anomaly_arbitration: Anomaly Arbitration
+account_settings_title: "Account Settings"
+account_settings_desc: "Settings here are unique for each game account."
+public_account_desc: "Set account as public\nIf enabled, other people can see your account's data in some commands, like </profile>."
+daily_checkin_desc: "Auto daily check-in\nAutomatically claims rewards on the web check-in event."
+redeem_code_desc: "Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
+user_settings_title: "User Settings"
+user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
+dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all infographics support this feature."
+language_desc: "Language\nHoyo Buddy will respond to you in this language. Some texts might still be in English, see [FAQ](https://docs.hb.seria.moe/docs/FAQ) for why."
+language_select_placeholder: Select a language
+dyk_settings_desc: "\"Did you know?\" messages\nShow random useful tips when you use bot commands."
+layout_view_edited: Interactive components have been disabled to save system resources, rerun the command if you want to use them.
+mimo_title: Traveling Mimo Settings
+mimo_minimum_point_label: Minimum points to keep
+mimo_minimum_point_desc: "When auto drawing, Hoyo Buddy will make sure your points stay above this value, set to 0 to draw whenever possible."
+disable_all_button_label: Disable all notifications
+apply_template_to_all_chars: Apply current template to all characters
+apply_template_to_all_chars_desc: All **future and current** characters will use **{template}**.
+apply_dark_theme_to_all_chars: Apply current dark theme option to all characters
+apply_dark_theme_to_all_chars_desc: All **future and current** characters will have dark theme **{status}**.
+apply_label: Apply
+card_settings_genshin_desc: Modify how your Genshin Impact character build cards look like
+card_settings_hsr_desc: Modify how your Honkai Star Rail character build cards look like
+card_settings_zzz_desc: Modify how your Zenless Zone Zero character build cards look like
+card_settings_character_param: Character to modify the card settings for
+disabled_label: Disabled

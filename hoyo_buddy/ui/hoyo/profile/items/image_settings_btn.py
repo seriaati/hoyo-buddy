@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 from discord import ButtonStyle
 
 from hoyo_buddy.db import CustomImage, Settings
+from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.emojis import PHOTO
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_card_settings
 from hoyo_buddy.ui.hoyo.profile.image_settings import ImageSettingsView
 
 if TYPE_CHECKING:

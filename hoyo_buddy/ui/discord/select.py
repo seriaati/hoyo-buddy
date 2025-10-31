@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
-    from .view import View
+    from .view import LayoutView, View
 
 __all__ = ("BooleanSelect", "PaginatorSelect", "Select", "SelectOption", "WeekdaySelect")
 
@@ -38,7 +38,7 @@ class SelectOption(discord.SelectOption):
         self.locale_str_description = description
 
 
-class Select[V_co: View](discord.ui.Select):
+class Select[V_co: View | LayoutView](discord.ui.Select):
     def __init__(
         self,
         *,
@@ -161,7 +161,7 @@ PREV_PAGE = SelectOption(
 )
 
 
-class PaginatorSelect[V_co: View](Select):
+class PaginatorSelect[V_co: View | LayoutView](Select):
     def __init__(self, options: list[SelectOption], **kwargs) -> None:
         if not options:
             options = [SelectOption(label="placeholder", value="0")]

@@ -73,7 +73,11 @@ async def get_dyk(i: Interaction) -> str:
 
 
 async def get_last_gacha_num(
-    account: models.HoyoAccount, *, banner: int, rarity: int | None = None, num_lt: int | None = None
+    account: models.HoyoAccount,
+    *,
+    banner: int,
+    rarity: int | None = None,
+    num_lt: int | None = None,
 ) -> int:
     filter_kwrargs = {"account": account, "banner_type": banner}
     if rarity is not None:
@@ -85,7 +89,9 @@ async def get_last_gacha_num(
     return last_gacha.num if last_gacha else 0
 
 
-async def get_num_since_last(account: models.HoyoAccount, *, banner: int, num: int, rarity: int) -> int:
+async def get_num_since_last(
+    account: models.HoyoAccount, *, banner: int, num: int, rarity: int
+) -> int:
     """Return the number of pulls since the last 5 or 4 star pull."""
     if rarity == 3:
         return 0
@@ -230,7 +236,10 @@ def build_account_query(
 
 
 async def set_highlight_substats(
-    *, agent_special_stat_map: dict[str, list[int]], card_settings: models.CardSettings, character_id: int
+    *,
+    agent_special_stat_map: dict[str, list[int]],
+    card_settings: models.CardSettings,
+    character_id: int,
 ) -> None:
     special_stat_ids = agent_special_stat_map.get(str(character_id), [])
     special_substat_ids = [
@@ -249,7 +258,9 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> m
         user_id=user_id, character_id=character_id, game=game
     )
     if card_settings is None:
-        card_settings = await models.CardSettings.get_or_none(user_id=user_id, character_id=character_id)
+        card_settings = await models.CardSettings.get_or_none(
+            user_id=user_id, character_id=character_id
+        )
 
     if card_settings is None:
         user_settings = await models.Settings.get(user_id=user_id)

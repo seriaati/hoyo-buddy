@@ -8,7 +8,7 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
@@ -20,9 +20,6 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
-
-
-SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 
 
 class AutoRedeem(AutoTaskMixin):
@@ -48,7 +45,7 @@ class AutoRedeem(AutoTaskMixin):
                 logger.debug(f"Game codes: {game_codes}")
 
                 queue = await cls.build_auto_task_queue(
-                    "redeem", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                    "redeem", games=AUTO_REDEEM_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}")
@@ -76,7 +73,7 @@ class AutoRedeem(AutoTaskMixin):
     async def get_codes(session: aiohttp.ClientSession) -> dict[Game, list[str]]:
         result: dict[Game, list[str]] = defaultdict(list)
 
-        for game in SUPPORT_GAMES:
+        for game in AUTO_REDEEM_SUPPORT_GAMES:
             async with session.get(
                 f"https://hoyo-codes.seria.moe/codes?game={HB_GAME_TO_GPY_GAME[game].value}"
             ) as resp:

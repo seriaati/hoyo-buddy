@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import emojis, ui
+from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES
 from hoyo_buddy.l10n import LocaleStr
 
 from ._common import AccountToggleButton
@@ -93,7 +94,8 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                 accessory=AccountToggleButton(
                     attr="auto_redeem",
                     current=account.auto_redeem,
-                    disabled=not account.can_redeem_code,
+                    disabled=account.game not in AUTO_REDEEM_SUPPORT_GAMES
+                    or not account.can_redeem_code,
                 ),
             ),
         )

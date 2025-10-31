@@ -5,10 +5,9 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from hoyo_buddy.constants import BANNER_TYPE_NAMES
 from hoyo_buddy.enums import Game
-from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.web_app.utils import get_gacha_names, show_error_banner
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr, translator
+from hoyo_buddy.web_app.utils import fetch_gacha_names, show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -100,16 +99,21 @@ class GachaLogPage(ft.View):
 
     @property
     def gacha_log_controls(self) -> list[ft.Container]:
-        rarity_colors: dict[int, str] = {3: "#3e4857", 4: "#4d3e66", 5: "#915537"}
+        rarity_colors: dict[int, str] = {2: "#3e5741", 3: "#3e4857", 4: "#4d3e66", 5: "#915537"}
         paddings: dict[Game, int] = {Game.GENSHIN: 0, Game.ZZZ: 8, Game.STARRAIL: 0}
         result: list[ft.Container] = []
+
+        is_standard_ode = self.params.banner_type == 1000 and self.game == Game.GENSHIN
+        show_num_since_last_rarities = {4, 3} if is_standard_ode else {5, 4}
 
         for gacha in self.gachas:
             stack_controls = [
                 ft.Container(
                     ft.Image(src=self.gacha_icons[gacha.item_id], border_radius=8),
                     padding=ft.padding.all(paddings[self.game]),
-                ),
+                )
+                if self.gacha_icons.get(gacha.item_id)
+                else ft.Container(),
                 ft.Column(
                     [
                         ft.Row(
@@ -127,7 +131,7 @@ class GachaLogPage(ft.View):
                     alignment=ft.MainAxisAlignment.END,
                 ),
             ]
-            if gacha.rarity != 3:
+            if gacha.rarity in show_num_since_last_rarities and gacha.num_since_last > 0:
                 stack_controls.append(
                     ft.Column(
                         [
@@ -166,7 +170,7 @@ class GachaLogPage(ft.View):
             show_error_banner(page, message=f"Could not find gacha with id {e.control.data}")
             return
 
-        gacha_names = await get_gacha_names(
+        gacha_names = await fetch_gacha_names(
             page, gachas=[gacha], locale=self.locale, game=self.game
         )
 
@@ -270,28 +274,23 @@ class FilterDialog(ft.AlertDialog):
                     ft.Row(
                         [
                             ft.Checkbox(
-                                label=f"{rarity} ★",
+                                label=f"{rarity}★",
                                 value=rarity in params.rarities,
                                 data=rarity,
                                 on_change=self.on_rarity_checkbox_change,
                             )
-                            for rarity in (3, 4, 5)
+                            for rarity in (2, 3, 4, 5)
                         ]
                     ),
                     ft.Dropdown(
                         options=[
                             ft.dropdown.Option(
-                                text=translator.translate(
-                                    LocaleStr(key=BANNER_TYPE_NAMES[game][banner_type]), locale
-                                ),
+                                text=translator.get_banner_type_name(game, banner_type, locale),
                                 data=str(banner_type),
                             )
                             for banner_type in BANNER_TYPE_NAMES[game]
                         ],
-                        value=translator.translate(
-                            LocaleStr(key=BANNER_TYPE_NAMES[game].get(params.banner_type, "")),
-                            locale,
-                        ),
+                        value=translator.get_banner_type_name(game, params.banner_type, locale),
                         on_change=self.on_banner_type_dropdown_change,
                     ),
                     ft.TextField(
@@ -308,7 +307,7 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_banner_type_dropdown_change(self, e: ft.ControlEvent) -> None:
         banner_type_name_to_value = {
-            translator.translate(LocaleStr(key=v), self.locale): k
+            translator.get_banner_type_name(self.game, k, self.locale): k
             for k, v in BANNER_TYPE_NAMES[self.game].items()
         }
         self.params.banner_type = banner_type_name_to_value[e.control.value]

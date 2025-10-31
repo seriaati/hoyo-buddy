@@ -620,21 +620,6 @@ gacha_view_gacha_detail_title: 抽卡物品詳情
 gacha_view_gacha_detail: "ID: {id}\n名稱: {name}\n抽取時間: {time}"
 gacha_view_num_since_last: "自上個 {rarity} ★ 物品 {pull} 抽"
 gacha_view_filter_dialog_title: 抽卡紀錄篩選條件
-banner_type_beginners_wish: 初行者推薦祈願
-banner_type_standard_banner: 常駐祈願
-banner_type_character_event: 角色活動祈願
-banner_type_weapon_event: 武器活動祈願
-banner_type_chronicled_wish: 集錄祈願
-banner_type_stellar_warp: 群星躍遷
-banner_type_departure_warp: 始發躍遷
-banner_type_character_warp: 角色躍遷
-banner_type_light_cone_warp: 光錐躍遷
-banner_type_standard_channel: 常駐調頻
-banner_type_exclusive_channel: 獨家調頻
-banner_type_w_engine_channel: 音擎調頻
-banner_type_bangboo_channel: 邦布調頻
-banner_type_fgo_character: 角色聯動躍遷
-banner_type_fgo_light_cone: 光錐聯動躍遷
 cancel_button_label: 取消
 gacha_view_filter_size_field_label: 每頁物品數
 gacha_view_page_field_label: 頁數

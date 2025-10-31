@@ -53,6 +53,8 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
     "10000007-hydro": "10000007-703",
 }
 
+MANIKEN_IDS = {10000117, 10000118}
+
 TRAILBLAZER_IDS = {
     8001,  # Physics male
     8002,  # Physics female
@@ -69,6 +71,10 @@ TRAILBLAZER_IDS = {
 
 def contains_traveler_id(character_id: str) -> bool:
     return any(str(traveler_id) in character_id for traveler_id in TRAVELER_IDS)
+
+
+def contains_maniken_id(character_id: str) -> bool:
+    return any(str(maniken_id) in character_id for maniken_id in MANIKEN_IDS)
 
 
 SERVER_RESET_HOURS: dict[str, int] = {
@@ -713,29 +719,6 @@ UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.ZZZ: "nap",
 }
 
-BANNER_TYPE_NAMES: Final[dict[Game, dict[int, str]]] = {
-    Game.GENSHIN: {
-        301: "banner_type_character_event",
-        302: "banner_type_weapon_event",
-        200: "banner_type_standard_banner",
-        500: "banner_type_chronicled_wish",
-        100: "banner_type_beginners_wish",
-    },
-    Game.STARRAIL: {
-        11: "banner_type_character_warp",
-        12: "banner_type_light_cone_warp",
-        1: "banner_type_stellar_warp",
-        2: "banner_type_departure_warp",
-        21: "banner_type_fgo_character",
-        22: "banner_type_fgo_light_cone",
-    },
-    Game.ZZZ: {
-        2: "banner_type_exclusive_channel",
-        3: "banner_type_w_engine_channel",
-        1: "banner_type_standard_channel",
-        5: "banner_type_bangboo_channel",
-    },
-}
 
 BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {301: "50/50", 302: "50/50", 500: "50/50"},
@@ -743,8 +726,8 @@ BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
     Game.ZZZ: {2: "50/50", 3: "75/25"},
 }
 
-BANNER_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
-    Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20},
+BANNER_FIVE_STAR_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20, 1000: 70, 2000: 70},
     Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50, 21: 90, 22: 80},
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
 }
@@ -1034,6 +1017,8 @@ def get_docs_url(page: str, *, locale: Locale) -> str:
 AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"
 PLAYER_GIRL_GACHA_ART = "https://img.seria.moe/EiTcXToCGWUYtfDe.png"
 PLAYER_BOY_GACHA_ART = "https://img.seria.moe/BPFICCXWkbOJrsqe.png"
+MANIKEN_BOY_GACHA_ART = "https://img.seria.moe/XUFQgIiAtKhRdzwD.png"
+MANIKEN_GIRL_GACHA_ART = "https://img.seria.moe/fqEPjXazbfMQxuFX.png"
 
 RELIC_PROP_ID_TO_ENKA_TYPE: dict[int, enka.hsr.StatType] = {
     27: enka.hsr.StatType.HP_DELTA,
@@ -1380,3 +1365,5 @@ YATTA_PROP_TYPE_TO_GPY_TYPE: dict[str, int] = {
 GPY_TYPE_TO_YATTA_PROP_TYPE = {v: k for k, v in YATTA_PROP_TYPE_TO_GPY_TYPE.items()}
 
 EMPTY_CHAR = "‎ "
+MW_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType}
+MW_EVENT_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType if "EVENT" in e.name}

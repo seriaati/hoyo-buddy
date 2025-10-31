@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
 
-from hoyo_buddy.constants import BANNER_TYPE_NAMES
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES
 
 from ..enums import Platform
 
@@ -45,7 +45,7 @@ class GachaParams(BaseModel):
             msg = "At least one rarity must be selected"
             raise ValueError(msg)
 
-        if any(rarity not in {3, 4, 5} for rarity in rarities):
+        if any(rarity not in {2, 3, 4, 5} for rarity in rarities):
             msg = "Invalid rarity"
             raise ValueError(msg)
 

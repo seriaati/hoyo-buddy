@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 import discord
 import genshin
 
+from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
 from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
@@ -105,7 +106,11 @@ class URLImport(Button[GachaImportView]):
         self.account = account
 
     def _check_uid(
-        self, record: genshin.models.Wish | genshin.models.Warp | genshin.models.SignalSearch
+        self,
+        record: genshin.models.Wish
+        | genshin.models.Warp
+        | genshin.models.SignalSearch
+        | genshin.models.MWWish,
     ) -> None:
         if record.uid != self.account.uid:
             raise UIDMismatchError(record.uid)
@@ -147,8 +152,8 @@ class URLImport(Button[GachaImportView]):
             ]
             wishes.sort(key=lambda x: x.id)
 
-            client = AmbrAPIClient(session=i.client.session)
-            item_ids = await client.fetch_item_name_to_id_map()
+            ambr = AmbrAPIClient(session=i.client.session)
+            item_ids = await ambr.fetch_item_name_to_id_map()
 
             for wish in wishes:
                 self._check_uid(wish)
@@ -168,6 +173,31 @@ class URLImport(Button[GachaImportView]):
                         item_id=item_id,
                         account=self.account,
                         banner_id=None,
+                        game=Game.GENSHIN,
+                    )
+                )
+
+            mw_wishes: list[genshin.models.MWWish] = [
+                history async for history in client.mw_wish_history(authkey=authkey)
+            ]
+            mw_wishes.sort(key=lambda x: x.id)
+
+            for wish in mw_wishes:
+                self._check_uid(wish)
+
+                banner_type = (
+                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
+                )
+
+                records.append(
+                    GachaHistory(
+                        wish_id=wish.id,
+                        rarity=wish.rarity,
+                        time=wish.time,
+                        banner_type=banner_type,
+                        item_id=wish.item_id,
+                        account=self.account,
+                        banner_id=wish.banner_id,
                         game=Game.GENSHIN,
                     )
                 )

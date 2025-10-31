@@ -2,13 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
+import genshin
 from loguru import logger
 
+from hoyo_buddy import emojis
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
-    BANNER_GUARANTEE_NUMS,
-    BANNER_TYPE_NAMES,
+    BANNER_FIVE_STAR_GUARANTEE_NUMS,
     BANNER_WIN_RATE_TITLES,
+    MW_BANNER_TYPES,
+    MW_EVENT_BANNER_TYPES,
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
@@ -18,7 +21,7 @@ from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.gacha import (
@@ -39,7 +42,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
 
 
-GlobalStat: TypeAlias = Literal["lifetime_pulls", "avg_5star_pulls", "avg_4star_pulls", "win_rate"]
+GlobalStat: TypeAlias = Literal[
+    "lifetime_pulls", "avg_5star_pulls", "avg_4star_pulls", "avg_3star_pulls", "win_rate"
+]
 GET_RANKING_SQL = """
 SELECT
     ranked.rank,
@@ -58,6 +63,7 @@ RANK_ORDERS: Final[dict[GlobalStat, Literal["ASC", "DESC"]]] = {
     "lifetime_pulls": "DESC",
     "avg_5star_pulls": "ASC",
     "avg_4star_pulls": "ASC",
+    "avg_3star_pulls": "ASC",
     "win_rate": "DESC",
 }
 
@@ -96,7 +102,7 @@ class ViewGachaLogView(View):
             locale=self.locale.value,
             account_id=self.account.id,
             banner_type=self.banner_type,
-            rarities=[3, 4, 5],
+            rarities=[2, 3, 4, 5],
         )
         return f"{WEB_APP_URLS[CONFIG.env]}/gacha_log?{params.to_query_string()}"
 
@@ -198,24 +204,54 @@ class ViewGachaLogView(View):
         if lifetime_pulls == 0:
             raise NoGachaLogFoundError
 
+        is_standard_ode = (
+            self.banner_type == genshin.models.MWBannerType.STANDARD
+            and self.account.game is Game.GENSHIN
+        )
+
+        # Bangboo channel pulls don't cost currency
         bangboo_channel_pulls = await self.get_pulls_count(banner_type=5)
         lifetime_currency = (lifetime_pulls - bangboo_channel_pulls) * 160
 
-        # Five star pity
-        last_five_star_num = await get_last_gacha_num(
-            self.account, banner=self.banner_type, rarity=5
-        )
         last_gacha_num = await get_last_gacha_num(self.account, banner=self.banner_type)
-        current_five_star_pity = last_gacha_num - last_five_star_num
-        max_five_star_pity = BANNER_GUARANTEE_NUMS[self.account.game][self.banner_type]
+
+        # Five star pity
+        if not is_standard_ode:  # Standard Ode only pulls 4 and 3 star items
+            last_five_star_num = await get_last_gacha_num(
+                self.account, banner=self.banner_type, rarity=5
+            )
+            current_five_star_pity = last_gacha_num - last_five_star_num
+            max_five_star_pity = BANNER_FIVE_STAR_GUARANTEE_NUMS[self.account.game][
+                self.banner_type
+            ]
+        else:
+            last_five_star_num = 0
+            current_five_star_pity = 0
+            max_five_star_pity = 0
 
         # Four star pity
         last_four_star_num = await get_last_gacha_num(
             self.account, banner=self.banner_type, rarity=4
         )
         current_four_star_pity = last_gacha_num - last_four_star_num
-        if current_four_star_pity > 10:
+        # Standard Ode has a 70 pull pity for 4 stars
+        max_four_star_pity = 70 if is_standard_ode else 10
+        if not is_standard_ode and current_four_star_pity > max_four_star_pity:
             current_four_star_pity = last_gacha_num - last_five_star_num
+
+        # Three star pity
+        if is_standard_ode:  # Standard Ode can pull 3 star items
+            last_three_star_num = await get_last_gacha_num(
+                self.account, banner=self.banner_type, rarity=3
+            )
+            current_three_star_pity = last_gacha_num - last_three_star_num
+            max_three_star_pity = 5
+            if current_three_star_pity > max_three_star_pity:
+                current_three_star_pity = last_gacha_num - last_four_star_num
+        else:
+            last_three_star_num = 0
+            current_three_star_pity = 0
+            max_three_star_pity = 0
 
         # 50/50 win rate
         banner_wins, banner_5stars = await self.calc_50_50_stats(session)
@@ -223,6 +259,7 @@ class ViewGachaLogView(View):
         # Average pulls per 5-star and 4-star
         total_five_stars = await self.get_pulls_count(rarity=5, banner_type=self.banner_type)
         total_four_stars = await self.get_pulls_count(rarity=4, banner_type=self.banner_type)
+        total_three_stars = await self.get_pulls_count(rarity=3, banner_type=self.banner_type)
         banner_total_pulls = await self.get_pulls_count(banner_type=self.banner_type)
 
         # Bangboo channel pulls are free
@@ -231,6 +268,7 @@ class ViewGachaLogView(View):
 
         five_star_avg_pulls = banner_total_pulls / total_five_stars if total_five_stars else 0
         four_star_avg_pulls = banner_total_pulls / total_four_stars if total_four_stars else 0
+        three_star_avg_pulls = banner_total_pulls / total_three_stars if total_three_stars else 0
 
         await GachaStats.create_or_update(
             account=self.account,
@@ -238,6 +276,7 @@ class ViewGachaLogView(View):
             win_rate=banner_wins / banner_5stars if banner_5stars else 0,
             avg_5star_pulls=five_star_avg_pulls,
             avg_4star_pulls=four_star_avg_pulls,
+            avg_3star_pulls=three_star_avg_pulls,
             banner_type=self.banner_type,
         )
 
@@ -251,28 +290,122 @@ class ViewGachaLogView(View):
             else None,
         )
 
-        personal_stats = LocaleStr(
-            key="gacha_log_personal_stats",
-            lifetime_pulls=lifetime_pulls,
-            lifetime_currency=f"{lifetime_currency:,}",
-            currency_emoji=CURRENCY_EMOJIS[self.account.game],
-            total_pulls=banner_total_pulls,
-            total_currency=f"{banner_total_currency:,}",
-            star5_pity_cur=current_five_star_pity,
-            star5_pity_max=max_five_star_pity,
-            star4_pity_cur=current_four_star_pity,
-            total_star5=total_five_stars,
-            total_star4=total_four_stars,
-            avg_pulls_per_star5=round(five_star_avg_pulls, 1),
-            avg_pulls_per_star4=round(four_star_avg_pulls, 1),
-        ).translate(self.locale)
+        if self.banner_type in MW_BANNER_TYPES and self.account.game is Game.GENSHIN:
+            if self.banner_type in MW_EVENT_BANNER_TYPES:
+                currency_emoji = emojis.ARCANE_EMOJI
+            else:
+                currency_emoji = emojis.GEODE_EMOJI
+        else:
+            currency_emoji = CURRENCY_EMOJIS[self.account.game]
 
-        global_stats = LocaleStr(
-            key="gacha_log_global_stats",
-            lifetime=await self.get_ranking_str(pool, stat="lifetime_pulls"),
-            star5_luck=await self.get_ranking_str(pool, stat="avg_5star_pulls"),
-            star4_luck=await self.get_ranking_str(pool, stat="avg_4star_pulls"),
-        ).translate(self.locale)
+        # Personal stats
+        personal_stats_parts: list[str] = []
+        pity_data = {
+            "gacha_log_personal_stats_pity": {
+                5: (current_five_star_pity, max_five_star_pity),
+                4: (current_four_star_pity, max_four_star_pity),
+                3: (current_three_star_pity, max_three_star_pity),
+            },
+            "gacha_log_personal_stats_rarity_total": {
+                5: total_five_stars,
+                4: total_four_stars,
+                3: total_three_stars,
+            },
+            "gacha_log_personal_stats_rarity_average": {
+                5: five_star_avg_pulls,
+                4: four_star_avg_pulls,
+                3: three_star_avg_pulls,
+            },
+        }
+
+        # The total pulls on MW banners are already lifetime pulls for that banner
+        if self.banner_type not in MW_BANNER_TYPES:
+            personal_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_personal_stats_lifetime",
+                    pulls=lifetime_pulls,
+                    currency=f"{lifetime_currency:,}",
+                    emoji=currency_emoji,
+                ).translate(self.locale)
+            )
+
+        personal_stats_parts.append(
+            LocaleStr(
+                key="gacha_log_personal_stats_banner_total",
+                pulls=banner_total_pulls,
+                currency=f"{banner_total_currency:,}",
+                emoji=currency_emoji,
+            ).translate(self.locale)
+        )
+
+        # Standard Ode only drops 4 and 3 star items
+        first_rarity = 4 if is_standard_ode else 5
+        second_rarity = first_rarity - 1
+        rarities_to_show = {first_rarity, second_rarity}
+
+        for part_key, rarity_data in pity_data.items():
+            for rarity, data in rarity_data.items():
+                if rarity in rarities_to_show:
+                    if part_key == "gacha_log_personal_stats_pity":
+                        cur, max_ = data
+                        part = LocaleStr(key=part_key, rarity=rarity, cur=cur, max=max_).translate(
+                            self.locale
+                        )
+                    elif part_key == "gacha_log_personal_stats_rarity_total":
+                        total = data
+                        part = LocaleStr(key=part_key, rarity=rarity, total=total).translate(
+                            self.locale
+                        )
+                    elif part_key == "gacha_log_personal_stats_rarity_average":
+                        avg = round(data, 1)
+                        part = LocaleStr(key=part_key, rarity=rarity, avg=avg).translate(
+                            self.locale
+                        )
+                    else:
+                        continue
+
+                    personal_stats_parts.append(part)
+
+        personal_stats = "\n".join(personal_stats_parts)
+
+        # Global stats
+        global_stats_parts: list[str] = []
+
+        global_stats_parts.append(
+            LocaleStr(
+                key="gacha_log_global_stats_lifetime",
+                lifetime=await self.get_ranking_str(pool, stat="lifetime_pulls"),
+            ).translate(self.locale)
+        )
+
+        if 5 in rarities_to_show:
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=5,
+                    luck=await self.get_ranking_str(pool, stat="avg_5star_pulls"),
+                ).translate(self.locale)
+            )
+
+        if 4 in rarities_to_show:
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=4,
+                    luck=await self.get_ranking_str(pool, stat="avg_4star_pulls"),
+                ).translate(self.locale)
+            )
+
+        if 3 in rarities_to_show:
+            global_stats_parts.append(
+                LocaleStr(
+                    key="gacha_log_global_stats_luck",
+                    rarity=3,
+                    luck=await self.get_ranking_str(pool, stat="avg_3star_pulls"),
+                ).translate(self.locale)
+            )
+
+        global_stats = "\n".join(global_stats_parts)
 
         if (title := BANNER_WIN_RATE_TITLES[self.account.game].get(self.banner_type)) is not None:
             personal_win_rate_stats = LocaleStr(
@@ -282,14 +415,14 @@ class ViewGachaLogView(View):
                 wins=banner_wins,
                 total=banner_5stars,
             ).translate(self.locale)
-            personal_stats += f"\n{personal_win_rate_stats}"
+            personal_stats += f"{personal_win_rate_stats}"
 
             global_win_rate_stats = LocaleStr(
                 key="win_rate_global_stats",
                 title=title,
                 win_rate=await self.get_ranking_str(pool, stat="win_rate"),
             ).translate(self.locale)
-            global_stats += f"\n{global_win_rate_stats}"
+            global_stats += f"{global_win_rate_stats}"
 
         embed.add_field(
             name=LocaleStr(key="gacha_log_personal_stats_title"), value=personal_stats, inline=False
@@ -313,10 +446,8 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
         super().__init__(
             placeholder=LocaleStr(key="gacha_log_view_banner_type_selector_placeholder"),
             options=[
-                SelectOption(
-                    label=LocaleStr(key=key), value=str(banner_type), default=banner_type == current
-                )
-                for banner_type, key in BANNER_TYPE_NAMES[game].items()
+                SelectOption(label=name, value=str(banner_type), default=banner_type == current)
+                for banner_type, name in BANNER_TYPE_NAMES[game].items()
             ],
         )
 

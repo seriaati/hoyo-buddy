@@ -5,22 +5,22 @@ on:
     branches:
       - main
     paths:
-      - 'hoyo_buddy/**.py'
-      - 'run.py'
-      - 'run_web_app.py'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/pyright.yml'
+      - "hoyo_buddy/**.py"
+      - "run.py"
+      - "run_web_app.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/pyright.yml"
   pull_request:
     branches:
       - main
     paths:
-      - 'hoyo_buddy/**.py'
-      - 'run.py'
-      - 'run_web_app.py'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/pyright.yml'
+      - "hoyo_buddy/**.py"
+      - "run.py"
+      - "run_web_app.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/pyright.yml"
 
 jobs:
   pyright:
@@ -33,12 +33,10 @@ jobs:
 
       - name: Install Project
         run: |
-          uv sync --frozen
+          uv sync --frozen --group type-check
           uv pip uninstall uvloop
           echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
       - name: Run Pyright
-        uses: jakebailey/pyright-action@v2
-        with:
-          working-directory: hoyo_buddy/
-          extra-args: '--outputjson'
+        run: |
+          uv run pyright hoyo_buddy/

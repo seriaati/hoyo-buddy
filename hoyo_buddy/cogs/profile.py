@@ -6,6 +6,7 @@ import enka
 from discord import app_commands
 from discord.ext.commands import GroupCog
 
+from hoyo_buddy import dismissibles
 from hoyo_buddy.commands.configs import COMMANDS, CommandName
 from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
@@ -16,7 +17,6 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import Dismissible
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
@@ -117,24 +117,10 @@ class Profile(
             return
 
         if game is Game.ZZZ:
-            await show_dismissible(
-                i,
-                Dismissible(
-                    id="m3_art",
-                    description=LocaleStr(key="dismissible_m3_art_desc"),
-                    image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
-                ),
-            )
+            await show_dismissible(i, dismissibles.M3_ART_DISMISSIBLE)
 
         if game is Game.STARRAIL:
-            await show_dismissible(
-                i,
-                Dismissible(
-                    id="hsr_temp2",
-                    description=LocaleStr(key="dismissible_hsr_temp2_desc"),
-                    image="https://img.seria.moe/HLHoTSwcXvAPHzJB.png",
-                ),
-            )
+            await show_dismissible(i, dismissibles.HSR_TEMP2_DISMISSIBLE)
 
     @app_commands.command(
         name=app_commands.locale_str("genshin"), description=COMMANDS["profile genshin"].description

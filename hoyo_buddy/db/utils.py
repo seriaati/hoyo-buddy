@@ -8,6 +8,7 @@ from loguru import logger
 from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Q
 
+from hoyo_buddy import dismissibles
 from hoyo_buddy.constants import (
     NO_MASKED_LINK_GUILDS,
     PLATFORM_TO_REGION,
@@ -16,8 +17,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
-from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.models import Dismissible
+from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
 from hoyo_buddy.utils.misc import get_template_num
 
@@ -183,7 +183,7 @@ def draw_locale(locale: Locale, account: models.HoyoAccount) -> Locale:
     return locale
 
 
-async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
+async def show_dismissible(i: Interaction, dismissible: dismissibles.Dismissible) -> None:
     user = await models.User.get(id=i.user.id)
     if dismissible.id in user.dismissibles:
         return
@@ -202,13 +202,7 @@ async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
 
 async def show_anniversary_dismissible(i: Interaction) -> bool:
     if is_hb_birthday():
-        dismissible = Dismissible(
-            id="one_year_anniversary",
-            title=LocaleStr(key="dismissible_one_year_anniversary_title"),
-            description=LocaleStr(key="dismissible_one_year_anniversary_desc"),
-            image="https://one.hb.seria.moe/preview.png",
-        )
-        await show_dismissible(i, dismissible)
+        await show_dismissible(i, dismissibles.BIRTHDAY_DISMISSIBLE)
         return True
     return False
 

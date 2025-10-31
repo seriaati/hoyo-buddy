@@ -6,19 +6,13 @@ RUN_IN_TRANSACTION = True
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
         ALTER TABLE "gachastats" ADD "avg_3star_pulls" DOUBLE PRECISION NOT NULL DEFAULT 0;
-        ALTER TABLE "hoyoaccount" DROP COLUMN "mimo_minimum_point";
-        ALTER TABLE "settings" DROP COLUMN "zzz_dark_mode";
-        ALTER TABLE "settings" DROP COLUMN "gi_dark_mode";
-        ALTER TABLE "settings" DROP COLUMN "hsr_dark_mode";"""
+    """
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:
     return """
-        ALTER TABLE "settings" ADD "zzz_dark_mode" BOOL NOT NULL DEFAULT False;
-        ALTER TABLE "settings" ADD "gi_dark_mode" BOOL NOT NULL DEFAULT False;
-        ALTER TABLE "settings" ADD "hsr_dark_mode" BOOL NOT NULL DEFAULT False;
         ALTER TABLE "gachastats" DROP COLUMN "avg_3star_pulls";
-        ALTER TABLE "hoyoaccount" ADD "mimo_minimum_point" INT NOT NULL DEFAULT 0;"""
+    """
 
 
 MODELS_STATE = (

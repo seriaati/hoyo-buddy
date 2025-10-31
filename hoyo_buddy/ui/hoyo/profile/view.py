@@ -44,13 +44,12 @@ from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter
 from hoyo_buddy.types import Builds, Character, HoyolabCharacter
 from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
-from hoyo_buddy.ui.hoyo.profile.items.team_card_settings_btn import TeamCardSettingsButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
 from hoyo_buddy.utils.misc import get_template_num
+from hoyo_buddy.db.utils import get_card_settings, get_default_color
 
-from .card_settings import get_card_settings, get_default_color
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
 from .items.card_info_btn import CardInfoButton
@@ -310,7 +309,6 @@ class ProfileView(View, PlayerEmbedMixin):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton(row=0))
         self.add_item(CardSettingsButton(row=0))
-        self.add_item(TeamCardSettingsButton(row=1))
         self.add_item(ImageSettingsButton(row=1))
         self.add_item(RedrawCardButton(row=1))
 

@@ -15,7 +15,7 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.hoyo.profile.card_settings import get_card_settings
+from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.ui.settings.view import CardSettingsView, SettingsView
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 

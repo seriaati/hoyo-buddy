@@ -416,6 +416,10 @@ def main() -> int:
     fstring_prefixes = collect_fstring_prefixes(root, include_tests=include_tests)
     preserve_prefixes.extend(fstring_prefixes)
 
+    # Hard-coded exclusions: keys that should never be marked as unused
+    hard_exclusions = {"honkai:_star_rail"}
+    used.update(hard_exclusions)
+
     def is_preserved_by_prefix(k: str) -> bool:
         for pfx in preserve_prefixes:
             # Handle wildcard patterns like "shiyu_*_frontier"

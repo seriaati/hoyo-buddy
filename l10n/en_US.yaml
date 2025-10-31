@@ -16,6 +16,7 @@ abyss.floor: "Floor {val}"
 abyss.overview: Spiral Abyss Overview
 abyss.damage: DAMAGE INFO
 abyss.stats: STATS
+honkai:_star_rail: "Honkai: Star Rail"
 abyss.phase_select.placeholder: Select a phase
 abyss.total_stars: "Total Stars: {val}"
 abyss_chamber.challenge_target.embed.field.name: Challenge Target

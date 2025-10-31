@@ -103,6 +103,9 @@ class GachaLogPage(ft.View):
         paddings: dict[Game, int] = {Game.GENSHIN: 0, Game.ZZZ: 8, Game.STARRAIL: 0}
         result: list[ft.Container] = []
 
+        is_standard_ode = self.params.banner_type == 1000 and self.game == Game.GENSHIN
+        show_num_since_last_rarities = {4, 3} if is_standard_ode else {5, 4}
+
         for gacha in self.gachas:
             stack_controls = [
                 ft.Container(
@@ -128,7 +131,7 @@ class GachaLogPage(ft.View):
                     alignment=ft.MainAxisAlignment.END,
                 ),
             ]
-            if gacha.rarity >= 4:
+            if gacha.rarity in show_num_since_last_rarities and gacha.num_since_last > 0:
                 stack_controls.append(
                     ft.Column(
                         [
@@ -271,7 +274,7 @@ class FilterDialog(ft.AlertDialog):
                     ft.Row(
                         [
                             ft.Checkbox(
-                                label=f"{rarity} ★",
+                                label=f"{rarity}★",
                                 value=rarity in params.rarities,
                                 data=rarity,
                                 on_change=self.on_rarity_checkbox_change,

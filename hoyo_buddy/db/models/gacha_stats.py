@@ -19,6 +19,7 @@ class GachaStats(BaseModel):
     lifetime_pulls = fields.IntField()
     avg_5star_pulls = fields.FloatField()
     avg_4star_pulls = fields.FloatField()
+    avg_3star_pulls = fields.FloatField(default=0.0)
     win_rate = fields.FloatField()
     """50/50 win rate, before multiplying 100."""
     game = fields.CharEnumField(Game, max_length=32)
@@ -35,6 +36,7 @@ class GachaStats(BaseModel):
         lifetime_pulls: int,
         avg_5star_pulls: float,
         avg_4star_pulls: float,
+        avg_3star_pulls: float,
         win_rate: float,
         banner_type: int,
     ) -> None:
@@ -44,6 +46,7 @@ class GachaStats(BaseModel):
                 lifetime_pulls=lifetime_pulls,
                 avg_5star_pulls=avg_5star_pulls,
                 avg_4star_pulls=avg_4star_pulls,
+                avg_3star_pulls=avg_3star_pulls,
                 win_rate=win_rate,
                 game=account.game,
                 banner_type=banner_type,
@@ -53,5 +56,6 @@ class GachaStats(BaseModel):
                 lifetime_pulls=lifetime_pulls,
                 avg_5star_pulls=avg_5star_pulls,
                 avg_4star_pulls=avg_4star_pulls,
+                avg_3star_pulls=avg_3star_pulls,
                 win_rate=win_rate,
             )

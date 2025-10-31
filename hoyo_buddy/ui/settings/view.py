@@ -123,7 +123,10 @@ class SettingsView(ui.LayoutView):
 
                 account = next((acc for acc in accounts if acc.current), accounts[0])
 
-            if self.category is SettingsCategory.MIMO_SETTINGS:
+            if self.category in {
+                SettingsCategory.MIMO_SETTINGS,
+                SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
+            }:
                 mimo_accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
                 account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
 

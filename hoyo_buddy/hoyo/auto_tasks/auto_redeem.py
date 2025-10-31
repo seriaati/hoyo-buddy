@@ -8,7 +8,12 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.constants import (
+    AUTO_REDEEM_SUPPORT_GAMES,
+    CONCURRENT_TASK_NUM,
+    HB_GAME_TO_GPY_GAME,
+    MAX_PROXY_ERROR_NUM,
+)
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin

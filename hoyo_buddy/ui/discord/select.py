@@ -161,7 +161,7 @@ PREV_PAGE = SelectOption(
 )
 
 
-class PaginatorSelect[V_co: View](Select):
+class PaginatorSelect[V_co: View | LayoutView](Select):
     def __init__(self, options: list[SelectOption], **kwargs) -> None:
         if not options:
             options = [SelectOption(label="placeholder", value="0")]

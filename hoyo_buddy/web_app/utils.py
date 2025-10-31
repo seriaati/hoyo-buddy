@@ -209,13 +209,13 @@ async def fetch_gacha_icons() -> dict[str, str]:
     return gacha_icons
 
 
-def get_gacha_icon(*, game: Game, item_id: int, gacha_icons: dict[str, str]) -> str | None:
+def get_gacha_icon(*, game: Game, item_id: int) -> str:
     """Get the icon URL for a gacha item."""
     if game is Game.ZZZ:
         return f"https://stardb.gg/api/static/zzz/{item_id}.png"
 
     if game is Game.GENSHIN:
-        return gacha_icons.get(str(item_id))
+        return f"https://stardb.gg/api/static/genshin/{item_id}.png"
 
     if game is Game.STARRAIL:
         if len(str(item_id)) == 5:  # light cone

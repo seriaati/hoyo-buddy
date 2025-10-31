@@ -22,6 +22,7 @@ from hoyo_buddy.ui.hoyo.profile.templates import (
     TEMPLATES,
 )
 from hoyo_buddy.utils.misc import get_template_name, get_template_num, is_valid_hex_color
+from hoyo_buddy.web_app.utils import get_gacha_icon
 
 if TYPE_CHECKING:
     from hoyo_buddy.db.models.settings import Settings
@@ -287,13 +288,7 @@ class CardTemplateSelect(ui.Select["CardSettingsView"]):
 
 class CardSettingsContainer(ui.Container):
     def __init__(
-        self,
-        *,
-        card_settings: CardSettings,
-        settings: Settings,
-        character_name: str,
-        game: Game,
-        icon_url: str,
+        self, *, card_settings: CardSettings, settings: Settings, character_name: str, game: Game
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
@@ -301,7 +296,7 @@ class CardSettingsContainer(ui.Container):
         self.game = game
         self.character_id = card_settings.character_id
         self.character_name = character_name
-        self.icon_url = icon_url
+        self.icon_url = get_gacha_icon(game=self.game, item_id=int(self.card_settings.character_id))
 
         default_color = get_default_color(
             card_settings.character_id,
@@ -334,7 +329,7 @@ class CardSettingsContainer(ui.Container):
                         desc=LocaleStr(key="card_settings_modifying_for_desc"),
                     )
                 ),
-                accessory=discord.ui.Thumbnail(media=icon_url),
+                accessory=discord.ui.Thumbnail(media=self.icon_url),
             ),
             # Template
             ui.TextDisplay(

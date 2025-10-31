@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import discord
 
@@ -13,6 +13,7 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.types import CardImageType
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
 from hoyo_buddy.ui.settings.card import CardSettingsContainer
 from hoyo_buddy.ui.settings.notification import (
@@ -21,7 +22,6 @@ from hoyo_buddy.ui.settings.notification import (
 )
 from hoyo_buddy.ui.settings.reminder import ReminderContainer
 from hoyo_buddy.ui.settings.user import UserSettingsContainer
-from hoyo_buddy.web_app.utils import get_gacha_icon
 
 from ._common import AccountSelect
 
@@ -206,9 +206,6 @@ class CardSettingsView(ui.LayoutView):
             settings=self.settings,
             character_name=self.character_name,
             game=self.game,
-            icon_url=await get_gacha_icon(
-                game=self.game, item_id=int(self.card_settings.character_id)
-            ),
         )
         self.clear_items()
         self.add_item(container)

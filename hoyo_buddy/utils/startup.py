@@ -10,6 +10,7 @@ from loguru import logger
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.logging import InterceptHandler
@@ -93,6 +94,7 @@ def setup_sentry(sentry_dsn: str | None) -> None:
             LoggingIntegration(),  # To avoid duplicate logs with loguru
             RedisIntegration(),  # Too noisy
             AsyncPGIntegration(),  # Too noisy
+            AioHttpIntegration(),  # Too noisy
         ],
         environment=CONFIG.env,
         release=get_project_version(),

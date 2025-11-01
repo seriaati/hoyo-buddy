@@ -1,23 +1,5 @@
 from __future__ import annotations
 
-# Cleanup unused l10n keys in l10n/en_US.yaml by scanning the codebase for usages.
-#
-# Usage (dry run by default):
-#   uv run python tools/cleanup_l10n.py
-#
-# Write changes back (creates a .bak backup):
-#   uv run python tools/cleanup_l10n.py --write
-#
-# Notes:
-# - Detects keys referenced via LocaleStr(key="...") excluding mi18n/data_game usages
-# - Detects keys referenced via app_commands.locale_str(..., key="...")
-# - Detects string literals that match YAML keys
-# - Detects f-string patterns and preserves matching keys:
-#   * Dot-separated: f"prefix.{var}" -> preserves "prefix.*"
-#   * Underscore patterns: f"prefix_{var}_suffix" -> preserves "prefix_*_suffix"
-# - If EnumStr(...) is used anywhere, preserves keys for all StrEnum values
-# - If WeekdayStr(...) is used anywhere, preserves weekday keys: monday..sunday
-# - Always preserves keys starting with prefixes: ["dyk_"]
 import argparse
 import ast
 import logging
@@ -417,7 +399,7 @@ def main() -> int:
     preserve_prefixes.extend(fstring_prefixes)
 
     # Hard-coded exclusions: keys that should never be marked as unused
-    hard_exclusions = {"honkai:_star_rail"}
+    hard_exclusions = {"honkai:_star_rail", "none"}
     used.update(hard_exclusions)
 
     def is_preserved_by_prefix(k: str) -> bool:

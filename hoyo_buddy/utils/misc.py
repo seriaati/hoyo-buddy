@@ -554,6 +554,7 @@ async def sleep(name: SleepTime) -> None:
 
 
 def is_hb_birthday() -> bool:
+    return False
     now = get_now()
     return (
         HB_BIRTHDAY.replace(year=now.year)

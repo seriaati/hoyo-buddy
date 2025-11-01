@@ -223,18 +223,19 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
     async def on_timeout(self) -> None:
         self.disable_items()
 
-        # with contextlib.suppress(discord.HTTPException):
         if self.message is not None:
-            self.add_item(
-                TextDisplay(
-                    content=LocaleStr(
-                        custom_str="-# {emoji} {text}",
-                        emoji=emojis.INFO,
-                        text=LocaleStr(key="layout_view_edited"),
+            with contextlib.suppress(ValueError):
+                self.add_item(
+                    TextDisplay(
+                        content=LocaleStr(
+                            custom_str="-# {emoji} {text}",
+                            emoji=emojis.INFO,
+                            text=LocaleStr(key="layout_view_edited"),
+                        )
                     )
                 )
-            )
-            await self.message.edit(view=self)
+            with contextlib.suppress(discord.HTTPException):
+                await self.message.edit(view=self)
 
         if self.message is None:
             logger.warning(f"View {self!r} timed out without a set message")

@@ -9,7 +9,8 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.gacha import GachaCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
-from hoyo_buddy.db import HoyoAccount, show_anniversary_dismissible
+from hoyo_buddy.db import HoyoAccount
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 from ..enums import GachaImportSource

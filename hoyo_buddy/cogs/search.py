@@ -13,7 +13,7 @@ from loguru import logger
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import get_locale
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 

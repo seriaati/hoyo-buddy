@@ -11,7 +11,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_akasha_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, LeaderboardType, Locale
 from hoyo_buddy.exceptions import (

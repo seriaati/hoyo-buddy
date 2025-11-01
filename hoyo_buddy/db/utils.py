@@ -8,7 +8,6 @@ from loguru import logger
 from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Q
 
-from hoyo_buddy import dismissibles
 from hoyo_buddy.constants import (
     NO_MASKED_LINK_GUILDS,
     PLATFORM_TO_REGION,
@@ -18,7 +17,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import contains_masked_link, is_hb_birthday
+from hoyo_buddy.utils import contains_masked_link
 from hoyo_buddy.utils.misc import get_template_num
 
 from . import models
@@ -39,8 +38,6 @@ __all__ = (
     "get_last_gacha_num",
     "get_locale",
     "get_num_since_last",
-    "show_anniversary_dismissible",
-    "show_dismissible",
     "update_gacha_nums",
     "update_lb_ranks",
 )
@@ -181,30 +178,6 @@ def draw_locale(locale: Locale, account: models.HoyoAccount) -> Locale:
     if account.platform is Platform.MIYOUSHE:
         return Locale.chinese
     return locale
-
-
-async def show_dismissible(i: Interaction, dismissible: dismissibles.Dismissible) -> None:
-    user = await models.User.get(id=i.user.id)
-    if dismissible.id in user.dismissibles:
-        return
-
-    locale = await get_locale(i)
-    embed = dismissible.to_embed(locale)
-
-    if i.response.is_done():
-        await i.followup.send(embed=embed, ephemeral=True)
-    else:
-        await i.response.send_message(embed=embed, ephemeral=True)
-
-    user.dismissibles.append(dismissible.id)
-    await user.save(update_fields=("dismissibles",))
-
-
-async def show_anniversary_dismissible(i: Interaction) -> bool:
-    if is_hb_birthday():
-        await show_dismissible(i, dismissibles.BIRTHDAY_DISMISSIBLE)
-        return True
-    return False
 
 
 def build_account_query(

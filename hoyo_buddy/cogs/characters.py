@@ -9,7 +9,7 @@ from hoyo_buddy.commands.characters import CharactersCommand
 from hoyo_buddy.commands.configs import COMMANDS, CommandName
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral

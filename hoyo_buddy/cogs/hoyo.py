@@ -8,7 +8,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView

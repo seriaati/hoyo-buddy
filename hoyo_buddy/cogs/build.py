@@ -8,7 +8,7 @@ from discord.ext import commands
 from hoyo_buddy.commands.build import BuildCommand
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import get_locale
-from hoyo_buddy.db.utils import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.l10n import LocaleStr

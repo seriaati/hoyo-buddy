@@ -195,7 +195,7 @@ def seconds_to_time(seconds: int) -> str:
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
-def blur_uid(uid: int, *, arterisk: str = "*") -> str:
+def blur_uid(uid: int, *, arterisk: str = "x") -> str:
     """Blur a UID by replacing the middle 5 digits with asterisks."""
     uid_ = str(uid)
     middle_index = len(uid_) // 2

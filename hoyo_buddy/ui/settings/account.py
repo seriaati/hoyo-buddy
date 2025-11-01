@@ -29,7 +29,7 @@ class MinimumPointsButton(ui.Button["SettingsView"]):
         self.current = current
 
     async def callback(self, i: Interaction) -> None:
-        modal = MinimumMimoPointModal(title=LocaleStr(key="mimo_minimum_point_modal_title"))
+        modal = MinimumMimoPointModal(title=LocaleStr(key="mimo_minimum_point_label"))
         modal.points.default = str(self.current)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)

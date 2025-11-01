@@ -31,18 +31,10 @@ def get_english_sources(keys: list[str], en_dict: dict[str, str]) -> dict[str, s
 
 def main() -> None:
     """Main function."""
-    parser = argparse.ArgumentParser(
-        description="Find untranslated strings in locale files"
-    )
+    parser = argparse.ArgumentParser(description="Find untranslated strings in locale files")
+    parser.add_argument("filename", help="Locale file name (e.g., zh_CN.yaml)")
     parser.add_argument(
-        "filename",
-        help="Locale file name (e.g., zh_CN.yaml)",
-    )
-    parser.add_argument(
-        "--output",
-        "-o",
-        help="Output file name (default: untranslated_<filename>)",
-        default=None,
+        "--output", "-o", help="Output file name (default: untranslated_<filename>)", default=None
     )
 
     args = parser.parse_args()
@@ -91,13 +83,7 @@ def main() -> None:
     # Write output
     print(f"Writing results to {output_file}...")
     with output_file.open("w", encoding="utf-8") as f:
-        yaml.dump(
-            english_sources,
-            f,
-            allow_unicode=True,
-            sort_keys=True,
-            default_flow_style=False,
-        )
+        yaml.dump(english_sources, f, allow_unicode=True, sort_keys=True, default_flow_style=False)
 
     print(f"✓ Done! Output written to {output_file}")
     print("\nSummary:")

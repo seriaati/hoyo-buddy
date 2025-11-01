@@ -2,7 +2,6 @@ about_command.contribute: 貢獻
 about_command.developer: 開發者
 about_command.discord_server: Discord 伺服器
 about_command.guild_count: 伺服器數量
-about_command.latest_changes: 最近的變更
 about_command.ram_usage: 記憶體使用量
 about_command.support: 捐款
 about_command.translators: 翻譯員
@@ -17,6 +16,7 @@ abyss.floor: "第 {val} 層"
 abyss.overview: 深境螺旋總覽
 abyss.damage: 傷害資訊
 abyss.stats: 數據
+honkai:_star_rail: "崩壞: 星穹鐵道"
 abyss.phase_select.placeholder: 選擇階段
 abyss.total_stars: "總星數: {val}"
 abyss_chamber.challenge_target.embed.field.name: 挑戰目標
@@ -143,7 +143,8 @@ email_password_modal_email_input_label: 電子郵件或使用者名稱
 email_password_modal_password_input_label: 密碼
 enter_email_password_instructions_description: "電子信箱和密碼指的是 **Hoyoverse 帳戶** 的電子信箱和密碼，並不是 Google 或蘋果等等帳戶的。\n- [這是如何運作的?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [我沒有 Hoyoverse 帳戶 (使用 Google、Facebook 等登入)](:docs/Before-Start:)\n- [我是主機玩家](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: 變更光錐等級
-dark_mode_button_label: 深色模式
+dark_theme: 深色主題
+card_dark_theme_desc: 對此角色的面板卡片使用深色配色方案。
 error_footer: "你可以在我們的 Discord 伺服器內尋求幫助，連結在 /about"
 error_title: 發生了一個錯誤
 erudition: 智識
@@ -158,9 +159,9 @@ exploration.common_chests: 普通
 exploration.exquisite_chests: 精緻
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離"
+  - 鍾離'
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -200,7 +201,6 @@ furnishings: 家具
 furniture_embed_description: "{comfort_icon} 舒適度: {comfort}\n{load_icon} 負荷: {load}\n提供信任度: {trust}\n製作時間: {hour} 小時"
 game_maintenance_description: 請稍後再試
 game_maintenance_title: 遊戲正在維護
-game_value_incomplete_param_error_message: 你必須指定 UID 所屬的遊戲
 geeetest_verification_complete: 驗證完成
 geetest.embed.title: 在登入前需要進行 CAPTCHA 驗證
 geetest.no_need: 無需進行 Geetest 驗證
@@ -216,7 +216,6 @@ gi_daily.embed.description: 每日委託或冒險歷練尚未全部完成
 gift_code_modal.code_input.label: "兌換碼 {num}"
 gift_code_modal.title: 輸入禮物碼
 harmony: 同諧
-honkai:_star_rail: "崩壞: 星穹鐵道"
 honkai_impact_3rd: 崩壞3
 hoyolab: HoYoLAB
 hsr_daily.embed.description: 每日實訓尚未全部完成
@@ -237,7 +236,6 @@ invalid_email_password_title: 無效的電子郵件或密碼
 invalid_game_selected: 選擇了無效的遊戲
 invalid_image_url_error_message: "一個有效的圖片網址需要是一個直接連結、帶有圖片的副檔名且能被公開存取。"
 invalid_image_url_error_title: 無效的圖片網址
-invalid_input.input_needs_to_be_bool: "輸入框 `{input}` 的值需為 `0` (否) 或 `1` (是)"
 invalid_input.input_needs_to_be_int: "輸入框 `{input}` 的值需為一個整數"
 invalid_input.input_out_of_range.max_value: "輸入框 `{input}` 的值需小於或等於 {max_value}"
 invalid_input.input_out_of_range.min_value: "輸入框 `{input}` 的值需大於或等於 {min_value}"
@@ -318,12 +316,11 @@ notif_modal.notify_weekday.label: 星期幾通知
 notif_modal.threshold.label: 閥值
 notif_modal.threshold.description: "通知將在超出閥值後發送。"
 notification_settings_button_label: 通知設定
-notify_on_failure_button_label: 簽到失敗通知
-notify_on_success_button_label: 簽到成功通知
-mimo_auto_task_success_notify_toggle_label: 在自動完成任務成功時通知
-mimo_auto_task_failure_notify_toggle_label: 在自動完成任務失敗時通知
-mimo_auto_buy_success_notify_toggle_label: 在自動購買獎勵成功時通知
-mimo_auto_buy_failure_notify_toggle_label: 在自動購買獎勵失敗時通知
+mimo_notification_settings: 旅行 Mimo 通知設定
+notification_settings_desc: 設置要接收的通知類型。
+notification_settings_note: "注意：Hoyo Buddy 會透過私人訊息發送通知，請確保你的私訊已開啟。"
+notify_on_failure_button_label: 失敗時通知
+notify_on_success_button_label: 成功時通知
 nsfw_prompt_error_message: "此提示包含不合宜的內容，請嘗試使用不同的提示後再試一次。"
 nsfw_prompt_error_title: 不合宜的提示
 page_footer: "{current_page}/{total_pages}頁"
@@ -347,14 +344,12 @@ profile.card_template_select.enka_classic.label: 經典 Enka 樣式
 profile.card_template_select.enkacard.label: "EnkaCard 樣式 {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy 樣式 {num}"
 profile.card_template_select.placeholder: 選擇一個樣式
-profile.card_template_select.same_author.description: "由 {author} 設計和製作"
 profile.card_template_select.src.label: "StarRailCard 樣式 {num}"
 profile.character_select.genshin: "{const}命{refine}精"
 profile.character_select.hsr: "{const}魂{refine}疊"
 profile.character_select.zzz: "意象影畫 {const}"
 profile.character_select.in_game: "遊戲內展示櫃"
 profile.character_select.enka_network.description: Enka Network 角色配置
-profile.character_select.placeholder: 選擇一個角色
 profile.generate_ai_art.button.label: 生成 AI 繪圖
 profile.generate_ai_art_modal.negative_prompt.label: 負面提示
 profile.generate_ai_art_modal.prompt.label: 提示
@@ -370,17 +365,14 @@ profile.player_info.hoyolab.embed.description: "開拓等級：{level}\n角色�
 profile.primary_color.button.label: 變更顏色
 profile.primary_color_modal.color.label: 顏色（十六進制代碼）
 profile.primary_color_modal.title: 變更卡片顏色
-profile.remove_from_cache.button.label: 從快取中移除
 profile.remove_image.button.label: 移除自定義圖片
 profile_command_gi_description: 生成原神角色面板卡片和隊伍卡片
 profile_command_hsr_description: 生成星穹鐵道角色面板卡片和隊伍卡片
 profile_command_zzz_description: 生成絕區零代理人面板卡片和隊伍卡片
-profile_command_game_value_description: UID 所屬的遊戲
 profile_command_uid_param_description: "玩家的UID，如果提供了帳戶參數，则覆蓋該參數。"
 pt_button.label: 質變儀通知
 pt_modal.title: 質變儀通知設定
 pt_notify_embed_desc: "參量質變儀可以使用了!"
-public_account_toggle.label: 設置帳戶為公開
 pure_fiction: 虛構敘事
 pyro: 火
 quantum: 量子
@@ -401,13 +393,13 @@ redeem_cooldown_embed.description: "由於兌換操作具有冷卻機制，這�
 redeem_cooldown_embed.title: 正在兌換
 refinement_indicator: "精鍊 {r}"
 relics: 遺器
-reminder_button.label: 通知設定
 reminder_settings.not_set: 尚未設定
 reminder_settings.reminde.set.type1: "狀態: {status}\n閥值: {threshold}\n通知間隔: {notify_interval} 分鐘\n最大通知數: {max_notif_count}"
 reminder_settings.reminde.set.type2: "狀態: {status}\n通知間隔: {notify_interval} 分鐘\n最大通知數: {max_notif_count}"
 reminder_settings.reminde.set.type3: "狀態: {status}\n通知間隔: {notify_interval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 伺服器重置前的 {notify_time} 小時\n"
 reminder_settings.reminde.set.type4: "狀態: {status}\n通知間隔: {notify_interval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 伺服器重置前的 {notify_time} 小時\n星期幾通知: {notify_weekday}"
 reminder_settings_title: 即時便籤通知
+reminder_settings_desc: 在特定遊戲內事件發生時通過私訊通知你。
 reminder_toggle: 通知
 resin_discount.embed.description: 每週首領折扣尚未全部使用完畢
 resin_reminder_button.label: 樹脂通知
@@ -424,7 +416,7 @@ search_command_game_param_name: 遊戲
 search_command_query_param_description: 欲搜尋的關鍵字
 search_command_query_param_name: 關鍵字
 select_account.embed.description: 選擇欲添加至 Hoyo Buddy 的帳戶
-select_account.embed.title: 🎉 歡迎來到 Hoyo Buddy！
+select_account.embed.title: 🎉 歡迎使用 Hoyo Buddy!
 settings_command_description: 配置使用者設定
 skill_attributes_embed_field_name: "技能屬性 ({level}等)"
 skill_level.modal.title: 輸入技能等級
@@ -488,23 +480,17 @@ img_theater_large_block_title: 幻想真境劇詩
 img_theater_stats_line_five: "演出總時長: {time}"
 img_theater_legend_block_support_chara: 表演助理
 img_theater_legend_block_trial_chara: 試用角色
-img_theater_max_damage: "最高傷害輸出: {val}"
 img_theater_fastest_team: " (最快)"
 challenge_view.view_buffs: 查看增益
 challenge_view.buff_select.placeholder: 選擇一項增益來查看…
 scratch_card.embed.description: 還沒刮刮刮樂
 zzz_engagement_button.label: 活躍度
 zzz_engagement.embed.description: 今日的活躍度尚未完成
-honkai_daily_embed_title: 每日歷練值提醒
-honkai_daily_embed_description: "今日的每日歷練值尚未完成, {cur}/{max}"
 video_store.embed.description: 錄影帶的收益尚未領取
 scratch_card.incomplete: 尚未完成
 reminder_modal.title: "{notify}通知設定"
-profile_view.set_cur_temp_as_default: 設置當前樣式為預設
 set_cur_temp_as_default.done: 完成
-set_cur_temp_as_default.done_desc: "你的 {game} 預設卡片樣式已被設置為 {template}"
-remove_from_cache_finish_embed_desc: 重新執行 /profile 指令來查看變更
-third_party_card_temp_error_title: 這個第三方卡片樣式出錯了
+third_party_card_temp_error_title: 此第三方卡片樣式出錯了
 third_party_card_temp_error_message: "此角色的卡片樣式已被重置為 Hoyo Buddy 的卡片樣式。如果此錯誤持續發生，請在我們的[Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
 account_locked_title: 帳戶已被鎖定 20 分鐘
 account_locked_description: "輸入錯誤密碼的次數太多。請等待 20 分鐘，然後再試一次。如果你無法設定好你的帳戶，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助。"
@@ -529,7 +515,10 @@ tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 設計師
 card_settings.modifying_for: "正在修改{name}的卡片設置"
-card_settings.card_color: 卡片顏色
+card_settings_modifying_for_desc: 所有卡片設定對每個角色都是獨立的。某些卡片樣式可能不支持某些設定。
+card_settings.template: 樣式
+card_settings_template_desc: "某些第三方樣式可能不支援 HoYoLAB/米遊社角色。在這種情況下，機器人將使用 Hoyo Buddy 的樣式。"
+card_settings.card_color: 顏色
 card_settings.no_color: 此卡片樣式不支援修改卡片顏色
 card_settings.color_default: 預設
 card_settings.current_image: 當前圖片
@@ -538,7 +527,8 @@ card_settings.team_card_image: 隊伍卡片圖片
 profile.redraw_card_button_label: 重新繪製卡片
 card_settings.footer: "修改完畢後，點擊上方訊息中的綠色按鈕來重新繪製卡片"
 card_settings.description: "使用</upload>上傳圖片以取得其連結。\n支援 Pixiv，請直接複製繪圖的圖片連結。"
-profile.team_dark_mode.button.label: 隊伍卡片深色模式
+profile.team_dark_mode.button.label: 隊伍卡片深色主題
+team_card_dark_theme_desc: "對隊伍卡片使用深色配色方案。此設定適用於所有隊伍卡片，無論其中有哪些角色。"
 profile.character_select.multi.placeholder: 選擇角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻擊方式: {atk_type}\n陣營: {faction}\n元素: {element}"
 cat_zzz_agents: 代理人
@@ -573,7 +563,6 @@ invite_page_btn_label: 邀請
 invite_command_desc: 邀請 Hoyo Buddy 到你的伺服器，或是將其新增至你的應用程式中
 help_command_desc: "需要幫助嗎？查看文檔或加入我們的 Discord 伺服器"
 title_dyk: "你知道嗎？"
-button_label_dyk: 「你知道嗎」訊息
 events_view_start_date_embed_field: 開始時間
 events_view_end_date_embed_field: 結束時間
 events_view_ann_select_placeholder: 選擇一個活動…
@@ -581,10 +570,10 @@ events_view_banner_type_label: 卡池
 events_command_description: 查看正在進行中的遊戲活動
 events_view_ann_type_select_placeholder: 選擇一個活動類別…
 events_view_content_label: 查看完整內容
-events_command_game_param_description: 用於查看活動的遊戲
 natlan: 納塔
 top_percent: "前 {percent}%"
 profile_view_show_rank_button_label: 顯示排名
+profile_view_show_rank_desc: "顯示此角色在 [akasha.cv](https://akasha.cv) 上的排名。"
 submit_button_label: 提交
 show_tutorial_button_label: 顯示教學
 close_button_label: 關閉
@@ -625,10 +614,15 @@ gacha_view_filter_size_field_label: 每頁物品數
 gacha_view_page_field_label: 頁數
 gacha_log_stats_title: 抽卡紀錄數據
 gacha_log_personal_stats_title: 個人數據
-gacha_log_personal_stats: "生涯抽數: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\n當前卡池總抽數: {total_pulls} ({total_currency} {currency_emoji})\n5★ 保底: {star5_pity_cur}/{star5_pity_max}\n4★ 保底: {star4_pity_cur}/10\n總 5★ 數: {total_star5}\n總 4★ 數: {total_star4}\n5★ 平均抽數: {avg_pulls_per_star5}\n4★ 平均抽數: {avg_pulls_per_star4}"
+gacha_log_personal_stats_lifetime: "生捱總抽數: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "此卡池總抽數: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "{rarity}★ 保底: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "{rarity}★ 總獲得數: {total}"
+gacha_log_personal_stats_rarity_average: "{rarity}★ 平均抽數: {avg}"
 win_rate_stats: "{title} 勝率: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全服數據
-gacha_log_global_stats: "生涯抽數: {lifetime}\n5★ 幸運值: {star5_luck}\n4★ 幸運值: {star4_luck}"
+gacha_log_global_stats_lifetime: "生捱總抽數: {lifetime}"
+gacha_log_global_stats_luck: "{rarity}★ 運氣: {luck}"
 win_rate_global_stats: "{title} 勝率: {win_rate}"
 gacha_log_view_full: 查看抽卡紀錄
 gacha_view_command_description: 查看導入的抽卡紀錄
@@ -681,7 +675,6 @@ planar_fissure_label: 次元分裂
 planar_fissure_desc: "次元分裂活動將在 {hours} 小時後開始，記得保存好你的開拓力！"
 notif_modal.hours_before.label: 在活動開始的 X 小時前通知
 reminder_settings.reminde.set.type5: "狀態: {status}\n通知間隔: {notify_inverval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 活動開始的 {hours_before} 前"
-invalid_lb_selected_error_msg: 選擇了無效的排行榜
 chest_lb_title: 寶箱開啟數量排行榜
 abyss_dmg_lb_title: 深境螺旋最強一擊排行榜
 theater_dmg_lb_title: 幻想真境劇詩最強一擊排行榜
@@ -690,8 +683,8 @@ lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到該排行榜
 currently_logged_in_as: "你目前登入的身份為:"
 not_you_label: "不是你嗎? 點擊以使用其他帳戶登入"
-profile_show_substat_rolls: 副詞條檔次
-team_card_settings_button_label: 隊伍卡片設定
+profile_show_substat_rolls: 顯示副詞條檔次
+profile_show_substat_rolls_desc: 顯示有多少檔次數值貢獻給副詞條的最終數值。
 team_card_settings_embed_title: 正在修改隊伍卡片設定
 team_card_settings_embed_description: "隊伍卡片設定在不同遊戲和帳戶之間共享，當卡片樣式不支援時，對某些設定所做的更改可能不會反映在卡片上。\n完成後，點擊上方訊息中的綠色按鈕即可重新繪製卡片。"
 characters.filter.rarity.placeholder: 篩選稀有度...
@@ -701,13 +694,14 @@ redeem_cmd_available_codes: 可用的兌換碼
 redeem_all_available_codes_button_label: 兌換所有可用的兌換碼
 akasha_show_details: 顯示排行榜詳情
 card_settings_hl_special_stats_button_label: 標示特殊角色數值
+card_settings_hl_stats_desc: 用特殊顏色突顯角色的重點數值。
 challenge_command_abyss_desc: 生成深境螺旋卡片
 challenge_command_theater_desc: 生成幻想真境劇詩卡片
 challenge_command_moc_desc: 生成混沌回憶卡片
 challenge_command_pf_desc: 生成虛構敘事卡片
 challenge_command_apc_shadow_desc: 生成末日幻影卡片
 challenge_command_shiyu_desc: 生程式與防衛戰卡片
-account_select_placeholder: 選擇一個帳戶…
+account_select_placeholder: 選擇一個帳戶
 guild_only_command_param_name: 僅伺服器
 guild_only_command_param_desc: 排行榜僅顯示伺服器成員的排名
 yes_choice: "是"
@@ -732,13 +726,10 @@ abyss_stats_teammate_use_rate: 隊友使用率
 abyss_stats_weapon_use_rate: 武器使用率
 abyss_stats_artifact_use_rate: 聖遺物使用率
 build_cmd_genshin_desc: 查看一個原神角色的指南及養成建議
-build_cmd_hsr_desc: 查看一個星穹鐵道角色的指南及養成建議
-build_cmd_zzz_desc: 查看一個絕區零代理人的指南及養成建議
 build_cmd_character_param_desc: 要查看哪個角色的指南？
 guide_title: "{name}的指南及養成建議"
 no_guide_available: 這個角色還沒有任何指南
 show_playstyle_button_label: 核心玩法
-flexible_char: 任意
 show_synergy_button_label: 組隊方式
 characters_per_page_modal_title: 每頁角色數
 characters_per_page_num_label: 數量
@@ -772,15 +763,15 @@ image_settings_use_m3_art: 使用意象影畫 3 繪圖
 remembrance: 記憶
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此訊息只會顯示一次
-dismissible_m3_art_desc: "你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。"
+dismissible_m3_art_desc: '你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。'
+dismissible_settings_v2: "告別混亂分散的設定！Hoyo Buddy 的設定已經過改版，更有條理且更易於使用，並新增了一些新的便利功能，在 </settings>試試看吧"
+dismissible_card_settings_v2: "卡片設定已經過改版，更有條理且更易於使用。你也可以批次套用樣式至所有角色（這是一個長期以來被要求的功能！）在 </card-settings genshin>, </card-settings hsr>, 和</card-settings zzz>試試看吧"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 個 HoYoLAB 裝飾"
 zzz_deadly_assault: 危局強襲戰
 challenge_command_assault_desc: 生成危局強襲戰卡片
 gi_mimo_start_desc: "請先於 [HoYoLAB]({url}) 將旅行 Mimo 活動設定完成"
 mimo_auto_draw_button_label: 自動抽獎
 mimo_auto_draw_desc: "Hoyo Buddy 會在積分足夠時自動抽獎；如果自動購買獎勵和自動抽獎同時啟用，會先嘗試購買，積分不足購買時則自動抽獎。"
-mimo_auto_draw_success_notify_toggle_label: 在自動抽獎成功時通知
-mimo_auto_draw_failure_notify_toggle_label: 在自動抽獎失敗時通知
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你抽獎並獲得了以下物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
 dismissible_hsr_temp2_desc: "你現在可以使用 Hoyo Buddy 樣式 2 來生成星穹鐵道角色卡片，在「卡片設定」中設置。推薦使用橫向圖片。"
 bounty_commission.embed.description: 懸賞委託尚未全部完成
@@ -792,7 +783,6 @@ web_events_embed_footer: 使用 /web-events 來調整通知
 auto_task_error_dm_content: "由於發生錯誤，`{account}` 的**{feature}**功能已被**__關閉__**，你可以使用 {command} 將其重新啟動\n如果這個錯誤持續發生，或是你不知道該如何解決，請在我們的 [Discord 伺服器](<https://link.seria.moe/hb-dc>)中尋求協助"
 is_support_custom_image_desc: 支援自定義圖片
 is_not_support_custom_image_desc: 不支援自定義圖片
-template_preview_header: 範例樣式
 missing_permissions_error_title: Hoyo Buddy 缺失權限
 missing_permissions_error_message: " Hoyo Buddy 需要以下權限才能正常運行：\n- 發送訊息\n- 嵌入連結\n- 附加檔案\n- 使用外部表情符號"
 blocked_by_auto_mod_error_title: 此訊息已被 AudoMod 阻擋
@@ -804,12 +794,9 @@ open_game_vietnam_label: 啟動遊戲（越南版本）
 gift_code_redeemed: 禮物碼已被兌換過
 show_ui_button_label: 顯示界面
 hide_ui_button_label: 隱藏界面
-redeem_failure_notify_toggle_label: 在自動兌換失敗時通知
-redeem_success_notify_toggle_label: 在自動兌換成功時通知
 image_file_too_large_error_title: 圖片檔案過大
 image_file_too_large_error_message: "上傳的圖片檔案太大了，最大檔案大小為 {size}MB。"
 api_request_timeout_title: API 請求已超時
-api_request_timeout_message: 請稍後再試
 dismissible_one_year_anniversary_title: Hoyo Buddy 一週年啦！
 dismissible_one_year_anniversary_desc: "訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"
 anniversary_dyk: "Hoyo Buddy 一週年啦！訪問[週年慶網頁](https://one.hb.seria.moe)來參加週年抽獎活動！"
@@ -836,4 +823,29 @@ enka_api_error_description: "從 Enka Network 獲取資料時出錯，請稍後�
 cleared: 已通關
 challenge_command_anomaly_desc: 生成異相仲裁卡片
 anomaly_arbitration: 異相仲裁
-user_settings_title: 使用者設定
+account_settings_title: "帳戶設定"
+account_settings_desc: "此處的設定對每個遊戲帳戶都是獨立的。"
+public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 1。"
+daily_checkin_desc: "自動每日簽到\n自動領取網頁簽到活動的獎勵。"
+redeem_code_desc: "自動兌換碼兌換\n自動兌換直播兌換碼和其他禮包碼。如果你沒有使用電子郵件和密碼登入，此按鈕將被停用，請參閱[常見問題](:docs/FAQ:)了解原因。"
+user_settings_title: "使用者設定"
+user_settings_desc: "此處的設定與你的 Discord 帳戶關聯，適用於所有遊戲帳戶。"
+dark_theme_desc: "深色主題\n讓資訊圖表使用深色配色方案，並非所有資訊圖表都支援此功能。"
+language_desc: "語言\nHoyo Buddy 將使用此語言回覆你。某些文字可能仍為英文，請參閱[常見問題](:docs/FAQ:)了解原因。"
+language_select_placeholder: 選擇一種語言
+dyk_settings_desc: "「你知道嗎？」訊息\n當你使用機器人指令時，顯示隨機的實用提示。"
+layout_view_edited: "互動元件已被停用以節省系統資源，如果你想使用它們，請重新執行指令。"
+mimo_title: 旅行 Mimo 設定
+mimo_minimum_point_label: 保持的最低點數
+mimo_minimum_point_desc: "自動抽取時，Hoyo Buddy 會確保你的點數保持在此數值以上，設為 0 則盡可能抽取。"
+disable_all_button_label: 停用所有通知
+apply_template_to_all_chars: 將當前樣式套用至所有角色
+apply_template_to_all_chars_desc: "所有**未來和當前**的角色都將使用 **{template}**。"
+apply_dark_theme_to_all_chars: 將當前深色主題選項套用至所有角色
+apply_dark_theme_to_all_chars_desc: "所有**未來和當前**的角色都將使深色主題 **{status}**。"
+apply_label: 套用
+card_settings_genshin_desc: 修改你的原神角色面板卡片的外觀
+card_settings_hsr_desc: 修改你的崩壞：星穹鐵道角色面板卡片的外觀
+card_settings_zzz_desc: 修改你的絕區零代理人面板卡片的外觀
+card_settings_character_param: 要修改卡片設定的角色
+disabled_label: 已停用

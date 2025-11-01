@@ -1,62 +1,62 @@
-about_command.contribute: ساهِم
-about_command.developer: المطور
-about_command.discord_server: سيرفر الديسكورد
-about_command.guild_count: عدد الاعضاء
-about_command.ram_usage: استهلاك الرام
-about_command.support: تبرع
-about_command.translators: المترجمين
-about_command.uptime: مدة التشغيل
-about_command.website: الموقع الرسمي
-about_command_description: عَن البوت
-about_embed.description: ""
-abundance: ابوندنس
-abyss.battles_won_fought: "المعارك التي تم الفوز بها/خوضها: {val1}/{val2}"
-abyss.deepest_descent: "أعمق نزول: {val}"
-abyss.floor: "الطابق  {val}"
-abyss.overview: ""
-abyss.damage: ""
-abyss.stats: ""
+about_command.contribute: 기여하기
+about_command.developer: 개발자
+about_command.discord_server: 디스코드 서버
+about_command.guild_count: 서버 수
+about_command.ram_usage: 램 사용량
+about_command.support: 후원하기
+about_command.translators: 번역가
+about_command.uptime: 가동시간
+about_command.website: 공식 웹사이트
+about_command_description: 봇 소개
+about_embed.description: "호요버스 게임을 즐기는 유저분들을 위한 쉽고 편리하며 다양한기능을 가진 디스코드 봇입니다."
+abundance: 풍요
+abyss.battles_won_fought: "총 {val2}회 전투중 {val1}회 승리"
+abyss.deepest_descent: "최고 기록 : {val}"
+abyss.floor: "{val} 층"
+abyss.overview: 나선비경 통계
+abyss.damage: DAMAGE INFO
+abyss.stats: STATS
 honkai:_star_rail: ""
-abyss.phase_select.placeholder: اختر مرحلة
-abyss.total_stars: "إجمالي النجوم: {val}"
-abyss_chamber.challenge_target.embed.field.name: هدف التحدي
-abyss_chamber.embed.title: "الطابق {floor_index} - الغرفة {chamber_index}"
-abyss_chamber.enemy_level.embed.field.name: مستوى العدو
-abyss_chamber.ley_line_disorder.embed.field.name: اضطراب لي لاين
-abyss_enemy.item_description: "الصحة: {HP}"
-acc_no_default_param_desc: الحساب لاستعمال هذا الأمر به
-account_autocomplete_param_description: "الحساب الذي سيتم استعمال هذا الأمر به، الافتراضي هو الحساب المحدد في /accounts"
-account_autocomplete_param_name: حساب
-account_deleted_description: "تم حذف {account}."
-account_deleted_title: تم حذف الحساب
-account_manager_footer: الحساب المختار سيكون الحساب الافتراضي لجميع الأوامر
-account_manager_no_accounts_description: ليس لديك أي حسابات حتى الآن.
-account_manager_title: مدير الحساب
-account_not_found_error_message: "تعذر العثور على حساب يتضمن الاستعلام المقدم، يرجى تحديد الاختيارات من الإكمال التلقائي بدلاً من كتابة الاستعلام الخاص بك."
-account_not_found_error_title: لم يعثر على الحساب
-account_username: اسم المستخدم
-accounts_command_description: أدارة حساباتك
-action_in_cooldown_error_message: "يرجى المحاولة مرة أخرى في {available_time}."
-action_in_cooldown_error_title: الأمر في وقت التهدئة
-add_account_button_label: اضافة حسابات
+abyss.phase_select.placeholder: 층을 선택해주세요
+abyss.total_stars: "총 별의 갯수 : {val}"
+abyss_chamber.challenge_target.embed.field.name: 도전 목표
+abyss_chamber.embed.title: "{floor_index} 층 - {chamber_index} 방"
+abyss_chamber.enemy_level.embed.field.name: 적 레벨
+abyss_chamber.ley_line_disorder.embed.field.name: 연월 축복
+abyss_enemy.item_description: "HP: {HP}"
+acc_no_default_param_desc: 해당 명령어를 실행할 계정
+account_autocomplete_param_description: "해당 명령어를 실행할 계정 (기본값 : /accounts에서 선택된 계정)"
+account_autocomplete_param_name: 계정
+account_deleted_description: "{account} 이(가) 삭제되었습니다."
+account_deleted_title: 삭제된 계정
+account_manager_footer: ""
+account_manager_no_accounts_description: ""
+account_manager_title: ""
+account_not_found_error_message: ""
+account_not_found_error_title: ""
+account_username: ""
+accounts_command_description: ""
+action_in_cooldown_error_message: ""
+action_in_cooldown_error_title: ""
+add_account_button_label: ""
 add_hoyolab_acc.embed.description: ""
-add_hoyolab_acc.embed.title: اختر طريقة لاضافة حساباتك
+add_hoyolab_acc.embed.title: ""
 adding_accounts_description: ""
-adding_accounts_title: اختر منصة حسابك
-ai_gen_image_error_message: تحقق من ما كتبته وحاول مرة اخرى
-ai_gen_image_error_title: حدث خطأ أثناء إنشاء الفن باستخدام الذكاء الاصطناعي
-already_claimed_description: عُد غذاً
-already_claimed_title: لقد استلمت مكافأة التسجيل اليومي بالفعل
-anemo: انيمو
-artifact_set_four_piece_embed_description: "4-قطع: {bonus_4}"
-artifact_set_two_piece_embed_description: "قطعتان: {bonus_2}"
-artifact_sets: ارتيفاكت سيت
-auto_checkin_button_label: تحقق الدخول اليومي تلقائيا
-auto_locale_option_label: إتباع لغة البرنامج
-auto_redeem_footer: قم بإيقاف تشغيل الاسترداد التلقائي للكود باستخدام /redeem
-auto_redeem_toggle.label: استرداد تلقائي للكود
-books: كتب
-captcha.embed.description: "اضعط على الزر ادناه لاكمال تحقق CAPTCHA"
+adding_accounts_title: ""
+ai_gen_image_error_message: ""
+ai_gen_image_error_title: ""
+already_claimed_description: ""
+already_claimed_title: ""
+anemo: ""
+artifact_set_four_piece_embed_description: ""
+artifact_set_two_piece_embed_description: ""
+artifact_sets: ""
+auto_checkin_button_label: 자동 일일 출석체크
+auto_locale_option_label: ""
+auto_redeem_footer: ""
+auto_redeem_toggle.label: ""
+books: ""
+captcha.embed.description: ""
 challenge_type_select.placeholder: ""
 challenge_view.buff_used_in: ""
 challenge_view.team: ""
@@ -110,7 +110,7 @@ characters_cmd_genshin_desc: ""
 characters_cmd_hsr_desc: ""
 characters_cmd_zzz_desc: ""
 characters_cmd_honkai_desc: ""
-checkin_button_label: ""
+checkin_button_label: 출석체크
 checkin_command_description: ""
 complete_captcha_button_label: ""
 complete_geetest_button_description: ""
@@ -119,7 +119,7 @@ const_refine_str: ""
 continue_button_label: ""
 cryo: ""
 daily_button.label: ""
-daily_check_in: ""
+daily_check_in: 일일 출석체크
 daily_checkin_embed_description: ""
 daily_modal.title: ""
 delete_account_button_label: ""
@@ -190,7 +190,7 @@ farm_view.sundays: ""
 farm_view.weekday_select.placeholder: ""
 farm_view_command_description: ""
 fire: ""
-floor_select_label: "الطابق  {value}"
+floor_select_label: "{value} 층"
 fontaine: ""
 food: ""
 friday: ""
@@ -208,14 +208,14 @@ geetest.required.description: ""
 geetest_command_description: ""
 geetest_cmd_type_param_desc: ""
 geetest_command_type_param_name: ""
-genshin_impact: ""
+genshin_impact: 원신
 geo: ""
 gi_daily.embed.description: ""
 gift_code_modal.code_input.label: ""
 gift_code_modal.title: ""
 harmony: ""
 honkai_impact_3rd: ""
-hoyolab: ""
+hoyolab: 호요랩
 hsr_daily.embed.description: ""
 hydro: ""
 ice: ""
@@ -506,7 +506,7 @@ characters.embed.filter_text: ""
 stats_command_description: ""
 tears_of_themis: ""
 honkai_suit_rarity: ""
-about_command.designers: ""
+about_command.designers: 디자이너
 card_settings.modifying_for: ""
 card_settings_modifying_for_desc: ""
 card_settings.template: ""
@@ -549,13 +549,13 @@ dyk_github: ""
 dyk_python: ""
 dyk_team_card: ""
 dyk_set_default_acc: ""
-dyk_status_page: ""
+dyk_status_page: "당신은 봇상태를 확인하실수 있습니다!  [봇상태 확인하러가기](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
 status_page_btn_label: ""
-docs_page_btn_label: ""
-invite_page_btn_label: ""
+docs_page_btn_label: 문서
+invite_page_btn_label: 초대하기
 invite_command_desc: ""
 help_command_desc: ""
-title_dyk: ""
+title_dyk: "그거 아시나요?"
 events_view_start_date_embed_field: ""
 events_view_end_date_embed_field: ""
 events_view_ann_select_placeholder: ""
@@ -596,8 +596,8 @@ file_param_name: ""
 file_param_description: ""
 gacha_import_success_title: ""
 gacha_import_success_message: ""
-gacha_view_filter_button_label: ""
-gacha_view_search_field_label: ""
+gacha_view_filter_button_label: 필터
+gacha_view_search_field_label: 검색
 gacha_view_gacha_detail_title: ""
 gacha_view_gacha_detail: ""
 gacha_view_num_since_last: ""

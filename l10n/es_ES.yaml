@@ -2,7 +2,6 @@ about_command.contribute: Contribuir
 about_command.developer: Desarrollador
 about_command.discord_server: Servidor de Discord
 about_command.guild_count: Cantidad de servidores
-about_command.latest_changes: Últimos cambios
 about_command.ram_usage: Uso de RAM
 about_command.support: Donar
 about_command.translators: Traductores
@@ -17,6 +16,7 @@ abyss.floor: "Piso {val}"
 abyss.overview: Resumen del Espiral del Abismo
 abyss.damage: INFO. DE DAÑO
 abyss.stats: STATS
+honkai:_star_rail: "Honkai: Star Rail"
 abyss.phase_select.placeholder: Selecciona una fase
 abyss.total_stars: "Estrellas totales: {val}"
 abyss_chamber.challenge_target.embed.field.name: Objetivo del desafío
@@ -143,7 +143,8 @@ email_password_modal_email_input_label: Correo o Nombre de usuario
 email_password_modal_password_input_label: Constraseña
 enter_email_password_instructions_description: "El correo y contraseña se refieren al **correo y contraseña de la cuenta de Hoyoverse**, no a cuentas de Google, Apple, etc.\n- [¿Cómo funciona este método de inicio de sesión?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [No tengo una cuenta de Hoyoverse (inicio sesión con Google, Facebook, etc.)](:docs/Before-Start:)\n- [Soy un jugador de consola](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Cambiar el nivel del cono de luz
-dark_mode_button_label: Modo oscuro
+dark_theme: ""
+card_dark_theme_desc: ""
 error_footer: "Puedes encontrar ayuda en nuestro servidor de Discord, link en /about"
 error_title: A ocurrido un error
 erudition: Erudición
@@ -200,7 +201,6 @@ furnishings: Muebles
 furniture_embed_description: "{comfort_icon} Comodidad: {comfort}\n{load_icon} Carga: {load}\nConfianza: {trust}\nTiempo de creación: {hour}h"
 game_maintenance_description: Por favor inténtalo de nuevo más tarde
 game_maintenance_title: El juego está en mantenimiento
-game_value_incomplete_param_error_message: Debes especificar el juego del UID
 geeetest_verification_complete: Verificación completa
 geetest.embed.title: Se requiere verificación CAPTCHA antes de iniciar sesión
 geetest.no_need: No es necesario el Geetest
@@ -216,7 +216,6 @@ gi_daily.embed.description: Las recompensas de encargo o encuentros de aventura 
 gift_code_modal.code_input.label: "Código {num}"
 gift_code_modal.title: Ingresa el código de regalo
 harmony: Armonía
-honkai:_star_rail: "Honkai: Star Rail"
 honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
 hsr_daily.embed.description: Los entrenamientos diarios aún no se han completado
@@ -237,7 +236,6 @@ invalid_email_password_title: Correo o contraseña no válidos
 invalid_game_selected: Juego seleccionado no válido
 invalid_image_url_error_message: "Una URL de imagen válida debe ser una URL directa a un archivo de imagen que contenga una extensión de imagen y sea accesible públicamente"
 invalid_image_url_error_title: URL de imagen no válida
-invalid_input.input_needs_to_be_bool: "La entrada {input} debe ser `0` (para falso) o `1` (para verdadero)."
 invalid_input.input_needs_to_be_int: "La entrada `{input}` debe ser un número entero"
 invalid_input.input_out_of_range.max_value: "La entrada `{input}` debe ser menor o igual a {max_value}"
 invalid_input.input_out_of_range.min_value: "La entrada `{input}` debe ser mayor o igual a {min_value}"
@@ -317,13 +315,12 @@ notif_modal.notify_time.description: "Notificar X horas antes del reinicio del s
 notif_modal.notify_weekday.label: Día de la semana para notificar
 notif_modal.threshold.label: Límite
 notif_modal.threshold.description: "La notificación se envía al alcanzar el limite"
-notification_settings_button_label: Configurar notificaciones
-notify_on_failure_button_label: Notificar reclamo de Login Diario fallido
-notify_on_success_button_label: Notificar reclamo de Login Diario exitoso
-mimo_auto_task_success_notify_toggle_label: Notificar si la tarea automática se completa con éxito
-mimo_auto_task_failure_notify_toggle_label: Notificar si la tarea automática falla
-mimo_auto_buy_success_notify_toggle_label: Notificar si la compra automática de recompensas tiene éxito
-mimo_auto_buy_failure_notify_toggle_label: Notificar si la compra automática de recompensas falla
+notification_settings_button_label: ""
+mimo_notification_settings: ""
+notification_settings_desc: ""
+notification_settings_note: ""
+notify_on_failure_button_label: ""
+notify_on_success_button_label: ""
 nsfw_prompt_error_message: "El mensaje contiene contenido NSFW, por favor intenta de nuevo con un mensaje diferente."
 nsfw_prompt_error_title: Mensaje NSFW detectado
 page_footer: "Página {current_page}/{total_pages}"
@@ -347,14 +344,12 @@ profile.card_template_select.enka_classic.label: Plantilla Enka clásica
 profile.card_template_select.enkacard.label: "Plantilla de tarjeta Enka {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy plantilla {num}"
 profile.card_template_select.placeholder: Selecciona una plantilla
-profile.card_template_select.same_author.description: "Diseñado y programado por {author}"
 profile.card_template_select.src.label: "Plantilla de tarjeta Star Rail {num}"
 profile.character_select.genshin: "C{const}R{refine}"
 profile.character_select.hsr: "E{const}R{refine}"
 profile.character_select.zzz: "Cine Mental {const}"
 profile.character_select.in_game: "Presentación en juego"
 profile.character_select.enka_network.description: Build de Enka Network
-profile.character_select.placeholder: Selecciona un personaje
 profile.generate_ai_art.button.label: Generar imagen con IA
 profile.generate_ai_art_modal.negative_prompt.label: Prompt negativo
 profile.generate_ai_art_modal.prompt.label: Prompt
@@ -370,17 +365,14 @@ profile.player_info.hoyolab.embed.description: "Nivel Trazacaminos: {level}\nPer
 profile.primary_color.button.label: Cambiar el color
 profile.primary_color_modal.color.label: Color (hex code)
 profile.primary_color_modal.title: Cambiar color de tarjeta
-profile.remove_from_cache.button.label: Eliminar del caché
 profile.remove_image.button.label: Eliminar imagen personalizada
 profile_command_gi_description: Generar tarjetas de builds de personajes y equipos de Genshin Impact
 profile_command_hsr_description: Generar tarjetas de builds de personajes y equipos de Honkai Star Rail
 profile_command_zzz_description: Generar tarjetas de builds de agentes y equipos de Zenless Zone Zero
-profile_command_game_value_description: Juego del UID
 profile_command_uid_param_description: "UID del jugador, esto anula el parámetro de la cuenta si se proporciona"
 pt_button.label: Recordatorio de Transmutador Paramétrico
 pt_modal.title: Configurar recordatorio de Transmutador Paramétrico
 pt_notify_embed_desc: "Transmutador paramétrico está listo para ser utilizado!"
-public_account_toggle.label: Configurar cuenta como pública
 pure_fiction: Pura ficción
 pyro: Pyro
 quantum: Cuántico
@@ -401,13 +393,13 @@ redeem_cooldown_embed.description: "Debido a los tiempos de espera para canjear,
 redeem_cooldown_embed.title: Canjeando códigos
 refinement_indicator: "Refinamiento {r}"
 relics: Reliquias
-reminder_button.label: Configurar recordatorio
 reminder_settings.not_set: No establecido
 reminder_settings.reminde.set.type1: "Estado: {status}\nLimite: {threshold}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}"
 reminder_settings.reminde.set.type2: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}"
 reminder_settings.reminde.set.type3: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\n"
 reminder_settings.reminde.set.type4: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\nDía de la semana para notificar: {notify_weekday}"
 reminder_settings_title: Recordatorios de notas en tiempo real
+reminder_settings_desc: ""
 reminder_toggle: Recordatorio
 resin_discount.embed.description: Los descuentos de jefes semanales aún no se han utilizado
 resin_reminder_button.label: Recordatorio de resina
@@ -488,23 +480,17 @@ img_theater_large_block_title: Teatro Fantasía
 img_theater_stats_line_five: "Tiempo Total de Actuación: {time}"
 img_theater_legend_block_support_chara: Personaje de apoyo
 img_theater_legend_block_trial_chara: Personaje de prueba
-img_theater_max_damage: "Mayor daño Infligido: {val}"
 img_theater_fastest_team: "(más rápido)"
 challenge_view.view_buffs: Ver buffos
 challenge_view.buff_select.placeholder: Selecciona un buffo para ver...
 scratch_card.embed.description: Rasca y gana aún sin completar
 zzz_engagement_button.label: Actividades
 zzz_engagement.embed.description: Las actividades de hoy aún no se ha completado
-honkai_daily_embed_title: Recordatorio de BP diario
-honkai_daily_embed_description: "El BP diario de hoy aún no se ha completado, {cur}/{max}"
 video_store.embed.description: Los ingresos de la tienda del videoclub aún no han sido reclamados
 scratch_card.incomplete: Incompleto
 reminder_modal.title: "Configurar recordatorio de {notify}"
-profile_view.set_cur_temp_as_default: Establecer la plantilla actual como predeterminada
 set_cur_temp_as_default.done: Hecho
-set_cur_temp_as_default.done_desc: "Tu plantilla predeterminada para {game} está configurada en {template}"
-remove_from_cache_finish_embed_desc: Vuelva a ejecutar el comando /profile para ver los cambios
-third_party_card_temp_error_title: Esta plantilla externa ha tenido un error
+third_party_card_temp_error_title: ""
 third_party_card_temp_error_message: "La plantilla de la tarjeta para este personaje ha sido restablecida a la plantilla de Hoyo Buddy. Si este error persiste, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: La cuenta ha estado bloqueada durante 20 minutos
 account_locked_description: "Ha ingresado la contraseña incorrecta demasiadas veces. Espera 20 minutos y vuelve a intentarlo. Si no puedes configurar tu cuenta, busca ayuda en nuestro [servidor de Discord] (<https://link.seria.moe/hb-dc>)."
@@ -529,7 +515,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Diseñador(es)
 card_settings.modifying_for: "Modificando configuración de la tarjeta para {name}"
-card_settings.card_color: Color de la tarjeta
+card_settings_modifying_for_desc: ""
+card_settings.template: ""
+card_settings_template_desc: ""
+card_settings.card_color: ""
 card_settings.no_color: Esta plantilla de tarjeta no admite modificaciones de color
 card_settings.color_default: Por defecto
 card_settings.current_image: Imagen actual
@@ -538,7 +527,8 @@ card_settings.team_card_image: Imagen de tarjeta de equipo
 profile.redraw_card_button_label: Rehacer tarjeta
 card_settings.footer: "Cuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta"
 card_settings.description: "Usa </upload> para subir una imagen y obtener su URL.\nPixiv es compatible, solo copia la URL de la imagen de la ilustración."
-profile.team_dark_mode.button.label: Modo oscuro de tarjeta de equipo
+profile.team_dark_mode.button.label: ""
+team_card_dark_theme_desc: ""
 profile.character_select.multi.placeholder: Seleccionar personaje(s)...
 zzz_search.agent_info: "Rareza: {rarity}\nEspecialidad: {specialty}\nTipo de ataque: {atk_type}\nFacción: {faction}\nElemento: {element}"
 cat_zzz_agents: Agentes
@@ -573,7 +563,6 @@ invite_page_btn_label: Invitar
 invite_command_desc: Invita a Hoyo Buddy a tu servidor o agréguelo a tus aplicaciones
 help_command_desc: "¿Necesitas ayuda? Vé la documentación o únete a nuestro servidor de Discord"
 title_dyk: "¿Sabías que...?"
-button_label_dyk: Mensajes de información
 events_view_start_date_embed_field: Hora de inicio
 events_view_end_date_embed_field: Hora de finalización
 events_view_ann_select_placeholder: Selecciona un evento...
@@ -581,10 +570,10 @@ events_view_banner_type_label: Banners
 events_command_description: Ver eventos de juego en curso
 events_view_ann_type_select_placeholder: Selecciona un tipo de evento...
 events_view_content_label: Ver contenido completo
-events_command_game_param_description: Ver eventos del juego
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: Mostrar rango
+profile_view_show_rank_button_label: ""
+profile_view_show_rank_desc: ""
 submit_button_label: Entregado
 show_tutorial_button_label: Mostrar tutorial
 close_button_label: Cerrar
@@ -625,10 +614,15 @@ gacha_view_filter_size_field_label: Ítems por página
 gacha_view_page_field_label: Página
 gacha_log_stats_title: Estadísticas de registro del gacha
 gacha_log_personal_stats_title: Estadísticas personales
-gacha_log_personal_stats: "Tiradas totales: {lifetime_pulls} ({lifetime_currency} {currency_emoji})\nTiradas totales en este banner: {total_pulls} ({total_currency} {currency_emoji})\nPity de 5★: {star5_pity_cur}/{star5_pity_max}\nPity de 4★: {star4_pity_cur}/10\nTotal de 5★: {total_star5}\nTotal de 4★: {total_star4}\nPromedio de tiradas por 5★: {avg_pulls_per_star5}\nPromedio de tiradas por 4★: {avg_pulls_per_star4}"
+gacha_log_personal_stats_lifetime: ""
+gacha_log_personal_stats_banner_total: ""
+gacha_log_personal_stats_pity: ""
+gacha_log_personal_stats_rarity_total: ""
+gacha_log_personal_stats_rarity_average: ""
 win_rate_stats: "{title} Tasa de victoria: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Estadísticas globales
-gacha_log_global_stats: "Tiradas totales: {lifetime}\nSuerte en 5★: {star5_luck}\nSuerte en 4★: {star4_luck}"
+gacha_log_global_stats_lifetime: ""
+gacha_log_global_stats_luck: ""
 win_rate_global_stats: "{title} Tasa de victoria: {win_rate}"
 gacha_log_view_full: Ver registros del gachapón
 gacha_view_command_description: Ver los registros importados del gacha
@@ -681,7 +675,6 @@ planar_fissure_label: Fisura del plano
 planar_fissure_desc: "El evento Fisura del plano empezará en {hour} hora(s), ¡recuerda guardar tu poder trazacaminos!"
 notif_modal.hours_before.label: Notificar X hora(s) antes de que el evento comience
 reminder_settings.reminde.set.type5: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificación: {hours_before} horas) antes de que comience el evento"
-invalid_lb_selected_error_msg: Clasificación seleccionada no valida
 chest_lb_title: Clasificación por cofres abiertos
 abyss_dmg_lb_title: Clasificación de único golpe más fuerte en el Espiral del Abismo
 theater_dmg_lb_title: Clasificación de único golpe más fuerte en el Teatro Imaginario
@@ -690,8 +683,8 @@ lb_view_command_description: Ver clasificaciones
 leaderboard_not_found: Clasificación no encontrada
 currently_logged_in_as: "Actualmente has iniciado sesión como:"
 not_you_label: "¿No eres tú? Haz clic para iniciar sesión con una cuenta diferente"
-profile_show_substat_rolls: Substats subidos
-team_card_settings_button_label: Configurar tarjeta de equipo
+profile_show_substat_rolls: ""
+profile_show_substat_rolls_desc: ""
 team_card_settings_embed_title: Modificando ajustes de tarjeta de equipo
 team_card_settings_embed_description: "Los ajustes de la tarjeta de equipo se comparte entre diferentes juegos y cuentas. Los cambios realizados en algunos ajustes pueden no reflejarse en la tarjeta cuando no son compatibles con la plantilla de la tarjeta.\nCuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta."
 characters.filter.rarity.placeholder: Filtrar por rareza...
@@ -701,13 +694,14 @@ redeem_cmd_available_codes: Códigos disponibles
 redeem_all_available_codes_button_label: Canjear todos los códigos disponibles
 akasha_show_details: Mostrar detalles de clasificación
 card_settings_hl_special_stats_button_label: Resaltar stats especiales
+card_settings_hl_stats_desc: ""
 challenge_command_abyss_desc: Generar tarjeta de Espiral del Abismo
 challenge_command_theater_desc: Generar tarjeta de Teatro Imaginario
 challenge_command_moc_desc: Generar tarjeta de Evocación Caótica
 challenge_command_pf_desc: Generar tarjeta de Pura Ficción
 challenge_command_apc_shadow_desc: Generar tarjeta de Espejismo Apocalíptico
 challenge_command_shiyu_desc: Generar tarjeta de Defensa Shiyu
-account_select_placeholder: Selecciona una cuenta...
+account_select_placeholder: ""
 guild_only_command_param_name: solo-para-servidores
 guild_only_command_param_desc: Mostrar solo la clasificación de los miembros del gremio
 yes_choice: "Si"
@@ -732,13 +726,10 @@ abyss_stats_teammate_use_rate: Tasa de Uso de Equipo
 abyss_stats_weapon_use_rate: Tasa de Uso de Arma
 abyss_stats_artifact_use_rate: Tasa de Uso de Artefactos
 build_cmd_genshin_desc: Ver las builds y guías de un personaje de Genshin Impact
-build_cmd_hsr_desc: Ver las builds y guías de un personaje de Honkai Star Rail
-build_cmd_zzz_desc: Ver las builds y guías de un personaje de Zenless Zone Zero
 build_cmd_character_param_desc: Ver las builds de un personaje de
 guide_title: "{name} Builds y Guías"
 no_guide_available: Aún no hay guías disponibles para este personaje
 show_playstyle_button_label: Jugabilidad
-flexible_char: Flexible
 show_synergy_button_label: Sinergias
 characters_per_page_modal_title: Personajes por pagina
 characters_per_page_num_label: Número
@@ -773,14 +764,14 @@ remembrance: Reminiscencia
 dismissible_default_title: ¡Nueva característica!
 dismissible_default_footer: Este mensaje solo se mostrará una vez
 dismissible_m3_art_desc: 'Ahora puedes usar las ilustraciones del Cine Mental 3 en las tarjetas de agentes de ZZZ. Selecciona "Hoyo Buddy plantilla 2" en los ajustes de la tarjeta y luego activa "Usar ilustración de M3" en los ajustes de imagen.'
+dismissible_settings_v2: ""
+dismissible_card_settings_v2: ""
 mimo_lottery_info_hoyolab_decos: " ...y {num} decoraciones de HoYoLAB"
 zzz_deadly_assault: " Incursión arriesgada"
 challenge_command_assault_desc: Generar tarjeta de Incursión arriesgada
 gi_mimo_start_desc: "Por favor, primero configura a Mimo Viajero en [HoYoLAB]({url})"
 mimo_auto_draw_button_label: Sorteo automático
 mimo_auto_draw_desc: "Hoyo Buddy sacará premios para ti siempre que sea posible; si tanto la compra automática como el sorteo automático están habilitados, intentará comprar primero y luego sacar premios si no hay suficientes puntos para comprar."
-mimo_auto_draw_success_notify_toggle_label: Notificar en caso de éxito del sorteo automático
-mimo_auto_draw_failure_notify_toggle_label: Notificar en caso de falla del sorteo automático
 mimo_auto_draw_embed_desc: "Hoyo Buddy obtuvo los siguientes ítems con {points} puntos.\nSi ves códigos de regalo abajo, por favor canjéalos manualmente con </redeem>."
 dismissible_hsr_temp2_desc: "Ahora podés usar la nueva plantilla Hoyo Buddy 2 para las tarjetas de personajes de HSR. Seleccionala en la configuración de tarjetas. Se recomienda usar imágenes horizontales para esta plantilla."
 bounty_commission.embed.description: Encargos de cacería aún no completados
@@ -792,7 +783,6 @@ web_events_embed_footer: Usa /web-events para configurar notificaciones
 auto_task_error_dm_content: "**{feature}** ha sido **__deshabilitado__** para `{account}` debido a un error. Puedes habilitarlo nuevamente usando {command}.\nSi este error persiste o no sabes cómo solucionarlo, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Admite imagen personalizada
 is_not_support_custom_image_desc: No admite imagen personalizada
-template_preview_header: Mirar ejemplo
 missing_permissions_error_title: A Hoyo Buddy le faltan permisos
 missing_permissions_error_message: "Hoyo Buddy requiere los siguientes permisos para funcionar correctamente:\n- Enviar mensajes\n- Insertar enlaces\n- Adjuntar archivos\n- Usar emojis externos"
 blocked_by_auto_mod_error_title: Este mensaje fue bloqueado por AutoMod
@@ -804,12 +794,9 @@ open_game_vietnam_label: Abrir juego (versión de Vietnam)
 gift_code_redeemed: El código de regalo ya ha sido reclamado
 show_ui_button_label: Mostrar UI
 hide_ui_button_label: Ocultar UI
-redeem_failure_notify_toggle_label: Notificar si el canjeo automático falla
-redeem_success_notify_toggle_label: Notificar si el canjeo automático es exitoso
 image_file_too_large_error_title: La imagen es muy pesada
 image_file_too_large_error_message: "La imagen subida es muy pesada, el peso máximo es {size}MB."
 api_request_timeout_title: Tiempo para solicitud de API agotado
-api_request_timeout_message: "Por favor, prueba otra vez más tarde"
 dismissible_one_year_anniversary_title: ¡Hoyo Buddy ya tiene 1 Año!
 dismissible_one_year_anniversary_desc: "¡Visita la [página de evento especial] (https://one.hb.seria.moe) para unirte al regalo de aniversario!"
 anniversary_dyk: "¡Hoyo Buddy tiene 1 año!. ¡Visita la [página de evento especial] (<https://one.hb.seria.moe>) para unirte al regalo del aniversario!"
@@ -836,3 +823,29 @@ enka_api_error_description: "Se ha producido un error al recuperar datos de Enka
 cleared: Terminado
 challenge_command_anomaly_desc: Generar tarjeta de Arbitraje atípico
 anomaly_arbitration: Arbitraje atípico
+account_settings_title: ""
+account_settings_desc: ""
+public_account_desc: ""
+daily_checkin_desc: ""
+redeem_code_desc: ""
+user_settings_title: ""
+user_settings_desc: ""
+dark_theme_desc: ""
+language_desc: ""
+language_select_placeholder: ""
+dyk_settings_desc: ""
+layout_view_edited: ""
+mimo_title: ""
+mimo_minimum_point_label: ""
+mimo_minimum_point_desc: ""
+disable_all_button_label: ""
+apply_template_to_all_chars: ""
+apply_template_to_all_chars_desc: ""
+apply_dark_theme_to_all_chars: ""
+apply_dark_theme_to_all_chars_desc: ""
+apply_label: ""
+card_settings_genshin_desc: ""
+card_settings_hsr_desc: ""
+card_settings_zzz_desc: ""
+card_settings_character_param: ""
+disabled_label: ""

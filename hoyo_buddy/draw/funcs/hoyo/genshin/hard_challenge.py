@@ -289,7 +289,9 @@ class HardChallengeCard:
         if recommendation is None:
             return
 
-        pill_pos = (pos[0] + 48, pos[1] + (752 if is_advantage else 829))
+        line = 1
+        pill_pos = (pos[0] + 48, pos[1] + 752)
+        max_width = pill_pos[0] + 776
 
         for rec in recommendation.split(" | "):
             rec_text = rec
@@ -316,6 +318,13 @@ class HardChallengeCard:
                     icons.append(icon)
 
             pill = self._create_pill(drawer, is_advantage=is_advantage, text=rec_text, icons=icons)
+            if pill_pos[0] + pill.width > max_width:
+                pill_pos = (pos[0] + 48, pill_pos[1] + pill.height + 25)
+                line += 1
+
+            if line > 3:
+                break  # Only draw up to 3 lines of pills
+
             im.paste(pill, pill_pos, pill)
             pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
 

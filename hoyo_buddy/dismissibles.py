@@ -55,15 +55,13 @@ HSR_TEMP2 = Dismissible(
 )
 SETTINGS_V2 = Dismissible(
     id="settings_v2",
-    description=LocaleStr(
-        key="dismissible_settings_v2", image="https://img.seria.moe/YoHNGyavlcaesNof.png"
-    ),
+    description=LocaleStr(key="dismissible_settings_v2"),
+    image="https://img.seria.moe/YoHNGyavlcaesNof.png",
 )
 CARD_SETTINGS_V2 = Dismissible(
     id="card_settings_v2",
-    description=LocaleStr(
-        key="dismissible_card_settings_v2", image="https://img.seria.moe/UjDqtMreVzkcdYIB.png"
-    ),
+    description=LocaleStr(key="dismissible_card_settings_v2"),
+    image="https://img.seria.moe/UjDqtMreVzkcdYIB.png",
 )
 
 

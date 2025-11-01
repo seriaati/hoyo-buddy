@@ -38,7 +38,6 @@ class DeleteAccountButton(Button[AccountManager]):
             style=ButtonStyle.red,
             emoji=DELETE,
             label=LocaleStr(key="delete_account_button_label"),
-            row=3,
         )
 
     async def callback(self, i: Interaction) -> None:

@@ -19,7 +19,7 @@ class User(BaseModel):
     settings: fields.BackwardOneToOneRelation[Settings]
     temp_data: fields.Field[dict[str, Any]] = fields.JSONField(default=dict)
     last_interaction: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
-    dismissibles: fields.Field[list[str]] = fields.JSONField(default=[])
+    dismissibles: fields.Field[list[str]] = fields.JSONField(default=["m3_art", "hsr_temp2"])
     accounts: fields.ReverseRelation[HoyoAccount]
 
     async def set_acc_as_current(self, acc: HoyoAccount) -> None:

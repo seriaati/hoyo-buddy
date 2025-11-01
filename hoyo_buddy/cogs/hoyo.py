@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 from discord import app_commands
 from discord.ext import commands
 
+from hoyo_buddy import dismissibles
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
-from hoyo_buddy.dismissibles import show_anniversary_dismissible
+from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
@@ -59,7 +60,11 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-        await show_anniversary_dismissible(i)
+        shown = await show_anniversary_dismissible(i)
+        if shown:
+            return
+
+        await show_dismissible(i, dismissibles.SETTINGS_V2)
 
     @app_commands.command(
         name=app_commands.locale_str("notes"), description=COMMANDS["notes"].description
@@ -92,7 +97,11 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-        await show_anniversary_dismissible(i)
+        shown = await show_anniversary_dismissible(i)
+        if shown:
+            return
+
+        await show_dismissible(i, dismissibles.SETTINGS_V2)
 
     @app_commands.command(
         name=app_commands.locale_str("exploration"), description=COMMANDS["exploration"].description
@@ -231,7 +240,11 @@ class Hoyo(commands.Cog):
         )
         await view.start(i)
 
-        await show_anniversary_dismissible(i)
+        shown = await show_anniversary_dismissible(i)
+        if shown:
+            return
+
+        await show_dismissible(i, dismissibles.SETTINGS_V2)
 
     @app_commands.command(
         name=app_commands.locale_str("web-events"), description=COMMANDS["web-events"].description

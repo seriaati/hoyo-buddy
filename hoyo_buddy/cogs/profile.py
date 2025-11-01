@@ -116,11 +116,14 @@ class Profile(
         if shown:
             return
 
-        if game is Game.ZZZ:
-            await show_dismissible(i, dismissibles.M3_ART_DISMISSIBLE)
+        shown = await show_dismissible(i, dismissibles.CARD_SETTINGS_V2)
+        if shown:
+            return
 
-        if game is Game.STARRAIL:
-            await show_dismissible(i, dismissibles.HSR_TEMP2_DISMISSIBLE)
+        if game is Game.ZZZ:
+            await show_dismissible(i, dismissibles.M3_ART)
+        elif game is Game.STARRAIL:
+            await show_dismissible(i, dismissibles.HSR_TEMP2)
 
     @app_commands.command(
         name=app_commands.locale_str("genshin"), description=COMMANDS["profile genshin"].description

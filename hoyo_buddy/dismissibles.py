@@ -37,34 +37,40 @@ class Dismissible:
         )
 
 
-BIRTHDAY_DISMISSIBLE = Dismissible(
+BIRTHDAY = Dismissible(
     id="one_year_anniversary",
     title=LocaleStr(key="dismissible_one_year_anniversary_title"),
     description=LocaleStr(key="dismissible_one_year_anniversary_desc"),
     image="https://one.hb.seria.moe/preview.png",
 )
-M3_ART_DISMISSIBLE = Dismissible(
+M3_ART = Dismissible(
     id="m3_art",
     description=LocaleStr(key="dismissible_m3_art_desc"),
     image="https://img.seria.moe/kVbCOBrqEMHlQsVd.png",
 )
-HSR_TEMP2_DISMISSIBLE = Dismissible(
+HSR_TEMP2 = Dismissible(
     id="hsr_temp2",
     description=LocaleStr(key="dismissible_hsr_temp2_desc"),
     image="https://img.seria.moe/HLHoTSwcXvAPHzJB.png",
 )
-SETTINGS_V2_DISMISSIBLE = Dismissible(
+SETTINGS_V2 = Dismissible(
     id="settings_v2",
     description=LocaleStr(
         key="dismissible_settings_v2", image="https://img.seria.moe/YoHNGyavlcaesNof.png"
     ),
 )
+CARD_SETTINGS_V2 = Dismissible(
+    id="card_settings_v2",
+    description=LocaleStr(
+        key="dismissible_card_settings_v2", image="https://img.seria.moe/UjDqtMreVzkcdYIB.png"
+    ),
+)
 
 
-async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
+async def show_dismissible(i: Interaction, dismissible: Dismissible) -> bool:
     user = await User.get(id=i.user.id)
     if dismissible.id in user.dismissibles:
-        return
+        return False
 
     locale = await get_locale(i)
     embed = dismissible.to_embed(locale)
@@ -78,9 +84,11 @@ async def show_dismissible(i: Interaction, dismissible: Dismissible) -> None:
     user.dismissibles = list(set(user.dismissibles))
     await user.save(update_fields=("dismissibles",))
 
+    return True
+
 
 async def show_anniversary_dismissible(i: Interaction) -> bool:
     if is_hb_birthday():
-        await show_dismissible(i, BIRTHDAY_DISMISSIBLE)
+        await show_dismissible(i, BIRTHDAY)
         return True
     return False

@@ -7,10 +7,10 @@ from typing import Any
 
 import sentry_sdk
 from loguru import logger
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.logging import InterceptHandler

@@ -213,7 +213,6 @@ class CardSettingsView(ui.LayoutView):
         self.add_item(container)
 
         if followup:
-            await i.followup.send(view=self, ephemeral=True)
-            self.message = await i.original_response()
+            self.message = await i.followup.send(view=self, ephemeral=True, wait=True)
         else:
             self.message = await i.edit_original_response(view=self)

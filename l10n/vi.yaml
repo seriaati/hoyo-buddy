@@ -825,15 +825,15 @@ challenge_command_anomaly_desc: Tạo thẻ Trọng Tài Dị Tướng
 anomaly_arbitration: Trọng Tài Dị Tướng
 account_settings_title: "Cài đặt tài khoản"
 account_settings_desc: "Cài đặt ở đây là duy nhất cho mỗi tài khoản game."
-public_account_desc: "Đặt tài khoản công khai\\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
-daily_checkin_desc: "Tự động điểm danh hàng ngày\\nTự động nhận phần thưởng trong sự kiện điểm danh web."
-redeem_code_desc: "Tự động đổi mã\\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
+public_account_desc: "Đặt tài khoản công khai\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
+daily_checkin_desc: "Tự động điểm danh hàng ngày\nTự động nhận phần thưởng trong sự kiện điểm danh web."
+redeem_code_desc: "Tự động đổi mã\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
 user_settings_title: "Cài đặt người dùng"
 user_settings_desc: "Cài đặt ở đây được liên kết với tài khoản Discord của bạn, chúng áp dụng cho tất cả tài khoản game."
-dark_theme_desc: "Chủ đề tối\\nLàm cho infographic sử dụng bảng màu tối, không phải tất cả infographic đều hỗ trợ tính năng này."
-language_desc: "Ngôn ngữ\\nHoyo Buddy sẽ trả lời bạn bằng ngôn ngữ này. Một số văn bản có thể vẫn bằng tiếng Anh, xem [FAQ](:docs/FAQ:) để biết tại sao."
+dark_theme_desc: "Chủ đề tối\nLàm cho infographic sử dụng bảng màu tối, không phải tất cả infographic đều hỗ trợ tính năng này."
+language_desc: "Ngôn ngữ\nHoyo Buddy sẽ trả lời bạn bằng ngôn ngữ này. Một số văn bản có thể vẫn bằng tiếng Anh, xem [FAQ](:docs/FAQ:) để biết tại sao."
 language_select_placeholder: Chọn một ngôn ngữ
-dyk_settings_desc: "Tin nhắn \"Bạn có biết?\"\\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
+dyk_settings_desc: "Tin nhắn \"Bạn có biết?\"\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
 layout_view_edited: "Các thành phần tương tác đã bị vô hiệu hóa để tiết kiệm tài nguyên hệ thống, chạy lại lệnh nếu bạn muốn sử dụng chúng."
 mimo_title: Cài đặt Mimo Du Lịch
 mimo_minimum_point_label: Điểm tối thiểu cần giữ

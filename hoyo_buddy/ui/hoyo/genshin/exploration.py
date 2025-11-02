@@ -15,6 +15,7 @@ from hoyo_buddy.models import DrawInput
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from io import BytesIO
 
     import genshin
 
@@ -30,6 +31,8 @@ class ExplorationView(ui.View):
         super().__init__(author=author, locale=locale)
         self.account = account
         self.dark_mode = dark_mode
+        self.buffer: BytesIO | None = None
+
         self._genshin_user: genshin.models.PartialGenshinUserStats | None = None
 
     @property
@@ -48,7 +51,7 @@ class ExplorationView(ui.View):
         return self._genshin_user
 
     async def draw_exploration_card(self, bot: HoyoBuddy) -> discord.File:
-        return await draw_exploration_card(
+        self.buffer = await draw_exploration_card(
             DrawInput(
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
@@ -59,6 +62,8 @@ class ExplorationView(ui.View):
             ),
             self.genshin_user,
         )
+        self.buffer.seek(0)
+        return discord.File(self.buffer, filename="exploration.png")
 
     async def start(self, i: Interaction) -> None:
         client = self.account.client
@@ -86,7 +91,14 @@ class ShowCard(ui.Button[ExplorationView]):
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
         embed = self.view.start_embed
-        file_ = await self.view.draw_exploration_card(i.client)
+        buffer = self.view.buffer
+
+        if buffer is None:
+            file_ = await self.view.draw_exploration_card(i.client)
+        else:
+            buffer.seek(0)
+            file_ = discord.File(buffer, filename="exploration.png")
+
         await self.unset_loading_state(i, embed=embed, attachments=[file_])
 
 

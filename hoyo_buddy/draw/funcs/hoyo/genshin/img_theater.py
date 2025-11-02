@@ -137,10 +137,15 @@ class ImgTheaterCard:
             fastest_text = ""
 
         if getattr(act, "is_arcana", False):
-            title = LocaleStr(
-                key=f"holy_card_challenge_{getattr(act, 'arcana_number', 0)}",
-                mi18n_game=Game.GENSHIN,
-            ).translate(self.locale)
+            title = (
+                LocaleStr(
+                    key=f"holy_card_challenge_{getattr(act, 'arcana_number', 0)}",
+                    mi18n_game=Game.GENSHIN,
+                )
+                .translate(self.locale)
+                .replace("Ⅰ", "I")  # noqa: RUF001
+                .replace("Ⅱ", "II")
+            )
         else:
             title = LocaleStr(
                 key="role_combat_round_count", mi18n_game=Game.GENSHIN, n=act.round_id

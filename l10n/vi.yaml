@@ -143,8 +143,8 @@ email_password_modal_email_input_label: Email hoặc tên người dùng
 email_password_modal_password_input_label: mật khẩu
 enter_email_password_instructions_description: "Email và mật khẩu đề cập đến email và mật khẩu của **tài khoản Hoyoverse**, không phải tài khoản Google, Apple, v.v..\n- [Cách này hoạt động nhu thế nào?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Tôi không có tài khoản Hoyoverse (Tôi đăng nhập bằng Google, Facebook, v.v.)](:docs/Before-Start:)\n- [Tôi là người chơi trên Xbox/PlayStation](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Thay đổi cấp nón ánh sáng
-dark_theme: ""
-card_dark_theme_desc: ""
+dark_theme: Chủ đề tối
+card_dark_theme_desc: Sử dụng bảng màu tối cho thẻ build của nhân vật này.
 error_footer: "Bạn có thể tìm trợ giúp trên máy chủ Discord. Dùng lệnh /about để nhận link vào"
 error_title: Đã xẩy ra lỗi
 erudition: Tri Thức
@@ -315,12 +315,12 @@ notif_modal.notify_time.description: "Thông báo X tiếng trước khi máy ch
 notif_modal.notify_weekday.label: Ngày trong tuần muốn nhắc
 notif_modal.threshold.label: Nhắc khi đạt ngưỡng
 notif_modal.threshold.description: "Thông báo sẽ được gửi khi đạt được mức ngưỡng"
-notification_settings_button_label: ""
-mimo_notification_settings: ""
-notification_settings_desc: ""
-notification_settings_note: ""
-notify_on_failure_button_label: ""
-notify_on_success_button_label: ""
+notification_settings_button_label: Cài đặt thông báo
+mimo_notification_settings: Cài đặt thông báo cho Mimo Du Lịch
+notification_settings_desc: Điều chỉmh thông báo nào để nhận.
+notification_settings_note: "Lưu ý: Hoyo Buddy gửi thông báo qua tin nhắn riêng, hãy đảm bảo DM của bạn được mở để nhận chúng."
+notify_on_failure_button_label: Thông báo khi thất bại
+notify_on_success_button_label: Thông báo khi thành công
 nsfw_prompt_error_message: "Nôi dung tạo ảnh gồm có nội dung NSFW, vui lòng thử lại bằng nội dung khác"
 nsfw_prompt_error_title: Đã phát hiện Nội dung NSFW
 page_footer: "Trang {current_page}/{total_pages}"
@@ -399,7 +399,7 @@ reminder_settings.reminde.set.type2: "Trạng thái: {status}\nNhắc khoảng: 
 reminder_settings.reminde.set.type3: "Trạng thái: {status}\nNhắc khoảng: {notify_interval} phút\nSố lần nhắc nhở: {max_notif_count}\nThời gian Nhắc Nhở: {notify_time} tiếng trước khi máy chủ đặt lại\n"
 reminder_settings.reminde.set.type4: "Trạng thái: {status}\nNhắc khoảng: {notify_interval} phút\nSố lần nhắc nhở: {max_notif_count}\nThời gian Nhắc Nhở: {notify_time} tiếng trước khi máy chủ đặt lại\nNhắc nhở ngày trong tuần: {notify_weekday}"
 reminder_settings_title: Nhắc nhở Ghi Chép Thời Gian Thực
-reminder_settings_desc: ""
+reminder_settings_desc: Thông báo cho bạn qua Tin nhắn Riêng khi các sự kiện trong game nhất định xảy ra.
 reminder_toggle: Nhắc nhở
 resin_discount.embed.description: Lượt giảm nhựa tiêu hao chưa dùng tới
 resin_reminder_button.label: Nhắc nhở Nhựa
@@ -490,7 +490,7 @@ video_store.embed.description: Doanh thu Tiệm Băng Hình chưa nhận
 scratch_card.incomplete: Chưa hoàn thành
 reminder_modal.title: "Cài đặt Lời nhắc {notify}"
 set_cur_temp_as_default.done: Xong
-third_party_card_temp_error_title: ""
+third_party_card_temp_error_title: Mẫu Thẻ Của Bên Thứ Ba Này Bị Lỗi
 third_party_card_temp_error_message: "Mẫu thẻ cho nhân vật này đã bị đặt lại sang Mẫu thẻ Hoyo Buddy. Nếu lỗi này tiếp tục điễn ra, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Tài khoản của bạn đã bị khóa trong vòng 20 phút
 account_locked_description: "Bạn đã nhập mật khẩu sai quá nhiều lần. Vui lòng thử lại sau 20 phút. Nếu bạn không thể thiết lập tài khoản, vui lòng tìm trợ giúp trong [máy chủ Discord](<https://link.seria.moe/hb-dc>)."
@@ -515,10 +515,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Hạng {rarity}"
 about_command.designers: Người thiết kế
 card_settings.modifying_for: "Chỉnh sửa cài đặt thẻ cho {name}"
-card_settings_modifying_for_desc: ""
-card_settings.template: ""
-card_settings_template_desc: ""
-card_settings.card_color: ""
+card_settings_modifying_for_desc: Tất cả cài đặt thẻ là duy nhất cho mỗi nhân vật. Một số mẫu thẻ có thể không hỗ trợ một số cài đặt nhất định.
+card_settings.template: Mẫu thẻ
+card_settings_template_desc: "Một số mẫu của bên thứ ba có thể không hỗ trợ nhân vật HoYoLAB/Miyoushe. Trong trường hợp đó, bot sẽ sử dụng mẫu của Hoyo Buddy."
+card_settings.card_color: Màu sắc
 card_settings.no_color: Mẫu thẻ này không hỗ trợ đổi màu
 card_settings.color_default: Mặc định
 card_settings.current_image: Hình hiện tại
@@ -527,8 +527,8 @@ card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
 card_settings.footer: "Khi đã xong, nhấn nút màu xanh lá ở tin nhắn phía trên để làm mới thẻ"
 card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên.\nHỗ trợ ảnh trên Pixiv, chỉ cần sao chép link ảnh của tác phẩm đó."
-profile.team_dark_mode.button.label: ""
-team_card_dark_theme_desc: ""
+profile.team_dark_mode.button.label: Chủ đề tối thẻ đội
+team_card_dark_theme_desc: "Sử dụng bảng màu tối cho thẻ đội. Điều này áp dụng cho tất cả thẻ đội, bất kể nhân vật nào trong đó."
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"
 cat_zzz_agents: Người Đại Diện
@@ -572,8 +572,8 @@ events_view_ann_type_select_placeholder: Hãy chọn loại sự kiện...
 events_view_content_label: Coi đầy đủ nội dung
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: ""
-profile_view_show_rank_desc: ""
+profile_view_show_rank_button_label: Hiển thị xếp hạng
+profile_view_show_rank_desc: "Hiển thị xếp hạng của nhân vật này trên [akasha.cv](https://akasha.cv)."
 submit_button_label: Gửi
 show_tutorial_button_label: Xem hướng dẫn
 close_button_label: Đóng
@@ -614,15 +614,15 @@ gacha_view_filter_size_field_label: Số vật phẩm mỗi trang
 gacha_view_page_field_label: Trang
 gacha_log_stats_title: Thống kê nhật ký Gacha
 gacha_log_personal_stats_title: Thống kê cá nhân
-gacha_log_personal_stats_lifetime: ""
-gacha_log_personal_stats_banner_total: ""
-gacha_log_personal_stats_pity: ""
-gacha_log_personal_stats_rarity_total: ""
-gacha_log_personal_stats_rarity_average: ""
+gacha_log_personal_stats_lifetime: "Tổng số lần quay: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "Tổng số lần quay cho banner này: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "Xác suất {rarity}★: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "Tổng {rarity}★: {total}"
+gacha_log_personal_stats_rarity_average: "Trung bình số lần quay cho mỗi {rarity}★: {avg}"
 win_rate_stats: "Tỷ lệ thắng {title}: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Thống kê toàn cầu
-gacha_log_global_stats_lifetime: ""
-gacha_log_global_stats_luck: ""
+gacha_log_global_stats_lifetime: "Tổng số lần quay: {lifetime}"
+gacha_log_global_stats_luck: "Vận may {rarity}★: {luck}"
 win_rate_global_stats: "Tỷ lệ thắng {title}: {win_rate}"
 gacha_log_view_full: Xem nhật ký gacha
 gacha_view_command_description: Xem nhật ký gacha đã nhập
@@ -683,8 +683,8 @@ lb_view_command_description: Xem bảng xếp hạng
 leaderboard_not_found: Không tìm thấy bảng xếp hạng này
 currently_logged_in_as: "Bạn hiện đang đăng nhập với tư cách:"
 not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài khoản khác"
-profile_show_substat_rolls: ""
-profile_show_substat_rolls_desc: ""
+profile_show_substat_rolls: Hiển thị cường hóa thuộc tính phụ
+profile_show_substat_rolls_desc: Hiển thị có bao nhiêu lần cường hóa đóng góp vào giá trị cuối cùng của thuộc tính phụ.
 team_card_settings_embed_title: Chỉnh sửa thiết lập thẻ đội
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
@@ -694,14 +694,14 @@ redeem_cmd_available_codes: Mã có sẵn
 redeem_all_available_codes_button_label: Đổi tất cả mã có sẵn
 akasha_show_details: Hiển thị bảng xếp hạng chi tiết
 card_settings_hl_special_stats_button_label: Thống kê nổi bật đặc biệt
-card_settings_hl_stats_desc: ""
+card_settings_hl_stats_desc: Nhấn mạnh các chỉ số quan trọng của nhân vật bằng màu sắc.
 challenge_command_abyss_desc: Tạo thẻ La Hoàn Thâm Cảnh
 challenge_command_theater_desc: Tạo thẻ Nhà Hát Giả Tưởng
 challenge_command_moc_desc: Tạo thẻ Hồi Ước Hỗn Độn
 challenge_command_pf_desc: Tạo thẻ Kể Chuyện Hư Cấu
 challenge_command_apc_shadow_desc: Tạo thẻ Ảo Ảnh Tận Thế
 challenge_command_shiyu_desc: Tạo thẻ Bảo Vệ Trụ Shiyu
-account_select_placeholder: ""
+account_select_placeholder: Chọn một tài khoản
 guild_only_command_param_name: chế-độ-máy-chủ
 guild_only_command_param_desc: Chỉ hiển thị xếp hạng của thành viên máy chủ trong bản xếp hạng
 yes_choice: "Có"
@@ -764,8 +764,8 @@ remembrance: Ký Ức
 dismissible_default_title: Tính năng mới!
 dismissible_default_footer: Tin nhắn này chỉ hiển thị một lần.
 dismissible_m3_art_desc: 'Bạn giờ có thể sử dụng ảnh Phim Ý Cảnh 3 trong thẻ người đại diện ZZZ, chọn "Mẫu thẻ Hoyo Buddy 3" trong phần cài đặt thẻ, và bật "Sử dụng ảnh M3" trong phần cài đặt ảnh'
-dismissible_settings_v2: ""
-dismissible_card_settings_v2: ""
+dismissible_settings_v2: "Nói lời tạm biệt với cài đặt khó hiểu và rải rác! Cài đặt của Hoyo Buddy đã được cải tiến để có tổ chức hơn và dễ sử dụng hơn, với một số tính năng chất lượng cuộc sống mới, hãy thử trong </settings>"
+dismissible_card_settings_v2: "Cài đặt thẻ đã được cải tiến để có tổ chức hơn và dễ sử dụng hơn. Bạn cũng có thể áp dụng hàng loạt mẫu cho tất cả nhân vật (một tính năng được yêu cầu từ lâu!) Hãy thử trong </card-settings genshin>, </card-settings hsr>, và </card-settings zzz>"
 mimo_lottery_info_hoyolab_decos: "...và {num} đồ trang trí HoYoLAB"
 zzz_deadly_assault: Tập Kích Nguy Cấp
 challenge_command_assault_desc: Tạo thẻ Tập Kích Nguy Cấp
@@ -823,29 +823,30 @@ enka_api_error_description: "Đã có lỗi xảy ra trong quá trình lấy d�
 cleared: Đã vượt ải
 challenge_command_anomaly_desc: Tạo thẻ Trọng Tài Dị Tướng
 anomaly_arbitration: Trọng Tài Dị Tướng
-account_settings_title: ""
-account_settings_desc: ""
-public_account_desc: ""
-daily_checkin_desc: ""
-redeem_code_desc: ""
-user_settings_title: ""
-user_settings_desc: ""
-dark_theme_desc: ""
-language_desc: ""
-language_select_placeholder: ""
-dyk_settings_desc: ""
-layout_view_edited: ""
-mimo_title: ""
-mimo_minimum_point_label: ""
-mimo_minimum_point_desc: ""
-disable_all_button_label: ""
-apply_template_to_all_chars: ""
-apply_template_to_all_chars_desc: ""
-apply_dark_theme_to_all_chars: ""
-apply_dark_theme_to_all_chars_desc: ""
-apply_label: ""
-card_settings_genshin_desc: ""
-card_settings_hsr_desc: ""
-card_settings_zzz_desc: ""
-card_settings_character_param: ""
-disabled_label: ""
+account_settings_title: "Cài đặt tài khoản"
+account_settings_desc: "Cài đặt ở đây là duy nhất cho mỗi tài khoản game."
+public_account_desc: "Đặt tài khoản công khai\\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
+daily_checkin_desc: "Tự động điểm danh hàng ngày\\nTự động nhận phần thưởng trong sự kiện điểm danh web."
+redeem_code_desc: "Tự động đổi mã\\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
+user_settings_title: "Cài đặt người dùng"
+user_settings_desc: "Cài đặt ở đây được liên kết với tài khoản Discord của bạn, chúng áp dụng cho tất cả tài khoản game."
+dark_theme_desc: "Chủ đề tối\\nLàm cho infographic sử dụng bảng màu tối, không phải tất cả infographic đều hỗ trợ tính năng này."
+language_desc: "Ngôn ngữ\\nHoyo Buddy sẽ trả lời bạn bằng ngôn ngữ này. Một số văn bản có thể vẫn bằng tiếng Anh, xem [FAQ](:docs/FAQ:) để biết tại sao."
+language_select_placeholder: Chọn một ngôn ngữ
+dyk_settings_desc: "Tin nhắn \"Bạn có biết?\"\\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
+layout_view_edited: "Các thành phần tương tác đã bị vô hiệu hóa để tiết kiệm tài nguyên hệ thống, chạy lại lệnh nếu bạn muốn sử dụng chúng."
+mimo_title: Cài đặt Mimo Du Lịch
+mimo_minimum_point_label: Điểm tối thiểu cần giữ
+mimo_minimum_point_desc: "Khi tự động rút thưởng, Hoyo Buddy sẽ đảm bảo điểm của bạn luôn trên giá trị này, đặt thành 0 để rút bất cứ khi nào có thể."
+disable_all_button_label: Tắt tất cả thông báo
+apply_template_to_all_chars: Áp dụng mẫu thẻ hiện tại cho tất cả nhân vật
+apply_template_to_all_chars_desc: "Tất cả nhân vật **tương lai và hiện tại** sẽ sử dụng **{template}**."
+apply_dark_theme_to_all_chars: Áp dụng tùy chọn chủ đề tối hiện tại cho tất cả nhân vật
+apply_dark_theme_to_all_chars_desc: "Tất cả nhân vật **tương lai và hiện tại** sẽ dùng chủ đề tối **{status}**."
+apply_label: Áp dụng
+card_settings_genshin_desc: Sửa đổi giao diện của thẻ build nhân vật Genshin Impact
+card_settings_hsr_desc: Sửa đổi giao diện của thẻ build nhân vật Honkai Star Rail
+card_settings_zzz_desc: Sửa đổi giao diện của thẻ build Người Đại Diện Zenless Zone Zero
+card_settings_character_param: Nhân vật để sửa đổi cài đặt thẻ
+disabled_label: Đã tắt
+none: Không có

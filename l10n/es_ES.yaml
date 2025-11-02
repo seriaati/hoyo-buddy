@@ -143,8 +143,8 @@ email_password_modal_email_input_label: Correo o Nombre de usuario
 email_password_modal_password_input_label: Constraseña
 enter_email_password_instructions_description: "El correo y contraseña se refieren al **correo y contraseña de la cuenta de Hoyoverse**, no a cuentas de Google, Apple, etc.\n- [¿Cómo funciona este método de inicio de sesión?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [No tengo una cuenta de Hoyoverse (inicio sesión con Google, Facebook, etc.)](:docs/Before-Start:)\n- [Soy un jugador de consola](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Cambiar el nivel del cono de luz
-dark_theme: ""
-card_dark_theme_desc: ""
+dark_theme: Tema oscuro
+card_dark_theme_desc: Usa un esquema de color oscuro para la tarjeta de build de este personaje.
 error_footer: "Puedes encontrar ayuda en nuestro servidor de Discord, link en /about"
 error_title: A ocurrido un error
 erudition: Erudición
@@ -315,12 +315,12 @@ notif_modal.notify_time.description: "Notificar X horas antes del reinicio del s
 notif_modal.notify_weekday.label: Día de la semana para notificar
 notif_modal.threshold.label: Límite
 notif_modal.threshold.description: "La notificación se envía al alcanzar el limite"
-notification_settings_button_label: ""
-mimo_notification_settings: ""
-notification_settings_desc: ""
-notification_settings_note: ""
-notify_on_failure_button_label: ""
-notify_on_success_button_label: ""
+notification_settings_button_label: Configuración de notificaciones
+mimo_notification_settings: Configuración de notificaciones para Mimo Viajero
+notification_settings_desc: Configura qué notificaciones recibir.
+notification_settings_note: "Nota: Hoyo Buddy envía notificaciones a través de mensajes directos, asegúrate de que tus MD estén abiertos para recibirlos."
+notify_on_failure_button_label: Notificar si falla
+notify_on_success_button_label: Notificar si tiene éxito
 nsfw_prompt_error_message: "El mensaje contiene contenido NSFW, por favor intenta de nuevo con un mensaje diferente."
 nsfw_prompt_error_title: Mensaje NSFW detectado
 page_footer: "Página {current_page}/{total_pages}"
@@ -399,7 +399,7 @@ reminder_settings.reminde.set.type2: "Estado: {status}\nIntervalo de notificaci�
 reminder_settings.reminde.set.type3: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\n"
 reminder_settings.reminde.set.type4: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\nDía de la semana para notificar: {notify_weekday}"
 reminder_settings_title: Recordatorios de notas en tiempo real
-reminder_settings_desc: ""
+reminder_settings_desc: Te notifica por Mensaje Directo cuando ocurren ciertos eventos en el juego.
 reminder_toggle: Recordatorio
 resin_discount.embed.description: Los descuentos de jefes semanales aún no se han utilizado
 resin_reminder_button.label: Recordatorio de resina
@@ -490,7 +490,7 @@ video_store.embed.description: Los ingresos de la tienda del videoclub aún no h
 scratch_card.incomplete: Incompleto
 reminder_modal.title: "Configurar recordatorio de {notify}"
 set_cur_temp_as_default.done: Hecho
-third_party_card_temp_error_title: ""
+third_party_card_temp_error_title: Esta Plantilla de Tarjeta de Terceros Dio Error
 third_party_card_temp_error_message: "La plantilla de la tarjeta para este personaje ha sido restablecida a la plantilla de Hoyo Buddy. Si este error persiste, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
 account_locked_title: La cuenta ha estado bloqueada durante 20 minutos
 account_locked_description: "Ha ingresado la contraseña incorrecta demasiadas veces. Espera 20 minutos y vuelve a intentarlo. Si no puedes configurar tu cuenta, busca ayuda en nuestro [servidor de Discord] (<https://link.seria.moe/hb-dc>)."
@@ -515,10 +515,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Diseñador(es)
 card_settings.modifying_for: "Modificando configuración de la tarjeta para {name}"
-card_settings_modifying_for_desc: ""
-card_settings.template: ""
-card_settings_template_desc: ""
-card_settings.card_color: ""
+card_settings_modifying_for_desc: Todas las configuraciones de tarjeta son únicas para cada personaje. Algunas plantillas de tarjeta pueden no admitir ciertas configuraciones.
+card_settings.template: Plantilla
+card_settings_template_desc: "Algunas plantillas de terceros pueden no admitir personajes de HoYoLAB/Miyoushe. En ese caso, el bot usará la plantilla de Hoyo Buddy."
+card_settings.card_color: Color
 card_settings.no_color: Esta plantilla de tarjeta no admite modificaciones de color
 card_settings.color_default: Por defecto
 card_settings.current_image: Imagen actual
@@ -527,8 +527,8 @@ card_settings.team_card_image: Imagen de tarjeta de equipo
 profile.redraw_card_button_label: Rehacer tarjeta
 card_settings.footer: "Cuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta"
 card_settings.description: "Usa </upload> para subir una imagen y obtener su URL.\nPixiv es compatible, solo copia la URL de la imagen de la ilustración."
-profile.team_dark_mode.button.label: ""
-team_card_dark_theme_desc: ""
+profile.team_dark_mode.button.label: Tema oscuro de tarjeta de equipo
+team_card_dark_theme_desc: "Usa un esquema de color oscuro para las tarjetas de equipo. Esto se aplica a todas las tarjetas de equipo, sin importar qué personajes estén en ellas."
 profile.character_select.multi.placeholder: Seleccionar personaje(s)...
 zzz_search.agent_info: "Rareza: {rarity}\nEspecialidad: {specialty}\nTipo de ataque: {atk_type}\nFacción: {faction}\nElemento: {element}"
 cat_zzz_agents: Agentes
@@ -572,8 +572,8 @@ events_view_ann_type_select_placeholder: Selecciona un tipo de evento...
 events_view_content_label: Ver contenido completo
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: ""
-profile_view_show_rank_desc: ""
+profile_view_show_rank_button_label: Mostrar clasificación
+profile_view_show_rank_desc: "Muestra la clasificación de este personaje en [akasha.cv](https://akasha.cv)."
 submit_button_label: Entregado
 show_tutorial_button_label: Mostrar tutorial
 close_button_label: Cerrar
@@ -614,15 +614,15 @@ gacha_view_filter_size_field_label: Ítems por página
 gacha_view_page_field_label: Página
 gacha_log_stats_title: Estadísticas de registro del gacha
 gacha_log_personal_stats_title: Estadísticas personales
-gacha_log_personal_stats_lifetime: ""
-gacha_log_personal_stats_banner_total: ""
-gacha_log_personal_stats_pity: ""
-gacha_log_personal_stats_rarity_total: ""
-gacha_log_personal_stats_rarity_average: ""
+gacha_log_personal_stats_lifetime: "Tiradas de por vida: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "Total de tiradas para este banner: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "Misericordia de {rarity}★: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "Total de {rarity}★: {total}"
+gacha_log_personal_stats_rarity_average: "Tiradas promedio por {rarity}★: {avg}"
 win_rate_stats: "{title} Tasa de victoria: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Estadísticas globales
-gacha_log_global_stats_lifetime: ""
-gacha_log_global_stats_luck: ""
+gacha_log_global_stats_lifetime: "Tiradas de por vida: {lifetime}"
+gacha_log_global_stats_luck: "Suerte de {rarity}★: {luck}"
 win_rate_global_stats: "{title} Tasa de victoria: {win_rate}"
 gacha_log_view_full: Ver registros del gachapón
 gacha_view_command_description: Ver los registros importados del gacha
@@ -683,8 +683,8 @@ lb_view_command_description: Ver clasificaciones
 leaderboard_not_found: Clasificación no encontrada
 currently_logged_in_as: "Actualmente has iniciado sesión como:"
 not_you_label: "¿No eres tú? Haz clic para iniciar sesión con una cuenta diferente"
-profile_show_substat_rolls: ""
-profile_show_substat_rolls_desc: ""
+profile_show_substat_rolls: Mostrar mejoras de substats
+profile_show_substat_rolls_desc: Muestra cuántas mejoras contribuyen al valor final de un substat.
 team_card_settings_embed_title: Modificando ajustes de tarjeta de equipo
 team_card_settings_embed_description: "Los ajustes de la tarjeta de equipo se comparte entre diferentes juegos y cuentas. Los cambios realizados en algunos ajustes pueden no reflejarse en la tarjeta cuando no son compatibles con la plantilla de la tarjeta.\nCuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta."
 characters.filter.rarity.placeholder: Filtrar por rareza...
@@ -694,14 +694,14 @@ redeem_cmd_available_codes: Códigos disponibles
 redeem_all_available_codes_button_label: Canjear todos los códigos disponibles
 akasha_show_details: Mostrar detalles de clasificación
 card_settings_hl_special_stats_button_label: Resaltar stats especiales
-card_settings_hl_stats_desc: ""
+card_settings_hl_stats_desc: Destaca las estadísticas importantes de un personaje con color.
 challenge_command_abyss_desc: Generar tarjeta de Espiral del Abismo
 challenge_command_theater_desc: Generar tarjeta de Teatro Imaginario
 challenge_command_moc_desc: Generar tarjeta de Evocación Caótica
 challenge_command_pf_desc: Generar tarjeta de Pura Ficción
 challenge_command_apc_shadow_desc: Generar tarjeta de Espejismo Apocalíptico
 challenge_command_shiyu_desc: Generar tarjeta de Defensa Shiyu
-account_select_placeholder: ""
+account_select_placeholder: Selecciona una cuenta
 guild_only_command_param_name: solo-para-servidores
 guild_only_command_param_desc: Mostrar solo la clasificación de los miembros del gremio
 yes_choice: "Si"
@@ -764,8 +764,8 @@ remembrance: Reminiscencia
 dismissible_default_title: ¡Nueva característica!
 dismissible_default_footer: Este mensaje solo se mostrará una vez
 dismissible_m3_art_desc: 'Ahora puedes usar las ilustraciones del Cine Mental 3 en las tarjetas de agentes de ZZZ. Selecciona "Hoyo Buddy plantilla 2" en los ajustes de la tarjeta y luego activa "Usar ilustración de M3" en los ajustes de imagen.'
-dismissible_settings_v2: ""
-dismissible_card_settings_v2: ""
+dismissible_settings_v2: "¡Dile adiós a las configuraciones confusas y dispersas! Las configuraciones de Hoyo Buddy han sido renovadas para ser más organizadas y fáciles de usar, con algunas nuevas funciones de calidad de vida, pruébalo en </settings>"
+dismissible_card_settings_v2: "Las configuraciones de tarjeta han sido renovadas para ser más organizadas y fáciles de usar. También puedes aplicar plantillas en masa a todos los personajes (¡una característica muy solicitada!) Pruébalo en </card-settings genshin>, </card-settings hsr>, y </card-settings zzz>"
 mimo_lottery_info_hoyolab_decos: " ...y {num} decoraciones de HoYoLAB"
 zzz_deadly_assault: " Incursión arriesgada"
 challenge_command_assault_desc: Generar tarjeta de Incursión arriesgada
@@ -823,29 +823,30 @@ enka_api_error_description: "Se ha producido un error al recuperar datos de Enka
 cleared: Terminado
 challenge_command_anomaly_desc: Generar tarjeta de Arbitraje atípico
 anomaly_arbitration: Arbitraje atípico
-account_settings_title: ""
-account_settings_desc: ""
-public_account_desc: ""
-daily_checkin_desc: ""
-redeem_code_desc: ""
-user_settings_title: ""
-user_settings_desc: ""
-dark_theme_desc: ""
-language_desc: ""
-language_select_placeholder: ""
-dyk_settings_desc: ""
-layout_view_edited: ""
-mimo_title: ""
-mimo_minimum_point_label: ""
-mimo_minimum_point_desc: ""
-disable_all_button_label: ""
-apply_template_to_all_chars: ""
-apply_template_to_all_chars_desc: ""
-apply_dark_theme_to_all_chars: ""
-apply_dark_theme_to_all_chars_desc: ""
-apply_label: ""
-card_settings_genshin_desc: ""
-card_settings_hsr_desc: ""
-card_settings_zzz_desc: ""
-card_settings_character_param: ""
-disabled_label: ""
+account_settings_title: "Configuración de cuenta"
+account_settings_desc: "Las configuraciones hehcas son únicas para cada cuenta del juego."
+public_account_desc: "Establecer cuenta como pública\\nSi está habilitado, otras personas pueden ver los datos de tu cuenta en algunos comandos, como </profile>."
+daily_checkin_desc: "Inicio de sesión diario automático\\nReclama automáticamente recompensas en el evento de inicio de sesión web."
+redeem_code_desc: "Canje automático de códigos\\nCanjea automáticamente códigos de transmisión en vivo y otros códigos de regalo. El botón está deshabilitado si no has iniciado sesión con correo electrónico y contraseña, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+user_settings_title: "Configuración de usuario"
+user_settings_desc: "Las configuraciones aquí están vinculadas a tu cuenta de Discord, se aplican a todas las cuentas del juego."
+dark_theme_desc: "Tema oscuro\\nHace que los infográficos usen un esquema de color oscuro, no todos los infográficos admiten esta función."
+language_desc: "Idioma\\nHoyo Buddy te responderá en este idioma. Algunos textos pueden seguir en inglés, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+language_select_placeholder: Selecciona un idioma
+dyk_settings_desc: "Mensajes de \"¿Sabías que?\"\\nMuestra consejos útiles aleatorios cuando uses los comandos del bot."
+layout_view_edited: "Los componentes interactivos se han desactivado para ahorrar recursos del sistema, vuelve a ejecutar el comando si quieres usarlos."
+mimo_title: Configuración de Mimo Viajero
+mimo_minimum_point_label: Puntos mínimos a mantener
+mimo_minimum_point_desc: "Al sortear automáticamente, Hoyo Buddy se asegurará de que tus puntos se mantengan por encima de este valor, establécelo en 0 para sortear cuando sea posible."
+disable_all_button_label: Deshabilitar todas las notificaciones
+apply_template_to_all_chars: Aplicar plantilla actual a todos los personajes
+apply_template_to_all_chars_desc: "Todos los personajes **futuros y actuales** usarán **{template}**."
+apply_dark_theme_to_all_chars: Aplicar el tema oscuro actual a todos los personajes
+apply_dark_theme_to_all_chars_desc: "Todos los personajes **futuros y actuales** tendrán el tema oscuro **{status}**."
+apply_label: Aplicar
+card_settings_genshin_desc: Modifica cómo se ven tus tarjetas de build de personajes de Genshin Impact
+card_settings_hsr_desc: Modifica cómo se ven tus tarjetas de build de personajes de Honkai Star Rail
+card_settings_zzz_desc: Modifica cómo se ven tus tarjetas de build de agentes de Zenless Zone Zero
+card_settings_character_param: Personaje al cual deseas configurar su tarjeta
+disabled_label: Deshabilitado
+none: Ninguno

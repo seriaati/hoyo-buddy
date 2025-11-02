@@ -363,6 +363,16 @@ class ExplorationCard:
         }
         return self._draw_exploration_card("natlan", exploration, texts)
 
+    def _draw_ancient_sacred_mountain_card(self) -> Image.Image:
+        exploration = self._get_exploration(16)
+        texts: dict[LocaleStr | str, tuple[int, int]] = {
+            LocaleStr(
+                key="exploration.progress",
+                progress=0 if exploration is None else exploration.explored,
+            ): (75, 117)
+        }
+        return self._draw_exploration_card("ancientSacredMountain", exploration, texts)
+
     def draw(self) -> BytesIO:
         mode_str = "dark" if self._dark_mode else "light"
         self._im = Drawer.open_image(
@@ -418,10 +428,15 @@ class ExplorationCard:
         self._im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
         self._im.paste(natlan, (868, 1183), natlan)
 
-        placeholder = self._draw_placeholder_card()
-        shadow = self._get_shadow("placeholder")
+        # placeholder = self._draw_placeholder_card()
+        # shadow = self._get_shadow("placeholder")
+        # self._im.paste(shadow, (114 - shadow_offset, 1501 - shadow_offset), shadow)
+        # self._im.paste(placeholder, (114, 1501), placeholder)
+
+        ancient_sacred_mountain = self._draw_ancient_sacred_mountain_card()
+        shadow = self._get_shadow("ancientSacredMountain")
         self._im.paste(shadow, (114 - shadow_offset, 1501 - shadow_offset), shadow)
-        self._im.paste(placeholder, (114, 1501), placeholder)
+        self._im.paste(ancient_sacred_mountain, (114, 1501), ancient_sacred_mountain)
 
         sea_of_bygone_eras = self._draw_sea_of_bygone_eras_card()
         shadow = self._get_shadow("seaOfBygoneEras")

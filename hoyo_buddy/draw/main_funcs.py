@@ -309,13 +309,11 @@ async def draw_spiral_abyss_card(
     return File(buffer, filename=draw_input.filename)
 
 
-async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserStats) -> File:
-    buffer = await draw_input.loop.run_in_executor(
+async def draw_exploration_card(draw_input: DrawInput, user: PartialGenshinUserStats) -> BytesIO:
+    return await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.genshin.ExplorationCard(user, draw_input.dark_mode, draw_input.locale).draw,
     )
-    buffer.seek(0)
-    return File(buffer, filename=draw_input.filename)
 
 
 async def draw_moc_card(

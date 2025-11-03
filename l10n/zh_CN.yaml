@@ -143,8 +143,8 @@ email_password_modal_email_input_label: 电子邮箱或用户名
 email_password_modal_password_input_label: 密码
 enter_email_password_instructions_description: "电子邮箱和密码是指用**Hoyoverse的账户**的邮箱与密码，而不是谷歌，苹果等账户的。\n- [账密登录如何运作？](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [没有 Hoyoverse 账号（用谷歌，Facebook等登录的）](:docs/Before-Start:)\n- [我是主机玩家](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: 更改光锥等级
-dark_theme: ""
-card_dark_theme_desc: ""
+dark_theme: 深色主题
+card_dark_theme_desc: 为此角色的面板卡片使用深色配色方案。
 error_footer: "你可以在我们的 Discord 服务器中寻求帮助，在/about中附有邀请链接。"
 error_title: 出现错误
 erudition: 智识
@@ -315,12 +315,12 @@ notif_modal.notify_time.description: "在服务器重置X小时前通知（游�
 notif_modal.notify_weekday.label: 星期几通知
 notif_modal.threshold.label: 阈值
 notif_modal.threshold.description: "达到阈值后发送通知。"
-notification_settings_button_label: ""
-mimo_notification_settings: ""
-notification_settings_desc: ""
-notification_settings_note: ""
-notify_on_failure_button_label: ""
-notify_on_success_button_label: ""
+notification_settings_button_label: 通知设置
+mimo_notification_settings: 旅行Mimo通知设置
+notification_settings_desc: 配置要接收的通知。
+notification_settings_note: "注意：Hoyo Buddy通过私信发送通知，请确保私信开放，便于接受消息。"
+notify_on_failure_button_label: 失败时通知
+notify_on_success_button_label: 成功时通知
 nsfw_prompt_error_message: "此提示包含不宜內容，请使用其他提示后再试。"
 nsfw_prompt_error_title: 检测到不宜内容
 page_footer: "{current_page}/{total_pages}页"
@@ -399,7 +399,7 @@ reminder_settings.reminde.set.type2: "状态：{status}\n通知间隔：{notify_
 reminder_settings.reminde.set.type3: "状态：{status}\n通知间隔：{notify_interval} 分钟\n最大通知数：{max_notif_count}\n通知时间：服务器重置前 {notify_time} 个小时\n"
 reminder_settings.reminde.set.type4: "状态：{status}\n通知间隔：{notify_interval} 分钟\n最大通知数：{max_notif_count}\n通知时间：服务器重置前 {notify_time} 个小时\n星期几通知：{notify_weekday}"
 reminder_settings_title: 实时便笺提醒
-reminder_settings_desc: ""
+reminder_settings_desc: 当特定游戏内事件发生时通过私信通知你。
 reminder_toggle: 提醒
 resin_discount.embed.description: 周本消耗折扣尚未使用完毕
 resin_reminder_button.label: 树脂提醒
@@ -490,7 +490,7 @@ video_store.embed.description: 录像店的收益尚未领取
 scratch_card.incomplete: 尚未完成
 reminder_modal.title: "{notify}提醒设置"
 set_cur_temp_as_default.done: 完成
-third_party_card_temp_error_title: ""
+third_party_card_temp_error_title: 该第三方卡片模板出错了
 third_party_card_temp_error_message: "此角色的卡片样式已被重置为Hoyo Buddy样式。如果此错误持续发生，请在我们的[Discord 服务器](<https://link.seria.moe/hb-dc>)寻求帮助。"
 account_locked_title: 账户已被锁定20分钟
 account_locked_description: "输入错误密码的次数过多。请在20分钟后重试。如果你无法设置好你的账户，请在我们的 [Discord 服务器](<https://link.seria.moe/hb-dc>)中寻求帮助。"
@@ -515,10 +515,10 @@ tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 设计师
 card_settings.modifying_for: "正在修改{name}的卡片设置"
-card_settings_modifying_for_desc: ""
-card_settings.template: ""
-card_settings_template_desc: ""
-card_settings.card_color: ""
+card_settings_modifying_for_desc: 所有卡片设置都是每个角色独有的。某些卡片模板可能不支持某些设置。
+card_settings.template: 模板
+card_settings_template_desc: "某些第三方模板可能不支持HoYoLAB/米游社角色。在这种情况下，机器人将使用Hoyo Buddy的模板。"
+card_settings.card_color: 颜色
 card_settings.no_color: 此卡片样式不支持修改卡片颜色
 card_settings.color_default: 默认
 card_settings.current_image: 当前图片
@@ -527,8 +527,8 @@ card_settings.team_card_image: 队伍卡片图片
 profile.redraw_card_button_label: 重新绘制卡片
 card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来重新绘制卡片"
 card_settings.description: "使用</upload>上传图像以获取链接。\n支持pixiv，只需复制图片链接即可。"
-profile.team_dark_mode.button.label: ""
-team_card_dark_theme_desc: ""
+profile.team_dark_mode.button.label: 队伍卡片深色主题
+team_card_dark_theme_desc: "为队伍卡片使用深色配色方案。这适用于所有队伍卡片，无论其中有哪些角色。"
 profile.character_select.multi.placeholder: 选择角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻击方式: {atk_type}\n阵营: {faction}\n元素: {element}"
 cat_zzz_agents: 代理人
@@ -572,8 +572,8 @@ events_view_ann_type_select_placeholder: 选择一个活动分类…
 events_view_content_label: 查看完整内容
 natlan: 纳塔
 top_percent: "前 {percent}%"
-profile_view_show_rank_button_label: ""
-profile_view_show_rank_desc: ""
+profile_view_show_rank_button_label: 显示排名
+profile_view_show_rank_desc: "显示此角色在[akasha.cv](https://akasha.cv)上的排名。"
 submit_button_label: 提交
 show_tutorial_button_label: 显示教程
 close_button_label: 关闭
@@ -614,15 +614,15 @@ gacha_view_filter_size_field_label: 每页物品数
 gacha_view_page_field_label: 页数
 gacha_log_stats_title: 抽卡记录数据
 gacha_log_personal_stats_title: 个人数据
-gacha_log_personal_stats_lifetime: ""
-gacha_log_personal_stats_banner_total: ""
-gacha_log_personal_stats_pity: ""
-gacha_log_personal_stats_rarity_total: ""
-gacha_log_personal_stats_rarity_average: ""
+gacha_log_personal_stats_lifetime: "总抽数: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "此卡池总抽数: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "{rarity}★保底: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "总{rarity}★: {total}"
+gacha_log_personal_stats_rarity_average: "每{rarity}★平均抽数: {avg}"
 win_rate_stats: "{title} 胜率: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全服数据
-gacha_log_global_stats_lifetime: ""
-gacha_log_global_stats_luck: ""
+gacha_log_global_stats_lifetime: "总抽数: {lifetime}"
+gacha_log_global_stats_luck: "{rarity}★运气: {luck}"
 win_rate_global_stats: "{title} 胜率: {win_rate}"
 gacha_log_view_full: 查看抽卡记录
 gacha_view_command_description: 查看导入的抽卡记录
@@ -683,8 +683,8 @@ lb_view_command_description: 查看排行榜
 leaderboard_not_found: 未能找到该排行榜
 currently_logged_in_as: "你目前登录的身份为:"
 not_you_label: "不是你吗? 点击以使用其他账户登录"
-profile_show_substat_rolls: ""
-profile_show_substat_rolls_desc: ""
+profile_show_substat_rolls: 显示副词条档次
+profile_show_substat_rolls_desc: 显示有多少次强化贡献了副词条的最终值。
 team_card_settings_embed_title: 正在修改队伍卡片设置
 team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支持时，对某些设置所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
 characters.filter.rarity.placeholder: 筛选稀有度…
@@ -694,14 +694,14 @@ redeem_cmd_available_codes: 可用的兑换码
 redeem_all_available_codes_button_label: 兑换所有可用的兑换码
 akasha_show_details: 显示排行榜详情
 card_settings_hl_special_stats_button_label: 特殊角色数值高亮
-card_settings_hl_stats_desc: ""
+card_settings_hl_stats_desc: 用颜色突出角色重要词条
 challenge_command_abyss_desc: 生成深境螺旋卡片
 challenge_command_theater_desc: 生成幻想真境剧诗卡片
 challenge_command_moc_desc: 生成混沌回忆卡片
 challenge_command_pf_desc: 生成虚构叙事卡片
 challenge_command_apc_shadow_desc: 生成末日幻影卡片
 challenge_command_shiyu_desc: 生成式舆防卫战卡片
-account_select_placeholder: ""
+account_select_placeholder: 选择一个账号
 guild_only_command_param_name: 仅服务器
 guild_only_command_param_desc: 排行榜仅展示服务器成员的排名
 yes_choice: "是"
@@ -764,8 +764,8 @@ remembrance: 记忆
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此消息只会显示一次
 dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。'
-dismissible_settings_v2: ""
-dismissible_card_settings_v2: ""
+dismissible_settings_v2: "告别混乱零散的设置吧！Hoyo Buddy 的设置已经进行了重新设计，更加有条理且易于使用，还增加了一些新的便利功能，快在 </settings> 试试吧"
+dismissible_card_settings_v2: "卡片设置已经进行了重新设计，变得更有条理且更易于使用。你还可以批量将模板应用到所有角色（这是长期热门功能！）在</card-settings genshin>、</card-settings hsr>和</card-settings zzz>中试试吧"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"
 zzz_deadly_assault: 危局强袭战
 challenge_command_assault_desc: 生成危局强袭战卡片
@@ -823,29 +823,30 @@ enka_api_error_description: "在从Enka Network获取数据时出错，请稍候
 cleared: 已通关
 challenge_command_anomaly_desc: 生成异相仲裁卡片
 anomaly_arbitration: 异相仲裁
-account_settings_title: ""
-account_settings_desc: ""
-public_account_desc: ""
-daily_checkin_desc: ""
-redeem_code_desc: ""
-user_settings_title: ""
-user_settings_desc: ""
-dark_theme_desc: ""
-language_desc: ""
-language_select_placeholder: ""
-dyk_settings_desc: ""
-layout_view_edited: ""
-mimo_title: ""
-mimo_minimum_point_label: ""
-mimo_minimum_point_desc: ""
-disable_all_button_label: ""
-apply_template_to_all_chars: ""
-apply_template_to_all_chars_desc: ""
-apply_dark_theme_to_all_chars: ""
-apply_dark_theme_to_all_chars_desc: ""
-apply_label: ""
-card_settings_genshin_desc: ""
-card_settings_hsr_desc: ""
-card_settings_zzz_desc: ""
-card_settings_character_param: ""
-disabled_label: ""
+account_settings_title: "账户设置"
+account_settings_desc: "此设置是一个游戏账号对应一个设置。"
+public_account_desc: "设置账户为公开\\n如果启用,其他人可以在某些命令中看到你账户的数据，比如</profile>。"
+daily_checkin_desc: "自动每日签到\\n自动在网页签到活动中领取奖励。"
+redeem_code_desc: "自动兑换码\\n自动兑换直播兑换码和其他兑换码。如果你未使用邮箱和密码登录，此选项将不可用。请参阅[常见问题](:docs/FAQ:)了解原因。"
+user_settings_title: "用户设置"
+user_settings_desc: "该设置与你的Discord账户关联，适用于所有游戏账户。"
+dark_theme_desc: "深色主题\\n生成信息图时使用深色主题，并不是所有信息图都支持此功能。"
+language_desc: "语言\\nHoyo Buddy将使用此语言回复你。某些文本可能仍为英文，请参阅[常见问题](:docs/FAQ:)了解原因。"
+language_select_placeholder: 选择一种语言
+dyk_settings_desc: "「你知道吗？」消息\n当你使用机器人命令时随机显示有用的提示。"
+layout_view_edited: "为了节省系统资源，交互组件已被禁用，如果想继续使用，请重新运行命令。"
+mimo_title: 旅行Mimo设置
+mimo_minimum_point_label: 最低保留积分
+mimo_minimum_point_desc: "自动抽奖时，Hoyo Buddy会确保你的积分保持在此值以上，设置为0则尽可能抽奖。"
+disable_all_button_label: 禁用所有通知
+apply_template_to_all_chars: 将当前模板应用于所有角色
+apply_template_to_all_chars_desc: "所有**未来和当前**角色将使用**{template}**。"
+apply_dark_theme_to_all_chars: 将当前深色主题选项应用于所有角色
+apply_dark_theme_to_all_chars_desc: "所有**未来和当前**角色的深色主题将应用为**{status}**。"
+apply_label: 应用
+card_settings_genshin_desc: 修改原神角色面板卡片外观
+card_settings_hsr_desc: 修改崩坏：星穹铁道角色面板卡片外观
+card_settings_zzz_desc: 修改绝区零代理人面板卡片外观
+card_settings_character_param: 用于修改卡片设置的角色
+disabled_label: 已禁用
+none: 无

@@ -84,7 +84,11 @@ class MimoView(ui.View):
         return embed
 
     async def get_tasks_embed(self, *, points: int | None = None) -> DefaultEmbed:
-        points = points or await self.client.get_mimo_point_count()
+        try:
+            points = points or await self.client.get_mimo_point_count()
+        except ValueError as e:
+            raise MimoUnavailableError(self.account.game) from e
+
         tasks = await self.client.get_mimo_tasks(game_id=self.game_id, version_id=self.version_id)
 
         embed = DefaultEmbed(

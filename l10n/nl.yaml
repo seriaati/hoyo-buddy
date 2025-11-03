@@ -143,8 +143,8 @@ email_password_modal_email_input_label: e-mail of gebruikersnaam
 email_password_modal_password_input_label: wachtwoord
 enter_email_password_instructions_description: "E-mail & wachtwoord verwijzen naar **Hoyoverse account's** e-mail en wachtwoord, niet Google, Apple, enz. accounts.\n- [Hoe werkt dit?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Ik heb geen Hoyoverse account (ik log in met Google, Facebook, enz.)](:docs/Before-Start:)\n- [Ik ben een console-speler](:docs/Before-Start#i-am-a-console-player:)"
 enter_light_cone_level.button.label: Light cone niveau wijzigen
-dark_theme: ""
-card_dark_theme_desc: ""
+dark_theme: Donker thema
+card_dark_theme_desc: Gebruik een donker kleurenschema voor de build-kaart van dit personage.
 error_footer: "Je kunt hulp vinden in onze Discord-server, link in /about"
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
@@ -315,12 +315,12 @@ notif_modal.notify_time.description: "Meld om X uur voordat de server wordt gere
 notif_modal.notify_weekday.label: De weekdag om te melden
 notif_modal.threshold.label: Drempel
 notif_modal.threshold.description: "Er wordt een melding verzonden nadat het limiet is bereikt."
-notification_settings_button_label: ""
-mimo_notification_settings: ""
-notification_settings_desc: ""
-notification_settings_note: ""
-notify_on_failure_button_label: ""
-notify_on_success_button_label: ""
+notification_settings_button_label: Meldingsinstellingen
+mimo_notification_settings: Meldingsinstellingen voor Traveling Mimo
+notification_settings_desc: Configureer welke meldingen je wilt ontvangen.
+notification_settings_note: "Opmerking: Hoyo Buddy stuurt meldingen via directe berichten, zorg ervoor dat je DM's open staan om ze te ontvangen."
+notify_on_failure_button_label: Meld bij falen
+notify_on_success_button_label: Meld bij succes
 nsfw_prompt_error_message: "De prompt bevat NSFW-inhoud, probeer het opnieuw met een andere prompt."
 nsfw_prompt_error_title: NSFW-prompt Gedetecteerd
 page_footer: "Pagina {current_page}/{total_pages}"
@@ -399,7 +399,7 @@ reminder_settings.reminde.set.type2: "Status: {status}\nMeldingsinterval: {notif
 reminder_settings.reminde.set.type3: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMelding Tijd: {notify_time} uren voordat de server wordt gereset\n"
 reminder_settings.reminde.set.type4: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMelding Tijd: {notify_time} uren voordat de server wordt gereset\nMelding Weekdag: {notify_weekday}"
 reminder_settings_title: Real-Time Herinneringen Voor Notities
-reminder_settings_desc: ""
+reminder_settings_desc: Stuur je een bericht via Direct Message wanneer bepaalde in-game gebeurtenissen plaatsvinden.
 reminder_toggle: Herinnering
 resin_discount.embed.description: Wekelijkse kortingen voor bazen zijn nog niet opgebruikt
 resin_reminder_button.label: Resin herinnering
@@ -490,7 +490,7 @@ video_store.embed.description: Videowinkelinkomsten nog niet opgeëist
 scratch_card.incomplete: Onvolledig
 reminder_modal.title: "{notify} Herinnering Instellingen"
 set_cur_temp_as_default.done: Gereed
-third_party_card_temp_error_title: ""
+third_party_card_temp_error_title: Dit Kaartsjabloon van Derden Bevat Fouten
 third_party_card_temp_error_message: "Het kaartsjabloon voor dit karakter is teruggezet naar het sjabloon van Hoyo Buddy. Als deze fout zich blijft voordoen, zoek dan hulp in onze [Discord server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account is geblokkeerd voor 20 minuten
 account_locked_description: "Je hebt te vaak het verkeerde wachtwoord ingevoerd. Wacht 20 minuten en probeer het opnieuw. Als je je account niet kunt instellen, zoek dan hulp in onze [Discord server](<https://link.seria.moe/hb-dc>)."
@@ -515,10 +515,10 @@ tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rang {rarity}"
 about_command.designers: Ontwerpers
 card_settings.modifying_for: "Kaartinstellingen Wijzigen voor {name}"
-card_settings_modifying_for_desc: ""
-card_settings.template: ""
-card_settings_template_desc: ""
-card_settings.card_color: ""
+card_settings_modifying_for_desc: Alle kaartinstellingen zijn uniek voor elk personage. Sommige kaartsjablonen ondersteunen mogelijk bepaalde instellingen niet.
+card_settings.template: Sjabloon
+card_settings_template_desc: "Sommige sjablonen van derden ondersteunen mogelijk geen HoYoLAB/Miyoushe personages. In dat geval zal de bot het sjabloon van Hoyo Buddy gebruiken."
+card_settings.card_color: Kleur
 card_settings.no_color: Deze kaartsjabloon ondersteunt geen kleurmodificatie
 card_settings.color_default: Standaard
 card_settings.current_image: Huidige afbeelding
@@ -527,8 +527,8 @@ card_settings.team_card_image: Team Kaart afbeelding
 profile.redraw_card_button_label: Kaart hertekenen
 card_settings.footer: "Als je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen"
 card_settings.description: "Gebruik dit </upload> om een URL van een afbeelding te krijgen door de afbeelding te uploaden.\nPixiv wordt ondersteund, kopieer gewoon de URL van de afbeelding van het kunstwerk."
-profile.team_dark_mode.button.label: ""
-team_card_dark_theme_desc: ""
+profile.team_dark_mode.button.label: Teamkaart donker thema
+team_card_dark_theme_desc: "Gebruik een donker kleurenschema voor teamkaarten. Dit geldt voor alle teamkaarten, ongeacht welke personages erin zitten."
 profile.character_select.multi.placeholder: Selecteer karakter(s)...
 zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {speciality}\nAanval Type: {atk_type}\nFactie: {faction}\nElement: {element}"
 cat_zzz_agents: Agenten
@@ -572,8 +572,8 @@ events_view_ann_type_select_placeholder: Selecteer een evenementtype...
 events_view_content_label: Bekijk volledige content
 natlan: Natlan
 top_percent: "Top {percent}%"
-profile_view_show_rank_button_label: ""
-profile_view_show_rank_desc: ""
+profile_view_show_rank_button_label: Toon ranglijst
+profile_view_show_rank_desc: "Toon de ranglijst van dit personage op [akasha.cv](https://akasha.cv)."
 submit_button_label: Stuur
 show_tutorial_button_label: Toon handleiding
 close_button_label: Sluit
@@ -614,15 +614,15 @@ gacha_view_filter_size_field_label: Items per pagina
 gacha_view_page_field_label: Pagina
 gacha_log_stats_title: Gacha Log Statistieken
 gacha_log_personal_stats_title: Persoonlijke Statistieken
-gacha_log_personal_stats_lifetime: ""
-gacha_log_personal_stats_banner_total: ""
-gacha_log_personal_stats_pity: ""
-gacha_log_personal_stats_rarity_total: ""
-gacha_log_personal_stats_rarity_average: ""
+gacha_log_personal_stats_lifetime: "Levenslange pulls: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "Totale pulls voor deze banner: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "{rarity}★ pity: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "Totaal {rarity}★: {total}"
+gacha_log_personal_stats_rarity_average: "Gemiddelde pulls per {rarity}★: {avg}"
 win_rate_stats: "{title} Winstpercentage: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: Wereldwijd statistieken
-gacha_log_global_stats_lifetime: ""
-gacha_log_global_stats_luck: ""
+gacha_log_global_stats_lifetime: "Levenslange pulls: {lifetime}"
+gacha_log_global_stats_luck: "{rarity}★ geluk: {luck}"
 win_rate_global_stats: "{title} Winstpercentage: {win_rate}"
 gacha_log_view_full: Bekijk gacha logs
 gacha_view_command_description: Bekijk geïmporteerde gacha logs
@@ -683,8 +683,8 @@ lb_view_command_description: Bekijk leaderboards
 leaderboard_not_found: Leaderboard niet gevonden
 currently_logged_in_as: "Je bent momenteel ingelogd als:"
 not_you_label: "Ben jij dat niet? Klik om in te loggen met een ander account"
-profile_show_substat_rolls: ""
-profile_show_substat_rolls_desc: ""
+profile_show_substat_rolls: Toon substat rolls
+profile_show_substat_rolls_desc: Geef weer hoeveel rolls bijdragen aan de uiteindelijke waarde van een substat.
 team_card_settings_embed_title: Team Kaart Instellingen Wijzigen
 team_card_settings_embed_description: "De team kaarten instellingen worden gedeeld door verschillende games en accounts. Als je wijzigingen aanbrengt in sommige instellingen, worden deze mogelijk niet weergegeven op de kaart als ze niet worden ondersteund door de kaartsjabloon.\nAls je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen."
 characters.filter.rarity.placeholder: Filter op zeldzaamheid...
@@ -694,14 +694,14 @@ redeem_cmd_available_codes: Beschikbare codes
 redeem_all_available_codes_button_label: Wissel alle beschikbare codes in
 akasha_show_details: Toon leaderboard details
 card_settings_hl_special_stats_button_label: Markeer speciale statistieken
-card_settings_hl_stats_desc: ""
+card_settings_hl_stats_desc: Benadruk de belangrijke statistieken van een personage met kleur.
 challenge_command_abyss_desc: Genereer Spiral Abyss kaart
 challenge_command_theater_desc: Genereer Imaginarium Theater kaart
 challenge_command_moc_desc: Genereer Memory of Chaos kaart
 challenge_command_pf_desc: Genereer Pure Fiction kaart
 challenge_command_apc_shadow_desc: Genereer Apocalyptic Shadow kaart
 challenge_command_shiyu_desc: Genereer Shiyu Defense kaart
-account_select_placeholder: ""
+account_select_placeholder: Selecteer een account
 guild_only_command_param_name: gilde-only
 guild_only_command_param_desc: Toon alleen de ranglijsten van gildeleden in het leaderboard
 yes_choice: "Ja"
@@ -764,8 +764,8 @@ remembrance: Remembrance
 dismissible_default_title: Nieuwe Functie!
 dismissible_default_footer: Dit bericht wordt slechts één keer weergegeven
 dismissible_m3_art_desc: 'Je kunt nu Mindscape 3 kunst gebruiken in je ZZZ-agentkaarten. Selecteer "Hoyo Buddy template 2" in de kaartinstellingen en schakel vervolgens ''Gebruik M3 kunst'' in bij de afbeeldingsinstellingen.'
-dismissible_settings_v2: ""
-dismissible_card_settings_v2: ""
+dismissible_settings_v2: "Zeg vaarwel tegen verwarrende en verspreide instellingen! Hoyo Buddy's instellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn, met enkele nieuwe kwaliteit van leven functies, probeer het uit in </settings>"
+dismissible_card_settings_v2: "Kaartinstellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn. Je kunt nu ook sjablonen in bulk toepassen op alle personages (een lang aangevraagde functie!) Probeer het uit in </card-settings genshin>, </card-settings hsr>, en </card-settings zzz>"
 mimo_lottery_info_hoyolab_decos: "...en {num} HoYoLAB decoraties"
 zzz_deadly_assault: Deadly Assault
 challenge_command_assault_desc: Genereer Deadly Assault kaart
@@ -823,29 +823,30 @@ enka_api_error_description: "Er is een fout opgetreden bij het ophalen van gegev
 cleared: Voltooid
 challenge_command_anomaly_desc: Genereer Anomaly Arbitration kaart
 anomaly_arbitration: Anomaly Arbitration
-account_settings_title: ""
-account_settings_desc: ""
-public_account_desc: ""
-daily_checkin_desc: ""
-redeem_code_desc: ""
-user_settings_title: ""
-user_settings_desc: ""
-dark_theme_desc: ""
-language_desc: ""
-language_select_placeholder: ""
-dyk_settings_desc: ""
-layout_view_edited: ""
-mimo_title: ""
-mimo_minimum_point_label: ""
-mimo_minimum_point_desc: ""
-disable_all_button_label: ""
-apply_template_to_all_chars: ""
-apply_template_to_all_chars_desc: ""
-apply_dark_theme_to_all_chars: ""
-apply_dark_theme_to_all_chars_desc: ""
-apply_label: ""
-card_settings_genshin_desc: ""
-card_settings_hsr_desc: ""
-card_settings_zzz_desc: ""
-card_settings_character_param: ""
-disabled_label: ""
+account_settings_title: "Accountinstellingen"
+account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
+public_account_desc: "Account instellen als openbaar\\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
+daily_checkin_desc: "Automatische dagelijkse check-in\\nClaims automatisch beloningen bij het web check-in evenement."
+redeem_code_desc: "Automatisch inwisselen van codes\\nWissel automatisch livestream codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor waarom."
+user_settings_title: "Gebruikersinstellingen"
+user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze gelden voor alle gameaccounts."
+dark_theme_desc: "Donker thema\\nLaat infographics een donker kleurenschema gebruiken, niet alle infographics ondersteunen deze functie."
+language_desc: "Taal\\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor waarom."
+language_select_placeholder: Selecteer een taal
+dyk_settings_desc: "\"Wist je dat?\" berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
+layout_view_edited: "Interactieve componenten zijn uitgeschakeld om systeembronnen te besparen, voer het commando opnieuw uit als je ze wilt gebruiken."
+mimo_title: Traveling Mimo Instellingen
+mimo_minimum_point_label: Minimale punten om te behouden
+mimo_minimum_point_desc: "Bij automatisch trekken zorgt Hoyo Buddy ervoor dat je punten boven deze waarde blijven, stel in op 0 om te trekken wanneer mogelijk."
+disable_all_button_label: Schakel alle meldingen uit
+apply_template_to_all_chars: Pas huidig sjabloon toe op alle personages
+apply_template_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen **{template}** gebruiken."
+apply_dark_theme_to_all_chars: Pas huidige donkere thema optie toe op alle personages
+apply_dark_theme_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen donker thema **{status}** hebben."
+apply_label: Toepassen
+card_settings_genshin_desc: Pas aan hoe je Genshin Impact personage build-kaarten eruitzien
+card_settings_hsr_desc: Pas aan hoe je Honkai Star Rail personage build-kaarten eruitzien
+card_settings_zzz_desc: Pas aan hoe je Zenless Zone Zero agent build-kaarten eruitzien
+card_settings_character_param: Personage om de kaartinstellingen voor aan te passen
+disabled_label: Uitgeschakeld
+none: Geen

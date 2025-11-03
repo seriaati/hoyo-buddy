@@ -100,12 +100,18 @@ class ImgTheaterCard:
                 icon = self._drawer.circular_crop(icon)
                 self._im.alpha_composite(icon, start_pos)
 
+                text = (
+                    LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value:,}")
+                    .translate(self.locale)
+                    .replace("Sát Thương", "ST")
+                )
                 self._drawer.write(
-                    LocaleStr(key=key, mi18n_game=Game.GENSHIN, append=f": {character.value}"),
+                    text,
                     size=20,
                     position=(start_pos[0] + 54, start_pos[1] + icon.height / 2),
                     anchor="lm",
                 )
+
             start_pos = (start_pos[0], start_pos[1] + 57)
 
     def _write_legend_block_texts(self) -> None:

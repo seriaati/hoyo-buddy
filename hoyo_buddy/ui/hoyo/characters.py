@@ -165,11 +165,11 @@ class CharactersView(PaginatorView):
 
         self.sorter: Sorter = None  # pyright: ignore[reportAttributeAccessIssue]
         if self.game is Game.GENSHIN:
-            self.sorter = GISorter.ELEMENT
+            self.sorter = GISorter.LEVEL
         elif self.game is Game.STARRAIL:
-            self.sorter = HSRSorter.ELEMENT
+            self.sorter = HSRSorter.LEVEL
         elif self.game is Game.ZZZ:
-            self.sorter = ZZZSorter.RARITY
+            self.sorter = ZZZSorter.LEVEL
         elif self.game is Game.HONKAI:
             self.sorter = HonkaiSorter.LEVEL
 
@@ -365,6 +365,9 @@ class CharactersView(PaginatorView):
             characters = [c for c in characters if c.level == max_level]
 
         characters = [c for c in characters if str(c.rarity) in self.rarities]
+
+        # sort by rarity descending after filtering
+        characters = sorted(characters, key=lambda c: c.rarity, reverse=True)
 
         if not characters:
             raise NoCharsFoundError

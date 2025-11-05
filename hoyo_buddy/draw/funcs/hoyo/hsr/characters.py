@@ -85,9 +85,10 @@ def draw_character_card(
 def draw_small_hsr_chara_card(
     talent_str: str, dark_mode: bool, character: HSRCharacter | UnownedHSRCharacter, locale: Locale
 ) -> Image.Image:
-    im = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/hsr-characters/{'dark' if dark_mode else 'light'}_{character.element.title()}.png"
+    filename = (
+        f"{'dark' if dark_mode else 'light'}_{character.element.lower()}_{character.rarity}.png"
     )
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/hsr-characters/{filename}")
 
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-characters", dark_mode=dark_mode)

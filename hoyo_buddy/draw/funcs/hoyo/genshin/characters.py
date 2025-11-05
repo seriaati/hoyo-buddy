@@ -109,9 +109,8 @@ def draw_small_gi_chara_card(
     talent_str: str, dark_mode: bool, character: GICharacter | UnownedGICharacter, locale: Locale
 ) -> Image.Image:
     prefix = "dark" if dark_mode else "light"
-    im = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/gi-characters/{prefix}_{character.element.title()}.png"
-    )
+    filename = f"{prefix}_{character.element.lower()}_{character.rarity}"
+    im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-characters/{filename}.png")
 
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="gi-characters", dark_mode=dark_mode)

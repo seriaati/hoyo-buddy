@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, overload
 import enka
 from genshin import GenshinException
 from loguru import logger
+from pydantic import ValidationError
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
@@ -87,7 +88,7 @@ class ProfileCommand:
                 enka_data = await client.fetch_showcase(uid, use_backup=enka_hsr_down)
             else:
                 enka_data = await client.fetch_showcase(uid)
-        except enka.errors.AssetKeyError:
+        except (enka.errors.AssetKeyError, ValidationError):
             await client.update_assets()
             if isinstance(client, enka.HSRClient):
                 enka_data = await client.fetch_showcase(uid, use_backup=enka_hsr_down)

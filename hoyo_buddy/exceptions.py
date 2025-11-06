@@ -8,7 +8,7 @@ from discord.utils import format_dt
 from .l10n import EnumStr, LocaleStr
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable
     from datetime import datetime
 
     from .enums import ChallengeType, Game, Platform
@@ -42,7 +42,7 @@ class AccountNotFoundError(HoyoBuddyError, AppCommandError):
 
 
 class NoAccountFoundError(HoyoBuddyError):
-    def __init__(self, games: Sequence[Game], platform: Platform | None = None) -> None:
+    def __init__(self, games: Iterable[Game], platform: Platform | None = None) -> None:
         if platform is not None:
             message = LocaleStr(
                 key="no_account_found_for_games_platform_error_message", platform=EnumStr(platform)

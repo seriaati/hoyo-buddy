@@ -132,6 +132,7 @@ class ZZZTemp1CardData(BaseModel):
 
 class ZZZTemp2CardData(ZZZTemp1CardData):
     color: str | None = None
+    full_name: bool = False
 
 
 class GICardData(BaseModel):

@@ -167,6 +167,8 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
     NotesNotifyType.ZZZ_BOUNTY: 60,
 }
 
+SUPPORT_GAMES: set[Game] = {Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI}
+
 
 class ConfigureButton(ui.Button["SettingsView"]):
     def __init__(self, notify: NotesNotify | None, notify_type: NotesNotifyType) -> None:
@@ -565,7 +567,7 @@ class ReminderContainer:
     @staticmethod
     async def for_account(account: HoyoAccount) -> BaseReminderContainer:
         game = account.game
-        if game == Game.GENSHIN:
+        if game is Game.GENSHIN:
             return GenshinReminderContainer(
                 resin_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.RESIN
@@ -585,7 +587,7 @@ class ReminderContainer:
                 ),
             )
 
-        if game == Game.STARRAIL:
+        if game is Game.STARRAIL:
             return HSRReminderContainer(
                 tbp_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.TB_POWER
@@ -607,7 +609,7 @@ class ReminderContainer:
                 ),
             )
 
-        if game == Game.ZZZ:
+        if game is Game.ZZZ:
             return ZZZReminderContainer(
                 battery_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.BATTERY
@@ -629,7 +631,7 @@ class ReminderContainer:
                 ),
             )
 
-        if game == Game.HONKAI:
+        if game is Game.HONKAI:
             return HonkaiReminderContainer(
                 stamina_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.STAMINA

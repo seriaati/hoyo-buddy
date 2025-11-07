@@ -850,3 +850,5 @@ card_settings_zzz_desc: Pas aan hoe je Zenless Zone Zero agent build-kaarten eru
 card_settings_character_param: Personage om de kaartinstellingen voor aan te passen
 disabled_label: Uitgeschakeld
 none: Geen
+fake_settings_button_label: Instellingen
+fake_settings_button_title: Instellingen zijn verplaatst!

@@ -848,3 +848,5 @@ card_settings_zzz_desc: ゼンレスゾーンゼロのエージェントビル�
 card_settings_character_param: カード設定を変更するキャラクター
 disabled_label: 無効
 none: なし
+fake_settings_button_label: 設定
+fake_settings_button_title: 設定が移動しました！

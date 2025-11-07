@@ -849,3 +849,6 @@ card_settings_hsr_desc: 修改你的崩壞：星穹鐵道角色面板卡片的�
 card_settings_zzz_desc: 修改你的絕區零代理人面板卡片的外觀
 card_settings_character_param: 要修改卡片設定的角色
 disabled_label: 已停用
+none: 無
+fake_settings_button_label: 設定
+fake_settings_button_title: 設定搬家啦！

@@ -850,3 +850,5 @@ card_settings_zzz_desc: Sửa đổi giao diện của thẻ build Người Đ�
 card_settings_character_param: Nhân vật để sửa đổi cài đặt thẻ
 disabled_label: Đã tắt
 none: Không có
+fake_settings_button_label: Cài đặt
+fake_settings_button_title: Cài đặt đã được di chuyển!

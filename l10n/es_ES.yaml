@@ -850,3 +850,5 @@ card_settings_zzz_desc: Modifica cómo se ven tus tarjetas de build de agentes d
 card_settings_character_param: Personaje al cual deseas configurar su tarjeta
 disabled_label: Deshabilitado
 none: Ninguno
+fake_settings_button_label: Configuración
+fake_settings_button_title: ¡La configuración se ha movido!

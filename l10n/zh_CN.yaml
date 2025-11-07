@@ -850,3 +850,5 @@ card_settings_zzz_desc: 修改绝区零代理人面板卡片外观
 card_settings_character_param: 用于修改卡片设置的角色
 disabled_label: 已禁用
 none: 无
+fake_settings_button_label: 设置
+fake_settings_button_title: 设置搬家啦！

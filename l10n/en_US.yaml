@@ -128,7 +128,8 @@ destruction: Destruction
 devtools_button_label: With DevTools (desktop only)
 devtools_instructions_description: "1. Login to [HoYoLAB](https://www.hoyolab.com/home) or [Miyoushe](https://www.miyoushe.com/ys/) (for CN players)\n2. Open the DevTools by pressing F12 or Ctrl+Shift+I\n3. Press the >> icon on the top navigation bar\n4. Click on the `Application` tab\n5. Click on `Cookies` on the left sidebar\n6. Click on the website you're on (e.g. https://www.hoyolab.com)\n7. Type `v2` in the `Filter` box\n8. Click the button below\n9. Copy the `Value` of each cookie and paste them in the boxes"
 ios_login_label: With Cookies (iOS only)
-ios_login_instructions: "1. "
+ios_login_instructions_stream_title: "Setting up Stream"
+ios_login_instructions_stream: "1. Make sure you've already logged into the HoYoLAB app or website.\n2. Downlod the Stream app from the App Store.\n3."
 dice_cost_embed_field_name: Dice Cost
 download_image_failed_error_message: "Unable to download image {url} with status code {status}.\nTry again later, try with a different image, or check if the image URL is valid."
 download_image_failed_error_title: Image Download Failed

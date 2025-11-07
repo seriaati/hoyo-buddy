@@ -13,6 +13,7 @@ from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissib
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
+from hoyo_buddy.ui.settings.button import FakeSettingsButton
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
@@ -58,6 +59,7 @@ class Hoyo(commands.Cog):
         view = CheckInUI(
             account, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
+        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)
@@ -95,6 +97,7 @@ class Hoyo(commands.Cog):
             author=i.user,
             locale=await get_locale(i),
         )
+        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)
@@ -238,6 +241,7 @@ class Hoyo(commands.Cog):
         view = MimoView(
             account, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
+        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)

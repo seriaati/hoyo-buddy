@@ -10,6 +10,7 @@ from hoyo_buddy import dismissibles
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, User, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
+from hoyo_buddy.ui.settings.button import FakeSettingsButton
 
 from ..types import Interaction
 from ..ui.account.view import AccountManager
@@ -29,6 +30,7 @@ class Login(commands.Cog):
         accounts = await HoyoAccount.filter(user=user).all()
 
         view = AccountManager(author=i.user, locale=locale, user=user, accounts=accounts)
+        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)

@@ -850,3 +850,5 @@ card_settings_zzz_desc: Modify how your Zenless Zone Zero character build cards 
 card_settings_character_param: Character to modify the card settings for
 disabled_label: Disabled
 none: None
+fake_settings_button_label: Settings
+fake_settings_button_title: Settings Have Moved!

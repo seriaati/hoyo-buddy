@@ -1,17 +1,425 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import enka
 from discord.utils import get as dget
 
+from hoyo_buddy import models as hb_models
 from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
     from PIL import Image
 
-    from hoyo_buddy import models as hb_models
+
+@dataclass
+class LevelBubble:
+    short_name: str
+
+
+@dataclass
+class BigBubble:
+    short_name: str
+
+
+@dataclass
+class SmallBubble:
+    short_name: str
+
+
+@dataclass
+class BubbleWithTrace:
+    bubble: LevelBubble | BigBubble | SmallBubble
+    trace: enka.hsr.character.Trace | hb_models.Trace
+
+
+SHORT_NAME_TO_ANCHOR = {
+    "Knight": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "D5": "Point06",
+        "D2": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "D6": "Point10",
+        "D7": "Point11",
+        "E1": "Point12",
+        "D3": "Point13",
+        "D4": "Point14",
+        "C1": "Point15",
+        "B2": "Point16",
+        "B4": "Point17",
+        "B3": "Point18",
+    },
+    "Mage": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "E1": "Point06",
+        "C1": "Point07",
+        "B1": "Point08",
+        "D2": "Point09",
+        "E2": "Point10",
+        "E3": "Point11",
+        "E4": "Point12",
+        "C2": "Point13",
+        "C3": "Point14",
+        "C4": "Point15",
+        "B3": "Point16",
+        "B2": "Point17",
+        "D1": "Point18",
+    },
+    "Priest": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "D3": "Point06",
+        "D7": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "D4": "Point10",
+        "D5": "Point11",
+        "D6": "Point12",
+        "D8": "Point13",
+        "D9": "Point14",
+        "D10": "Point15",
+        "B2": "Point16",
+        "B3": "Point17",
+        "D2": "Point18",
+    },
+    "Rogue": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "D5": "Point06",
+        "D2": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "D6": "Point10",
+        "D7": "Point11",
+        "E1": "Point12",
+        "D3": "Point13",
+        "D4": "Point14",
+        "C1": "Point15",
+        "B2": "Point16",
+        "B4": "Point17",
+        "B3": "Point18",
+    },
+    "Shaman": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "E1": "Point06",
+        "C1": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "E2": "Point10",
+        "E3": "Point11",
+        "D3": "Point12",
+        "C2": "Point13",
+        "C3": "Point14",
+        "D2": "Point15",
+        "B2": "Point16",
+        "B4": "Point17",
+        "B3": "Point18",
+    },
+    "Warlock": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "E1": "Point06",
+        "C1": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "E2": "Point10",
+        "E3": "Point11",
+        "E4": "Point12",
+        "C2": "Point13",
+        "C3": "Point14",
+        "C4": "Point15",
+        "B3": "Point16",
+        "B2": "Point17",
+        "D2": "Point18",
+    },
+    "Warrior": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "D6": "Point06",
+        "D2": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "D7": "Point10",
+        "D8": "Point11",
+        "D9": "Point12",
+        "D3": "Point13",
+        "D4": "Point14",
+        "D5": "Point15",
+        "B2": "Point16",
+        "B4": "Point17",
+        "B3": "Point18",
+    },
+    "Memory": {
+        "A": "Point03",
+        "B": "Point04",
+        "C": "Point02",
+        "D": "Point05",
+        "E": "Point01",
+        "E1": "Point06",
+        "C1": "Point07",
+        "B1": "Point08",
+        "D1": "Point09",
+        "D2": "Point10",
+        "D3": "Point11",
+        "E4": "Point12",
+        "C2": "Point13",
+        "C3": "Point14",
+        "C4": "Point15",
+        "B2": "Point16",
+        "B3": "Point17",
+        "B4": "Point18",
+        "F1": "Point19",
+        "F2": "Point20",
+        "F3": "Point21",
+    },
+}
+
+
+# fmt: off
+PATH_BUBBLES = {
+    "Warlock": (
+        (
+            LevelBubble("E"),
+            BigBubble("E1"),
+            SmallBubble("E2"),
+            SmallBubble("E3"),
+            SmallBubble("E4"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("C1"),
+            SmallBubble("C2"),
+            SmallBubble("C3"),
+            SmallBubble("C4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+            SmallBubble("D2"),
+        ),
+    ),
+    "Rogue": (
+        (
+            LevelBubble("E"),
+            BigBubble("D5"),
+            SmallBubble("E1"),
+            SmallBubble("D6"),
+            SmallBubble("D7"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("D2"),
+            SmallBubble("C1"),
+            SmallBubble("D3"),
+            SmallBubble("D4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+        ),
+    ),
+    "Warrior": (
+        (
+            LevelBubble("E"),
+            BigBubble("D6"),
+            SmallBubble("D7"),
+            SmallBubble("D8"),
+            SmallBubble("D9"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("D2"),
+            SmallBubble("D3"),
+            SmallBubble("D4"),
+            SmallBubble("D5"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+        ),
+    ),
+    "Knight": (
+        (
+            LevelBubble("E"),
+            BigBubble("D5"),
+            SmallBubble("E1"),
+            SmallBubble("D6"),
+            SmallBubble("D7"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("D2"),
+            SmallBubble("C1"),
+            SmallBubble("D3"),
+            SmallBubble("D4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+        ),
+    ),
+    "Memory": (
+        (
+            LevelBubble("E"),
+            SmallBubble("D1"),
+            SmallBubble("D2"),
+            SmallBubble("D3"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+            SmallBubble("B4"),
+        ),
+        (
+            LevelBubble("A"),
+            BigBubble("C1"),
+            SmallBubble("C3"),
+            SmallBubble("C4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("E1"),
+            SmallBubble("C2"),
+            SmallBubble("E4"),
+        ),
+    ),
+    "Shaman": (
+        (
+            LevelBubble("E"),
+            BigBubble("E1"),
+            SmallBubble("E2"),
+            SmallBubble("E3"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("C1"),
+            SmallBubble("C2"),
+            SmallBubble("C3"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+            SmallBubble("D2"),
+            SmallBubble("D3"),
+        ),
+    ),
+    "Mage": (
+        (
+            LevelBubble("E"),
+            BigBubble("E1"),
+            SmallBubble("E2"),
+            SmallBubble("E3"),
+            SmallBubble("E4"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("C1"),
+            SmallBubble("C2"),
+            SmallBubble("C3"),
+            SmallBubble("C4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+            SmallBubble("D2"),
+        ),
+    ),
+    "Priest": (
+        (
+            LevelBubble("E"),
+            BigBubble("D7"),
+            SmallBubble("D8"),
+            SmallBubble("D9"),
+            SmallBubble("D10"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("D3"),
+            SmallBubble("D4"),
+            SmallBubble("D5"),
+            SmallBubble("D6"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+        ),
+        (
+            LevelBubble("A"),
+            SmallBubble("D1"),
+            SmallBubble("D2"),
+        ),
+    ),
+}
+# fmt: on
+
+type StatOrTrace = enka.hsr.Stat | hb_models.Stat | enka.hsr.character.Trace | hb_models.Trace
 
 
 def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:
@@ -19,7 +427,7 @@ def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:
 
 
 def get_stat_icon(
-    stat: enka.hsr.Stat | hb_models.Stat | None = None,
+    stat: StatOrTrace | None = None,
     filename: str | None = None,
     *,
     size: tuple[int, int],
@@ -28,6 +436,11 @@ def get_stat_icon(
     if stat is None and filename is None:
         msg = "Either 'stat' or 'filename' must be provided."
         raise ValueError(msg)
+
+    if isinstance(stat, (enka.hsr.character.Trace, hb_models.Trace)):
+        if "SkillIcon" in stat.icon:
+            return Drawer.open_static(stat.icon, size=size, mask_color=mask_color)
+        return get_stat_icon(filename=stat.icon.split("/")[-1], size=size, mask_color=mask_color)
 
     if filename is None and stat is not None:
         filename = get_stat_icon_filename(stat)
@@ -98,39 +511,23 @@ def get_character_stats(
 
 def get_character_skills(
     character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
-) -> tuple[
-    dict[str, enka.hsr.character.Trace | hb_models.Trace | None],
-    dict[str, enka.hsr.character.Trace | hb_models.Trace | None],
-    dict[str, list[enka.hsr.character.Trace | hb_models.Trace | None]],
-]:
-    traces = {
-        "Normal": dget(character.traces, anchor="Point01"),
-        "Skill": dget(character.traces, anchor="Point02"),
-        "Ultimate": dget(character.traces, anchor="Point03"),
-        "Talent": dget(character.traces, anchor="Point04"),
-    }
-    main_bubbles = {
-        "Normal": dget(character.traces, anchor="Point06"),
-        "Skill": dget(character.traces, anchor="Point07"),
-        "Ultimate": dget(character.traces, anchor="Point08"),
-        "Talent": dget(character.traces, anchor="Point05"),
-    }
-    sub_bubbles = {
-        "Normal": [
-            dget(character.traces, anchor="Point10"),
-            dget(character.traces, anchor="Point11"),
-            dget(character.traces, anchor="Point12"),
-        ],
-        "Skill": [
-            dget(character.traces, anchor="Point13"),
-            dget(character.traces, anchor="Point14"),
-            dget(character.traces, anchor="Point15"),
-        ],
-        "Ultimate": [
-            dget(character.traces, anchor="Point16"),
-            dget(character.traces, anchor="Point17"),
-            dget(character.traces, anchor="Point18"),
-        ],
-        "Talent": [dget(character.traces, anchor="Point09")],
-    }
-    return traces, main_bubbles, sub_bubbles
+) -> list[list[BubbleWithTrace]]:
+    path_bubbles = PATH_BUBBLES.get(character.path)
+    if path_bubbles is None:
+        return []
+
+    bubbles_with_traces: list[list[BubbleWithTrace]] = []
+
+    for bubble_group in path_bubbles:
+        group_with_traces: list[BubbleWithTrace] = []
+
+        for bubble in bubble_group:
+            anchor = SHORT_NAME_TO_ANCHOR[character.path].get(bubble.short_name)
+            trace = dget(character.traces, anchor=anchor)
+            if trace is None:
+                continue
+            group_with_traces.append(BubbleWithTrace(bubble=bubble, trace=trace))
+
+        bubbles_with_traces.append(group_with_traces)
+
+    return bubbles_with_traces

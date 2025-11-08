@@ -6,6 +6,9 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
+    BigBubble,
+    LevelBubble,
+    SmallBubble,
     get_character_skills,
     get_character_stats,
     get_stat_icon,
@@ -124,70 +127,84 @@ def draw_hsr_build_card(
     x = 825
     y = 273
     padding = 16
+    line_width = 12
 
-    traces, main_bubbles, sub_bubbles = get_character_skills(character)
+    bubble_groups = get_character_skills(character)
 
-    for trace_id, trace in traces.items():
-        if trace is None:
-            continue
-
-        # trace bubble
-        icon = drawer.open_static(
-            trace.icon, size=(65, 65), mask_color=BLACK if dark_mode else WHITE
-        )
-        im.paste(trace_bk, (x, y), trace_bk)
-        im.paste(icon, (x + 7, y + 4), icon)
-        drawer.write(
-            str(trace.level),
-            position=(x + 109, y + 35),
-            size=48,
-            color=BLACK if dark_mode else WHITE,
-            style="medium",
-            anchor="mm",
-        )
-
-        # main bubble
-        circle_height = 72
-        circle_x = x + 178
-        main_bubble = main_bubbles[trace_id]
-        if main_bubble:
-            icon = drawer.open_static(
-                main_bubble.icon, size=(60, 60), mask_color=BLACK if dark_mode else WHITE
+    for group in bubble_groups:
+        for bubble in group:
+            icon_size = (50, 50) if isinstance(bubble.bubble, SmallBubble) else (65, 65)
+            icon = get_stat_icon(
+                bubble.trace, size=icon_size, mask_color=BLACK if dark_mode else WHITE
             )
-            draw.ellipse((circle_x, y, circle_x + circle_height, y + circle_height), fill=primary)
-            im.paste(icon, (circle_x + 6, y + 6), icon)
+            level = bubble.trace.level
+            is_last_one = bubble == group[-1]
 
-        # sub bubbles
-        circle_x += circle_height + 14
-        sub_circle_height = 50
-        circle_y = y + (circle_height - sub_circle_height) // 2
-        sub_bubbles_ = sub_bubbles[trace_id]
-        for sub_bubble in sub_bubbles_:
-            if sub_bubble is None:
-                continue
-            # draw a line in the middle of the circle
-            width = 10
-            draw.line(
-                (circle_x - 15, y + circle_height // 2, circle_x + width, y + circle_height // 2),
-                fill=primary,
-                width=width,
-            )
-            draw.ellipse(
-                (circle_x, circle_y, circle_x + sub_circle_height, circle_y + sub_circle_height),
-                fill=primary,
-            )
+            if isinstance(bubble.bubble, LevelBubble):
+                im.paste(trace_bk, (x, y), trace_bk)
+                im.paste(icon, (x + 7, y + trace_bk.height // 2 - icon.height // 2), icon)
+                drawer.write(
+                    str(level),
+                    position=(x + 109, y + 35),
+                    size=48,
+                    color=BLACK if dark_mode else WHITE,
+                    style="medium",
+                    anchor="mm",
+                )
+                x += trace_bk.width + padding
 
-            icon = drawer.open_static(
-                sub_bubble.icon, size=(50, 50), mask_color=BLACK if dark_mode else WHITE
-            )
-            # place the icon in the middle of the circle
-            icon_x = circle_x + (sub_circle_height - icon.width) // 2
-            icon_y = circle_y + (sub_circle_height - icon.height) // 2
-            im.paste(icon, (icon_x, icon_y), icon)
+            elif isinstance(bubble.bubble, BigBubble):
+                diameter = 72
+                circle_x = x
+                draw.ellipse((circle_x, y, circle_x + diameter, y + diameter), fill=primary)
+                im.paste(
+                    icon,
+                    (
+                        circle_x + diameter // 2 - icon.width // 2,
+                        y + diameter // 2 - icon.height // 2,
+                    ),
+                    icon,
+                )
 
-            circle_x += 64
+                if not is_last_one:
+                    drawer.draw.line(
+                        (
+                            x + diameter,
+                            y + diameter // 2,
+                            x + diameter + padding,
+                            y + diameter // 2,
+                        ),
+                        fill=primary,
+                        width=line_width,
+                    )
+                x += diameter + padding
+
+            else:  # SmallBubble
+                diameter = 50
+                circle_x = x
+                circle_y = y + (72 - diameter) // 2
+                draw.ellipse(
+                    (circle_x, circle_y, circle_x + diameter, circle_y + diameter), fill=primary
+                )
+                im.paste(
+                    icon,
+                    (
+                        circle_x + diameter // 2 - icon.width // 2,
+                        circle_y + diameter // 2 - icon.height // 2,
+                    ),
+                    icon,
+                )
+
+                if not is_last_one:
+                    drawer.draw.line(
+                        (x + diameter, y + 72 // 2, x + diameter + padding, y + 72 // 2),
+                        fill=primary,
+                        width=line_width,
+                    )
+                x += diameter + padding
 
         y += trace_bk.height + padding
+        x = 825
 
     # character stats
     width = 564

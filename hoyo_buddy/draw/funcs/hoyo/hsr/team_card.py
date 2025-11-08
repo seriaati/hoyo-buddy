@@ -6,6 +6,9 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
+    BigBubble,
+    LevelBubble,
+    SmallBubble,
     get_character_skills,
     get_character_stats,
     get_stat_icon,
@@ -101,69 +104,94 @@ class HSRTeamCard:
         if character.light_cone is not None:
             self._draw_light_cone(character, im, drawer, primary)
 
-        traces, main_bubbles, sub_bubbles = get_character_skills(character)
+        bubble_groups = get_character_skills(character)
 
         # Traces
         trace_block = drawer.open_asset("trace_block.png", mask_color=primary)
+        big_bubble = drawer.open_asset("main_bubble.png", mask_color=primary)
+        small_bubble = drawer.open_asset("sub_bubble.png", mask_color=primary)
+
         start_pos = (369, 503)
-        for trace in traces.values():
-            if trace is None:
-                continue
-            im.alpha_composite(trace_block, start_pos)
-            icon = drawer.open_static(trace.icon, size=(36, 36), mask_color=WHITE)
-            im.alpha_composite(icon, (start_pos[0] + 4, start_pos[1] + 2))
+        line_width = 6
 
-            drawer.write(
-                str(trace.level),
-                size=26,
-                position=(start_pos[0] + icon.width + 24, start_pos[1] + 2 + icon.height / 2),
-                style="medium",
-                anchor="mm",
-            )
+        for group in bubble_groups:
+            for bubble in group:
+                icon_size = (25, 25) if isinstance(bubble.bubble, SmallBubble) else (36, 36)
+                icon = get_stat_icon(bubble.trace, size=icon_size, mask_color=WHITE)
+                level = bubble.trace.level
+                is_last_one = bubble == group[-1]
 
-            start_pos = (start_pos[0], start_pos[1] + 49)
+                if isinstance(bubble.bubble, LevelBubble):
+                    im.alpha_composite(trace_block, start_pos)
+                    im.alpha_composite(icon, (start_pos[0] + 4, start_pos[1] + 4))
 
-        # Main bubbles
-        main_bubble = drawer.open_asset("main_bubble.png", mask_color=primary)
-        sub_bubble = drawer.open_asset("sub_bubble.png", mask_color=primary)
-        line = drawer.open_asset("line.png", mask_color=primary)
-        start_pos = (484, 503)
-        for trace_id, bubble in main_bubbles.items():
-            if bubble is None:
-                continue
-            im.alpha_composite(main_bubble, start_pos)
-            icon = drawer.open_static(bubble.icon, size=(36, 36), mask_color=WHITE)
-            im.alpha_composite(
-                icon,
-                (
-                    start_pos[0] + main_bubble.width // 2 - icon.width // 2,
-                    start_pos[1] + main_bubble.height // 2 - icon.height // 2,
-                ),
-            )
+                    drawer.write(
+                        str(level),
+                        size=26,
+                        position=(
+                            start_pos[0] + icon.width + 24,
+                            start_pos[1] + 2 + icon.height / 2,
+                        ),
+                        style="medium",
+                        anchor="mm",
+                    )
 
-            # Sub bubbles
-            diff = line.width + sub_bubble.width - 4
-            for i, s_bubble in enumerate(sub_bubbles[trace_id]):
-                if s_bubble is None:
-                    continue
+                    start_pos = (start_pos[0] + trace_block.width + 18, start_pos[1])
 
-                line_x = start_pos[0] + main_bubble.width + diff * i
-                im.alpha_composite(
-                    line, (line_x, start_pos[1] + main_bubble.height // 2 - line.height // 2)
-                )
-                sub_bubble_x = line_x + line.width
-                sub_bubble_y = start_pos[1] + 5
-                im.alpha_composite(sub_bubble, (sub_bubble_x, sub_bubble_y))
-                icon = drawer.open_static(s_bubble.icon, size=(25, 25), mask_color=WHITE)
-                im.alpha_composite(
-                    icon,
-                    (
-                        sub_bubble_x + sub_bubble.width // 2 - icon.width // 2,
-                        sub_bubble_y + sub_bubble.height // 2 - icon.height // 2,
-                    ),
-                )
+                elif isinstance(bubble.bubble, BigBubble):
+                    circle_x = start_pos[0]
+                    circle_y = start_pos[1] + 2
+                    im.alpha_composite(big_bubble, (circle_x, circle_y))
+                    im.alpha_composite(
+                        icon,
+                        (
+                            circle_x + big_bubble.width // 2 - icon.width // 2,
+                            circle_y + big_bubble.height // 2 - icon.height // 2,
+                        ),
+                    )
 
-            start_pos = (start_pos[0], start_pos[1] + 49)
+                    if not is_last_one:
+                        drawer.draw.line(
+                            (
+                                circle_x + big_bubble.width - 2,
+                                circle_y + big_bubble.height // 2,
+                                circle_x + big_bubble.width + 7,
+                                circle_y + big_bubble.height // 2,
+                            ),
+                            fill=primary,
+                            width=line_width,
+                        )
+
+                    start_pos = (start_pos[0] + big_bubble.width + 7, start_pos[1])
+
+                else:  # SmallBubble
+                    circle_x = start_pos[0]
+                    circle_y = start_pos[1] + (big_bubble.height - small_bubble.height) // 2 + 2
+
+                    im.alpha_composite(small_bubble, (circle_x, circle_y))
+                    im.alpha_composite(
+                        icon,
+                        (
+                            circle_x + small_bubble.width // 2 - icon.width // 2,
+                            circle_y + small_bubble.height // 2 - icon.height // 2,
+                        ),
+                    )
+
+                    if not is_last_one:
+                        drawer.draw.line(
+                            (
+                                circle_x + small_bubble.width - 2,
+                                circle_y + small_bubble.height // 2,
+                                circle_x + small_bubble.width + 7,
+                                circle_y + small_bubble.height // 2,
+                            ),
+                            fill=primary,
+                            width=line_width,
+                        )
+
+                    start_pos = (start_pos[0] + small_bubble.width + 7, start_pos[1])
+
+            start_pos = (369, start_pos[1] + 49)
 
         # Relics
         self._draw_relics(character, im, drawer, primary)

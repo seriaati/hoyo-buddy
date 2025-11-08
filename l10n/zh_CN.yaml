@@ -825,13 +825,13 @@ challenge_command_anomaly_desc: 生成异相仲裁卡片
 anomaly_arbitration: 异相仲裁
 account_settings_title: "账户设置"
 account_settings_desc: "此设置是一个游戏账号对应一个设置。"
-public_account_desc: "设置账户为公开\\n如果启用,其他人可以在某些命令中看到你账户的数据，比如</profile>。"
-daily_checkin_desc: "自动每日签到\\n自动在网页签到活动中领取奖励。"
-redeem_code_desc: "自动兑换码\\n自动兑换直播兑换码和其他兑换码。如果你未使用邮箱和密码登录，此选项将不可用。请参阅[常见问题](:docs/FAQ:)了解原因。"
+public_account_desc: "设置账户为公开\n如果启用,其他人可以在某些命令中看到你账户的数据，比如</profile>。"
+daily_checkin_desc: "自动每日签到\n自动在网页签到活动中领取奖励。"
+redeem_code_desc: "自动兑换码\n自动兑换直播兑换码和其他兑换码。如果你未使用邮箱和密码登录，此选项将不可用。请参阅[常见问题](:docs/FAQ:)了解原因。"
 user_settings_title: "用户设置"
 user_settings_desc: "该设置与你的Discord账户关联，适用于所有游戏账户。"
-dark_theme_desc: "深色主题\\n生成信息图时使用深色主题，并不是所有信息图都支持此功能。"
-language_desc: "语言\\nHoyo Buddy将使用此语言回复你。某些文本可能仍为英文，请参阅[常见问题](:docs/FAQ:)了解原因。"
+dark_theme_desc: "深色主题\n生成信息图时使用深色主题，并不是所有信息图都支持此功能。"
+language_desc: "语言\nHoyo Buddy将使用此语言回复你。某些文本可能仍为英文，请参阅[常见问题](:docs/FAQ:)了解原因。"
 language_select_placeholder: 选择一种语言
 dyk_settings_desc: "「你知道吗？」消息\n当你使用机器人命令时随机显示有用的提示。"
 layout_view_edited: "为了节省系统资源，交互组件已被禁用，如果想继续使用，请重新运行命令。"

@@ -56,7 +56,11 @@ class Config(BaseSettings):
     deployment: Deployment = "main"
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", cli_parse_args=True, cli_implicit_flags=True
+        env_file=".env",
+        env_file_encoding="utf-8",
+        cli_parse_args=True,
+        cli_implicit_flags=True,
+        cli_ignore_unknown_args=True,
     )
 
     @property

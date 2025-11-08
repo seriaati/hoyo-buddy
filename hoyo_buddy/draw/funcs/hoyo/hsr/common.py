@@ -438,7 +438,9 @@ def get_stat_icon(
         raise ValueError(msg)
 
     if isinstance(stat, (enka.hsr.character.Trace, hb_models.Trace)):
-        if "SkillIcon" in stat.icon:
+        if "SkillIcon" in stat.icon or isinstance(
+            stat, hb_models.Trace
+        ):  # Hoyolab icon names are random strings
             return Drawer.open_static(stat.icon, size=size, mask_color=mask_color)
         return get_stat_icon(filename=stat.icon.split("/")[-1], size=size, mask_color=mask_color)
 

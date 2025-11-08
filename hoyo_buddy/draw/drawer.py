@@ -491,15 +491,16 @@ class Drawer:
         )
         return TextBBox(*(int(i) for i in textbbox))
 
+    @classmethod
     def open_static(
-        self,
+        cls,
         url: str,
         *,
         size: tuple[int, int] | None = None,
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        return self.open_image(
+        return cls.open_image(
             get_static_img_path(url), size, mask_color=mask_color, opacity=opacity
         )
 

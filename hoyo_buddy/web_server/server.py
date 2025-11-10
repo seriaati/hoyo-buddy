@@ -12,8 +12,10 @@ from loguru import logger
 from tortoise import Tortoise
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import WEB_APP_URLS
+from hoyo_buddy.constants import WEB_APP_URLS, get_docs_url
 from hoyo_buddy.db import User
+from hoyo_buddy.enums import Locale
+from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.models import GeetestCommandPayload, GeetestLoginPayload
 from hoyo_buddy.utils import get_discord_url
 
@@ -61,11 +63,17 @@ class GeetestWebServer:
         if not user_exists:
             raise web.HTTPNotFound(reason="User not found")
 
+        locale = Locale(payload.locale)
+
         if isinstance(payload, GeetestLoginPayload):
             body = (
                 self._login_template.replace("{ user_id }", str(payload.user_id))
                 .replace("{ gt_version }", str(payload.gt_version))
                 .replace("{ api_server }", payload.api_server)
+                .replace(
+                    "{ captcha_not_showing_up }",
+                    translator.translate(LocaleStr(key="captcha_not_showing_up"), locale=locale),
+                )
             )
         else:
             body = (
@@ -77,7 +85,15 @@ class GeetestWebServer:
                 .replace("{ message_id }", str(payload.message_id))
                 .replace("{ gt_type }", payload.gt_type.value)
                 .replace("{ account_id }", str(payload.account_id))
-                .replace("{ locale }", payload.locale)
+                .replace("{ locale }", payload.locale)  # noqa: RUF027
+                .replace(
+                    "{ captcha_not_showing_up }",
+                    translator.translate(LocaleStr(key="captcha_not_showing_up"), locale=locale),
+                )
+                .replace(
+                    "{ captcha_not_showing_up_link }",
+                    get_docs_url("/captcha-blank-page", locale=locale),
+                )
             )
         return web.Response(body=body, content_type="text/html")
 

@@ -11,10 +11,35 @@
 <style>
     body {
         background-color: #36393f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .help-link {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 10px 20px;
+        border: 1px solid #5865f2;
+        border-radius: 5px;
+        background-color: #5865f2;
+        transition: background-color 0.3s;
+    }
+
+    .help-link:hover {
+        background-color: #4752c4;
     }
 </style>
 
-<body></body>
+<body>
+    <a href="{ captcha_not_showing_up_link }" target="_blank" class="help-link">
+        { captcha_not_showing_up }
+    </a>
+</body>
 <script src="./gt/v{ gt_version }.js"></script>
 <script>
     const geetestVersion = { gt_version };

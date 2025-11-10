@@ -48,6 +48,7 @@ class GeetestLoginPayload(BaseModel):
     user_id: int
     gt_version: int
     api_server: str = "api-na.geetest.com"
+    locale: str
 
     @classmethod
     def parse_from_request(cls, query: Mapping[str, str]) -> GeetestLoginPayload:
@@ -55,6 +56,7 @@ class GeetestLoginPayload(BaseModel):
             user_id=int(query["user_id"]),
             gt_version=int(query["gt_version"]),
             api_server=query["api_server"],
+            locale=query["locale"],
         )
 
     def to_query_string(self) -> str:

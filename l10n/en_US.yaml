@@ -852,3 +852,4 @@ disabled_label: Disabled
 none: None
 fake_settings_button_label: Settings
 fake_settings_button_title: Settings Have Moved!
+captcha_not_showing_up: Click me if CAPTCHA doesn't show up after a while

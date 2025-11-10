@@ -9,6 +9,7 @@ import orjson
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils.misc import get_project_version
 
@@ -19,8 +20,6 @@ from .utils import decrypt_string, encrypt_string, show_error_banner, show_loadi
 
 if TYPE_CHECKING:
     from genshin.models import ActionTicket, SessionMMT
-
-    from hoyo_buddy.enums import Locale
 
     from .schema import Params
 
@@ -62,8 +61,11 @@ async def handle_session_mmt(
     # Save current params
     await page.client_storage.set_async(f"hb.{params.user_id}.params", params.to_query_string())
 
+    locale = locale or Locale.american_english
     payload = GeetestLoginPayload(
-        user_id=params.user_id, gt_version=3 if mmt_type != "on_otp_send" else 4
+        user_id=params.user_id,
+        gt_version=3 if mmt_type != "on_otp_send" else 4,
+        locale=locale.value,
     )
 
     titles: dict[Literal["on_login", "on_email_send", "on_otp_send"], LocaleStr | str] = {

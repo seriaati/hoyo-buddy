@@ -201,6 +201,7 @@ class Challenge(
     @moc_command.autocomplete("account")
     @pf_command.autocomplete("account")
     @apc_shadow_command.autocomplete("account")
+    @anomaly_command.autocomplete("account")
     @shiyu_command.autocomplete("account")
     @assault_command.autocomplete("account")
     @handle_autocomplete_errors

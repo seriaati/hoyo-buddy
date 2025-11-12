@@ -255,7 +255,7 @@ class ChallengeView(View):
         if not datas:
             raise NoChallengeDataError(ChallengeType.IMG_THEATER)
 
-            # Organize data by start time
+        # Organize data by start time
         data_by_date: defaultdict[int, list[dict[str, Any]]] = defaultdict(list)
         for data in datas:
             start: int = data["schedule"]["start_time"]
@@ -295,6 +295,8 @@ class ChallengeView(View):
 
         for previous in (False, True):
             raw = await self._fetch_challenge_raw_data(client, previous=previous)
+            if raw is None:
+                continue
             await self._validate_and_save_challenge_data(raw, previous=previous, lang=client.lang)
 
     async def _validate_and_save_challenge_data(
@@ -341,7 +343,7 @@ class ChallengeView(View):
 
     async def _fetch_challenge_raw_data(
         self, client: genshin.Client, *, previous: bool
-    ) -> Mapping[str, Any]:
+    ) -> Mapping[str, Any] | None:
         if self.challenge_type is ChallengeType.SPIRAL_ABYSS:
             return await client.get_genshin_spiral_abyss(
                 self.account.uid, previous=previous, raw=True
@@ -390,8 +392,7 @@ class ChallengeView(View):
                 await client.get_anomaly_arbitration(self.account.uid, previous=previous, raw=True)
             ).get("challenge_peak_records", [])
             if not records:
-                raise NoChallengeDataError(ChallengeType.ANOMALY)
-
+                return None
             return records[0]
 
         msg = f"Data fetching for {self.challenge_type!r} is not implemented"

@@ -63,7 +63,10 @@ class GeetestWebServer:
         if not user_exists:
             raise web.HTTPNotFound(reason="User not found")
 
-        locale = Locale(payload.locale)
+        try:
+            locale = Locale(payload.locale)
+        except ValueError:
+            locale = Locale.american_english
 
         if isinstance(payload, GeetestLoginPayload):
             body = (

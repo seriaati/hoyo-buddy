@@ -110,7 +110,7 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     LocaleStr(
                         custom_str="### {emoji} {desc}",
                         emoji=emojis.LIVE_HELP,
-                        desc=LocaleStr(key="dyk_settings_desc"),
+                        desc=LocaleStr(key="settings_dyk_desc"),
                     )
                 ),
                 accessory=DYKTolggle(current=settings.enable_dyk),

@@ -833,7 +833,7 @@ user_settings_desc: "Settings here are linked to your Discord account, they appl
 dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all infographics support this feature."
 language_desc: "Language\nHoyo Buddy will respond to you in this language. Some texts might still be in English, see [FAQ](:docs/FAQ:) for why."
 language_select_placeholder: Select a language
-dyk_settings_desc: "\"Did you know?\" messages\nShow random useful tips when you use bot commands."
+settings_dyk_desc: "\"Did you know?\" messages\nShow random useful tips when you use bot commands."
 layout_view_edited: "Interactive components have been disabled to save system resources, rerun the command if you want to use them."
 mimo_title: Traveling Mimo Settings
 mimo_minimum_point_label: Minimum points to keep

@@ -833,7 +833,7 @@ user_settings_desc: "Cài đặt ở đây được liên kết với tài kho�
 dark_theme_desc: "Chủ đề tối\nLàm cho infographic sử dụng bảng màu tối, không phải tất cả infographic đều hỗ trợ tính năng này."
 language_desc: "Ngôn ngữ\nHoyo Buddy sẽ trả lời bạn bằng ngôn ngữ này. Một số văn bản có thể vẫn bằng tiếng Anh, xem [FAQ](:docs/FAQ:) để biết tại sao."
 language_select_placeholder: Chọn một ngôn ngữ
-dyk_settings_desc: "Tin nhắn \"Bạn có biết?\"\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
+settings_dyk_desc: "Tin nhắn \"Bạn có biết?\"\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
 layout_view_edited: "Các thành phần tương tác đã bị vô hiệu hóa để tiết kiệm tài nguyên hệ thống, chạy lại lệnh nếu bạn muốn sử dụng chúng."
 mimo_title: Cài đặt Mimo Du Lịch
 mimo_minimum_point_label: Điểm tối thiểu cần giữ

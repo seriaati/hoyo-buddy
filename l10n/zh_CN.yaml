@@ -833,7 +833,7 @@ user_settings_desc: "该设置与你的Discord账户关联，适用于所有游�
 dark_theme_desc: "深色主题\n生成信息图时使用深色主题，并不是所有信息图都支持此功能。"
 language_desc: "语言\nHoyo Buddy将使用此语言回复你。某些文本可能仍为英文，请参阅[常见问题](:docs/FAQ:)了解原因。"
 language_select_placeholder: 选择一种语言
-dyk_settings_desc: "「你知道吗？」消息\n当你使用机器人命令时随机显示有用的提示。"
+settings_dyk_desc: "「你知道吗？」消息\n当你使用机器人命令时随机显示有用的提示。"
 layout_view_edited: "为了节省系统资源，交互组件已被禁用，如果想继续使用，请重新运行命令。"
 mimo_title: 旅行Mimo设置
 mimo_minimum_point_label: 最低保留积分

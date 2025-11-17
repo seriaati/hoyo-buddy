@@ -833,7 +833,7 @@ user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze
 dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken, niet alle infographics ondersteunen deze functie."
 language_desc: "Taal\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor waarom."
 language_select_placeholder: Selecteer een taal
-dyk_settings_desc: "\"Wist je dat?\" berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
+settings_dyk_desc: "\"Wist je dat?\" berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
 layout_view_edited: "Interactieve componenten zijn uitgeschakeld om systeembronnen te besparen, voer het commando opnieuw uit als je ze wilt gebruiken."
 mimo_title: Traveling Mimo Instellingen
 mimo_minimum_point_label: Minimale punten om te behouden

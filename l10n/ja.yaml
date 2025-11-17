@@ -831,7 +831,7 @@ user_settings_desc: "ここの設定はDiscordアカウントにリンクされ�
 dark_theme_desc: "ダークテーマ\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
 language_desc: "言語\nHoyo Buddyはこの言語で応答します。一部のテキストは英語のままである場合があります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
 language_select_placeholder: 言語を選択
-dyk_settings_desc: "「知っていましたか?」メッセージ\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
+settings_dyk_desc: "「知っていましたか?」メッセージ\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
 layout_view_edited: "システムリソースを節約するためにインタラクティブコンポーネントが無効になりました。使用したい場合はコマンドを再実行してください。"
 mimo_title: トラベリングミモ設定
 mimo_minimum_point_label: 保持する最小ポイント

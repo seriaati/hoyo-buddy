@@ -831,7 +831,7 @@ user_settings_desc: "As configurações aqui estão vinculadas à sua conta do D
 dark_theme_desc: "Tema escuro\nFaz com que os infográficos usem um esquema de cores escuro, nem todos os infográficos suportam este recurso."
 language_desc: "Idioma\nO Hoyo Buddy responderá a você neste idioma. Alguns textos ainda podem estar em inglês, veja a [FAQ](:docs/FAQ:) para saber o porquê."
 language_select_placeholder: Selecione um idioma
-dyk_settings_desc: "Mensagens \"Você sabia?\"\nMostre dicas úteis aleatórias quando você usar comandos do bot."
+settings_dyk_desc: "Mensagens \"Você sabia?\"\nMostre dicas úteis aleatórias quando você usar comandos do bot."
 layout_view_edited: "Os componentes interativos foram desabilitados para economizar recursos do sistema, execute o comando novamente se quiser usá-los."
 mimo_title: Configurações do Traveling Mimo
 mimo_minimum_point_label: Pontos mínimos para manter

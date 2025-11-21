@@ -11,6 +11,7 @@ from discord.app_commands import Choice
 from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
 from hoyo_buddy.enums import Game
 from hoyo_buddy.utils import sleep
+from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
 from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory
@@ -221,6 +222,65 @@ class AutocompleteSetup:
             cls._beta_id_to_category[str(item.id)] = category.value
 
     @classmethod
+    async def _fetch_new_item_ids(
+        cls, session: aiohttp.ClientSession, game: Game, category: ItemCategory
+    ) -> list[str | int]:
+        version = await get_game_latest_stable_version(session, game=game)
+
+        if isinstance(category, ambr.ItemCategory):
+            async with hakushin.HakushinAPI(hakushin.Game.GI, session=session) as api:
+                match category:
+                    case ambr.ItemCategory.WEAPONS:
+                        func = api.fetch_weapons
+                    case ambr.ItemCategory.ARTIFACT_SETS:
+                        func = api.fetch_artifact_sets
+                    case ambr.ItemCategory.CHARACTERS:
+                        func = api.fetch_characters
+                    case _:
+                        return []
+
+                latest_items = await func()
+                items = await func(version=version)
+                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
+
+        elif isinstance(category, yatta.ItemCategory):
+            async with hakushin.HakushinAPI(hakushin.Game.HSR, session=session) as api:
+                match category:
+                    case yatta.ItemCategory.LIGHT_CONES:
+                        func = api.fetch_light_cones
+                    case yatta.ItemCategory.RELICS:
+                        func = api.fetch_relic_sets
+                    case yatta.ItemCategory.CHARACTERS:
+                        func = api.fetch_characters
+                    case _:
+                        return []
+
+                latest_items = await func()
+                items = await func(version=version)
+                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
+
+        elif isinstance(category, ZZZItemCategory):
+            async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
+                match category:
+                    case ZZZItemCategory.AGENTS:
+                        func = api.fetch_characters
+                    case ZZZItemCategory.W_ENGINES:
+                        func = api.fetch_weapons
+                    case ZZZItemCategory.DRIVE_DISCS:
+                        func = api.fetch_drive_discs
+                    case ZZZItemCategory.BANGBOOS:
+                        func = api.fetch_bangboos
+                    case _:
+                        return []
+
+                latest_items = await func()
+                items = await func(version=version)
+                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
+
+        else:
+            return []
+
+    @classmethod
     async def start(
         cls, session: aiohttp.ClientSession
     ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
@@ -246,25 +306,29 @@ class AutocompleteSetup:
         ]
         await asyncio.gather(*tasks, return_exceptions=True)
 
-        async with hakushin.HakushinAPI(hakushin.Game.GI) as api:
-            gi_new = await api.fetch_new()
-        async with hakushin.HakushinAPI(hakushin.Game.HSR) as api:
-            hsr_new = await api.fetch_new()
-        async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as api:
-            zzz_new = await api.fetch_new()
+        beta_categories: list[tuple[Game, ItemCategory]] = [
+            (Game.GENSHIN, ambr.ItemCategory.CHARACTERS),
+            (Game.STARRAIL, yatta.ItemCategory.CHARACTERS),
+            (Game.GENSHIN, ambr.ItemCategory.WEAPONS),
+            (Game.STARRAIL, yatta.ItemCategory.LIGHT_CONES),
+            (Game.GENSHIN, ambr.ItemCategory.ARTIFACT_SETS),
+            (Game.STARRAIL, yatta.ItemCategory.RELICS),
+            (Game.ZZZ, ZZZItemCategory.AGENTS),
+            (Game.ZZZ, ZZZItemCategory.W_ENGINES),
+            (Game.ZZZ, ZZZItemCategory.DRIVE_DISCS),
+            (Game.ZZZ, ZZZItemCategory.BANGBOOS),
+        ]
+        beta_category_tasks: list[tuple[Game, ItemCategory, asyncio.Task]] = []
 
-        cls._category_beta_ids = {
-            (Game.GENSHIN, ambr.ItemCategory.CHARACTERS): gi_new.character_ids,
-            (Game.STARRAIL, yatta.ItemCategory.CHARACTERS): hsr_new.character_ids,
-            (Game.GENSHIN, ambr.ItemCategory.WEAPONS): gi_new.weapon_ids,
-            (Game.STARRAIL, yatta.ItemCategory.LIGHT_CONES): hsr_new.light_cone_ids,
-            (Game.GENSHIN, ambr.ItemCategory.ARTIFACT_SETS): gi_new.artifact_set_ids,
-            (Game.STARRAIL, yatta.ItemCategory.RELICS): hsr_new.relic_set_ids,
-            (Game.ZZZ, ZZZItemCategory.AGENTS): zzz_new.character_ids,
-            (Game.ZZZ, ZZZItemCategory.W_ENGINES): zzz_new.weapon_ids,
-            (Game.ZZZ, ZZZItemCategory.DRIVE_DISCS): zzz_new.equipment_ids,
-            (Game.ZZZ, ZZZItemCategory.BANGBOOS): zzz_new.bangboo_ids,
-        }
+        for game, category in beta_categories:
+            coro = cls._fetch_new_item_ids(session, game, category)
+            task = asyncio.create_task(coro)
+            beta_category_tasks.append((game, category, task))
+
+        await asyncio.gather(*(task for _, _, task in beta_category_tasks), return_exceptions=True)
+        for game, category, task in beta_category_tasks:
+            beta_ids = task.result()
+            cls._category_beta_ids[game, category] = beta_ids
 
         for game, categories in cls._tasks.items():
             for category, locales in categories.items():

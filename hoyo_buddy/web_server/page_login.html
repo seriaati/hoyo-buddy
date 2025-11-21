@@ -101,7 +101,7 @@
                             captcha.verify();
                         });
                         captcha.onSuccess(() => {
-                            launchButton.textContent = 'Verifying...';
+                            launchButton.textContent = '{ captcha_verifying }';
                             launchButton.disabled = true;
                             fetch("/send-data", {
                                 method: "POST",

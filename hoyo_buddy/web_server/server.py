@@ -88,6 +88,10 @@ class GeetestWebServer:
                 "{ loading_text }",
                 translator.translate(LocaleStr(key="loading_text"), locale=locale),
             )
+            .replace(
+                "{ captcha_verifying }",
+                translator.translate(LocaleStr(key="captcha_verifying"), locale=locale),
+            )
         )
 
         if isinstance(payload, GeetestCommandPayload):

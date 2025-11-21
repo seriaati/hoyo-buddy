@@ -852,3 +852,6 @@ disabled_label: 已停用
 none: 無
 fake_settings_button_label: 設定
 fake_settings_button_title: 設定搬家啦！
+captcha_not_showing_up: CAPTCHA沒有顯示？
+open_captcha_button_label: 點擊開始驗證
+captcha_verifying: 驗證中...

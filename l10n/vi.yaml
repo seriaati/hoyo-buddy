@@ -852,3 +852,6 @@ disabled_label: Đã tắt
 none: Không có
 fake_settings_button_label: Cài đặt
 fake_settings_button_title: Cài đặt đã được di chuyển!
+captcha_not_showing_up: "CAPTCHA không hiển thị?"
+open_captcha_button_label: Nhấp để bắt đầu xác minh
+captcha_verifying: Đang xác minh...

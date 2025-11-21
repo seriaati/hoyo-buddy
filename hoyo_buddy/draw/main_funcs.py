@@ -11,6 +11,7 @@ from genshin.models import ZZZFullAgent
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
@@ -24,7 +25,7 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
-from hoyo_buddy.utils.misc import get_zzz_latest_stable_version
+from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
@@ -468,7 +469,7 @@ async def fetch_zzz_draw_data(
     async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
         # Fetch name data
         if fetch_name_data:
-            version = await get_zzz_latest_stable_version(session)
+            version = await get_game_latest_stable_version(session, game=Game.ZZZ)
 
             for agent in agents:
                 if agent.id in name_datas:
@@ -486,7 +487,7 @@ async def fetch_zzz_draw_data(
         if fetch_agent_images and template in {1, 2}:
             template = cast("Literal[1, 2]", template)
             if version is None:
-                version = await get_zzz_latest_stable_version(session)
+                version = await get_game_latest_stable_version(session, game=Game.ZZZ)
             characters = await api.fetch_characters(version=version)
 
             if template == 2:

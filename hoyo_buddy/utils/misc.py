@@ -645,9 +645,17 @@ def get_changelog_url(locale: Locale | None = None) -> str:
     return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/i18n/{lang_code}/docusaurus-plugin-content-docs/current/changelog.md"
 
 
-async def get_zzz_latest_stable_version(session: aiohttp.ClientSession) -> str | None:
-    api_url = "https://hun.seria.moe/games/U5hbdsT9W7/version"
+async def get_game_latest_stable_version(session: aiohttp.ClientSession, *, game: Game) -> str | None:
+    games = {
+        Game.GENSHIN: "gopR6Cufr3",
+        Game.STARRAIL: "4ziysqXOQ8",
+        Game.ZZZ: "U5hbdsT9W7",
+        Game.HONKAI: "bxPTXSET5t",
+    }
+    if game not in games:
+        return None
 
+    api_url = f"https://hun.seria.moe/games/{games[game]}/version"
     try:
         async with session.get(api_url) as resp:
             resp.raise_for_status()

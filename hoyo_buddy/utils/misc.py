@@ -645,7 +645,9 @@ def get_changelog_url(locale: Locale | None = None) -> str:
     return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/i18n/{lang_code}/docusaurus-plugin-content-docs/current/changelog.md"
 
 
-async def get_game_latest_stable_version(session: aiohttp.ClientSession, *, game: Game) -> str | None:
+async def get_game_latest_stable_version(
+    session: aiohttp.ClientSession, *, game: Game
+) -> str | None:
     games = {
         Game.GENSHIN: "gopR6Cufr3",
         Game.STARRAIL: "4ziysqXOQ8",

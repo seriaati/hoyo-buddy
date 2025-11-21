@@ -41,6 +41,8 @@ class AnomalyArbitrationCard:
             position=(tbox.left, tbox.bottom + 21),
             style="medium",
             locale=self._locale,
+            max_width=793,
+            max_lines=2,
         )
         tbox = drawer.write(
             f"{season.begin_time.datetime:%Y/%m/%d} - {season.end_time.datetime:%Y/%m/%d}",

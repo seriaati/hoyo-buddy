@@ -68,36 +68,38 @@ class GeetestWebServer:
         except ValueError:
             locale = Locale.american_english
 
-        if isinstance(payload, GeetestLoginPayload):
-            body = (
-                self._login_template.replace("{ user_id }", str(payload.user_id))
-                .replace("{ gt_version }", str(payload.gt_version))
-                .replace("{ api_server }", payload.api_server)
-                .replace(
-                    "{ captcha_not_showing_up }",
-                    translator.translate(LocaleStr(key="captcha_not_showing_up"), locale=locale),
-                )
+        body = (
+            self._login_template.replace("{ user_id }", str(payload.user_id))
+            .replace("{ gt_version }", str(payload.gt_version))
+            .replace("{ api_server }", payload.api_server)
+            .replace(
+                "{ captcha_not_showing_up }",
+                translator.translate(LocaleStr(key="captcha_not_showing_up"), locale=locale),
             )
-        else:
+            .replace(
+                "{ captcha_not_showing_up_link }",
+                get_docs_url("/captcha-blank-page", locale=locale),
+            )
+            .replace(
+                "{ open_captcha_button_label }",
+                translator.translate(LocaleStr(key="open_captcha_button_label"), locale=locale),
+            )
+            .replace(
+                "{ loading_text }",
+                translator.translate(LocaleStr(key="loading_text"), locale=locale),
+            )
+        )
+
+        if isinstance(payload, GeetestCommandPayload):
             body = (
-                self._command_template.replace("{ user_id }", str(payload.user_id))
-                .replace("{ gt_version }", str(payload.gt_version))
-                .replace("{ api_server }", payload.api_server)
-                .replace("{ guild_id }", str(payload.guild_id))
+                self._command_template.replace("{ guild_id }", str(payload.guild_id))
                 .replace("{ channel_id }", str(payload.channel_id))
                 .replace("{ message_id }", str(payload.message_id))
                 .replace("{ gt_type }", payload.gt_type.value)
                 .replace("{ account_id }", str(payload.account_id))
                 .replace("{ locale }", payload.locale)  # noqa: RUF027
-                .replace(
-                    "{ captcha_not_showing_up }",
-                    translator.translate(LocaleStr(key="captcha_not_showing_up"), locale=locale),
-                )
-                .replace(
-                    "{ captcha_not_showing_up_link }",
-                    get_docs_url("/captcha-blank-page", locale=locale),
-                )
             )
+
         return web.Response(body=body, content_type="text/html")
 
     async def gt(self, request: web.Request) -> web.StreamResponse:

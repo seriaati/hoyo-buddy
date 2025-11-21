@@ -12,30 +12,49 @@
     body {
         background-color: #36393f;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
         font-family: Arial, sans-serif;
+        gap: 20px;
     }
 
     .help-link {
-        color: #ffffff;
-        text-decoration: none;
-        font-size: 16px;
-        padding: 10px 20px;
-        border: 1px solid #5865f2;
-        border-radius: 5px;
-        background-color: #5865f2;
-        transition: background-color 0.3s;
+        color: #5865f2;
+        text-decoration: underline;
+        font-size: 14px;
     }
 
     .help-link:hover {
+        color: #4752c4;
+    }
+
+    .launch-button {
+        color: #ffffff;
+        font-size: 18px;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5865f2;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: bold;
+    }
+
+    .launch-button:hover {
         background-color: #4752c4;
+    }
+
+    .launch-button:disabled {
+        background-color: #747f8d;
+        cursor: not-allowed;
     }
 </style>
 
 <body>
+    <button id="launchButton" class="launch-button">{ open_captcha_button_label }</button>
     <a href="{ captcha_not_showing_up_link }" target="_blank" class="help-link">
         { captcha_not_showing_up }
     </a>
@@ -44,50 +63,74 @@
 <script>
     const geetestVersion = { gt_version };
     const initGeetest = geetestVersion === 3 ? window.initGeetest : window.initGeetest4;
-    fetch("/mmt?user_id={ user_id }")
-        .then((response) => response.json())
-        .then((mmt) => {
-            const initParams = geetestVersion === 3 ? {
-                gt: mmt.gt,
-                challenge: mmt.challenge,
-                new_captcha: mmt.new_captcha,
-                api_server: "{ api_server }",
-                https: /^https/i.test(window.location.protocol),
-                product: "bind",
-                lang: "en",
-            } : {
-                captchaId: mmt.gt,
-                riskType: mmt.risk_type,
-                userInfo: mmt.session_id ? JSON.stringify({
-                    mmt_key: mmt.session_id
-                }) : undefined,
-                api_server: "{ api_server }",
-                product: "bind",
-                language: "en",
-            };
-            initGeetest(
-                initParams,
-                (captcha) => {
-                    captcha.onReady(() => {
-                        captcha.verify();
-                    });
-                    captcha.onSuccess(() => {
-                        fetch("/send-data", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                ...(mmt.session_id && { session_id: mmt.session_id }),
-                                ...(mmt.check_id && { check_id: mmt.check_id }),
-                                ...captcha.getValidate(),
-                                user_id: '{ user_id }',
-                                gt_notif_type: 'login',
-                            }),
-                        }).then(() => {
-                            window.location.href = "/redirect?user_id={ user_id }";
+    let captchaInstance = null;
+
+    function launchCaptcha() {
+        const launchButton = document.getElementById('launchButton');
+        launchButton.disabled = true;
+        launchButton.textContent = '{ loading_text }';
+
+        fetch("/mmt?user_id={ user_id }")
+            .then((response) => response.json())
+            .then((mmt) => {
+                const initParams = geetestVersion === 3 ? {
+                    gt: mmt.gt,
+                    challenge: mmt.challenge,
+                    new_captcha: mmt.new_captcha,
+                    api_server: "{ api_server }",
+                    https: /^https/i.test(window.location.protocol),
+                    product: "bind",
+                    lang: "en",
+                } : {
+                    captchaId: mmt.gt,
+                    riskType: mmt.risk_type,
+                    userInfo: mmt.session_id ? JSON.stringify({
+                        mmt_key: mmt.session_id
+                    }) : undefined,
+                    api_server: "{ api_server }",
+                    product: "bind",
+                    language: "en",
+                };
+                initGeetest(
+                    initParams,
+                    (captcha) => {
+                        captchaInstance = captcha;
+                        captcha.onReady(() => {
+                            launchButton.textContent = '{  }';
+                            launchButton.disabled = false;
+                            captcha.verify();
                         });
-                    });
-                }
-            )
-        });
+                        captcha.onSuccess(() => {
+                            launchButton.textContent = 'Verifying...';
+                            launchButton.disabled = true;
+                            fetch("/send-data", {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    ...(mmt.session_id && { session_id: mmt.session_id }),
+                                    ...(mmt.check_id && { check_id: mmt.check_id }),
+                                    ...captcha.getValidate(),
+                                    user_id: '{ user_id }',
+                                    gt_notif_type: 'login',
+                                }),
+                            }).then(() => {
+                                window.location.href = "/redirect?user_id={ user_id }";
+                            });
+                        });
+                        captcha.onClose(() => {
+                            launchButton.textContent = '{ open_captcha_button_label }';
+                            launchButton.disabled = false;
+                        });
+                    }
+                )
+            })
+            .catch((error) => {
+                console.error('Error loading captcha:', error);
+                launchButton.textContent = '{ open_captcha_button_label }';
+                launchButton.disabled = false;
+            });
+    }
+
+    document.getElementById('launchButton').addEventListener('click', launchCaptcha);
 </script>
 
 </html>

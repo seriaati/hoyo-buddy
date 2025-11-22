@@ -5,13 +5,16 @@ from typing import TYPE_CHECKING
 
 from tortoise import fields
 
-from .base import BaseModel
+from .base import CachedModel
 
 if TYPE_CHECKING:
     from .hoyo_account import HoyoAccount
 
 
-class AccountNotifSettings(BaseModel):
+class AccountNotifSettings(CachedModel):
+    _cache_ttl = 60 * 60 * 24
+    _pks = ("account_id",)
+
     ALL_FIELDS = (
         "notify_on_checkin_failure",
         "notify_on_checkin_success",

@@ -204,12 +204,12 @@ def blur_uid(uid: int, *, arterisk: str = "x") -> str:
 
 def get_discord_user_link(user_id: int) -> str:
     """Get the link to a Discord user's profile."""
-    return f"https://discord.com/users/{user_id}"
+    return f"discord://-/users/{user_id}"
 
 
 def get_discord_user_md_link(user: discord.User | discord.Member) -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
-    return f"[@{user}]({get_discord_user_link(user.id)})"
+    return f"[@{user}](<{get_discord_user_link(user.id)}>)"
 
 
 def convert_to_title_case(s: str) -> str:

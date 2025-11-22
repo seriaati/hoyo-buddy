@@ -72,16 +72,16 @@ class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
             ui.Section(
                 ui.TextDisplay(LocaleStr(key="notify_on_success_button_label")),
                 accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_success",
-                    current=account.notif_settings.notify_on_checkin_success,
+                    attr="notif_settings.redeem_success",
+                    current=account.notif_settings.redeem_success,
                 ),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(LocaleStr(key="notify_on_failure_button_label")),
                 accessory=AccountToggleButton(
-                    attr="notif_settings.notify_on_checkin_failure",
-                    current=account.notif_settings.notify_on_checkin_failure,
+                    attr="notif_settings.redeem_failure",
+                    current=account.notif_settings.redeem_failure,
                 ),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),

@@ -7,6 +7,7 @@ from typing import Any, ClassVar, Self
 import orjson
 import redis.asyncio as redis
 from loguru import logger
+from tortoise.exceptions import DoesNotExist
 from tortoise.models import Model
 
 from hoyo_buddy.config import CONFIG
@@ -135,6 +136,7 @@ class CachedModel(BaseModel):
             except Exception as e:
                 logger.error(f"Failed to deserialize cached {cls.__name__}: {e}")
             else:
+                logger.debug(f"Cache hit for {cls.__name__} with {kwargs}")
                 return instance
 
         try:
@@ -144,6 +146,7 @@ class CachedModel(BaseModel):
             logger.error(f"Failed to get {cls.__name__} from database: {e}")
             raise
         else:
+            logger.debug(f"Cache miss for {cls.__name__} with {kwargs}")
             return instance
 
     @classmethod
@@ -156,6 +159,7 @@ class CachedModel(BaseModel):
             except Exception as e:
                 logger.error(f"Failed to deserialize cached {cls.__name__}: {e}")
             else:
+                logger.debug(f"Cache hit for {cls.__name__} with {kwargs}")
                 return instance
 
         try:
@@ -166,6 +170,7 @@ class CachedModel(BaseModel):
             logger.error(f"Failed to get {cls.__name__} from database: {e}")
             raise
         else:
+            logger.debug(f"Cache miss for {cls.__name__} with {kwargs}")
             return instance
 
     @classmethod

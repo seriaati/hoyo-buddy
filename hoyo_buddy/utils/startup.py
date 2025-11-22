@@ -70,6 +70,8 @@ def setup_logging(log_dir: str) -> None:
 
     if CONFIG.is_dev:
         logging.getLogger("tortoise").setLevel(logging.DEBUG)
+    else:
+        logger.disable("hoyo_buddy.db.models.base")
 
     logging.getLogger("discord.app_commands.tree").addFilter(
         lambda record: "Ignoring exception in autocomplete for" not in record.getMessage()

@@ -59,8 +59,8 @@ __all__ = (
     "format_timedelta",
     "get_discord_protocol_url",
     "get_discord_url",
-    "get_discord_user_link",
     "get_discord_user_md_link",
+    "get_discord_user_protocol_url",
     "get_floor_difficulty",
     "get_mimo_task_str",
     "get_mimo_task_url",
@@ -202,14 +202,14 @@ def blur_uid(uid: int, *, arterisk: str = "x") -> str:
     return uid_[: middle_index - 2] + arterisk * 5 + uid_[middle_index + 3 :]
 
 
-def get_discord_user_link(user_id: int) -> str:
+def get_discord_user_protocol_url(user_id: int) -> str:
     """Get the link to a Discord user's profile."""
     return f"discord://-/users/{user_id}"
 
 
 def get_discord_user_md_link(user: discord.User | discord.Member) -> str:
     """Get the Markdown-formatted link to a Discord user's profile."""
-    return f"[@{user}](<{get_discord_user_link(user.id)}>)"
+    return f"[@{user}](<{get_discord_user_protocol_url(user.id)}>)"
 
 
 def convert_to_title_case(s: str) -> str:

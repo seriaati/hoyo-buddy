@@ -9,6 +9,7 @@ from enka.errors import WrongUIDFormatError
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_akasha_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
@@ -133,7 +134,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             if len(uids) > GUILD_ONLY_MAX_UID_COUNT:
                 raise LeaderboardNotFoundError
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
             categories = await api.get_categories(character_id)
 
             you = None
@@ -233,7 +234,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         if not (character_id := i.namespace.character) or character_id == "none":
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
@@ -259,7 +260,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         ):
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
@@ -294,7 +295,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         ):
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale)) as api:
+        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:

@@ -36,6 +36,7 @@ class Config(BaseSettings):
     fernet_key: str
     proxy: str | None = None
     redis_url: str | None = None
+    user_agent: str | None = "HoyoBuddy/1.0"
 
     # Heartbeat URLs
     scheduler_heartbeat_url: str | None = None

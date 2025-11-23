@@ -12,6 +12,7 @@ from discord import File
 from genshin.models import ZZZFullAgent, ZZZPartialAgent
 from loguru import logger
 
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
@@ -208,7 +209,7 @@ class ProfileView(View, PlayerEmbedMixin):
     async def _get_character_rank(
         self, character: Character, *, with_detail: bool = False
     ) -> str | None:
-        async with akasha.AkashaAPI() as api:
+        async with akasha.AkashaAPI(headers={"User-Agent": CONFIG.user_agent}) as api:
             await api.refresh_user(self.uid)
             user_calcs = await api.get_calculations_for_user(self.uid)
             user_calc = next(

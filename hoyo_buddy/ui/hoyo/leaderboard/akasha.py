@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Literal
 
 import akasha
 
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
 from hoyo_buddy.ui.paginator import Page, PaginatorView
@@ -104,7 +105,7 @@ class AkashaLbPaginator(BaseAkashaLbPaginator):
         else:
             p = f"lt|{self.lbs[-1].calculation.result}"
 
-        async with akasha.AkashaAPI() as api:
+        async with akasha.AkashaAPI(headers={"User-Agent": CONFIG.user_agent}) as api:
             self.lbs = await api._fetch_leaderboards(
                 calculation_id=int(self.calculation_id),
                 page=self._current_page + 1,

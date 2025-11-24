@@ -16,7 +16,6 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
-from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
@@ -240,17 +239,13 @@ class Profile(
         elif game is Game.ZZZ:
             category = hakushin.ZZZItemCategory.AGENTS
         else:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return []
 
         choices = self.bot.search_autofill[game][category].get(
             locale, self.bot.search_autofill[game][category][Locale.american_english]
         )
         if not choices:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return []
 
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 

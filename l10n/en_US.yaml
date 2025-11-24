@@ -406,7 +406,6 @@ resin_reminder_button.label: Resin reminder
 resin_reminder_modal.title: Resin Reminder Settings
 reward_claimed_title: Daily Check-In Reward Claimed
 saturday: Saturday
-search_autocomplete_no_results: No results found
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
 search_command_category_param_description: Category to search in
 search_cmd_category_param_name: category

@@ -382,9 +382,7 @@ class Search(commands.Cog):
                 locale, self.bot.beta_search_autofill[game][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_choice(
-                    LocaleStr(key="search_autocomplete_no_results"), locale
-                )
+                return []
         else:
             try:
                 if game is Game.GENSHIN:
@@ -406,15 +404,11 @@ class Search(commands.Cog):
                 locale, self.bot.search_autofill[game][category][Locale.american_english]
             )
             if not choices:
-                return self.bot.get_error_choice(
-                    LocaleStr(key="search_autocomplete_no_results"), locale
-                )
+                return []
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return []
 
         random.shuffle(choices)
         return choices[:25]

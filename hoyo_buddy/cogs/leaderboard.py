@@ -134,7 +134,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             if len(uids) > GUILD_ONLY_MAX_UID_COUNT:
                 raise LeaderboardNotFoundError
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
+        async with akasha.AkashaAPI(
+            locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}
+        ) as api:
             categories = await api.get_categories(character_id)
 
             you = None
@@ -234,7 +236,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         if not (character_id := i.namespace.character) or character_id == "none":
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
+        async with akasha.AkashaAPI(
+            locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}
+        ) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
@@ -260,7 +264,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         ):
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
+        async with akasha.AkashaAPI(
+            locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}
+        ) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
@@ -295,7 +301,9 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         ):
             return self.bot.get_error_choice(LocaleStr(key="no_leaderboard_found"), locale)
 
-        async with akasha.AkashaAPI(locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}) as api:
+        async with akasha.AkashaAPI(
+            locale_to_akasha_lang(locale), headers={"User-Agent": CONFIG.user_agent}
+        ) as api:
             categories = await api.get_categories(character_id)
 
         if not categories:
@@ -313,9 +321,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
             app_commands.Choice(name=filter_.name, value=filter_.id) for filter_ in weapon.filters
         ]
         if not choices:
-            return self.bot.get_error_choice(
-                LocaleStr(key="search_autocomplete_no_results"), locale
-            )
+            return []
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @lb_view_command.autocomplete("lb")

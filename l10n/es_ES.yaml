@@ -406,7 +406,6 @@ resin_reminder_button.label: Recordatorio de resina
 resin_reminder_modal.title: Configurar Recordatorio de Resina
 reward_claimed_title: Recompensa de login diario reclamada
 saturday: Sábado
-search_autocomplete_no_results: No se encontraron resultados
 search_autocomplete_not_setup: "Las opciones de autocompletar de búsqueda aún no están configuradas, por favor intenta nuevamente más tarde."
 search_command_category_param_description: Buscar en la categoría
 search_cmd_category_param_name: categoría

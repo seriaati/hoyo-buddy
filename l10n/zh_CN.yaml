@@ -406,7 +406,6 @@ resin_reminder_button.label: 树脂提醒
 resin_reminder_modal.title: 树脂提醒设置
 reward_claimed_title: 已领取每日奖励
 saturday: 星期六
-search_autocomplete_no_results: 未找到结果
 search_autocomplete_not_setup: "搜索自动完成选项还未设置，请稍后再试。"
 search_command_category_param_description: 要搜索的类型
 search_cmd_category_param_name: 类型
@@ -852,6 +851,6 @@ disabled_label: 已禁用
 none: 无
 fake_settings_button_label: 设置
 fake_settings_button_title: 设置搬家啦！
-captcha_not_showing_up: CAPTCHA没有显示？
+captcha_not_showing_up: "CAPTCHA没有显示？"
 open_captcha_button_label: 点击开始验证
 captcha_verifying: 验证中...

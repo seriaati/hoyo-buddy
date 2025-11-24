@@ -404,7 +404,6 @@ resin_reminder_button.label: Lembrete de resina
 resin_reminder_modal.title: Configurações do Lembrete de Resina
 reward_claimed_title: Recompensa de Check-In Diário Resgatada
 saturday: Sábado
-search_autocomplete_no_results: Nenhum resultado encontrado
 search_autocomplete_not_setup: "As opções de preenchimento automático da pesquisa ainda não foram configuradas, por favor, tente novamente mais tarde."
 search_command_category_param_description: Categoria para pesquisar
 search_cmd_category_param_name: categoria

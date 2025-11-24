@@ -406,7 +406,6 @@ resin_reminder_button.label: 樹脂通知
 resin_reminder_modal.title: 樹脂通知設定
 reward_claimed_title: 已領取每日簽到獎勵
 saturday: 星期六
-search_autocomplete_no_results: 未能找到任何結果
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
 search_command_category_param_description: 欲搜尋的分類
 search_cmd_category_param_name: 分類
@@ -852,6 +851,6 @@ disabled_label: 已停用
 none: 無
 fake_settings_button_label: 設定
 fake_settings_button_title: 設定搬家啦！
-captcha_not_showing_up: CAPTCHA沒有顯示？
+captcha_not_showing_up: "CAPTCHA沒有顯示？"
 open_captcha_button_label: 點擊開始驗證
 captcha_verifying: 驗證中...

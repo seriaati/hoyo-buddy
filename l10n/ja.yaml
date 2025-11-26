@@ -404,7 +404,6 @@ resin_reminder_button.label: 樹脂リマインダー
 resin_reminder_modal.title: 樹脂リマインダー設定
 reward_claimed_title: デイリーチェックイン報酬受け取り済み
 saturday: 土曜日
-search_autocomplete_no_results: 結果が見つかりませんでした
 search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
 search_command_category_param_description: 検索するカテゴリ
 search_cmd_category_param_name: カテゴリ
@@ -850,6 +849,6 @@ disabled_label: 無効
 none: なし
 fake_settings_button_label: 設定
 fake_settings_button_title: 設定が移動しました！
-captcha_not_showing_up: CAPTCHAが表示されませんか？
+captcha_not_showing_up: "CAPTCHAが表示されませんか？"
 open_captcha_button_label: クリックして認証を開始
 captcha_verifying: 認証中...

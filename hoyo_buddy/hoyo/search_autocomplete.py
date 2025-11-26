@@ -349,14 +349,7 @@ class AutocompleteSetup:
                             continue
 
                         # only hakushin has beta items
-                        if (
-                            isinstance(category, ZZZItemCategory)
-                            and str(item.id) in beta_ids
-                            # NOTE: This is a special exception for SAnby, since she is reworked in
-                            # the new version, she is placed in the new items, therefore considered
-                            # as a beta item, but she is already released in the official version.
-                            and str(item.id) != "1381"
-                        ):
+                        if isinstance(category, ZZZItemCategory) and str(item.id) in beta_ids:
                             continue
 
                         cls._result[game][category][locale].append(

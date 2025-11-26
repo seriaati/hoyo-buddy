@@ -313,6 +313,14 @@ class Admin(commands.Cog):
 
         await message.edit(content="Gacha rarities updated successfully.")
 
+    @commands.command(name="clear-cache", aliases=["cc"])
+    async def clear_cache_command(self, ctx: commands.Context, deployment: Deployment) -> Any:
+        if self.bot.deployment != deployment:
+            return
+
+        await self.bot.cache_session.cache.clear()
+        await ctx.send("Cache cleared.")
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Admin(bot))

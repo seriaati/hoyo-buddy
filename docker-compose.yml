@@ -1,0 +1,187 @@
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: hb-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hoyobuddy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-hoyobuddy}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hoyobuddy}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+
+  # Redis (optional, for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: hb-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    profiles:
+      - redis  # Only start if explicitly enabled
+
+  # Main bot instance (handles sharding and primary operations)
+  bot-main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hb-main
+    command: python -OO run.py --sentry --schedule --search --prometheus --novelai --deployment main
+    environment:
+      # Discord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+      
+      # Database
+      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      
+      # Redis (optional)
+      REDIS_URL: ${REDIS_URL:-}
+      
+      # Encryption
+      FERNET_KEY: ${FERNET_KEY}
+      
+      # Sentry (optional)
+      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
+      
+      # Other settings
+      IS_DEV: ${IS_DEV:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import psutil; exit(0 if any(\"run.py\" in p.cmdline()[0] if p.cmdline() else False for p in psutil.process_iter()) else 1)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    volumes:
+      - ./logs:/app/logs
+      - ./.cache:/app/.cache
+
+  # Sub bot instance (secondary shards for load distribution)
+  bot-sub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hb-sub
+    command: python -OO run.py --sentry --schedule --search --novelai --deployment sub
+    environment:
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      REDIS_URL: ${REDIS_URL:-}
+      FERNET_KEY: ${FERNET_KEY}
+      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
+      IS_DEV: ${IS_DEV:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      bot-main:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    volumes:
+      - ./logs:/app/logs
+      - ./.cache:/app/.cache
+
+  # Web app (Flet authentication interface)
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hb-app
+    command: python -OO run_web_app.py --sentry
+    environment:
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      FERNET_KEY: ${FERNET_KEY}
+      WEB_APP_PORT: ${WEB_APP_PORT:-5173}
+      WEB_APP_SENTRY_DSN: ${WEB_APP_SENTRY_DSN:-}
+      IS_DEV: ${IS_DEV:-false}
+    ports:
+      - "${WEB_APP_PORT:-5173}:${WEB_APP_PORT:-5173}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    volumes:
+      - ./logs:/app/logs
+
+  # Scheduler (handles automated tasks: check-ins, redeems, notifications)
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hb-scheduler
+    command: python -OO run_scheduler.py --sentry
+    environment:
+      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
+      IS_DEV: ${IS_DEV:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    volumes:
+      - ./logs:/app/logs
+
+  # Web server (Geetest verification)
+  web-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hb-web-server
+    command: python -OO run_web_server.py --sentry
+    environment:
+      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-8080}
+      WEB_SERVER_SENTRY_DSN: ${WEB_SERVER_SENTRY_DSN:-}
+      IS_DEV: ${IS_DEV:-false}
+    ports:
+      - "${WEB_SERVER_PORT:-8080}:${WEB_SERVER_PORT:-8080}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - hoyobuddy
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  hoyobuddy:
+    driver: bridge

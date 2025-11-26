@@ -1,0 +1,120 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments (CRITICAL - don't copy local venv into container)
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Database files
+*.db
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+db.sqlite3
+db.sqlite3-journal
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git (keep .git and .gitmodules for submodule initialization)
+.gitignore
+.gitattributes
+
+# GitHub
+.github/
+
+# Development files
+playground.*.py
+test.py
+test_*.py
+
+# Documentation
+*.md
+docs/
+
+# CI/CD
+.gitlab-ci.yml
+renovate.json
+
+# PM2 (not needed in Docker)
+pm2.json
+restart.py
+
+# Cache directories
+.cache/
+.static/
+.enka_py/
+
+# Transifex
+.tx/
+transifex.yaml
+
+# Tools
+tools/
+
+# Changelogs (not needed at runtime)
+changelogs/
+
+# Migration files (include these if needed, but keep backups out)
+# migrations/
+
+# Bot data (exclude most JSON files per your gitignore pattern)
+hoyo_buddy/bot/data/*.json
+!hoyo_buddy/bot/data/nsfw_tags.json
+!hoyo_buddy/bot/data/grafana_dashboard.json

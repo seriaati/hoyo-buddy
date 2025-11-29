@@ -53,6 +53,8 @@ class RedisImageCache:
             with redis.Redis(connection_pool=self.redis) as r, io.BytesIO() as output:
                 image.save(output, format="PNG")
                 r.setex(key, IMAGE_CACHE_TTL, output.getvalue())
+        except redis.BusyLoadingError:
+            pass
         except redis.RedisError as e:
             logger.error(f"Redis error while setting image {key}: {e}")
 
@@ -65,6 +67,8 @@ class RedisImageCache:
                 image_data = r.get(key)
                 if image_data is None:
                     return None
+        except redis.BusyLoadingError:
+            return None
         except redis.RedisError as e:
             logger.error(f"Redis error while getting image {key}: {e}")
             return None

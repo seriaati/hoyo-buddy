@@ -1,25 +1,12 @@
 services:
-  # Redis (optional, for caching)
-  redis:
-    image: redis:7-alpine
-    container_name: hb-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - hoyobuddy
-
   # Main bot instance (handles sharding and primary operations)
   bot-main:
     image: seriaati/hoyo-buddy:latest
     container_name: hb-main
     command: python -OO run.py --sentry --schedule --search --prometheus --novelai --deployment main
+    extra_hosts:
+      - "1Panel-postgresql-T0rl:172.18.0.6"
+      - "1Panel-redis-mtsj:172.18.0.4"
     environment:
       # Discord
       DISCORD_TOKEN: ${DISCORD_TOKEN}
@@ -65,7 +52,6 @@ services:
     restart: unless-stopped
     networks:
       - 1panel-network
-      - hoyobuddy
     volumes:
       - ./logs:/app/logs
       - ./.cache:/app/.cache
@@ -75,6 +61,9 @@ services:
     image: seriaati/hoyo-buddy:latest
     container_name: hb-app
     command: python -OO run_web_app.py --sentry
+    extra_hosts:
+      - "1Panel-postgresql-T0rl:172.18.0.6"
+      - "1Panel-redis-mtsj:172.18.0.4"
     environment:
       # Discord
       DISCORD_TOKEN: ${DISCORD_TOKEN}
@@ -126,7 +115,6 @@ services:
     restart: unless-stopped
     networks:
       - 1panel-network
-      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 
@@ -135,6 +123,9 @@ services:
     image: seriaati/hoyo-buddy:latest
     container_name: hb-scheduler
     command: python -OO run_scheduler.py --sentry
+    extra_hosts:
+      - "1Panel-postgresql-T0rl:172.18.0.6"
+      - "1Panel-redis-mtsj:172.18.0.4"
     environment:
       # Discord
       DISCORD_TOKEN: ${DISCORD_TOKEN}
@@ -180,7 +171,6 @@ services:
     restart: unless-stopped
     networks:
       - 1panel-network
-      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 
@@ -189,6 +179,9 @@ services:
     image: seriaati/hoyo-buddy:latest
     container_name: hb-web-server
     command: python -OO run_web_server.py --sentry
+    extra_hosts:
+      - "1Panel-postgresql-T0rl:172.18.0.6"
+      - "1Panel-redis-mtsj:172.18.0.4"
     environment:
       # Discord
       DISCORD_TOKEN: ${DISCORD_TOKEN}
@@ -240,17 +233,10 @@ services:
     restart: unless-stopped
     networks:
       - 1panel-network
-      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 
-volumes:
-  redis_data:
-    driver: local
-
 networks:
-  hoyobuddy:
-    driver: bridge
   1panel-network:
     external: true
     name: 1panel-network

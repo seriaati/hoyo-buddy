@@ -224,6 +224,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         await translator.load()
         if not translator.loaded:
             await self.update_assets()
+            await translator.load()
 
         await self._load_cogs()
         await self.load_extension("jishaku")

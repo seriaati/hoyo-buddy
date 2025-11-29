@@ -41,7 +41,13 @@ async def main() -> None:
     await translator.load()
 
     assert isinstance(app, fastapi.FastAPI)
-    config = uvicorn.Config(app, port=CONFIG.web_app_port, log_config=None, log_level=None)
+    config = uvicorn.Config(
+        app,
+        host="0.0.0.0",  # noqa: S104
+        port=CONFIG.web_app_port,
+        log_config=None,
+        log_level=None,
+    )
     server = uvicorn.Server(config)
     await server.serve()
 

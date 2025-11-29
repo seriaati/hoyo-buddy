@@ -204,7 +204,7 @@ class GeetestWebServer:
         runner = web.AppRunner(app)
         await runner.setup()
 
-        site = web.TCPSite(runner, "0.0.0.0", port)  # noqa: S104
+        site = web.TCPSite(runner, "localhost", port)
         await site.start()
         logger.info("Web server started")
 

@@ -42,11 +42,7 @@ async def main() -> None:
 
     assert isinstance(app, fastapi.FastAPI)
     config = uvicorn.Config(
-        app,
-        host="0.0.0.0",  # noqa: S104
-        port=CONFIG.web_app_port,
-        log_config=None,
-        log_level=None,
+        app, host="localhost", port=CONFIG.web_app_port, log_config=None, log_level=None
     )
     server = uvicorn.Server(config)
     await server.serve()

@@ -17,7 +17,6 @@ from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import POOL_MAX_WORKERS
 from hoyo_buddy.db.pgsql import Database
-from hoyo_buddy.health import HealthCheckServer
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import setup_async_event_loop, setup_logging, setup_sentry, wrap_task_factory
 
@@ -65,7 +64,6 @@ async def main() -> None:
                 config=CONFIG,
                 executor=executor,
             ) as bot,
-            HealthCheckServer(bot, port=8081),
         ):
             await bot.start(CONFIG.discord_token)
 

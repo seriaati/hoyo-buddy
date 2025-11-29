@@ -53,9 +53,11 @@ services:
     networks:
       - 1panel-network
     volumes:
-      - ./logs:/app/logs
-      - ./.cache:/app/.cache
-      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
+      - hb-logs:/app/logs
+      - hb-cache:/app/.cache
+      - hb-static:/app/.static
+      - hb-bot-data:/app/hoyo_buddy/bot/data
+      - hb-enka:/app/.enka_py
 
   # Web app (Flet authentication interface)
   web-app:
@@ -117,8 +119,9 @@ services:
     networks:
       - 1panel-network
     volumes:
-      - ./logs:/app/logs
-      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
+      - hb-logs:/app/logs
+      - hb-cache:/app/.cache
+      - hb-bot-data:/app/hoyo_buddy/bot/data
 
   # Scheduler (handles automated tasks: check-ins, redeems, notifications)
   scheduler:
@@ -174,8 +177,9 @@ services:
     networks:
       - 1panel-network
     volumes:
-      - ./logs:/app/logs
-      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
+      - hb-logs:/app/logs
+      - hb-cache:/app/.cache
+      - hb-bot-data:/app/hoyo_buddy/bot/data
 
   # Web server (Geetest verification)
   web-server:
@@ -237,8 +241,21 @@ services:
     networks:
       - 1panel-network
     volumes:
-      - ./logs:/app/logs
-      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
+      - hb-logs:/app/logs
+      - hb-cache:/app/.cache
+      - hb-bot-data:/app/hoyo_buddy/bot/data
+
+volumes:
+  hb-logs:
+    name: hoyo-buddy-logs
+  hb-cache:
+    name: hoyo-buddy-cache
+  hb-static:
+    name: hoyo-buddy-static
+  hb-bot-data:
+    name: hoyo-buddy-bot-data
+  hb-enka:
+    name: hoyo-buddy-enka
 
 networks:
   1panel-network:

@@ -17,7 +17,7 @@ services:
 
   # Main bot instance (handles sharding and primary operations)
   bot-main:
-    image: ghcr.io/seriaati/hoyo-buddy:latest
+    image: seriaati/hoyo-buddy:latest
     container_name: hb-main
     command: python -OO run.py --sentry --schedule --search --prometheus --novelai --deployment main
     environment:
@@ -72,7 +72,7 @@ services:
 
   # Web app (Flet authentication interface)
   web-app:
-    image: ghcr.io/seriaati/hoyo-buddy:latest
+    image: seriaati/hoyo-buddy:latest
     container_name: hb-app
     command: python -OO run_web_app.py --sentry
     environment:
@@ -132,7 +132,7 @@ services:
 
   # Scheduler (handles automated tasks: check-ins, redeems, notifications)
   scheduler:
-    image: ghcr.io/seriaati/hoyo-buddy:latest
+    image: seriaati/hoyo-buddy:latest
     container_name: hb-scheduler
     command: python -OO run_scheduler.py --sentry
     environment:
@@ -186,7 +186,7 @@ services:
 
   # Web server (Geetest verification)
   web-server:
-    image: ghcr.io/seriaati/hoyo-buddy:latest
+    image: seriaati/hoyo-buddy:latest
     container_name: hb-web-server
     command: python -OO run_web_server.py --sentry
     environment:

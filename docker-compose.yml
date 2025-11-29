@@ -64,8 +64,8 @@ services:
       start_period: 60s
     restart: unless-stopped
     networks:
-      - hoyobuddy
       - 1panel-network
+      - hoyobuddy
     volumes:
       - ./logs:/app/logs
       - ./.cache:/app/.cache
@@ -125,8 +125,8 @@ services:
       - "${WEB_APP_PORT:-8645}:${WEB_APP_PORT:-8645}"
     restart: unless-stopped
     networks:
-      - hoyobuddy
       - 1panel-network
+      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 
@@ -179,8 +179,8 @@ services:
       start_period: 60s
     restart: unless-stopped
     networks:
-      - hoyobuddy
       - 1panel-network
+      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 
@@ -239,8 +239,8 @@ services:
       - "${WEB_SERVER_PORT:-5000}:${WEB_SERVER_PORT:-5000}"
     restart: unless-stopped
     networks:
-      - hoyobuddy
       - 1panel-network
+      - hoyobuddy
     volumes:
       - ./logs:/app/logs
 

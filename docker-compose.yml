@@ -41,7 +41,7 @@ services:
       SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
 
       # Other settings
-      ENV: ${ENV:prod}
+      ENV: ${ENV:-prod}
       DB_URL: ${DB_URL}
       FERNET_KEY: ${FERNET_KEY}
       PROXY: ${PROXY:-}
@@ -96,7 +96,7 @@ services:
       SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
 
       # Other settings
-      ENV: ${ENV:prod}
+      ENV: ${ENV:-prod}
       DB_URL: ${DB_URL}
       FERNET_KEY: ${FERNET_KEY}
       PROXY: ${PROXY:-}
@@ -156,7 +156,7 @@ services:
       SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
 
       # Other settings
-      ENV: ${ENV:prod}
+      ENV: ${ENV:-prod}
       DB_URL: ${DB_URL}
       FERNET_KEY: ${FERNET_KEY}
       PROXY: ${PROXY:-}
@@ -210,7 +210,7 @@ services:
       SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
 
       # Other settings
-      ENV: ${ENV:prod}
+      ENV: ${ENV:-prod}
       DB_URL: ${DB_URL}
       FERNET_KEY: ${FERNET_KEY}
       PROXY: ${PROXY:-}

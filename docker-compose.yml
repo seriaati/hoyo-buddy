@@ -55,6 +55,7 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./.cache:/app/.cache
+      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
 
   # Web app (Flet authentication interface)
   web-app:
@@ -117,6 +118,7 @@ services:
       - 1panel-network
     volumes:
       - ./logs:/app/logs
+      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
 
   # Scheduler (handles automated tasks: check-ins, redeems, notifications)
   scheduler:
@@ -173,6 +175,7 @@ services:
       - 1panel-network
     volumes:
       - ./logs:/app/logs
+      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
 
   # Web server (Geetest verification)
   web-server:
@@ -235,6 +238,7 @@ services:
       - 1panel-network
     volumes:
       - ./logs:/app/logs
+      - ./hoyo_buddy/bot/data:/app/hoyo_buddy/bot/data
 
 networks:
   1panel-network:

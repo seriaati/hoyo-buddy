@@ -12,6 +12,7 @@ import discord
 from aiohttp_client_cache.backends.redis import RedisBackend
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
 from aiohttp_client_cache.session import CachedSession
+from loguru import logger
 
 from hoyo_buddy.bot import HoyoBuddy
 from hoyo_buddy.config import CONFIG
@@ -26,6 +27,28 @@ tracemalloc.start()
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 CACHE_EXPIRE = 12 * 3600  # 12 hours
 discord.VoiceClient.warn_nacl = False
+
+
+async def create_db_pool_with_retry(
+    db_url: str, max_retries: int = 5, initial_delay: float = 1.0
+) -> asyncpg.Pool:
+    """Create database pool with exponential backoff retry logic."""
+    for attempt in range(max_retries):
+        try:
+            logger.info(f"Attempting to connect to database (attempt {attempt + 1}/{max_retries})")
+            pool = await asyncpg.create_pool(db_url)
+        except (OSError, asyncpg.PostgresError) as e:
+            if attempt == max_retries - 1:
+                logger.error(f"Failed to connect to database after {max_retries} attempts")
+                raise
+            delay = initial_delay * (2**attempt)
+            logger.warning(f"Database connection failed: {e}. Retrying in {delay:.1f}s...")
+            await asyncio.sleep(delay)
+        else:
+            logger.info("Successfully connected to database")
+            return pool
+    msg = "Unreachable code"
+    raise RuntimeError(msg)
 
 
 async def main() -> None:
@@ -52,8 +75,9 @@ async def main() -> None:
             KeyboardInterrupt, asyncio.CancelledError, aiohttp.http_websocket.WebSocketError
         ),
     ):
+        pool = await create_db_pool_with_retry(CONFIG.db_url)
         async with (
-            asyncpg.create_pool(CONFIG.db_url) as pool,
+            pool,
             aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session,
             CachedSession(cache=backend) as cache_session,
             Database(),

@@ -181,7 +181,7 @@ class Translator:
             bool(self._l10n)
             and bool(self._mi18n)
             and bool(self._game_textmaps)
-            and bool(self._synced_commands)
+            # and bool(self._synced_commands)
         )
 
     async def __aenter__(self) -> Self:

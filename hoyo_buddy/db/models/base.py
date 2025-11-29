@@ -112,7 +112,9 @@ class CachedModel(BaseModel):
         except redis.BusyLoadingError:
             pass
         except redis.RedisError as e:
-            logger.error(f"Redis error while deleting cache for {self.__class__.__name__} instance: {e}")
+            logger.error(
+                f"Redis error while deleting cache for {self.__class__.__name__} instance: {e}"
+            )
         except Exception:
             logger.exception(f"Failed to delete cache for {self.__class__.__name__} instance")
 

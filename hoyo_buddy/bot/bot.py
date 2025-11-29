@@ -224,8 +224,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         await translator.load()
         if not translator.loaded:
             await self.update_assets()
-            if not translator._synced_commands:
-                await self.sync_commands()
 
         await self._load_cogs()
         await self.load_extension("jishaku")
@@ -254,9 +252,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await CARD_DATA.load()
         self.loop.set_exception_handler(self.asyncio_erorr_handler)
-
-        shards, _gateway_url, _session_limit = await self.http.get_bot_gateway()
-        logger.info(f"Spawning {shards} shards")
 
     async def get_or_fetch_guild(self) -> discord.Guild | None:
         guild_id = GUILD_ID

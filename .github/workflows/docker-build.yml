@@ -80,16 +80,16 @@ jobs:
             gh_token=${{ secrets.GH_PAT }}
           platforms: linux/amd64
 
-      - name: Deploy to Dokploy
-        if: github.event_name != 'pull_request'
-        run: |
-          curl -X 'POST' \
-            'https://dokploy.seria.moe/api/compose.deploy' \
-            -H 'accept: application/json' \
-            -H 'Content-Type: application/json' \
-            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
-            -d '{
-            "composeId": "eGR3rwcNTsoEmKbgew6ur",
-            "title": "${{ github.event.head_commit.message }}",
-            "description": "Hash: ${{ github.sha }}"
-          }'
+      # - name: Deploy to Dokploy
+      #   if: github.event_name != 'pull_request'
+      #   run: |
+      #     curl -X 'POST' \
+      #       'https://dokploy.seria.moe/api/compose.deploy' \
+      #       -H 'accept: application/json' \
+      #       -H 'Content-Type: application/json' \
+      #       -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
+      #       -d '{
+      #       "composeId": "eGR3rwcNTsoEmKbgew6ur",
+      #       "title": "${{ github.event.head_commit.message }}",
+      #       "description": "Hash: ${{ github.sha }}"
+      #     }'

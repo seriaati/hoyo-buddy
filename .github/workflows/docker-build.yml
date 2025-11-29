@@ -87,9 +87,9 @@ jobs:
             'https://dokploy.seria.moe/api/compose.deploy' \
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
-            -H 'x-api-key: ${DOKPLOY_API_KEY}' \
+            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
             -d '{
-            "composeId": "9mlw3M2I_W0OgAMbmQgAc",
+            "composeId": "eGR3rwcNTsoEmKbgew6ur",
             "title": "${{ github.event.head_commit.message }}",
             "description": "Hash: ${{ github.sha }}"
           }'

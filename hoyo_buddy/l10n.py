@@ -179,9 +179,7 @@ class Translator:
     @property
     def loaded(self) -> bool:
         return (
-            bool(self._l10n)
-            and bool(self._mi18n)
-            and bool(self._game_textmaps)
+            bool(self._l10n) and bool(self._mi18n) and bool(self._game_textmaps)
             # and bool(self._synced_commands)
         )
 

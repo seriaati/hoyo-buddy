@@ -26,14 +26,20 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Copy the entire project (including .git for submodule initialization)
 COPY . /app
 
-# Install the project itself
+# Clone private submodule using GitHub token (before project installation)
+RUN --mount=type=secret,id=gh_token \
+    if [ -f /run/secrets/gh_token ] && [ -s /run/secrets/gh_token ]; then \
+        git config --global url."https://$(cat /run/secrets/gh_token)@github.com/".insteadOf "https://github.com/" && \
+        git submodule update --init --recursive; \
+    else \
+        echo "ERROR: gh_token secret not provided or empty. Cannot clone private submodule." >&2 && \
+        echo "Please provide a GitHub PAT with repo access as a build secret." >&2 && \
+        exit 1; \
+    fi
+
+# Install the project itself (after submodule is cloned)
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
-
-# Clone private submodule using GitHub token
-RUN --mount=type=secret,id=gh_token \
-    git config --global url."https://$(cat /run/secrets/gh_token)@github.com/".insteadOf "https://github.com/" && \
-    git submodule update --init --recursive
 
 # Stage 2: Runtime - Minimal final image without uv
 FROM python:3.12-slim-bookworm

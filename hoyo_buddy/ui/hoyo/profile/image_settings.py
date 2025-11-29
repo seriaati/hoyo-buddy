@@ -63,6 +63,8 @@ def get_default_art(
 ) -> str:
     if isinstance(character, ZZZPartialAgent | ZZZFullAgent | ZZZEnkaCharacter):
         if is_team:
+            if character.id == 1211:  # Rina
+                return "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png"
             return character.banner_icon
         if use_m3_art:
             return ZZZ_M3_ART_URL.format(char_id=character.id)

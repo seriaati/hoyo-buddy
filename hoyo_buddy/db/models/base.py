@@ -93,6 +93,10 @@ class CachedModel(BaseModel):
             serialized_data = self.serialize()
             json_data = orjson.dumps(serialized_data).decode("utf-8")
             await redis_conn.setex(cache_key, self._cache_ttl, json_data)
+        except redis.BusyLoadingError:
+            pass
+        except redis.RedisError as e:
+            logger.error(f"Redis error while caching {self.__class__.__name__} instance: {e}")
         except Exception:
             logger.exception(f"Failed to cache {self.__class__.__name__} instance")
 
@@ -105,6 +109,12 @@ class CachedModel(BaseModel):
             kwargs = {pk: getattr(self, pk) for pk in self._pks}
             cache_key = self._get_cache_key(**kwargs)
             await redis_conn.delete(cache_key)
+        except redis.BusyLoadingError:
+            pass
+        except redis.RedisError as e:
+            logger.error(
+                f"Redis error while deleting cache for {self.__class__.__name__} instance: {e}"
+            )
         except Exception:
             logger.exception(f"Failed to delete cache for {self.__class__.__name__} instance")
 
@@ -122,6 +132,11 @@ class CachedModel(BaseModel):
                 return None
 
             return orjson.loads(cached_data)
+        except redis.BusyLoadingError:
+            return None
+        except redis.RedisError as e:
+            logger.error(f"Redis error while getting cache for {cls.__name__} instance: {e}")
+            return None
         except Exception:
             logger.exception(f"Failed to get cache for {cls.__name__} instance")
             return None

@@ -1,23 +1,4 @@
 services:
-  # PostgreSQL database
-  postgres:
-    image: postgres:16-alpine
-    container_name: hb-postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-hoyobuddy}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-hoyobuddy}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hoyobuddy}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - hoyobuddy
-
   # Redis (optional, for caching)
   redis:
     image: redis:7-alpine
@@ -33,14 +14,10 @@ services:
     restart: unless-stopped
     networks:
       - hoyobuddy
-    profiles:
-      - redis  # Only start if explicitly enabled
 
   # Main bot instance (handles sharding and primary operations)
   bot-main:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/seriaati/hoyo-buddy:latest
     container_name: hb-main
     command: python -OO run.py --sentry --schedule --search --prometheus --novelai --deployment main
     environment:
@@ -48,26 +25,39 @@ services:
       DISCORD_TOKEN: ${DISCORD_TOKEN}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
       DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
-      
-      # Database
-      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
-      
-      # Redis (optional)
-      REDIS_URL: ${REDIS_URL:-}
-      
-      # Encryption
-      FERNET_KEY: ${FERNET_KEY}
-      
-      # Sentry (optional)
+
+      # AI image generation
+      NAI_TOKEN: ${NAI_TOKEN:-}
+      NAI_HOST_URL: ${NAI_HOST_URL:-}
+
+      # API keys
+      HOYO_CODES_API_KEY: ${HOYO_CODES_API_KEY:-}
+      IMG_UPLOAD_API_KEY: ${IMG_UPLOAD_API_KEY:-}
+
+      # Sentry DSNs
       BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
-      
+      WEB_SERVER_SENTRY_DSN: ${WEB_SERVER_SENTRY_DSN:-}
+      WEB_APP_SENTRY_DSN: ${WEB_APP_SENTRY_DSN:-}
+      SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
+
       # Other settings
-      IS_DEV: ${IS_DEV:-false}
-    depends_on:
-      postgres:
-        condition: service_healthy
+      ENV: ${ENV:prod}
+      DB_URL: ${DB_URL}
+      FERNET_KEY: ${FERNET_KEY}
+      PROXY: ${PROXY:-}
+      REDIS_URL: ${REDIS_URL:-}
+      USER_AGENT: ${USER_AGENT:-}
+
+      # Heartbeat
+      MAIN_HEARTBEAT_URL: ${MAIN_HEARTBEAT_URL:-}
+      SCHEDULER_HEARTBEAT_URL: ${SCHEDULER_HEARTBEAT_URL:-}
+
+      # Ports
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-}
+      WEB_APP_PORT: ${WEB_APP_PORT:-}
+      PROMETHEUS_PORT: ${PROMETHEUS_PORT:-}
     healthcheck:
-      test: ["CMD-SHELL", "python -c 'import psutil; exit(0 if any(\"run.py\" in p.cmdline()[0] if p.cmdline() else False for p in psutil.process_iter()) else 1)'"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -75,113 +65,192 @@ services:
     restart: unless-stopped
     networks:
       - hoyobuddy
-    volumes:
-      - ./logs:/app/logs
-      - ./.cache:/app/.cache
-
-  # Sub bot instance (secondary shards for load distribution)
-  bot-sub:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: hb-sub
-    command: python -OO run.py --sentry --schedule --search --novelai --deployment sub
-    environment:
-      DISCORD_TOKEN: ${DISCORD_TOKEN}
-      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
-      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
-      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
-      REDIS_URL: ${REDIS_URL:-}
-      FERNET_KEY: ${FERNET_KEY}
-      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
-      IS_DEV: ${IS_DEV:-false}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      bot-main:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - hoyobuddy
+      - 1panel-network
     volumes:
       - ./logs:/app/logs
       - ./.cache:/app/.cache
 
   # Web app (Flet authentication interface)
   web-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/seriaati/hoyo-buddy:latest
     container_name: hb-app
     command: python -OO run_web_app.py --sentry
     environment:
+      # Discord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
       DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
-      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
-      FERNET_KEY: ${FERNET_KEY}
-      WEB_APP_PORT: ${WEB_APP_PORT:-5173}
+
+      # AI image generation
+      NAI_TOKEN: ${NAI_TOKEN:-}
+      NAI_HOST_URL: ${NAI_HOST_URL:-}
+
+      # API keys
+      HOYO_CODES_API_KEY: ${HOYO_CODES_API_KEY:-}
+      IMG_UPLOAD_API_KEY: ${IMG_UPLOAD_API_KEY:-}
+
+      # Sentry DSNs
+      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
+      WEB_SERVER_SENTRY_DSN: ${WEB_SERVER_SENTRY_DSN:-}
       WEB_APP_SENTRY_DSN: ${WEB_APP_SENTRY_DSN:-}
-      IS_DEV: ${IS_DEV:-false}
+      SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
+
+      # Other settings
+      ENV: ${ENV:prod}
+      DB_URL: ${DB_URL}
+      FERNET_KEY: ${FERNET_KEY}
+      PROXY: ${PROXY:-}
+      REDIS_URL: ${REDIS_URL:-}
+      USER_AGENT: ${USER_AGENT:-}
+
+      # Heartbeat
+      MAIN_HEARTBEAT_URL: ${MAIN_HEARTBEAT_URL:-}
+      SCHEDULER_HEARTBEAT_URL: ${SCHEDULER_HEARTBEAT_URL:-}
+
+      # Ports
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-}
+      WEB_APP_PORT: ${WEB_APP_PORT:-}
+      PROMETHEUS_PORT: ${PROMETHEUS_PORT:-}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:${WEB_APP_PORT:-8645} || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     ports:
-      - "${WEB_APP_PORT:-5173}:${WEB_APP_PORT:-5173}"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - "${WEB_APP_PORT:-8645}:${WEB_APP_PORT:-8645}"
     restart: unless-stopped
     networks:
       - hoyobuddy
+      - 1panel-network
     volumes:
       - ./logs:/app/logs
 
   # Scheduler (handles automated tasks: check-ins, redeems, notifications)
   scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/seriaati/hoyo-buddy:latest
     container_name: hb-scheduler
     command: python -OO run_scheduler.py --sentry
     environment:
-      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
+      # Discord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+
+      # AI image generation
+      NAI_TOKEN: ${NAI_TOKEN:-}
+      NAI_HOST_URL: ${NAI_HOST_URL:-}
+
+      # API keys
+      HOYO_CODES_API_KEY: ${HOYO_CODES_API_KEY:-}
+      IMG_UPLOAD_API_KEY: ${IMG_UPLOAD_API_KEY:-}
+
+      # Sentry DSNs
+      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
+      WEB_SERVER_SENTRY_DSN: ${WEB_SERVER_SENTRY_DSN:-}
+      WEB_APP_SENTRY_DSN: ${WEB_APP_SENTRY_DSN:-}
       SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
-      IS_DEV: ${IS_DEV:-false}
-    depends_on:
-      postgres:
-        condition: service_healthy
+
+      # Other settings
+      ENV: ${ENV:prod}
+      DB_URL: ${DB_URL}
+      FERNET_KEY: ${FERNET_KEY}
+      PROXY: ${PROXY:-}
+      REDIS_URL: ${REDIS_URL:-}
+      USER_AGENT: ${USER_AGENT:-}
+
+      # Heartbeat
+      MAIN_HEARTBEAT_URL: ${MAIN_HEARTBEAT_URL:-}
+      SCHEDULER_HEARTBEAT_URL: ${SCHEDULER_HEARTBEAT_URL:-}
+
+      # Ports
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-}
+      WEB_APP_PORT: ${WEB_APP_PORT:-}
+      PROMETHEUS_PORT: ${PROMETHEUS_PORT:-}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8082/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
     networks:
       - hoyobuddy
+      - 1panel-network
     volumes:
       - ./logs:/app/logs
 
   # Web server (Geetest verification)
   web-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/seriaati/hoyo-buddy:latest
     container_name: hb-web-server
     command: python -OO run_web_server.py --sentry
     environment:
-      DB_URL: postgresql://${POSTGRES_USER:-hoyobuddy}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hoyobuddy}
-      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-8080}
+      # Discord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+
+      # AI image generation
+      NAI_TOKEN: ${NAI_TOKEN:-}
+      NAI_HOST_URL: ${NAI_HOST_URL:-}
+
+      # API keys
+      HOYO_CODES_API_KEY: ${HOYO_CODES_API_KEY:-}
+      IMG_UPLOAD_API_KEY: ${IMG_UPLOAD_API_KEY:-}
+
+      # Sentry DSNs
+      BOT_SENTRY_DSN: ${BOT_SENTRY_DSN:-}
       WEB_SERVER_SENTRY_DSN: ${WEB_SERVER_SENTRY_DSN:-}
-      IS_DEV: ${IS_DEV:-false}
+      WEB_APP_SENTRY_DSN: ${WEB_APP_SENTRY_DSN:-}
+      SCHEDULER_SENTRY_DSN: ${SCHEDULER_SENTRY_DSN:-}
+
+      # Other settings
+      ENV: ${ENV:prod}
+      DB_URL: ${DB_URL}
+      FERNET_KEY: ${FERNET_KEY}
+      PROXY: ${PROXY:-}
+      REDIS_URL: ${REDIS_URL:-}
+      USER_AGENT: ${USER_AGENT:-}
+
+      # Heartbeat
+      MAIN_HEARTBEAT_URL: ${MAIN_HEARTBEAT_URL:-}
+      SCHEDULER_HEARTBEAT_URL: ${SCHEDULER_HEARTBEAT_URL:-}
+
+      # Ports
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT:-}
+      WEB_APP_PORT: ${WEB_APP_PORT:-}
+      PROMETHEUS_PORT: ${PROMETHEUS_PORT:-}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:${WEB_SERVER_PORT:-5000}/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     ports:
-      - "${WEB_SERVER_PORT:-8080}:${WEB_SERVER_PORT:-8080}"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - "${WEB_SERVER_PORT:-5000}:${WEB_SERVER_PORT:-5000}"
     restart: unless-stopped
     networks:
       - hoyobuddy
+      - 1panel-network
     volumes:
       - ./logs:/app/logs
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local
 
 networks:
   hoyobuddy:
     driver: bridge
+  1panel-network:
+    external: true
+    name: 1panel-network

@@ -40,6 +40,7 @@ FROM python:3.12-slim-bookworm
 
 # Install runtime dependencies for Pillow and other packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     git \
     libjpeg62-turbo \
     libfreetype6 \
@@ -51,20 +52,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libharfbuzz0b \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user for security
-RUN groupadd --system --gid 999 hoyobuddy \
-    && useradd --system --gid 999 --uid 999 --create-home hoyobuddy
-
 # Copy the application and virtual environment from builder
-COPY --from=builder --chown=hoyobuddy:hoyobuddy /app /app
+COPY --from=builder --chown=app:app /app /app
 
 # Place virtual environment executables at front of PATH
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
-
-# Switch to non-root user
-USER hoyobuddy
 
 WORKDIR /app
 

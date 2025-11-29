@@ -609,11 +609,15 @@ class NotesChecker:
                 defaultdict(dict)
             )
 
-            notifies = await NotesNotify.filter(enabled=True).all().order_by("account__uid")
+            notifies = (
+                await NotesNotify.filter(enabled=True)
+                .all()
+                .order_by("account__uid")
+                .prefetch_related("account")
+            )
 
             for notify_ in notifies:
                 notify = await cls._adjust_notify(notify_)
-                await notify.fetch_related("account")
                 if cls._determine_skip(notify):
                     continue
 

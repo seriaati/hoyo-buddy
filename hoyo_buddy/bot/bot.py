@@ -201,6 +201,15 @@ class HoyoBuddy(commands.AutoShardedBot):
             except Exception:
                 logger.exception(f"Failed to load cog {cog_name!r}")
 
+    async def sync_commands(self) -> list[app_commands.AppCommand]:
+        synced_commands = await self.tree.sync()
+
+        await write_json(
+            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
+        )
+        await translator.load_synced_commands_json()
+        return synced_commands
+
     async def setup_hook(self) -> None:
         await self.start_process_pool()
 
@@ -213,6 +222,10 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         # Preload translators
         await translator.load()
+        if not translator.loaded:
+            await self.update_assets()
+            if not translator._synced_commands:
+                await self.sync_commands()
 
         await self._load_cogs()
         await self.load_extension("jishaku")

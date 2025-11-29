@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Literal
 import discord
 import genshin
 from discord.ext import commands
-from seria.utils import write_json
 from tortoise import Tortoise
 from tortoise.functions import Count
 
@@ -55,15 +54,11 @@ class Admin(commands.Cog):
 
         message = await ctx.send("Syncing commands...")
         try:
-            synced_commands = await self.bot.tree.sync()
-        except Exception:
-            await message.edit(content="An error occurred while syncing commands.")
-            raise
+            synced_commands = await self.bot.sync_commands()
+        except Exception as e:
+            await message.edit(content=f"Failed to sync commands: {e}")
+            return
 
-        await write_json(
-            "hoyo_buddy/bot/data/synced_commands.json", {c.name: c.id for c in synced_commands}
-        )
-        await translator.load_synced_commands_json()
         await message.edit(content=f"Synced {len(synced_commands)} commands.")
 
     @commands.command(name="reload-translator", aliases=["rtrans"])

@@ -9,6 +9,10 @@ on:
       - "pyproject.toml"
       - "uv.lock"
       - "hoyo_buddy/**"
+      - "run.py"
+      - "run_web_app.py"
+      - "run_web_server.py"
+      - "run_scheduler.py"
       - ".github/workflows/docker-build.yml"
   pull_request:
     branches:
@@ -18,6 +22,10 @@ on:
       - "pyproject.toml"
       - "uv.lock"
       - "hoyo_buddy/**"
+      - "run.py"
+      - "run_web_app.py"
+      - "run_web_server.py"
+      - "run_scheduler.py"
       - ".github/workflows/docker-build.yml"
   workflow_dispatch:
 

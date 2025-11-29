@@ -5,6 +5,7 @@ import contextlib
 import datetime
 import random
 import re
+import traceback
 from typing import TYPE_CHECKING, Any, Final, Literal, Self, TypeAlias
 
 import aiofiles
@@ -327,6 +328,7 @@ class Translator:
         max_length: int | None = None,
     ) -> str:
         if not self.loaded:
+            traceback.print_stack()
             logger.error("Translator is not loaded, call Translator.load() first")
             return str(string)
 

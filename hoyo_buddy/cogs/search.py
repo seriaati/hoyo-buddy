@@ -13,9 +13,10 @@ from loguru import logger
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
 from hoyo_buddy.db import get_locale
+from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.misc import handle_autocomplete_errors
+from hoyo_buddy.utils.misc import get_now, handle_autocomplete_errors
 
 from ..emojis import PROJECT_AMBER
 from ..enums import BetaItemCategory, Game, Locale
@@ -51,7 +52,9 @@ class Search(commands.Cog):
         if not self.bot.config.search:
             return
 
-        asyncio.create_task(self._setup_search_autofill())
+        await self._load_search_autofill()
+        if not self.bot.search_autofill:
+            asyncio.create_task(self._setup_search_autofill())
         self.update_search_autofill.start()
 
     async def cog_unload(self) -> None:
@@ -70,6 +73,99 @@ class Search(commands.Cog):
     async def before_update_search_autofill(self) -> None:
         await self.bot.wait_until_ready()
 
+    def _serialize_search_autofill(self) -> dict[str, Any]:
+        original = dict(self.bot.search_autofill)
+        new: dict[str, Any] = {}
+        for game, categories in original.items():
+            new[game.value] = {}
+            for category, locales in categories.items():
+                new[game.value][category.value] = {}
+                for locale, choices in locales.items():
+                    new[game.value][category.value][locale.value] = [
+                        {"name": choice.name, "value": choice.value} for choice in choices
+                    ]
+        return new
+
+    def _serialize_beta_search_autofill(self) -> dict[str, Any]:
+        original = dict(self.bot.beta_search_autofill)
+        new: dict[str, Any] = {}
+        for game, locales in original.items():
+            new[game.value] = {}
+            for locale, choices in locales.items():
+                new[game.value][locale.value] = [
+                    {"name": choice.name, "value": choice.value} for choice in choices
+                ]
+        return new
+
+    def _deserialize_search_autofill(
+        self, data: dict[str, Any]
+    ) -> dict[Game, dict[StrEnum, dict[Locale, list[app_commands.Choice[str]]]]]:
+        new: dict[Game, dict[StrEnum, dict[Locale, list[app_commands.Choice[str]]]]] = {}
+        for game_str, categories in data.items():
+            game = Game(game_str)
+            new[game] = {}
+            for category_str, locales in categories.items():
+                if game is Game.GENSHIN:
+                    category = ambr.ItemCategory(category_str)
+                elif game is Game.STARRAIL:
+                    category = yatta.ItemCategory(category_str)
+                elif game is Game.ZZZ:
+                    category = hakushin.ZZZItemCategory(category_str)
+                else:
+                    continue
+
+                new[game][category] = {}
+                for locale_str, choices in locales.items():
+                    locale = Locale(locale_str)
+                    new[game][category][locale] = [
+                        app_commands.Choice[str](name=choice["name"], value=choice["value"])
+                        for choice in choices
+                    ]
+        return new
+
+    def _deserialize_beta_search_autofill(
+        self, data: dict[str, Any]
+    ) -> dict[Game, dict[Locale, list[app_commands.Choice[str]]]]:
+        new: dict[Game, dict[Locale, list[app_commands.Choice[str]]]] = {}
+        for game_str, locales in data.items():
+            game = Game(game_str)
+            new[game] = {}
+            for locale_str, choices in locales.items():
+                locale = Locale(locale_str)
+                new[game][locale] = [
+                    app_commands.Choice[str](name=choice["name"], value=choice["value"])
+                    for choice in choices
+                ]
+        return new
+
+    async def _load_search_autofill(self) -> None:
+        data = await JSONFile.read("search_autofill.json")
+        if data is None:
+            return
+
+        try:
+            self.bot.search_autofill = self._deserialize_search_autofill(data["search_autofill"])  # pyright: ignore[reportAttributeAccessIssue]
+            self.bot.beta_search_autofill = self._deserialize_beta_search_autofill(
+                data["beta_search_autofill"]
+            )
+            self._beta_id_to_category = data.get("beta_id_to_category", {})
+        except Exception as e:
+            logger.warning("Failed to load search autocomplete choices from disk cache")
+            self.bot.capture_exception(e)
+            return
+        logger.info("Loaded search autocomplete choices from disk cache")
+
+    async def _save_search_autofill(self) -> None:
+        await JSONFile.write(
+            "search_autofill.json",
+            {
+                "search_autofill": self._serialize_search_autofill(),
+                "beta_id_to_category": self._beta_id_to_category,
+                "beta_search_autofill": self._serialize_beta_search_autofill(),
+                "last_updated": get_now().isoformat(),
+            },
+        )
+
     async def _setup_search_autofill(self) -> None:
         logger.info("Setting up search autocomplete choices")
         start = self.bot.loop.time()
@@ -83,10 +179,11 @@ class Search(commands.Cog):
         except Exception as e:
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)
-
-        logger.info(
-            f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"
-        )
+        else:
+            logger.info(
+                f"Finished setting up search autocomplete choices, took {self.bot.loop.time() - start:.2f} seconds"
+            )
+            await self._save_search_autofill()
 
     @staticmethod
     def _ensure_query_is_int(query: str) -> None:

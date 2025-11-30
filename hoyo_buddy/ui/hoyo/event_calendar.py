@@ -22,38 +22,49 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.bot import HoyoBuddy
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models.zzz_event import ZZZEventCalendar
     from hoyo_buddy.types import Interaction, User
 
-CalendarItem: TypeAlias = (
-    genshin.models.Banner
-    | genshin.models.EventWarp
-    | genshin.models.Event
-    | genshin.models.HSREvent
-    | genshin.models.HSRChallenge
-)
-EventItem: TypeAlias = genshin.models.Event | genshin.models.HSREvent
+
+EventItem: TypeAlias = genshin.models.Event | genshin.models.HSREvent | genshin.models.ZZZEvent
 ChallengeItem: TypeAlias = genshin.models.Event | genshin.models.HSRChallenge
 GICalendarItem: TypeAlias = genshin.models.Banner | genshin.models.Event
 HSRCalendarItem: TypeAlias = (
     genshin.models.EventWarp | genshin.models.HSREvent | genshin.models.HSRChallenge
 )
+ZZZGachaEvent: TypeAlias = (
+    genshin.models.ZZZCharacterGachaEvent | genshin.models.ZZZWeaponGachaEvent
+)
+ZZZCalendarItem: TypeAlias = genshin.models.ZZZEvent | ZZZGachaEvent
+CalendarItem: TypeAlias = HSRCalendarItem | GICalendarItem | ZZZCalendarItem
 
 
 def event_not_started(item: CalendarItem) -> bool:
     if isinstance(item, HSRCalendarItem):
         return item.time_info is not None and item.time_info.now < item.time_info.start
+    if isinstance(item, ZZZCalendarItem):
+        return item.seconds_until_start > 0
     if isinstance(item, genshin.models.Banner):
         return False
     return item.status == 1
 
 
 def event_is_finished(item: EventItem | ChallengeItem) -> bool:
+    # HSR
     if isinstance(item, genshin.models.HSREvent):
         return item.all_finished or (
             item.type is genshin.models.HSREventType.DOUBLE_REWARDS and item.current_progress == 0
         )
     if isinstance(item, genshin.models.HSRChallenge):
         return item.current_progress == item.total_progress
+
+    # ZZZ
+    if isinstance(item, genshin.models.ZZZEvent):
+        return item.status is genshin.models.ZZZEventStatus.COMPLETED
+    if isinstance(item, ZZZGachaEvent):
+        return item.status is genshin.models.ZZZGachaEventStatus.COMPLETED
+
+    # Genshin
     if item.abyss_detail is not None:
         return item.abyss_detail.total_star == item.abyss_detail.max_star
     if item.theater_detail is not None:
@@ -71,6 +82,8 @@ def get_option_desc(item: CalendarItem, cur_game_version: str | None = None) -> 
 
     if isinstance(item, GICalendarItem):
         seconds = item.countdown_seconds
+    elif isinstance(item, ZZZCalendarItem):
+        seconds = item.seconds_until_end
     elif item.time_info is None:
         return LocaleStr(key="going", mi18n_game=Game.GENSHIN)
     elif (
@@ -97,6 +110,9 @@ def get_duration_str(banner_or_event: CalendarItem) -> str:
             return ""
         return f"{banner_or_event.start_time.strftime('%Y-%m-%d')} ~ {banner_or_event.end_time.strftime('%Y-%m-%d')}"
 
+    if isinstance(banner_or_event, ZZZCalendarItem):
+        return f"{banner_or_event.start.strftime('%Y-%m-%d')} ~ {banner_or_event.end.strftime('%Y-%m-%d')}"
+
     if banner_or_event.time_info is None:
         return ""
 
@@ -108,7 +124,9 @@ def get_duration_str(banner_or_event: CalendarItem) -> str:
 class EventCalendarView(ui.View):
     def __init__(
         self,
-        calendar: genshin.models.GenshinEventCalendar | genshin.models.HSREventCalendar,
+        calendar: genshin.models.GenshinEventCalendar
+        | genshin.models.HSREventCalendar
+        | ZZZEventCalendar,
         account: HoyoAccount,
         *,
         dark_mode: bool,
@@ -125,11 +143,16 @@ class EventCalendarView(ui.View):
             banners.extend(calendar.character_banners)
             banners.extend(calendar.weapon_banners)
             self.add_item(BannerSelector(banners))
-        else:
+        elif isinstance(calendar, genshin.models.HSREventCalendar):
             warps: list[genshin.models.EventWarp] = []
             warps.extend(calendar.character_warps)
             warps.extend(calendar.light_cone_warps)
             self.add_item(BannerSelector(warps, cur_game_version=calendar.cur_game_version))
+        else:
+            gacha_events: list[ZZZGachaEvent] = []
+            gacha_events.extend(calendar.characters)
+            gacha_events.extend(calendar.weapons)
+            self.add_item(BannerSelector(gacha_events))
 
         if calendar.events:
             self.add_item(EventSelector(calendar.events))
@@ -162,14 +185,24 @@ class EventCalendarView(ui.View):
     async def draw_rewards_card(
         self, bot: HoyoBuddy, event: EventItem | genshin.models.HSRChallenge
     ) -> discord.File:
-        blocks = [
-            SingleBlock(
-                icon=i.icon,
-                bottom_text=str(i.num) if i.num > 0 else "-",
-                bg_color=BLOCK_COLORS[self.dark_mode][i.rarity],
-            )
-            for i in event.rewards
-        ]
+        if isinstance(event, genshin.models.ZZZEvent):
+            blocks = [
+                SingleBlock(
+                    icon="https://api.hakush.in/zzz/UI/IconCurrency.webp",
+                    bottom_text=f"{event.obtained_monochromes}/{event.max_monochromes}",
+                    bg_color=BLOCK_COLORS[self.dark_mode][5],
+                )
+            ]
+        else:
+            blocks = [
+                SingleBlock(
+                    icon=i.icon,
+                    bottom_text=str(i.num) if i.num > 0 else "-",
+                    bg_color=BLOCK_COLORS[self.dark_mode][i.rarity],
+                )
+                for i in event.rewards
+            ]
+
         return await draw_block_list_card(
             DrawInput(
                 dark_mode=self.dark_mode,
@@ -198,7 +231,9 @@ class ItemSelector(ui.Select[EventCalendarView]):
 class BannerSelector(ItemSelector):
     def __init__(
         self,
-        banners: Sequence[genshin.models.Banner] | Sequence[genshin.models.EventWarp],
+        banners: Sequence[genshin.models.Banner]
+        | Sequence[genshin.models.EventWarp]
+        | Sequence[ZZZGachaEvent],
         *,
         cur_game_version: str | None = None,
     ) -> None:
@@ -208,7 +243,7 @@ class BannerSelector(ItemSelector):
                 ui.SelectOption(
                     label=self.get_option_name(b),
                     description=get_option_desc(b, cur_game_version=cur_game_version),
-                    value=str(b.id),
+                    value=self.get_banner_id(b),
                 )
                 for b in banners
             ],
@@ -216,13 +251,33 @@ class BannerSelector(ItemSelector):
         self.banners = banners
 
     @staticmethod
-    def get_option_name(banner: genshin.models.Banner | genshin.models.EventWarp) -> str:
+    def get_banner_id(
+        banner: genshin.models.Banner | genshin.models.EventWarp | ZZZGachaEvent,
+    ) -> str:
+        if isinstance(banner, ZZZGachaEvent):
+            if isinstance(banner, genshin.models.ZZZCharacterGachaEvent):
+                return "_".join(str(i.id) for i in banner.characters)
+            return "_".join(str(i.id) for i in banner.weapons)
+        return str(banner.id)
+
+    @staticmethod
+    def get_option_name(
+        banner: genshin.models.Banner | genshin.models.EventWarp | ZZZGachaEvent,
+    ) -> str:
         if isinstance(banner, genshin.models.Banner):
             return banner.name
+
+        if isinstance(banner, genshin.models.ZZZWeaponGachaEvent):
+            return " / ".join(i.name for i in banner.weapons if i.rarity == "S")  # pyright: ignore[reportAttributeAccessIssue]
+        if isinstance(banner, genshin.models.ZZZCharacterGachaEvent):
+            return " / ".join(i.name or "???" for i in banner.characters if i.rarity == "S")
+
         items = list(banner.characters) + list(banner.light_cones)
         return " / ".join(i.name for i in items if i.rarity == 5)
 
-    def get_embed(self, banner: genshin.models.Banner | genshin.models.EventWarp) -> DefaultEmbed:
+    def get_embed(
+        self, banner: genshin.models.Banner | genshin.models.EventWarp | ZZZGachaEvent
+    ) -> DefaultEmbed:
         return DefaultEmbed(
             self.view.locale,
             title=self.get_option_name(banner),
@@ -230,12 +285,19 @@ class BannerSelector(ItemSelector):
         ).set_image(url="attachment://banner_items.png")
 
     async def draw_banner_items(
-        self, bot: HoyoBuddy, banner: genshin.models.Banner | genshin.models.EventWarp
+        self,
+        bot: HoyoBuddy,
+        banner: genshin.models.Banner | genshin.models.EventWarp | ZZZGachaEvent,
     ) -> discord.File:
         if isinstance(banner, genshin.models.Banner):
             banner_items = list(banner.characters) + list(banner.weapons)
-        else:
+        elif isinstance(banner, genshin.models.EventWarp):
             banner_items = list(banner.characters) + list(banner.light_cones)
+        else:  # noqa: PLR5501
+            if isinstance(banner, genshin.models.ZZZCharacterGachaEvent):
+                banner_items = banner.characters
+            else:
+                banner_items = banner.weapons
 
         blocks = [
             SingleBlock(icon=i.icon, bg_color=BLOCK_COLORS[self.view.dark_mode][i.rarity])
@@ -257,8 +319,8 @@ class BannerSelector(ItemSelector):
         await super().callback(i)
         await self.set_loading_state(i)
 
-        banner_id = int(self.values[0])
-        banner = next((b for b in self.banners if b.id == banner_id), None)
+        banner_id = self.values[0]
+        banner = next((b for b in self.banners if self.get_banner_id(b) == banner_id), None)
         if banner is None:
             msg = f"Banner with ID {banner_id} not found."
             raise ValueError(msg)
@@ -270,7 +332,10 @@ class BannerSelector(ItemSelector):
 
 class EventSelector(ItemSelector):
     def __init__(
-        self, events: Sequence[genshin.models.Event] | Sequence[genshin.models.HSREvent]
+        self,
+        events: Sequence[genshin.models.Event]
+        | Sequence[genshin.models.HSREvent]
+        | Sequence[genshin.models.ZZZEvent],
     ) -> None:
         super().__init__(
             placeholder=LocaleStr(key="events_view_ann_select_placeholder"),
@@ -289,11 +354,13 @@ class EventSelector(ItemSelector):
         else:
             status_str = LocaleStr(key="going", mi18n_game=Game.GENSHIN)
 
+        event_description = "" if isinstance(event, ZZZCalendarItem) else event.description
+
         embed = (
             DefaultEmbed(
                 self.view.locale,
                 title=event.name,
-                description=f"{get_duration_str(event)}\n\n{event.description}",
+                description=f"{get_duration_str(event)}\n\n{event_description}",
             )
             .set_image(url="attachment://rewards.png")
             .add_field(
@@ -335,7 +402,7 @@ class EventSelector(ItemSelector):
                 inline=False,
             )
 
-        if event.rewards:
+        if isinstance(event, genshin.models.ZZZEvent) or event.rewards:
             embed.add_field(
                 name=LocaleStr(key="reward_overview", mi18n_game=Game.GENSHIN),
                 value="",
@@ -354,7 +421,7 @@ class EventSelector(ItemSelector):
             raise ValueError(msg)
 
         embed = self.get_embed(event)
-        if event.rewards:
+        if isinstance(event, genshin.models.ZZZEvent) or event.rewards:
             file_ = await self.view.draw_rewards_card(i.client, event)
             await self.unset_loading_state(i, embed=embed, attachments=[file_])
         else:

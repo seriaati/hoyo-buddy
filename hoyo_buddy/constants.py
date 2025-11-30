@@ -955,9 +955,31 @@ ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
     9: 23203,  # PEN
 }
 
-BLOCK_COLORS: dict[bool, dict[int, str]] = {
-    True: {5: "#9E6D35", 4: "#544A81", 3: "#4F6C92", 2: "#4E7669", 1: "#787881"},
-    False: {5: "#CC8E4A", 4: "#837BCE", 3: "#6C93B9", 2: "#6DA795", 1: "#9B9B9B"},
+BLOCK_COLORS: dict[bool, dict[int | Literal["S", "A", "B", "C", "D"], str]] = {
+    True: {
+        5: "#9E6D35",
+        4: "#544A81",
+        3: "#4F6C92",
+        2: "#4E7669",
+        1: "#787881",
+        "S": "#9E6D35",
+        "A": "#544A81",
+        "B": "#4F6C92",
+        "C": "#4E7669",
+        "D": "#787881",
+    },
+    False: {
+        5: "#CC8E4A",
+        4: "#837BCE",
+        3: "#6C93B9",
+        2: "#6DA795",
+        1: "#9B9B9B",
+        "S": "#CC8E4A",
+        "A": "#837BCE",
+        "B": "#6C93B9",
+        "C": "#6DA795",
+        "D": "#9B9B9B",
+    },
 }
 
 POST_REPLIES = (

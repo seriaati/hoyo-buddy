@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections import defaultdict
+from collections.abc import Mapping
 from typing import Any, Literal, TypeAlias
 
 import discord
@@ -73,11 +74,11 @@ Builds: TypeAlias = (
 ItemCategory: TypeAlias = (
     ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
 )
-AutocompleteChoices: TypeAlias = dict[
-    Game, dict[ItemCategory, dict[Locale, list[discord.app_commands.Choice[str]]]]
+AutocompleteChoices: TypeAlias = Mapping[
+    Game, Mapping[ItemCategory, Mapping[Locale, list[discord.app_commands.Choice[str]]]]
 ]
-BetaAutocompleteChoices: TypeAlias = defaultdict[
-    Game, defaultdict[Locale, list[discord.app_commands.Choice[str]]]
+BetaAutocompleteChoices: TypeAlias = Mapping[
+    Game, Mapping[Locale, list[discord.app_commands.Choice[str]]]
 ]
 Tasks: TypeAlias = defaultdict[
     Game, defaultdict[ItemCategory, dict[Locale, asyncio.Task[list[Any]]]]

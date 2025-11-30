@@ -78,6 +78,7 @@ class BlockListCard:
     def draw_block(self, block: SingleBlock | DoubleBlock) -> Image.Image:
         asset_dir = "hoyo-buddy-assets/assets/block-list"
         filename = "single_block" if isinstance(block, SingleBlock) else "double_block"
+        mask = Drawer.open_image(f"{asset_dir}/single_block.png")
 
         if block.bottom_text is None:
             im = Drawer.open_image(f"{asset_dir}/{filename}.png")
@@ -96,6 +97,7 @@ class BlockListCard:
         if isinstance(block, SingleBlock):
             icon = drawer.open_static(block.icon)
             icon = drawer.resize_crop(icon, (block.icon_size, block.icon_size))
+            icon = drawer.mask_image_with_image(icon, mask)
             im.alpha_composite(icon, (102 - block.icon_size // 2, 102 - block.icon_size // 2))
         else:
             icon1 = drawer.open_static(block.icon1)

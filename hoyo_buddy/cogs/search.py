@@ -140,7 +140,7 @@ class Search(commands.Cog):
 
     async def _load_search_autofill(self) -> None:
         data = await JSONFile.read("search_autofill.json")
-        if data is None:
+        if not data:
             return
 
         try:
@@ -149,11 +149,14 @@ class Search(commands.Cog):
                 data["beta_search_autofill"]
             )
             self._beta_id_to_category = data.get("beta_id_to_category", {})
+        except KeyError:
+            pass
         except Exception as e:
             logger.warning("Failed to load search autocomplete choices from disk cache")
             self.bot.capture_exception(e)
             return
-        logger.info("Loaded search autocomplete choices from disk cache")
+        else:
+            logger.info("Loaded search autocomplete choices from disk cache")
 
     async def _save_search_autofill(self) -> None:
         await JSONFile.write(

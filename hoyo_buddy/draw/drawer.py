@@ -342,6 +342,37 @@ class Drawer:
                 break
         return font_map
 
+    def get_font_for_text(
+        self,
+        text: str,
+        size: int,
+        style: FontStyle,
+        *,
+        fallback_locale: Locale | None = None,
+        sans: bool = False,
+        gothic: bool = False,
+    ) -> ImageFont.FreeTypeFont:
+        """Get the appropriate font based on the text content.
+
+        Automatically detects the script/language from the text and returns
+        the appropriate font. If no specific script is detected, uses the
+        fallback_locale or self.locale.
+
+        Args:
+            text: The text to analyze for font selection
+            size: Font size
+            style: Font style (regular, bold, etc.)
+            fallback_locale: Locale to use if text doesn't contain specific scripts
+            sans: Whether to use sans-serif fonts
+            gothic: Whether to use gothic fonts
+
+        Returns:
+            The appropriate font for the text
+        """
+        detected_locale = self.detect_locale_from_text(text)
+        target_locale = detected_locale or fallback_locale or self.locale
+        return self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic)
+
     @staticmethod
     def open_image(
         file_path: pathlib.Path | str,
@@ -391,6 +422,136 @@ class Drawer:
     def has_glyph(font: TTFont, char: str) -> bool:
         return any(ord(char) in table.cmap for table in font["cmap"].tables)  # pyright: ignore[reportAttributeAccessIssue]
 
+    @staticmethod
+    def detect_locale_from_text(
+        text: str, *, return_english_for_latin: bool = True
+    ) -> Locale | None:
+        """Detect the appropriate locale based on the text's character composition.
+
+        Args:
+            text: The text to analyze
+            return_english_for_latin: If True, returns Locale.american_english for Latin-only text.
+                                     If False, returns None for Latin text (uses fallback locale).
+
+        Returns:
+            The most appropriate locale for font selection, or None if text contains only
+            common characters and return_english_for_latin is False.
+        """
+        if not text:
+            return None
+
+        # Unicode ranges for different scripts
+        char_counts = {
+            "arabic": 0,
+            "chinese_simplified": 0,
+            "chinese_traditional": 0,
+            "japanese_hiragana": 0,
+            "japanese_katakana": 0,
+            "japanese_kanji": 0,
+            "korean": 0,
+            "thai": 0,
+            "cyrillic": 0,
+            "latin": 0,
+        }
+
+        for char in text:
+            code = ord(char)
+
+            # Arabic (0600-06FF, 0750-077F, 08A0-08FF, FB50-FDFF, FE70-FEFF)
+            if (
+                0x0600 <= code <= 0x06FF
+                or 0x0750 <= code <= 0x077F
+                or 0x08A0 <= code <= 0x08FF
+                or 0xFB50 <= code <= 0xFDFF
+                or 0xFE70 <= code <= 0xFEFF
+            ):
+                char_counts["arabic"] += 1
+
+            # Korean Hangul (AC00-D7AF)
+            elif 0xAC00 <= code <= 0xD7AF:
+                char_counts["korean"] += 1
+
+            # Japanese Hiragana (3040-309F)
+            elif 0x3040 <= code <= 0x309F:
+                char_counts["japanese_hiragana"] += 1
+
+            # Japanese Katakana (30A0-30FF)
+            elif 0x30A0 <= code <= 0x30FF:
+                char_counts["japanese_katakana"] += 1
+
+            # Thai (0E00-0E7F)
+            elif 0x0E00 <= code <= 0x0E7F:
+                char_counts["thai"] += 1
+
+            # Cyrillic (0400-04FF)
+            elif 0x0400 <= code <= 0x04FF:
+                char_counts["cyrillic"] += 1
+
+            # CJK Unified Ideographs (4E00-9FFF)
+            elif 0x4E00 <= code <= 0x9FFF:
+                # This range is shared by Chinese and Japanese
+                # We'll count it separately and decide later based on kana presence
+                char_counts["japanese_kanji"] += 1
+                char_counts["chinese_simplified"] += 1
+                char_counts["chinese_traditional"] += 1
+
+            # Latin alphabet (Basic Latin 0041-005A, 0061-007A + Latin Extended)
+            elif (
+                0x0041 <= code <= 0x005A
+                or 0x0061 <= code <= 0x007A
+                or 0x00C0 <= code <= 0x00FF
+                or 0x0100 <= code <= 0x017F
+            ):
+                char_counts["latin"] += 1
+
+        # Determine the dominant script
+        # Arabic
+        if char_counts["arabic"] > 0:
+            return Locale.arabic
+
+        # Korean
+        if char_counts["korean"] > 0:
+            return Locale.korean
+
+        # Thai
+        if char_counts["thai"] > 0:
+            return Locale.thai
+
+        # Japanese (if hiragana or katakana present, it's Japanese)
+        if char_counts["japanese_hiragana"] > 0 or char_counts["japanese_katakana"] > 0:
+            return Locale.japanese
+
+        # Chinese (if CJK ideographs but no kana)
+        # Default to simplified Chinese as it's more common
+        # Traditional Chinese detection would require checking specific character variants
+        if char_counts["chinese_simplified"] > 0:
+            # Try to detect traditional vs simplified by checking for specific characters
+            # This is a simplified heuristic
+            traditional_indicators = sum(
+                1
+                for c in text
+                if ord(c)
+                in {
+                    0x7E41,
+                    0x9AD4,
+                    0x5B57,  # 繁體字 (traditional characters)
+                }
+            )
+            if traditional_indicators > 0:
+                return Locale.taiwan_chinese
+            return Locale.chinese
+
+        # Cyrillic (Russian or other Cyrillic-based languages)
+        if char_counts["cyrillic"] > 0:
+            return Locale.russian
+
+        # Latin alphabet (English and other Latin-based languages)
+        if char_counts["latin"] > 0 and return_english_for_latin:
+            return Locale.american_english
+
+        # No specific script detected
+        return None
+
     def write(
         self,
         text: LocaleStr | str,
@@ -414,6 +575,7 @@ class Drawer:
         align_center: bool = False,
         textbox_size: tuple[int, int] = (0, 0),
         dynamic_fontsize: bool = False,
+        auto_detect_font: bool = True,
     ) -> TextBBox:
         """Returns (left, top, right, bottom) of the text bounding box."""
         if not text:
@@ -429,6 +591,13 @@ class Drawer:
         if upper:
             translated_text = translated_text.upper()
 
+        # Auto-detect font based on text content if requested
+        target_locale = locale
+        if auto_detect_font:
+            detected_locale = self.detect_locale_from_text(translated_text)
+            if detected_locale is not None:
+                target_locale = detected_locale
+
         if dynamic_fontsize:
             if max_width is None:
                 msg = "max_width must be provided when dynamic_fontsize is True"
@@ -438,14 +607,14 @@ class Drawer:
                 translated_text,
                 max_width=max_width,
                 max_size=size,
-                font=self.get_font(size, style, locale=locale, sans=sans, gothic=gothic),
+                font=self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic),
             )
 
-        font = self.get_font(size, style, locale=locale, sans=sans, gothic=gothic)
+        font = self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic)
         tt_font = TTFont(font.path)
 
         if any(not self.has_glyph(tt_font, char) for char in translated_text):
-            font = self.get_font(size, style, locale=locale)
+            font = self.get_font(size, style, locale=target_locale)
 
         if max_width is not None and not dynamic_fontsize:
             translated_text = self.wrap_text(
@@ -453,7 +622,7 @@ class Drawer:
                 max_width=max_width,
                 max_lines=max_lines,
                 font=font,
-                locale=locale or self.locale,
+                locale=target_locale or self.locale,
             )
 
         if align_center:

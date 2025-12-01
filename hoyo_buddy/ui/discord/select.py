@@ -265,6 +265,13 @@ class BooleanSelect[V_co: View](Select):
         super().__init__(options=options, **kwargs)
         self.view: V_co
 
+    @property
+    def values(self) -> list[str]:
+        values = super().values
+        if "0" in values:
+            return [""]
+        return values
+
 
 class WeekdaySelect[V_co: View](Select):
     def __init__(self, **kwargs) -> None:

@@ -996,7 +996,7 @@ wheels = [
 
 [[package]]
 name = "hoyo-buddy"
-version = "1.16.13"
+version = "1.16.14"
 source = { virtual = "." }
 dependencies = [
     { name = "aerich" },

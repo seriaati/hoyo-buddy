@@ -83,7 +83,8 @@ ignore = [
 "hoyo_buddy/models.py" = ["TC002"]
 "test_*.py" = ["ALL"]
 "test.py" = ["ALL"]
-"restart.py" = ["T201", "S602", "S404", "S603"]
+"restart.py" = ["T201", "S602", "S404", "S603", "S607", "TRY300"]
+"rolling_restart.py" = ["T201", "S602", "S404", "S603", "S607", "TRY300"]
 "tools/*.py" = ["T201"]
 
 [lint.flake8-type-checking]

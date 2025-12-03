@@ -123,7 +123,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.cache_session = cache_session
         self.uptime = get_now()
         self.env = config.env
-        self.deployment = config.deployment
         self.nai_client: NAIClient | None = None
         self.pool = pool
         self.config = config
@@ -684,10 +683,3 @@ class HoyoBuddy(commands.AutoShardedBot):
     def ram_usage(self) -> int:
         """The bot's current RAM usage in MB"""
         return self.process.memory_info().rss / 1024**2
-
-    async def is_owner(
-        self, user: discord.User | discord.Member, *, original: bool = False
-    ) -> bool:
-        if not original and self.deployment != "main":
-            return False
-        return await super().is_owner(user)

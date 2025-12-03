@@ -1,24 +1,3 @@
-"""Rolling deployment script for zero-downtime restarts.
-
-This script implements a Docker-like rolling deployment strategy for PM2 processes:
-1. Start a new process instance with a temporary name
-2. Monitor logs to verify all shards have connected (health check)
-3. Delete the old process once the new one is healthy
-4. Rename the new process to the original name
-
-Benefits:
-- Achieves zero downtime with only ONE active process at a time
-- No need for dual deployments (hb-main + hb-sub)
-- Automatic rollback if the new process fails health checks
-- Monitors shard connection status to ensure bot is fully ready
-
-Usage:
-    python rolling_restart.py
-
-The script will automatically detect the current process configuration and
-apply it to the new instance.
-"""
-
 from __future__ import annotations
 
 import json

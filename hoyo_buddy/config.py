@@ -7,7 +7,6 @@ from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 type EnvType = Literal["dev", "test", "prod"]
-type Deployment = Literal["main", "sub"]
 
 
 class Config(BaseSettings):
@@ -54,7 +53,6 @@ class Config(BaseSettings):
     schedule: bool = False
     prometheus: bool = False
     novelai: bool = False
-    deployment: Deployment = "main"
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -76,7 +74,6 @@ class Config(BaseSettings):
             "schedule": self.schedule,
             "prometheus": self.prometheus,
             "novelai": self.novelai,
-            "deployment": self.deployment,
         }
 
 

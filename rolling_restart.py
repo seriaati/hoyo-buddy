@@ -172,7 +172,9 @@ def main() -> None:
         sys.exit(1)
 
     # 5. Stop old process (now the new process is healthy and running)
-    run_command(f"pm2 delete {old_process_name}", f"\n3. Stopping old process '{old_process_name}'...")
+    run_command(
+        f"pm2 delete {old_process_name}", f"\n3. Stopping old process '{old_process_name}'..."
+    )
 
     # 6. Save PM2 process list
     run_command("pm2 save", "\n4. Saving PM2 process list...")

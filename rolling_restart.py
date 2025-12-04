@@ -1,14 +1,35 @@
 from __future__ import annotations
 
 import json
+import random
 import re
+import string
 import subprocess
 import sys
 import time
 
-PROCESS_NAME = "hb-main"
-TEMP_PROCESS_NAME = "hb-main-new"
+PROCESS_PREFIX = "hb-main"
 MAX_WAIT_TIME = 300  # 5 minutes max wait for health check
+
+
+def generate_process_name() -> str:
+    """Generate a random process name with the prefix."""
+    suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+    return f"{PROCESS_PREFIX}-{suffix}"
+
+
+def get_process_by_prefix(prefix: str) -> dict | None:
+    """Get process by name prefix from pm2 jlist output."""
+    try:
+        result = subprocess.run(["pm2", "jlist"], check=True, capture_output=True, text=True)
+        processes = json.loads(result.stdout)
+        for proc in processes:
+            if proc.get("name", "").startswith(prefix):
+                return proc
+        return None
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as e:
+        print(f"Error getting process status: {e}")
+        return None
 
 
 def run_command(command: str, description: str, check: bool = True) -> subprocess.CompletedProcess:
@@ -110,20 +131,19 @@ def main() -> None:
     print("🔄 Starting rolling deployment...\n")
 
     # 1. Check if old process exists
-    old_status = get_process_status(PROCESS_NAME)
+    old_status = get_process_by_prefix(PROCESS_PREFIX)
     if not old_status:
-        print(f"❌ Process '{PROCESS_NAME}' not found. Nothing to restart.")
+        print(f"❌ Process with prefix '{PROCESS_PREFIX}' not found. Nothing to restart.")
         sys.exit(1)
 
-    print(f"✓ Found existing process '{PROCESS_NAME}' (PID: {old_status.get('pid')})")
+    old_process_name = old_status["name"]
+    print(f"✓ Found existing process '{old_process_name}' (PID: {old_status.get('pid')})")
 
-    # 2. Check if temp process already exists (cleanup from failed previous run)
-    temp_status = get_process_status(TEMP_PROCESS_NAME)
-    if temp_status:
-        print(f"⚠ Temporary process '{TEMP_PROCESS_NAME}' already exists, deleting it...")
-        run_command(f"pm2 delete {TEMP_PROCESS_NAME}", "Cleaning up old temporary process...")
+    # 2. Generate new process name
+    new_process_name = generate_process_name()
+    print(f"✓ Generated new process name: '{new_process_name}'")
 
-    # 3. Start new process with temporary name
+    # 3. Start new process with random name
     old_script = old_status["pm2_env"]["pm_exec_path"]
     old_interpreter = old_status["pm2_env"]["exec_interpreter"]
     old_args = " ".join(old_status["pm2_env"]["args"]) if old_status["pm2_env"].get("args") else ""
@@ -134,50 +154,32 @@ def main() -> None:
     )
 
     start_command = (
-        f'pm2 start "{old_script}" --name {TEMP_PROCESS_NAME} --interpreter "{old_interpreter}"'
+        f'pm2 start "{old_script}" --name {new_process_name} --interpreter "{old_interpreter}"'
     )
     if old_interpreter_args:
         start_command += f" --interpreter-args '{old_interpreter_args}'"
     if old_args:
         start_command += f" -- {old_args}"
 
-    run_command(start_command, f"\n1. Starting new process '{TEMP_PROCESS_NAME}'...")
+    run_command(start_command, f"\n1. Starting new process '{new_process_name}'...")
 
     # 4. Wait for new process to be healthy
     print("\n2. Performing health check...")
-    if not wait_for_health(TEMP_PROCESS_NAME):
-        print(f"\n❌ New process failed health check. Cleaning up '{TEMP_PROCESS_NAME}'...")
-        run_command(f"pm2 delete {TEMP_PROCESS_NAME}", "Deleting failed process...")
-        print("\n❌ Rolling deployment failed. Old process still running.")
+    if not wait_for_health(new_process_name):
+        print(f"\n❌ New process failed health check. Cleaning up '{new_process_name}'...")
+        run_command(f"pm2 delete {new_process_name}", "Deleting failed process...")
+        print(f"\n❌ Rolling deployment failed. Old process '{old_process_name}' still running.")
         sys.exit(1)
 
-    # 5. Stop old process
-    run_command(f"pm2 delete {PROCESS_NAME}", f"\n3. Stopping old process '{PROCESS_NAME}'...")
+    # 5. Stop old process (now the new process is healthy and running)
+    run_command(f"pm2 delete {old_process_name}", f"\n3. Stopping old process '{old_process_name}'...")
 
-    # 6. Rename new process to original name
-    # PM2 doesn't have a native rename, so we need to save ecosystem, modify it, and reload
-    # Instead, we'll delete and restart with the correct name
-    print(f"\n4. Renaming '{TEMP_PROCESS_NAME}' to '{PROCESS_NAME}'...")
-
-    restart_command = (
-        f'pm2 start "{old_script}" --name {PROCESS_NAME} --interpreter "{old_interpreter}"'
-    )
-    if old_interpreter_args:
-        restart_command += f" --interpreter-args '{old_interpreter_args}'"
-    if old_args:
-        restart_command += f" -- {old_args}"
-
-    # First stop the temp process
-    run_command(f"pm2 delete {TEMP_PROCESS_NAME}", "Stopping temporary process...")
-
-    # Then start with the correct name
-    run_command(restart_command, f"Starting process with name '{PROCESS_NAME}'...")
-
-    # Save PM2 process list
-    run_command("pm2 save", "\n5. Saving PM2 process list...")
+    # 6. Save PM2 process list
+    run_command("pm2 save", "\n4. Saving PM2 process list...")
 
     print("\n✅ Rolling deployment completed successfully!")
-    print(f"✓ Process '{PROCESS_NAME}' is now running the new version")
+    print(f"✓ New process '{new_process_name}' is now running")
+    print(f"✓ Old process '{old_process_name}' has been stopped")
 
 
 if __name__ == "__main__":

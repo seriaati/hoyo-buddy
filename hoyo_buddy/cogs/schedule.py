@@ -10,7 +10,6 @@ from discord.ext import commands, tasks
 from loguru import logger
 from seria.utils import create_bullet_list
 
-from hoyo_buddy.config import Deployment
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
@@ -62,7 +61,7 @@ class RunTaskView(ui.View):
             self.add_item(RunTaskButton(task))
 
     async def interaction_check(self, i: Interaction) -> bool:
-        return await i.client.is_owner(i.user, original=True)
+        return await i.client.is_owner(i.user)
 
     @ui.button(label="FarmChecker")
     async def farm_check(self, i: Interaction, _: ui.Button) -> None:
@@ -76,35 +75,30 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
-        if self.bot.config.deployment == "main":
-            self.run_send_embeds.start()
-            self.run_farm_checks.start()
-            self.run_notes_check.start()
-            self.run_web_events_notify.start()
-            self.send_codes_to_channels.start()
-            self.update_supporter_ids.start()
+        self.run_send_embeds.start()
+        self.run_farm_checks.start()
+        self.run_notes_check.start()
+        self.run_web_events_notify.start()
+        self.send_codes_to_channels.start()
+        self.update_supporter_ids.start()
 
         self.update_assets.start()
 
     async def cog_unload(self) -> None:
-        if self.bot.config.deployment == "main":
-            self.run_send_embeds.cancel()
-            self.run_farm_checks.cancel()
-            self.run_notes_check.cancel()
-            self.run_web_events_notify.cancel()
-            self.send_codes_to_channels.cancel()
-            self.update_supporter_ids.cancel()
+        self.run_send_embeds.cancel()
+        self.run_farm_checks.cancel()
+        self.run_notes_check.cancel()
+        self.run_web_events_notify.cancel()
+        self.send_codes_to_channels.cancel()
+        self.update_supporter_ids.cancel()
 
         self.update_assets.cancel()
 
     async def cog_check(self, ctx: commands.Context) -> bool:
-        return await self.bot.is_owner(ctx.author, original=True)
+        return await self.bot.is_owner(ctx.author)
 
     @commands.command(name="run-task", aliases=["rt"])
-    async def run_task(self, ctx: commands.Context, deployment: Deployment) -> None:
-        if deployment != self.bot.deployment:
-            return
-
+    async def run_task(self, ctx: commands.Context) -> None:
         await ctx.send("Select a task to run", view=RunTaskView())
 
     @tasks.loop(time=[datetime.time(hour, 0, 0, tzinfo=UTC_8) for hour in (4, 11, 17)])
@@ -181,11 +175,8 @@ class Schedule(commands.Cog):
         await JSONFile.write("sent_codes.json", sent_codes)
 
     @commands.command(name="send-codes", aliases=["sc"])
-    async def send_codes(self, ctx: commands.Context, deployment: Deployment) -> None:
+    async def send_codes(self, ctx: commands.Context) -> None:
         """Send codes to the configured channels."""
-        if deployment != self.bot.deployment:
-            return
-
         message = await ctx.send("Sending codes to channels...")
         await self.send_codes_to_channels()
         await message.edit(content="Codes sent.")
@@ -209,13 +200,8 @@ class Schedule(commands.Cog):
         await JSONFile.write("supporter_ids.json", supporter_ids)
 
     @commands.command(name="update-supporter-ids", aliases=["usi"])
-    async def update_supporter_ids_command(
-        self, ctx: commands.Context, deployment: Deployment
-    ) -> None:
+    async def update_supporter_ids_command(self, ctx: commands.Context) -> None:
         """Update the supporter IDs from the configured guild."""
-        if deployment != self.bot.deployment:
-            return
-
         message = await ctx.send("Updating supporter IDs...")
         await self.update_supporter_ids()
         await message.edit(content="Supporter IDs updated.")

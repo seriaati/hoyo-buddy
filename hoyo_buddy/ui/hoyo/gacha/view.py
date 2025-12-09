@@ -415,14 +415,14 @@ class ViewGachaLogView(View):
                 wins=banner_wins,
                 total=banner_5stars,
             ).translate(self.locale)
-            personal_stats += f"{personal_win_rate_stats}"
+            personal_stats += f"\n{personal_win_rate_stats}"
 
             global_win_rate_stats = LocaleStr(
                 key="win_rate_global_stats",
                 title=title,
                 win_rate=await self.get_ranking_str(pool, stat="win_rate"),
             ).translate(self.locale)
-            global_stats += f"{global_win_rate_stats}"
+            global_stats += f"\n{global_win_rate_stats}"
 
         embed.add_field(
             name=LocaleStr(key="gacha_log_personal_stats_title"), value=personal_stats, inline=False

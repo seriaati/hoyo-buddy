@@ -39,8 +39,7 @@ class Config(BaseSettings):
 
     # Heartbeat URLs
     scheduler_heartbeat_url: str | None = None
-    main_heartbeat_url: str | None = None
-    sub_heartbeat_url: str | None = None
+    heartbeat_url: str | None = None
 
     # Ports
     web_server_port: int | None = None

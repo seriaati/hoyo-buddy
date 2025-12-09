@@ -21,11 +21,7 @@ class HealthCheck(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def send_heartbeat(self) -> None:
-        url = (
-            self.bot.config.main_heartbeat_url
-            if self.bot.deployment == "main"
-            else self.bot.config.sub_heartbeat_url
-        )
+        url = self.bot.config.heartbeat_url
         if url is None:
             logger.warning("No heartbeat URL configured, skipping health check.")
             return

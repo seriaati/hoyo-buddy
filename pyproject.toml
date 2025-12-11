@@ -37,6 +37,7 @@ dependencies = [
   "chompjs>=1.4.0",
   "anyio>=4.11.0",
   "akasha-py",
+  "szgf>=0.1.1",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

@@ -420,7 +420,7 @@ class Drawer:
 
     @staticmethod
     def has_glyph(font: TTFont, char: str) -> bool:
-        return any(ord(char) in table.cmap for table in font["cmap"].tables)  # pyright: ignore[reportAttributeAccessIssue]
+        return any(ord(char) in table.cmap for table in font["cmap"].tables)
 
     @staticmethod
     def detect_locale_from_text(
@@ -611,7 +611,7 @@ class Drawer:
             )
 
         font = self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic)
-        tt_font = TTFont(font.path)
+        tt_font = TTFont(font.path)  # pyright: ignore[reportArgumentType]
 
         if any(not self.has_glyph(tt_font, char) for char in translated_text):
             font = self.get_font(size, style, locale=target_locale)

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import szgf
-
 from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
@@ -53,9 +51,8 @@ class BuildCommand:
         await i.response.defer(ephemeral=ephemeral(i))
 
         locale = await get_locale(i)
-
-        async with szgf.SZGFClient() as client:
-            guides = await client.read_guides()
+        cog = i.client.get_cog("Build")
+        guides = cog.guides  # pyright: ignore[reportOptionalMemberAccess, reportAttributeAccessIssue]
 
         guide = guides.get(self.character_id)
         if guide is None:

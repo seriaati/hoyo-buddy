@@ -22,6 +22,15 @@ if TYPE_CHECKING:
 class Build(commands.GroupCog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
+        self.guides = {}
+
+    async def cog_load(self) -> None:
+        await self.reload_szgf_guides()
+
+    async def reload_szgf_guides(self) -> None:
+        async with szgf.SZGFClient() as client:
+            await client.download_guides()
+            self.guides = await client.read_guides()
 
     def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
         if game is Game.GENSHIN:
@@ -86,13 +95,11 @@ class Build(commands.GroupCog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        async with szgf.SZGFClient() as client:
-            guides = await client.read_guides()
 
         return [
             c
             for c in self._get_choices(locale, Game.ZZZ)
-            if current.lower() in c.name.lower() and c.value in guides
+            if current.lower() in c.name.lower() and c.value in self.guides
         ][:25]
 
 

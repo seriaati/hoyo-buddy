@@ -271,6 +271,9 @@ class Admin(commands.Cog):
         async with szgf.SZGFClient() as client:
             await client.download_guides()
 
+        cog = self.bot.get_cog("Build")
+        await cog.reload_szgf_guides()  # pyright: ignore[reportOptionalMemberAccess, reportAttributeAccessIssue]
+
         await message.edit(content="Guides downloaded successfully.")
 
 

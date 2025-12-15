@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 import hakushin
+import szgf
 
 from hoyo_buddy import emojis, ui
 from hoyo_buddy.db.utils import get_locale
@@ -12,8 +13,6 @@ from hoyo_buddy.utils.misc import create_bullet_list
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-
-    import szgf
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
@@ -72,8 +71,9 @@ class ContainerButton(ui.Button):
 class ZZZBuildDiscContainer(ui.Container):
     def __init__(self, guide: szgf.ParsedGuide) -> None:
         discs = guide.discs
-        assert discs is not None
-        self.discs = discs
+        if discs is None:
+            discs = szgf.DiscSection(four_pieces=[], two_pieces=[], extra_sections=[])
+
         super().__init__(
             discord.ui.MediaGallery(discord.MediaGalleryItem(media=guide.character.banner or "")),
             ui.TextDisplay(
@@ -81,17 +81,20 @@ class ZZZBuildDiscContainer(ui.Container):
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.TextDisplay("## 4-Pc Drive Disc Sets"),
-            *self.build_sets(self.discs.four_pieces),
+            *self.build_sets(discs.four_pieces),
             discord.ui.Separator(),
             ui.TextDisplay("## 2-Pc Drive Disc Sets"),
-            *self.build_sets(self.discs.two_pieces),
-            *build_extra_sections(self.discs.extra_sections),
+            *self.build_sets(discs.two_pieces),
+            *build_extra_sections(discs.extra_sections),
         )
 
     def build_sets(
         self, pieces: list[szgf.DiscSetSection]
     ) -> list[ui.TextDisplay | discord.ui.Separator]:
         items = []
+        if not pieces:
+            return [ui.TextDisplay("No drive disc set information available.")]
+
         for disc_set in pieces:
             if disc_set.icon is None:
                 item = ui.TextDisplay(
@@ -110,7 +113,6 @@ class ZZZBuildDiscContainer(ui.Container):
 class ZZZBuildWeaponContainer(ui.Container):
     def __init__(self, guide: szgf.ParsedGuide) -> None:
         weapons = guide.weapons
-        assert weapons is not None
         super().__init__(
             discord.ui.MediaGallery(discord.MediaGalleryItem(media=guide.character.banner or "")),
             ui.TextDisplay(
@@ -225,7 +227,8 @@ class ZZZBuildSkillContainer(ui.Container):
 class ZZZBuildTeamContainer(ui.Container):
     def __init__(self, guide: szgf.ParsedGuide) -> None:
         team = guide.team
-        assert team is not None
+        if team is None:
+            team = szgf.ParsedTeamSection(teams=[], extra_sections=[])
         super().__init__(
             discord.ui.MediaGallery(discord.MediaGalleryItem(media=guide.character.banner or "")),
             ui.TextDisplay(f"# {get_rarity_emoji(guide)} {guide.character.name} | Teams"),
@@ -252,7 +255,11 @@ class ZZZBuildTeamContainer(ui.Container):
 class ZZZBuildStatsContainer(ui.Container):
     def __init__(self, guide: szgf.ParsedGuide) -> None:
         stat = guide.stat
-        assert stat is not None
+        if stat is None:
+            stat = szgf.StatSection(
+                main_stats=[], sub_stats="", baseline_stats="", extra_sections=[]
+            )
+
         super().__init__(
             discord.ui.MediaGallery(discord.MediaGalleryItem(media=guide.character.banner or "")),
             ui.TextDisplay(
@@ -268,12 +275,11 @@ class ZZZBuildStatsContainer(ui.Container):
         )
 
     def build_main_stats(self, main_stats: list[szgf.DiscMainStatSection]) -> ui.TextDisplay:
-        return ui.TextDisplay(
-            "### Main Stats Priority\n".join(
-                f"{emojis.ZZZ_DISC_ICON} {stat.pos}: {replace_emojis(stat.stat_priority)}"
-                for stat in main_stats
-            )
+        stats_str = "\n".join(
+            f"{emojis.ZZZ_DISC_ICON} {stat.pos}: {replace_emojis(stat.stat_priority)}"
+            for stat in main_stats
         )
+        return ui.TextDisplay(f"### Main Stats Priority\n{stats_str}")
 
     def build_sub_stats(self, sub_stats: str) -> ui.TextDisplay:
         return ui.TextDisplay(f"### Sub Stats Priority\n{replace_emojis(sub_stats)}")

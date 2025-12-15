@@ -35,7 +35,9 @@ def build_extra_sections(
     items = []
     items.append(discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large))
     for section in sections:
-        text = ui.TextDisplay(f"## {section.title}\n{section.description}")
+        text = ui.TextDisplay(
+            f"## {replace_emojis(section.title)}\n{replace_emojis(section.description)}"
+        )
         items.extend((text, discord.ui.Separator()))
     items.pop()  # Remove last separator
     return items
@@ -82,7 +84,7 @@ class ZZZBuildDiscContainer(ui.Container):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.TextDisplay("## 4-Pc Drive Disc Sets"),
             *self.build_sets(discs.four_pieces),
-            discord.ui.Separator(),
+            discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
             ui.TextDisplay("## 2-Pc Drive Disc Sets"),
             *self.build_sets(discs.two_pieces),
             *build_extra_sections(discs.extra_sections),
@@ -295,7 +297,7 @@ class ZZZBuildContainer(ui.Container):
             ui.TextDisplay(f"# {get_rarity_emoji(guide)} {guide.character.name} | Agent Guide"),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.TextDisplay(guide.description),
+            ui.TextDisplay(replace_emojis(guide.description)),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(

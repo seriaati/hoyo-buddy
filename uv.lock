@@ -1031,6 +1031,7 @@ dependencies = [
     { name = "redis", extra = ["hiredis"] },
     { name = "sentry-sdk" },
     { name = "seria-library", extra = ["files"] },
+    { name = "szgf" },
     { name = "toml" },
     { name = "tortoise-orm" },
     { name = "uvloop", marker = "sys_platform == 'linux'" },
@@ -1079,6 +1080,7 @@ requires-dist = [
     { name = "redis", extras = ["hiredis"], specifier = ">=6.2.0" },
     { name = "sentry-sdk", specifier = ">=2.13.0" },
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
+    { name = "szgf", specifier = ">=0.1.1" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tortoise-orm", specifier = ">=0.21.7" },
     { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
@@ -2119,6 +2121,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ba/b8/73a0e6a6e079a9d9cfa64113d771e421640b6f679a52eeb9b32f72d871a1/starlette-0.50.0.tar.gz", hash = "sha256:a2a17b22203254bcbc2e1f926d2d55f3f9497f769416b3190768befe598fa3ca", size = 2646985, upload-time = "2025-11-01T15:25:27.516Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d9/52/1064f510b141bd54025f9b55105e26d1fa970b9be67ad766380a3c9b74b0/starlette-0.50.0-py3-none-any.whl", hash = "sha256:9e5391843ec9b6e472eed1365a78c8098cfceb7a74bfd4d6b1c0c0095efb3bca", size = 74033, upload-time = "2025-11-01T15:25:25.461Z" },
+]
+
+[[package]]
+name = "szgf"
+version = "0.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiofiles" },
+    { name = "aiohttp" },
+    { name = "hakushin-py" },
+    { name = "loguru" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/df/564789ee0941f4121d9243d058c78df6c1d2a15567ebfccfd6f71944a78e/szgf-0.1.5.tar.gz", hash = "sha256:ea1d5e8e77def29b286450000574d8b159961f4aeb22a80cad886ac51daaf3a8", size = 7677, upload-time = "2025-12-15T07:42:25.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/67/01/542450cc100341fa7742542fb14a4975d8962b089a26ccb90d59b24f1f6d/szgf-0.1.5-py3-none-any.whl", hash = "sha256:1689bace77f78f8bfb251f54885b21419276d676eb8454f35418d098cb3705f6", size = 9729, upload-time = "2025-12-15T07:42:28.786Z" },
 ]
 
 [[package]]

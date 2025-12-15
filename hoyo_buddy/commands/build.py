@@ -7,6 +7,7 @@ from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr
 from hoyo_buddy.ui.hoyo.genshin.build import GIBuildView
+from hoyo_buddy.ui.hoyo.zzz.build import ZZZBuildView
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -47,7 +48,19 @@ class BuildCommand:
         pass
 
     async def run_zzz(self, i: Interaction) -> None:
-        pass
+        await i.response.defer(ephemeral=ephemeral(i))
+
+        locale = await get_locale(i)
+        cog = i.client.get_cog("Build")
+        guides = cog.guides  # pyright: ignore[reportOptionalMemberAccess, reportAttributeAccessIssue]
+
+        guide = guides.get(self.character_id)
+        if guide is None:
+            await i.followup.send("Build guide not found.", ephemeral=ephemeral(i))
+            return
+
+        view = ZZZBuildView(guide, author=i.user, locale=locale)
+        await view.start(i)
 
     async def run(self, i: Interaction) -> None:
         if self.game is Game.GENSHIN:

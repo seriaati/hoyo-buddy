@@ -9,6 +9,7 @@ from hoyo_buddy.enums import Game, Platform
 
 type CommandName = Literal[
     "build genshin",
+    "build zzz",
     "challenge genshin abyss",
     "challenge genshin theater",
     "challenge genshin stygian",
@@ -69,6 +70,11 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     "build genshin": CommandConfig(
         description=locale_str(
             "View a Genshin Impact character's builds and guides", key="build_cmd_genshin_desc"
+        )
+    ),
+    "build zzz": CommandConfig(
+        description=locale_str(
+            "View a Zenless Zone Zero agent's builds and guides", key="build_cmd_zzz_desc"
         )
     ),
     "challenge genshin abyss": CommandConfig(

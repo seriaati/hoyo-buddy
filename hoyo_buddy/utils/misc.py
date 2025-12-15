@@ -682,3 +682,7 @@ def get_template_name(template: str) -> str:
         msg = f"No number at end of string: {template}"
         raise ValueError(msg)
     return match.group(1)
+
+
+def create_bullet_list(input_list: list[str], *, prefix: str = "* ") -> str:
+    return "\n".join([prefix + item for item in input_list])

@@ -167,6 +167,37 @@ ZZZ_SKILL_TYPE_EMOJIS: dict[hakushin.enums.ZZZSkillType, str] = {
     hakushin.enums.ZZZSkillType.SPECIAL: "<:Icon_SpecialReady:1271096829320364213>",
 }
 ZZZ_SKILL_TYPE_CORE = "<:Icon_CoreSkill:1271096929014648873>"
+ZZZ_GUIDE_SKILL_TYPE_EMOJIS: dict[str, str] = {
+    "assist": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.ASSIST],
+    "basic": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.BASIC],
+    "chain": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.CHAIN],
+    "dodge": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.DODGE],
+    "special": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.SPECIAL],
+    "core": ZZZ_SKILL_TYPE_CORE,
+}
+ZZZ_DISC_ICON = "<:ZZZDiscIcon:1450017211124285502>"
+ZZZ_WENGINE_ICON = "<:ZZZWEngine:1450023326599745598>"
+ZZZ_STAT_EMOJIS: dict[str, str] = {
+    "pr": "<:pr:1450018615977050254>",
+    "physical": "<:physical:1450018614584279111>",
+    "pen": "<:pen:1450018613108146217>",
+    "imp": "<:imp:1450018611443007508>",
+    "ice": "<:ice:1450018608762851329>",
+    "hp": "<:hp:1450018607219216415>",
+    "fire": "<:fire:1450018605763924039>",
+    "ether": "<:ether:1450018604165632091>",
+    "er": "<:er:1450018602689237156>",
+    "elec": "<:elec:1450018601372352562>",
+    "def": "<:def:1450018599795425280>",
+    "cr": "<:cr:1450018597924765850>",
+    "cd": "<:cd:1450018596565684236>",
+    "atk": "<:atk:1450018594791362581>",
+    "ap": "<:ap:1450018592497078413>",
+    "am": "<:am:1450018590429548607>",
+}
+ZZZ_RANK_A = "<:ZZZRankA:1450023892667203685>"
+ZZZ_RANK_S = "<:ZZZRankS:1450023894105981071>"
+ZZZ_CHARACTER_ICON = "<:ZZZCharacterIcon:1450029517291651166>"
 
 COMFORT_ICON = "<:COMFORT:1300369174131900477>"
 LOAD_ICON = "<:LOAD:1300369278259691540>"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import szgf
 from discord import app_commands
 from discord.ext import commands
 
@@ -61,6 +62,37 @@ class Build(commands.GroupCog):
         locale = await get_locale(i)
         return [
             c for c in self._get_choices(locale, Game.GENSHIN) if current.lower() in c.name.lower()
+        ][:25]
+
+    @app_commands.command(
+        name=app_commands.locale_str("zzz"), description=COMMANDS["build zzz"].description
+    )
+    @app_commands.rename(
+        character_id=app_commands.locale_str("character", key="akasha_character_param")
+    )
+    @app_commands.describe(
+        character_id=app_commands.locale_str(
+            "Character to view the build for", key="build_cmd_character_param_desc"
+        )
+    )
+    async def zzz_build_command(self, i: Interaction, character_id: str) -> None:
+        command = BuildCommand(Game.ZZZ, character_id)
+        await command.run(i)
+
+        await show_anniversary_dismissible(i)
+
+    @zzz_build_command.autocomplete("character_id")
+    async def zzz_character_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        locale = await get_locale(i)
+        async with szgf.SZGFClient() as client:
+            guides = await client.read_guides()
+
+        return [
+            c
+            for c in self._get_choices(locale, Game.ZZZ)
+            if current.lower() in c.name.lower() and c.value in guides
         ][:25]
 
 

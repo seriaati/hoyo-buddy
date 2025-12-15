@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import szgf
+
 from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients import ambr
 from hoyo_buddy.ui.hoyo.genshin.build import GIBuildView
+from hoyo_buddy.ui.hoyo.zzz.build import ZZZBuildView
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -47,7 +50,20 @@ class BuildCommand:
         pass
 
     async def run_zzz(self, i: Interaction) -> None:
-        pass
+        await i.response.defer(ephemeral=ephemeral(i))
+
+        locale = await get_locale(i)
+
+        async with szgf.SZGFClient() as client:
+            guides = await client.read_guides()
+
+        guide = guides.get(self.character_id)
+        if guide is None:
+            await i.followup.send("Build guide not found.", ephemeral=ephemeral(i))
+            return
+
+        view = ZZZBuildView(guide, author=i.user, locale=locale)
+        await view.start(i)
 
     async def run(self, i: Interaction) -> None:
         if self.game is Game.GENSHIN:

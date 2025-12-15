@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import discord
 import genshin
+import szgf
 from discord.ext import commands
 from tortoise import Tortoise
 from tortoise.functions import Count
@@ -262,6 +263,15 @@ class Admin(commands.Cog):
     async def clear_cache_command(self, ctx: commands.Context) -> Any:
         await self.bot.cache_session.cache.clear()
         await ctx.send("Cache cleared.")
+
+    @commands.command(name="download-guides", aliases=["dg"])
+    async def download_guides_command(self, ctx: commands.Context) -> Any:
+        message = await ctx.send("Downloading guides...")
+
+        async with szgf.SZGFClient() as client:
+            await client.download_guides()
+
+        await message.edit(content="Guides downloaded successfully.")
 
 
 async def setup(bot: HoyoBuddy) -> None:

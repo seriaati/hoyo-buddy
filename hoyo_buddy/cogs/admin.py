@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
 import genshin
@@ -20,12 +20,11 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import add_to_hoyo_codes
 
-from .search import Search
-
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
     from ..bot import HoyoBuddy
+    from .search import Search
 
 
 class Admin(commands.Cog):
@@ -75,9 +74,13 @@ class Admin(commands.Cog):
     async def update_search_autocomplete_command(self, ctx: commands.Context) -> Any:
         message = await ctx.send("Updating search autocomplete...")
         search_cog = self.bot.get_cog("Search")
+        search_cog = cast("Search | None", search_cog)
 
-        if isinstance(search_cog, Search):
-            await search_cog._setup_search_autofill()
+        if search_cog is None:
+            await message.edit(content="Search cog not found.")
+            return
+
+        await search_cog._setup_search_autofill()
         await message.edit(content="Search autocomplete updated.")
 
     @commands.command(name="add-codes", aliases=["ac"])

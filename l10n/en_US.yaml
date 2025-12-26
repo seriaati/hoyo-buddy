@@ -741,7 +741,7 @@ mimo_info_embed_desc: "This is a permanent event by Hoyoverse, where you can com
 mimo_auto_finish_and_claim_button_label: Auto finish tasks and claim points
 mimo_auto_finish_and_claim_desc: Hoyo Buddy can finish certain tasks and claim points of all completed tasks automatically.
 mimo_auto_buy_button_label: Auto buy rewards
-mimo_auto_buy_desc: "Hoyo Buddy will buy stellar jades/polychromes whenever possible, it will not try to save points!"
+mimo_auto_buy_desc: "Hoyo Buddy will buy Primogems/Stellar Jades/Polychromes whenever possible, it will not try to save points!"
 mimo_cmd_desc: Traveling Mimo event management
 mimo_view_shop_button_label: Shop
 mimo_buy_item_select_placeholder: Select an item to buy...

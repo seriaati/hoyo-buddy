@@ -279,7 +279,7 @@ class FilterDialog(ft.AlertDialog):
                     ft.Row(
                         [
                             ft.Checkbox(
-                                label=f"{rarity}★",
+                                label=f"{rarity}*",
                                 value=rarity in params.rarities,
                                 data=rarity,
                                 on_change=self.on_rarity_checkbox_change,

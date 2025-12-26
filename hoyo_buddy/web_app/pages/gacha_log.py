@@ -7,7 +7,7 @@ import flet as ft
 
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr, translator
-from hoyo_buddy.web_app.utils import fetch_gacha_names, show_error_banner
+from hoyo_buddy.web_app.utils import fetch_gacha_names, get_gacha_icon, show_error_banner
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -107,12 +107,17 @@ class GachaLogPage(ft.View):
         show_num_since_last_rarities = {4, 3} if is_standard_ode else {5, 4}
 
         for gacha in self.gachas:
+            if self.game is Game.GENSHIN:
+                image_src = self.gacha_icons.get(gacha.item_id)
+            else:
+                image_src = get_gacha_icon(game=self.game, item_id=gacha.item_id)
+
             stack_controls = [
                 ft.Container(
-                    ft.Image(src=self.gacha_icons[gacha.item_id], border_radius=8),
+                    ft.Image(src=image_src, border_radius=8),
                     padding=ft.padding.all(paddings[self.game]),
                 )
-                if self.gacha_icons.get(gacha.item_id)
+                if image_src
                 else ft.Container(),
                 ft.Column(
                     [

@@ -852,4 +852,3 @@ fake_settings_button_title: 設定が移動しました！
 captcha_not_showing_up: "CAPTCHAが表示されませんか？"
 open_captcha_button_label: クリックして認証を開始
 captcha_verifying: 認証中...
-build_cmd_zzz_desc: ゼンレスゾーンゼロエージェントのビルドとガイドを表示します

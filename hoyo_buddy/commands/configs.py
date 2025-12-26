@@ -5,6 +5,7 @@ from typing import Literal
 
 from discord.app_commands import locale_str
 
+from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, MIMO_SUPPORT_GAMES
 from hoyo_buddy.enums import Game, Platform
 
 type CommandName = Literal[
@@ -212,7 +213,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         ),
     ),
     "redeem": CommandConfig(
-        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
+        games=AUTO_REDEEM_SUPPORT_GAMES,
         platform=Platform.HOYOLAB,
         description=locale_str(
             "Redeem codes for in-game rewards", key="redeem_command_description"
@@ -232,7 +233,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str("View ongoing game events", key="events_command_description"),
     ),
     "mimo": CommandConfig(
-        games=(Game.STARRAIL, Game.ZZZ),
+        games=MIMO_SUPPORT_GAMES,
         platform=Platform.HOYOLAB,
         description=locale_str("Traveling Mimo event management", key="mimo_cmd_desc"),
     ),

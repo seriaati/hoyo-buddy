@@ -1259,6 +1259,7 @@ def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
 
 
 AUTO_REDEEM_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+MIMO_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
     "redeem": 3600 * 2,  # 2 hours
     "mimo_task": 3600 * 4,  # 4 hours

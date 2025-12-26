@@ -9,7 +9,12 @@ from loguru import logger
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import CONCURRENT_TASK_NUM, HB_GAME_TO_GPY_GAME, MAX_PROXY_ERROR_NUM
+from hoyo_buddy.constants import (
+    CONCURRENT_TASK_NUM,
+    HB_GAME_TO_GPY_GAME,
+    MAX_PROXY_ERROR_NUM,
+    MIMO_SUPPORT_GAMES,
+)
 from hoyo_buddy.db.models import DiscordEmbed
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
@@ -28,8 +33,6 @@ from hoyo_buddy.utils import (
 if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
-
-SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ, Game.GENSHIN)
 
 
 class AutoMimoMixin(AutoTaskMixin):
@@ -328,7 +331,7 @@ class AutoMimoTask(AutoMimoMixin):
 
                 # Auto task
                 queue = await cls.build_auto_task_queue(
-                    "mimo_task", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                    "mimo_task", games=MIMO_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}")
@@ -371,7 +374,7 @@ class AutoMimoBuy(AutoMimoMixin):
 
                 # Auto buy
                 queue = await cls.build_auto_task_queue(
-                    "mimo_buy", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                    "mimo_buy", games=MIMO_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}")
@@ -414,7 +417,7 @@ class AutoMimoDraw(AutoMimoMixin):
 
                 # Auto draw
                 queue = await cls.build_auto_task_queue(
-                    "mimo_draw", games=SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                    "mimo_draw", games=MIMO_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}")

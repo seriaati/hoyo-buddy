@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import ui
+from hoyo_buddy.constants import MIMO_SUPPORT_GAMES
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
-from hoyo_buddy.hoyo.auto_tasks import auto_mimo
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings import reminder
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
@@ -131,10 +131,10 @@ class SettingsView(ui.LayoutView):
                     SettingsCategory.MIMO_SETTINGS,
                     SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
                 }:
-                    limit_games = auto_mimo.SUPPORT_GAMES
-                    mimo_accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
+                    limit_games = MIMO_SUPPORT_GAMES
+                    mimo_accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
                     if not mimo_accounts:
-                        raise NoAccountFoundError(auto_mimo.SUPPORT_GAMES)
+                        raise NoAccountFoundError(MIMO_SUPPORT_GAMES)
 
                     account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
 
@@ -188,7 +188,7 @@ class SettingsView(ui.LayoutView):
             accounts = self.accounts
 
             if self.category is SettingsCategory.MIMO_SETTINGS:
-                accounts = [acc for acc in accounts if acc.game in auto_mimo.SUPPORT_GAMES]
+                accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
             if self.category is SettingsCategory.REMINDER_SETTINGS:
                 accounts = [acc for acc in accounts if acc.game in reminder.SUPPORT_GAMES]
 

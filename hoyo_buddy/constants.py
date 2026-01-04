@@ -650,6 +650,7 @@ ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
     enka.zzz.Element.ETHER: genshin.models.ZZZElementType.ETHER,
     enka.zzz.Element.FIRE_FROST: genshin.models.ZZZElementType.ICE,  # Miyabi element
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
+    enka.zzz.Element.ZHEN_ASSAULT: genshin.models.ZZZElementType.PHYSICAL,  # YSG element
 }
 
 ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
@@ -671,7 +672,7 @@ ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
     enka.zzz.AgentStatType.ICE_DMG_BONUS: genshin.models.ZZZPropertyType.ICE_DMG_BONUS,
     enka.zzz.AgentStatType.ELECTRIC_DMG_BONUS: genshin.models.ZZZPropertyType.ELECTRIC_DMG_BONUS,
     enka.zzz.AgentStatType.ETHER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,
-    enka.zzz.AgentStatType.SHEER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,  # for yi xuan?
+    enka.zzz.AgentStatType.SHEER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,  # for yi xuan? change to general element buff?
 }
 
 ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import ambr
 import asyncpg
@@ -47,7 +47,7 @@ class LoadingSnackBar(ft.SnackBar):
 class ErrorBanner(ft.Banner):
     def __init__(self, message: str, *, url: str | None = None) -> None:
         self.url = url
-        actions: list[ft.Control] = [
+        actions: Sequence[ft.Control] = [
             ft.IconButton(
                 ft.Icons.CLOSE,
                 on_click=self.on_action_click,
@@ -72,26 +72,26 @@ class ErrorBanner(ft.Banner):
         )
 
     async def launch_url(self, e: ft.ControlEvent) -> None:
-        page: ft.Page = e.page
+        page = cast("ft.Page", e.page)
         if self.url is None:
             return
-        page.launch_url(self.url, web_window_name=ft.UrlTarget.BLANK.value)
+        await page.launch_url(self.url, web_popup_window_name=ft.UrlTarget.BLANK.value)
 
     async def on_action_click(self, e: ft.ControlEvent) -> None:
-        page: ft.Page = e.page
-        page.close(self)
+        page = cast("ft.Page", e.page)
+        page.pop_dialog()
 
 
 def show_loading_snack_bar(
     page: ft.Page, *, message: str | None = None, locale: Locale | None = None
 ) -> ft.SnackBar:
     snack_bar = LoadingSnackBar(message=message, locale=locale)
-    page.open(snack_bar)
+    page.show_dialog(snack_bar)
     return snack_bar
 
 
 def show_error_banner(page: ft.Page, *, message: str, url: str | None = None) -> None:
-    page.open(ErrorBanner(message, url=url))
+    page.show_dialog(ErrorBanner(message, url=url))
 
 
 def decrypt_string(encrypted: str) -> str:
@@ -113,11 +113,11 @@ def clear_storage(
     device_fp: bool = False,
 ) -> None:
     if cookies:
-        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.cookies"))
+        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.cookies"))
     if device_id:
-        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_id"))
+        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.device_id"))
     if device_fp:
-        asyncio.create_task(page.client_storage.remove_async(f"hb.{user_id}.device_fp"))
+        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.device_fp"))
 
 
 async def fetch_json_file(filename: str) -> Any:
@@ -133,7 +133,7 @@ async def fetch_gacha_names(
     page: ft.Page, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
 ) -> dict[int, str]:
     cached_gacha_names: dict[str, str] = (
-        await page.client_storage.get_async(f"hb.{locale}.{game.name}.gacha_names") or {}
+        await page.shared_preferences.get(f"hb.{locale}.{game.name}.gacha_names") or {}
     )
 
     result: dict[int, str] = {}
@@ -175,7 +175,7 @@ async def fetch_gacha_names(
 
         cached_gacha_names.update({str(k): v for k, v in item_names.items()})
         asyncio.create_task(
-            page.client_storage.set_async(
+            page.shared_preferences.set(
                 f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
             )
         )

@@ -76,7 +76,7 @@ class MobileNumberForm(ft.Column):
 
     @property
     def submit_button(self) -> ft.FilledButton:
-        return ft.FilledButton(text="提交", on_click=self.on_submit)
+        return ft.FilledButton("提交", on_click=self.on_submit)
 
 
 class MobileNumberField(ft.TextField):
@@ -89,7 +89,7 @@ class MobileNumberField(ft.TextField):
             on_blur=self.on_field_blur,
             on_focus=self.on_field_focus,
             prefix_icon=ft.Icons.PHONE,
-            prefix_text="+86-",
+            prefix=ft.Text("+86-"),
             max_length=11,
         )
 

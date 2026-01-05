@@ -14,16 +14,15 @@ from hoyo_buddy.web_app.app import ClientStorage, WebApp
 
 
 async def target(page: ft.Page) -> None:
-    setattr(page, f"_{page.__class__.__name__}__client_storage", ClientStorage(page))
+    setattr(page, f"_{page.__class__.__name__}__shared_preferences", ClientStorage(page))
     app = WebApp(page)
     await app.initialize()
 
 
-app = ft.app(
-    target,
+app = ft.run(
+    main=target,
     view=None,
     assets_dir="hoyo_buddy/web_app/assets",
-    use_color_emoji=True,
     export_asgi_app=True,
 )
 

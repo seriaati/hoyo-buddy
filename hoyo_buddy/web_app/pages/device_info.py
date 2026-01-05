@@ -53,12 +53,12 @@ class DeviceInfoPage(ft.View):
 
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self, text: str, url: str) -> None:
-        super().__init__(text=text, icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page)
+        super().__init__(text, icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page)
         self._url = url
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        page.launch_url(self._url, web_window_name=ft.UrlTarget.BLANK.value)
+        page.launch_url(self._url)
 
 
 class DeviceInfoForm(ft.Column):
@@ -120,14 +120,14 @@ class DeviceInfoForm(ft.Column):
             show_error_banner(page, message=str(exc))
             return
 
-        await page.client_storage.set_async(f"hb.{self._params.user_id}.device_id", device_id)
-        await page.client_storage.set_async(f"hb.{self._params.user_id}.device_fp", device_fp)
+        await page.shared_preferences.set(f"hb.{self._params.user_id}.device_id", device_id)
+        await page.shared_preferences.set(f"hb.{self._params.user_id}.device_fp", device_fp)
 
         page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
-        return ft.FilledButton(text="提交", on_click=self.on_submit)
+        return ft.FilledButton("提交", on_click=self.on_submit)
 
 
 class DeviceInfoField(ft.TextField):

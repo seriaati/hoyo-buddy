@@ -54,7 +54,7 @@ class EmailPasswordPage(ft.View):
                                     locale,
                                 ),
                                 auto_follow_links=True,
-                                auto_follow_links_target=ft.UrlTarget.BLANK.value,
+                                auto_follow_links_target=ft.UrlTarget.BLANK,
                             ),
                             ft.Container(
                                 EmailPassWordForm(
@@ -208,7 +208,7 @@ class EmailPassWordForm(ft.Column):
 
         if isinstance(email_result, genshin.models.SessionMMT):
             logger.debug(f"[{self._params.user_id}] Saving action ticket to client storage")
-            await page.client_storage.set_async(
+            await page.shared_preferences.set(
                 f"hb.{self._params.user_id}.action_ticket",
                 orjson.dumps(result.model_dump()).decode(),
             )
@@ -232,7 +232,7 @@ class EmailPassWordForm(ft.Column):
         cookies = result.to_str()
         logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
         encrypted_cookies = encrypt_string(cookies)
-        await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
     async def on_submit(self, e: ft.ControlEvent) -> None:
@@ -287,6 +287,6 @@ class EmailPassWordForm(ft.Column):
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=translator.translate(LocaleStr(key="submit_button_label"), self._locale),
+            translator.translate(LocaleStr(key="submit_button_label"), self._locale),
             on_click=self.on_submit,
         )

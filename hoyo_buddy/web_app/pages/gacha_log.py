@@ -53,7 +53,7 @@ class GachaLogPage(ft.View):
                                         value=params.name_contains,
                                     ),
                                     ft.OutlinedButton(
-                                        text=translator.translate(
+                                        translator.translate(
                                             LocaleStr(key="gacha_view_filter_button_label"), locale
                                         ),
                                         icon=ft.Icons.FILTER_ALT,
@@ -179,13 +179,13 @@ class GachaLogPage(ft.View):
             page, gachas=[gacha], locale=self.locale, game=self.game
         )
 
-        page.open(
+        page.show_dialog(
             GachaLogDialog(gacha=gacha, gacha_name=gacha_names[gacha.item_id], locale=self.locale)
         )
 
     async def filter_button_on_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        page.open(FilterDialog(params=self.params, game=self.game, locale=self.locale))
+        page.show_dialog(FilterDialog(params=self.params, game=self.game, locale=self.locale))
 
     async def on_search_bar_submit(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
@@ -242,14 +242,14 @@ class GachaLogDialog(ft.AlertDialog):
             ),
             actions=[
                 ft.TextButton(
-                    text=translator.translate(LocaleStr(key="close_button_label"), locale),
+                    translator.translate(LocaleStr(key="close_button_label"), locale),
                     on_click=self.close_dialog,
                 )
             ],
         )
 
     async def close_dialog(self, e: ft.ControlEvent) -> None:
-        e.page.close(self)
+        e.page.pop_dialog()
 
 
 class FilterDialog(ft.AlertDialog):
@@ -264,11 +264,11 @@ class FilterDialog(ft.AlertDialog):
             ),
             actions=[
                 ft.TextButton(
-                    text=translator.translate(LocaleStr(key="cancel_button_label"), locale),
+                    translator.translate(LocaleStr(key="cancel_button_label"), locale),
                     on_click=self.on_dialog_cancel,
                 ),
                 ft.TextButton(
-                    text=translator.translate(
+                    translator.translate(
                         LocaleStr(key="set_cur_temp_as_default.done"), locale
                     ),
                     on_click=self.on_dialog_close,
@@ -333,10 +333,10 @@ class FilterDialog(ft.AlertDialog):
 
     async def on_dialog_close(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        page.close(self)
+        page.pop_dialog()
         self.params.page = 1
         page.go(f"/gacha_log?{self.params.to_query_string()}")
 
     async def on_dialog_cancel(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
-        page.close(self)
+        page.pop_dialog()

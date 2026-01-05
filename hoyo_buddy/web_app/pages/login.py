@@ -22,8 +22,8 @@ class LoginPage(ft.View):
 
         if user_data is None:
             super().__init__(
-                "/login",
-                [
+                route="/login",
+                controls=[
                     ft.SafeArea(
                         ft.Container(
                             ft.FilledButton(
@@ -38,8 +38,8 @@ class LoginPage(ft.View):
             )
         else:
             super().__init__(
-                "/login",
-                [
+                route="/login",
+                controls=[
                     ft.SafeArea(
                         ft.Column(
                             [
@@ -104,11 +104,11 @@ class LoginPage(ft.View):
         assert self.user_data is not None
 
         page: ft.Page = e.page
-        page.session.set("hb.user_id", int(self.user_data["id"]))
+        page.session["hb.user_id"] = int(self.user_data["id"])
 
-        original_route = await page.client_storage.get_async("hb.original_route")
+        original_route = await page.shared_preferences.get("hb.original_route")
         if original_route:
-            asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
+            asyncio.create_task(page.shared_preferences.remove("hb.original_route"))
             page.go(original_route)
         else:
             page.go("/platforms")
@@ -116,8 +116,8 @@ class LoginPage(ft.View):
     async def on_login_button_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         state = secrets.token_urlsafe(32)
-        await page.client_storage.set_async("hb.oauth_state", state)
+        await page.shared_preferences.set("hb.oauth_state", state)
         redirect_url = f"{WEB_APP_URLS[CONFIG.env]}/custom_oauth_callback"
         client_id = CONFIG.discord_client_id
         oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_url}&scope=identify&state={state}"
-        page.launch_url(oauth_url, web_window_name=ft.UrlTarget.SELF.value)
+        page.launch_url(oauth_url)

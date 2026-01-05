@@ -42,7 +42,7 @@ class PlatformsPage(ft.View):
                                     LocaleStr(key="adding_accounts_description"), locale
                                 ),
                                 auto_follow_links=True,
-                                auto_follow_links_target=ft.UrlTarget.BLANK.value,
+                                auto_follow_links_target=ft.UrlTarget.BLANK,
                             ),
                             ft.Container(
                                 ft.Row(self.platform_groups, spacing=20),
@@ -92,7 +92,7 @@ class PlatformButton(ft.FilledTonalButton):
     def __init__(self, *, params: Params, platform: Platform, label: str) -> None:
         self._params = params
         self._platform = platform
-        super().__init__(text=label, on_click=self.on_btn_click)
+        super().__init__(label, on_click=self.on_btn_click)
 
     async def on_btn_click(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page

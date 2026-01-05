@@ -212,7 +212,7 @@ class SubmitButton(ft.FilledButton):
             device_fp=region is genshin.Region.CHINESE,
         )
 
-        page.open(
+        page.show_dialog(
             ft.SnackBar(
                 ft.Row(
                     [
@@ -249,7 +249,7 @@ class SubmitButton(ft.FilledButton):
             can_launch = False
 
         if can_launch:
-            page.launch_url(url, web_window_name=ft.UrlTarget.SELF.value)
+            page.launch_url(url)
         else:
             url = get_discord_url(channel_id=channel_id, guild_id=guild_id)
-            page.launch_url(url, web_window_name=ft.UrlTarget.SELF.value)
+            page.launch_url(url)

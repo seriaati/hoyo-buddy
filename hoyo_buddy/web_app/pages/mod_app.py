@@ -35,7 +35,7 @@ class ModAppPage(ft.View):
                                                 DownloadAppButton(),
                                                 ft.ElevatedButton(
                                                     "教程",
-                                                    on_click=lambda e: e.page.open(
+                                                    on_click=lambda e: e.page.show_dialog(
                                                         ShowImageDialog()
                                                     ),
                                                 ),
@@ -59,14 +59,13 @@ class ModAppPage(ft.View):
 class DownloadAppButton(ft.ElevatedButton):
     def __init__(self) -> None:
         super().__init__(
-            text="下载应用程序", icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page
+            "下载应用程序", icon=ft.Icons.DOWNLOAD, on_click=self.goto_download_page
         )
 
     async def goto_download_page(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         page.launch_url(
             "https://github.com/PaiGramTeam/GetToken/releases/latest/download/miyoushe-361-lspatched.apk",
-            web_window_name=ft.UrlTarget.BLANK.value,
         )
 
 
@@ -86,7 +85,7 @@ class ShowImageDialog(ft.AlertDialog):
                 ],
                 tight=True,
             ),
-            actions=[ft.TextButton("关闭", on_click=lambda e: e.page.close(self))],
+            actions=[ft.TextButton("关闭", on_click=lambda e: e.page.pop_dialog())],
         )
 
 
@@ -113,18 +112,18 @@ class LoginDetailForm(ft.Column):
         device_id = dict_cookies.pop("x-rpc-device_id", None)
         device_fp = dict_cookies.pop("x-rpc-device_fp", None)
         if device_id is not None:
-            await page.client_storage.set_async(f"hb.{self._params.user_id}.device_id", device_id)
+            await page.shared_preferences.set(f"hb.{self._params.user_id}.device_id", device_id)
         if device_fp is not None:
-            await page.client_storage.set_async(f"hb.{self._params.user_id}.device_fp", device_fp)
+            await page.shared_preferences.set(f"hb.{self._params.user_id}.device_fp", device_fp)
 
         cookies = dict_cookie_to_str(dict_cookies)
         encrypted_cookies = encrypt_string(cookies)
-        await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
     @property
     def submit_button(self) -> ft.FilledButton:
-        return ft.FilledButton(text="提交", on_click=self.on_submit)
+        return ft.FilledButton("提交", on_click=self.on_submit)
 
 
 class LoginDetailField(ft.TextField):

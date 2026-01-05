@@ -10,7 +10,6 @@ import asyncpg
 import flet as ft
 import genshin
 import orjson
-from flet.core.client_storage import ClientStorage as ftClientStorage
 from loguru import logger
 from pydantic import ValidationError
 
@@ -41,26 +40,26 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 
-class ClientStorage(ftClientStorage):
+class ClientStorage(SharedPreferences):
     def __init__(self, page: ft.Page) -> None:
         super().__init__(page)
 
-    async def remove_async(self, key: str) -> Any:
+    async def remove(self, key: str) -> Any:
         with contextlib.suppress(TimeoutError):
-            return await super().remove_async(key)
+            return await super().remove(key)
 
-    async def get_async(self, key: str) -> Any:
+    async def get(self, key: str) -> Any:
         with contextlib.suppress(TimeoutError):
-            return await super().get_async(key)
+            return await super().get(key)
 
-    async def set_async(self, key: str, value: Any) -> bool:
+    async def set(self, key: str, value: Any) -> bool:
         with contextlib.suppress(TimeoutError):
-            return await super().set_async(key, value)
+            return await super().set(key, value)
         return False
 
-    async def contains_key_async(self, key: str) -> bool:
+    async def contains_key(self, key: str) -> bool:
         with contextlib.suppress(TimeoutError):
-            return await super().contains_key_async(key)
+            return await super().contains_key(key)
         return False
 
 
@@ -88,8 +87,8 @@ class WebApp:
         elif route == "/custom_oauth_callback":
             view = await self._handle_oauth(parsed_params)
         else:
-            if route != "/login" and not page.session.contains_key("hb.user_id"):
-                asyncio.create_task(page.client_storage.set_async("hb.original_route", e.route))
+            if route != "/login" and page.session["hb.user_id"] is None:
+                asyncio.create_task(page.shared_preferences.set("hb.original_route", e.route))
                 locale = parsed_params.get("locale", "en-US")
                 page.go(f"/login?locale={locale}")
                 return
@@ -108,13 +107,13 @@ class WebApp:
         controls = self._page._Page__offstage.controls  # pyright: ignore[reportAttributeAccessIssue]
         for control in controls:
             if isinstance(control, ft.AlertDialog):
-                self._page.close(control)
+                self._page.pop_dialog()
 
     def close_banners(self) -> None:
         controls = self._page._Page__offstage.controls  # pyright: ignore[reportAttributeAccessIssue]
         for control in controls:
             if isinstance(control, ft.Banner):
-                self._page.close(control)
+                self._page.pop_dialog()
 
     async def _handle_on_login(self, params: Params) -> ft.View | None:
         page = self._page
@@ -130,7 +129,7 @@ class WebApp:
         mmt_result = await self._get_user_temp_data(params.user_id)
         email, password = decrypt_string(encrypted_email), decrypt_string(encrypted_password)
 
-        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
+        device_id = await page.shared_preferences.get(f"hb.{params.user_id}.device_id")
         if device_id is None:
             return pages.ErrorPage(code=400, message="Cannot find device ID in client storage.")
 
@@ -159,7 +158,7 @@ class WebApp:
             if isinstance(email_result, genshin.models.SessionMMT):
                 # Geetest triggered for sending email verification code
                 logger.debug(f"[{params.user_id}] Saving action ticket to client storage")
-                await page.client_storage.set_async(
+                await page.shared_preferences.set(
                     f"hb.{params.user_id}.action_ticket", orjson.dumps(result.model_dump()).decode()
                 )
                 await handle_session_mmt(
@@ -183,7 +182,7 @@ class WebApp:
                 )
         else:
             encrypted_cookies = encrypt_string(result.to_str())
-            await page.client_storage.set_async(f"hb.{params.user_id}.cookies", encrypted_cookies)
+            await page.shared_preferences.set(f"hb.{params.user_id}.cookies", encrypted_cookies)
             page.go(f"/finish?{params.to_query_string()}")
 
     async def _handle_on_email_send(self, params: Params) -> ft.View | None:
@@ -197,11 +196,11 @@ class WebApp:
                 code=400, message="Cannot find email or password in client storage."
             )
 
-        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
+        device_id = await page.shared_preferences.get(f"hb.{params.user_id}.device_id")
         if device_id is None:
             return pages.ErrorPage(code=400, message="Cannot find device ID in client storage.")
 
-        str_action_ticket: str | None = await page.client_storage.get_async(
+        str_action_ticket: str | None = await page.shared_preferences.get(
             f"hb.{params.user_id}.action_ticket"
         )
         if str_action_ticket is None:
@@ -223,7 +222,7 @@ class WebApp:
     async def _handle_on_otp_send(self, params: Params) -> ft.View | None:
         page = self._page
 
-        encrypted_mobile = await page.client_storage.get_async(f"hb.{params.user_id}.mobile")
+        encrypted_mobile = await page.shared_preferences.get(f"hb.{params.user_id}.mobile")
         if encrypted_mobile is None:
             return pages.ErrorPage(code=400, message="Cannot find mobile number in client storage.")
 
@@ -248,7 +247,7 @@ class WebApp:
 
         gt_type: Literal[
             "on_login", "on_email_send", "on_otp_send"
-        ] = await page.client_storage.get_async(f"hb.{params.user_id}.gt_type")  # pyright: ignore[reportAssignmentType]
+        ] = await page.shared_preferences.get(f"hb.{params.user_id}.gt_type")  # pyright: ignore[reportAssignmentType]
         logger.debug(f"[{params.user_id}] Handling geetest type: {gt_type}")
 
         if gt_type == "on_login":
@@ -265,8 +264,8 @@ class WebApp:
     async def _get_encrypted_email_password(
         self, page: ft.Page, user_id: int
     ) -> tuple[str | None, str | None]:
-        encrypted_email: str | None = await page.client_storage.get_async(f"hb.{user_id}.email")
-        encrypted_password: str | None = await page.client_storage.get_async(
+        encrypted_email: str | None = await page.shared_preferences.get(f"hb.{user_id}.email")
+        encrypted_password: str | None = await page.shared_preferences.get(
             f"hb.{user_id}.password"
         )
         return encrypted_email, encrypted_password
@@ -282,12 +281,12 @@ class WebApp:
         return orjson.loads(mmt_result)
 
     async def _get_or_create_device_id(self, page: ft.Page, user_id: int) -> str:
-        device_id = await page.client_storage.get_async(f"hb.{user_id}.device_id")
+        device_id = await page.shared_preferences.get(f"hb.{user_id}.device_id")
         logger.debug(f"[{user_id}] Device ID: {device_id}")
         if device_id is None:
             logger.debug(f"[{user_id}] Device ID not found, generating a new one.")
             device_id = genshin.Client.generate_app_device_id()
-            await page.client_storage.set_async(f"hb.{user_id}.device_id", device_id)
+            await page.shared_preferences.set(f"hb.{user_id}.device_id", device_id)
 
         return device_id
 
@@ -305,17 +304,17 @@ class WebApp:
         )
         refresh_page_view(page, view, app_bar=self.login_app_bar)
 
-        device_id_exists = await page.client_storage.contains_key_async(
+        device_id_exists = await page.shared_preferences.contains_key(
             f"hb.{params.user_id}.device_id"
         )
-        device_fp_exists = await page.client_storage.contains_key_async(
+        device_fp_exists = await page.shared_preferences.contains_key(
             f"hb.{params.user_id}.device_fp"
         )
         if params.platform is Platform.MIYOUSHE and (not device_id_exists or not device_fp_exists):
             page.go(f"/device_info?{params.to_query_string()}")
             return None
 
-        encrypted_cookies = await page.client_storage.get_async(f"hb.{params.user_id}.cookies")
+        encrypted_cookies = await page.shared_preferences.get(f"hb.{params.user_id}.cookies")
         if encrypted_cookies is None:
             return pages.ErrorPage(code=400, message="Cannot find cookies in client storage.")
 
@@ -339,8 +338,8 @@ class WebApp:
             dict_cookie.update(new_dict_cookie)
             cookies = dict_cookie_to_str(dict_cookie)
 
-        device_id = await page.client_storage.get_async(f"hb.{params.user_id}.device_id")
-        device_fp = await page.client_storage.get_async(f"hb.{params.user_id}.device_fp")
+        device_id = await page.shared_preferences.get(f"hb.{params.user_id}.device_id")
+        device_fp = await page.shared_preferences.get(f"hb.{params.user_id}.device_fp")
 
         logger.debug(f"[{params.user_id}] Before get game accs, cookies: {cookies}")
         if device_id is not None:
@@ -399,7 +398,7 @@ class WebApp:
             if "user_id" not in parsed_params:
                 return pages.ErrorPage(code=400, message="Missing user_id in parameters.")
 
-            query: str | None = await page.client_storage.get_async(
+            query: str | None = await page.shared_preferences.get(
                 f"hb.{parsed_params['user_id']}.params"
             )
             if query is None:
@@ -475,7 +474,7 @@ class WebApp:
                 if game is Game.GENSHIN:
                     gacha_icons = await self._get_gacha_icons(gacha_logs)
                     asyncio.create_task(
-                        page.client_storage.set_async("hb.gacha_icons", gacha_icons)
+                        page.shared_preferences.set("hb.gacha_icons", gacha_icons)
                     )
                 else:
                     gacha_icons = {}
@@ -561,7 +560,7 @@ class WebApp:
 
     async def _get_gacha_icons(self, gachas: Sequence[GachaHistory]) -> dict[int, str]:
         cached_gacha_icons: dict[str, str] = (
-            await self._page.client_storage.get_async("hb.gacha_icons") or {}
+            await self._page.shared_preferences.get("hb.gacha_icons") or {}
         )
 
         if any(str(g.item_id) not in cached_gacha_icons for g in gachas):
@@ -571,7 +570,7 @@ class WebApp:
 
     async def fetch_user_data(self) -> dict[str, Any] | None:
         page = self._page
-        access_token = await page.client_storage.get_async("hb.oauth_access_token")
+        access_token = await page.shared_preferences.get("hb.oauth_access_token")
         if access_token is None:
             return None
 
@@ -583,7 +582,7 @@ class WebApp:
             ) as resp,
         ):
             if resp.status != 200:
-                refresh_token = await page.client_storage.get_async("hb.oauth_refresh_token")
+                refresh_token = await page.shared_preferences.get("hb.oauth_refresh_token")
                 if refresh_token is None:
                     return None
 
@@ -605,7 +604,7 @@ class WebApp:
                     if access_token is None:
                         return None
 
-                    await page.client_storage.set_async("hb.oauth_access_token", access_token)
+                    await page.shared_preferences.set("hb.oauth_access_token", access_token)
 
                 return await self.fetch_user_data()
 
@@ -614,7 +613,7 @@ class WebApp:
     async def _handle_oauth(self, params: dict[str, str]) -> ft.View | None:
         page = self._page
 
-        state = await page.client_storage.get_async("hb.oauth_state")
+        state = await page.shared_preferences.get("hb.oauth_state")
         if state != params.get("state"):
             return pages.ErrorPage(code=403, message="Invalid state")
 
@@ -652,8 +651,8 @@ class WebApp:
         if refresh_token is None:
             return pages.ErrorPage(code=400, message="Missing refresh token")
 
-        await page.client_storage.set_async("hb.oauth_access_token", access_token)
-        await page.client_storage.set_async("hb.oauth_refresh_token", refresh_token)
+        await page.shared_preferences.set("hb.oauth_access_token", access_token)
+        await page.shared_preferences.set("hb.oauth_refresh_token", refresh_token)
 
         user_data = await self.fetch_user_data()
         if user_data is None:
@@ -663,13 +662,13 @@ class WebApp:
         if user_id is None:
             return pages.ErrorPage(code=400, message="Missing user ID")
 
-        page.session.set("hb.user_id", int(user_id))
+        page.session["hb.user_id"] = int(user_id)
 
-        original_route = await page.client_storage.get_async("hb.original_route")
+        original_route = await page.shared_preferences.get("hb.original_route")
         if original_route is None:
             return page.go("/platforms")
 
-        asyncio.create_task(page.client_storage.remove_async("hb.original_route"))
+        asyncio.create_task(page.shared_preferences.remove("hb.original_route"))
         return page.go(original_route)
 
     @property

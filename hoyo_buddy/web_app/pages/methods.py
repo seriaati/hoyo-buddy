@@ -48,7 +48,7 @@ class MethodsPage(ft.View):
             return ft.Markdown(
                 translator.translate(LocaleStr(key="add_hoyolab_acc.embed.description"), locale),
                 auto_follow_links=True,
-                auto_follow_links_target=ft.UrlTarget.BLANK.value,
+                auto_follow_links_target=ft.UrlTarget.BLANK,
             )
         return ft.Text(
             "1. 通过改装过的米游社应用程序: 只有安卓裝置可使用\n2. 通过扫描二维码\n3. 通过手机号: 只有中国大陆手机号可使用\n4. 通过邮箱密码\n5. 通过开发者工具"
@@ -86,7 +86,7 @@ class MethodButton(ft.FilledTonalButton):
     def __init__(self, *, params: Params, label: str, to_page: str, disabled: bool = False) -> None:
         self._params = params
         self._to_page = to_page
-        super().__init__(text=label, on_click=self.on_btn_click, disabled=disabled)
+        super().__init__(label, on_click=self.on_btn_click, disabled=disabled)
 
     async def on_btn_click(self, e: ft.ControlEvent) -> Any:
         page: ft.Page = e.page

@@ -32,11 +32,11 @@ class DevToolsPage(ft.View):
                                     locale
                                 ),
                                 auto_follow_links=True,
-                                auto_follow_links_target=ft.UrlTarget.BLANK.value,
+                                auto_follow_links_target=ft.UrlTarget.BLANK,
                             ),
                             ft.ElevatedButton(
                                 LocaleStr(key="show_tutorial_button_label").translate(locale),
-                                on_click=lambda e: e.page.open(ShowImageDialog(locale=locale)),
+                                on_click=lambda e: e.page.show_dialog(ShowImageDialog(locale=locale)),
                             ),
                             ft.Container(
                                 DevToolsCookieForm(params=params, locale=locale),
@@ -56,7 +56,7 @@ class ShowImageDialog(ft.AlertDialog):
             actions=[
                 ft.TextButton(
                     translator.translate(LocaleStr(key="close_button_label"), locale),
-                    on_click=lambda e: e.page.close(self),
+                    on_click=lambda e: e.page.pop_dialog(),
                 )
             ],
         )
@@ -126,7 +126,7 @@ class DevToolsCookieForm(ft.Column):
             show_loading_snack_bar(page, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
-            await page.client_storage.set_async(
+            await page.shared_preferences.set(
                 f"hb.{self._params.user_id}.cookies", encrypted_cookies
             )
             page.go(f"/finish?{self._params.to_query_string()}")
@@ -134,7 +134,7 @@ class DevToolsCookieForm(ft.Column):
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=translator.translate(LocaleStr(key="submit_button_label"), self._locale),
+            translator.translate(LocaleStr(key="submit_button_label"), self._locale),
             on_click=self.on_submit,
         )
 

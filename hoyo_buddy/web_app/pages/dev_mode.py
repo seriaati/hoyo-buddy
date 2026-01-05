@@ -55,7 +55,7 @@ class CookiesForm(ft.Column):
     @property
     def submit_button(self) -> ft.FilledButton:
         return ft.FilledButton(
-            text=LocaleStr(key="submit_button_label").translate(self._locale),
+            LocaleStr(key="submit_button_label").translate(self._locale),
             on_click=self.on_submit,
         )
 
@@ -72,7 +72,7 @@ class CookiesForm(ft.Column):
 
         show_loading_snack_bar(page, locale=self._locale)
         encrypted_cookies = encrypt_string(cookies.value)
-        await page.client_storage.set_async(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
 

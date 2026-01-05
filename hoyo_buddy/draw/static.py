@@ -61,7 +61,10 @@ async def download_images(
         if not image_url:
             continue
 
-        file_path = get_static_img_path(image_url)
+        try:
+            file_path = get_static_img_path(image_url)
+        except ValueError:
+            continue
         if file_path.exists():
             continue
         task = asyncio.create_task(

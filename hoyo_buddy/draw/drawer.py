@@ -669,9 +669,12 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        return cls.open_image(
-            get_static_img_path(url), size, mask_color=mask_color, opacity=opacity
-        )
+        try:
+            image_path = get_static_img_path(url)
+        except ValueError:
+            return Image.new("RGBA", (1, 1), (0, 0, 0, 0))
+        else:
+            return cls.open_image(image_path, size, mask_color=mask_color, opacity=opacity)
 
     def open_asset(
         self,

@@ -279,7 +279,7 @@ def get_floor_difficulty(floor_name: str, season_name: str) -> str:
 
 def get_static_img_path(image_url: str) -> pathlib.Path:
     if not image_url:
-        msg = "Invalid image URL"
+        msg = "Image URL is an empty string"
         raise ValueError(msg)
 
     parsed_url = urlparse(image_url)

@@ -642,7 +642,7 @@ ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
     enka.zzz.SkillType.CORE_SKILL: genshin.models.ZZZSkillType.CORE_SKILL,
 }
 
-ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENTTYPE = {
+ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE = {
     enka.zzz.Element.PHYSICAL: genshin.models.ZZZElementType.PHYSICAL,
     enka.zzz.Element.FIRE: genshin.models.ZZZElementType.FIRE,
     enka.zzz.Element.ICE: genshin.models.ZZZElementType.ICE,

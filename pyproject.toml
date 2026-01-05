@@ -38,6 +38,7 @@ dependencies = [
   "anyio>=4.11.0",
   "akasha-py",
   "szgf>=0.1.1",
+  "aiosqlite==0.22.0",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

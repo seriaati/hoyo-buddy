@@ -741,7 +741,7 @@ mimo_info_embed_desc: "Đây là một sự kiện vĩnh viễn bởi Hoyoverse,
 mimo_auto_finish_and_claim_button_label: Tự động hoàn thành nhiệm vụ và nhận điểm
 mimo_auto_finish_and_claim_desc: Hoyo Buddy có thể tự động hoàn thành một số nhiệm vụ và nhận điểm của những nhiêm vụ đã hoàn thành.
 mimo_auto_buy_button_label: Tự động mua quà
-mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng mua Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
+mimo_auto_buy_desc: "Hoyo Buddy sẽ cố gắng mua Nguyên Thạch/Ngọc Ánh Sao/Film Màu khi có thể, và không cố gắng tiết kiệm điểm."
 mimo_cmd_desc: Quản lý sự kiện Mimo Du Lịch
 mimo_view_shop_button_label: Cửa hàng
 mimo_buy_item_select_placeholder: Chọn một món để mua
@@ -854,3 +854,4 @@ fake_settings_button_title: Cài đặt đã được di chuyển!
 captcha_not_showing_up: "CAPTCHA không hiển thị?"
 open_captcha_button_label: Nhấp để bắt đầu xác minh
 captcha_verifying: Đang xác minh...
+build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero

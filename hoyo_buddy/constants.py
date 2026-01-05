@@ -642,7 +642,7 @@ ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
     enka.zzz.SkillType.CORE_SKILL: genshin.models.ZZZSkillType.CORE_SKILL,
 }
 
-ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
+ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENTTYPE = {
     enka.zzz.Element.PHYSICAL: genshin.models.ZZZElementType.PHYSICAL,
     enka.zzz.Element.FIRE: genshin.models.ZZZElementType.FIRE,
     enka.zzz.Element.ICE: genshin.models.ZZZElementType.ICE,
@@ -650,6 +650,7 @@ ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
     enka.zzz.Element.ETHER: genshin.models.ZZZElementType.ETHER,
     enka.zzz.Element.FIRE_FROST: genshin.models.ZZZElementType.ICE,  # Miyabi element
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
+    enka.zzz.Element.ZHEN_ASSAULT: genshin.models.ZZZElementType.PHYSICAL,  # YSG element
 }
 
 ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {

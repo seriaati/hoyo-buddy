@@ -23,7 +23,7 @@ MAX_NOTIF_COUNT: Label[TextInput] = Label(
 )
 NOTIFY_TIME: Label[TextInput] = Label(
     text=LocaleStr(key="notif_modal.notify_time.label"),
-    component=TextInput(is_digit=True, min_value=1, max_value=24),
+    component=TextInput(is_digit=True, min_value=0, max_value=24),
     description=LocaleStr(key="notif_modal.notify_time.description"),
 )
 NOTIFY_WEEKDAY: Label[WeekdaySelect] = Label(

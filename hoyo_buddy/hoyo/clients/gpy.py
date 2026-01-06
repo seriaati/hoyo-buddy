@@ -714,7 +714,7 @@ class GenshinClient(ProxyGenshinClient):
                 raise HoyoBuddyError(
                     message=LocaleStr(
                         key="gi_mimo_start_desc",
-                        url="https://act.hoyolab.com/ys/event/bbs-event-20240828mimo/index.html",
+                        url="https://act.hoyolab.com/ys/event/bbs-event-20251029points/index.html",
                     )
                 ) from e
             raise

@@ -14,6 +14,7 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import IMAGE_EXTENSIONS, INSTALL_URL, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
+from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.exceptions import NotAnImageError
 from hoyo_buddy.ui.paginator import Page, PaginatorView
@@ -72,6 +73,12 @@ class Others(commands.Cog):
         vc = guild.get_channel(next(vc_rotator))
         if vc is not None:
             await vc.edit(name=f"{user_count} User Installs")
+
+        # Accounts
+        account_count = await HoyoAccount.all().count()
+        vc = guild.get_channel(next(vc_rotator))
+        if vc is not None:
+            await vc.edit(name=f"{account_count} Accounts")
 
     @update_stat_vcs.before_loop
     async def before_update_stat_vcs(self) -> None:

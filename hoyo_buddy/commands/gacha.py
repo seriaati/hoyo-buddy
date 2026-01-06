@@ -363,7 +363,7 @@ class GachaCommand:
             msg = "Cannot determine UIGF version"
             raise ValueError(msg)
 
-        is_v4 = version == "v4.0"
+        is_v4 = version.startswith("v4")
 
         if is_v4:
             game_data = next(

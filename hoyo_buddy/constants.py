@@ -327,6 +327,7 @@ YATTA_PATH_TO_HSR_PATH = {
     yatta.PathType.WARLOCK: HSRPath.NIHILITY,
     yatta.PathType.WARRIOR: HSRPath.DESTRUCTION,
     yatta.PathType.MEMORY: HSRPath.REMEMBRANCE,
+    yatta.PathType.ELATION: HSRPath.ELATION,
 }
 
 YATTA_PATH_TO_GPY_PATH = {

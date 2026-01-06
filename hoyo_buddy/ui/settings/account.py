@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import emojis, ui
-from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES
+from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, MIMO_AUTO_DRAW_SUPPORT_GAMES
 from hoyo_buddy.l10n import LocaleStr
 
 from ._common import AccountToggleButton
@@ -145,7 +145,9 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     )
                 ),
                 accessory=AccountToggleButton(
-                    attr="mimo_auto_draw", current=account.mimo_auto_draw
+                    attr="mimo_auto_draw",
+                    current=account.mimo_auto_draw,
+                    disabled=account.game not in MIMO_AUTO_DRAW_SUPPORT_GAMES,
                 ),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),

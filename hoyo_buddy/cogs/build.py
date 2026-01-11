@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import szgf
 from discord import app_commands
 from discord.ext import commands
+from loguru import logger
 
 from hoyo_buddy.commands.build import BuildCommand
 from hoyo_buddy.commands.configs import COMMANDS
@@ -22,10 +23,11 @@ if TYPE_CHECKING:
 class Build(commands.GroupCog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
-        self.guides = {}
+        self.guides: dict[str, szgf.ParsedGuide] = {}
 
     async def cog_load(self) -> None:
         await self.reload_szgf_guides()
+        logger.debug(f"Loaded {len(self.guides)} ZZZ guides")
 
     async def reload_szgf_guides(self) -> None:
         async with szgf.SZGFClient() as client:

@@ -55,6 +55,7 @@ enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
 akasha-py = { git = "https://github.com/seriaati/akasha-py.git" }
+szgf = { git = "https://github.com/seriaati/zzz-guides" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

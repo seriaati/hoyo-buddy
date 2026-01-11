@@ -1079,7 +1079,7 @@ requires-dist = [
     { name = "redis", extras = ["hiredis"], specifier = ">=6.2.0" },
     { name = "sentry-sdk", specifier = ">=2.13.0" },
     { name = "seria-library", extras = ["files"], specifier = ">=1.5.4" },
-    { name = "szgf", specifier = ">=0.1.1" },
+    { name = "szgf", git = "https://github.com/seriaati/zzz-guides" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tortoise-orm", specifier = ">=0.21.7" },
     { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
@@ -2125,7 +2125,7 @@ wheels = [
 [[package]]
 name = "szgf"
 version = "0.1.5"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/seriaati/zzz-guides#6ad95071c57e26fe31585207882deb3355fcb495" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -2133,10 +2133,6 @@ dependencies = [
     { name = "loguru" },
     { name = "pydantic" },
     { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/df/564789ee0941f4121d9243d058c78df6c1d2a15567ebfccfd6f71944a78e/szgf-0.1.5.tar.gz", hash = "sha256:ea1d5e8e77def29b286450000574d8b159961f4aeb22a80cad886ac51daaf3a8", size = 7677, upload-time = "2025-12-15T07:42:25.939Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/01/542450cc100341fa7742542fb14a4975d8962b089a26ccb90d59b24f1f6d/szgf-0.1.5-py3-none-any.whl", hash = "sha256:1689bace77f78f8bfb251f54885b21419276d676eb8454f35418d098cb3705f6", size = 9729, upload-time = "2025-12-15T07:42:28.786Z" },
 ]
 
 [[package]]

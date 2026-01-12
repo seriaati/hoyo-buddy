@@ -104,6 +104,12 @@ class Build(commands.GroupCog):
             if current.lower() in c.name.lower() and c.value in self.guides
         ][:25]
 
+    @commands.is_owner()
+    @commands.command(name="rguides")
+    async def reload_guides(self, ctx: commands.Context) -> None:
+        await self.reload_szgf_guides()
+        await ctx.send(f"Reloaded {len(self.guides)} ZZZ guides")
+
 
 async def setup(bot: HoyoBuddy) -> None:
     await bot.add_cog(Build(bot))

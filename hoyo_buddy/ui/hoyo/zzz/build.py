@@ -176,10 +176,10 @@ class ZZZBuildSkillMindscapeContainer(ui.Container):
                 priority_level_strs.append(f"{emoji} {skill_type.value.capitalize()}")
             priority_strs.append(" = ".join(priority_level_strs).strip())
 
-        return [
-            ui.TextDisplay(create_bullet_list(priority_strs, prefix="1. ")),
-            ui.TextDisplay(replace_emojis(skill_priority.description)),
-        ]
+        texts = [ui.TextDisplay(create_bullet_list(priority_strs, prefix="1. "))]
+        if skill_priority.description:
+            texts.append(ui.TextDisplay(replace_emojis(skill_priority.description)))
+        return texts
 
     def build_minscapes(self, mindscapes: list[szgf.MindscapeSection]) -> list[ui.TextDisplay]:
         if not mindscapes:

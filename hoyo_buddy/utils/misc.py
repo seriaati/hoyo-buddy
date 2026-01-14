@@ -478,7 +478,11 @@ def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
     if not task.jump_url:
         return None
 
-    url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    try:
+        url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    except orjson.JSONDecodeError:
+        return None
+
     host, type_, args = url_data.get("host"), url_data.get("type"), url_data.get("args")
     if host != "hoyolab" or args is None:
         return None

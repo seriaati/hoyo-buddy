@@ -105,6 +105,26 @@ class GenshinClient(ProxyGenshinClient):
         )
         self._account = account
 
+    async def _request_mimo(
+        self,
+        endpoint: str,
+        *,
+        method: str | None = None,
+        params: Mapping[str, Any] | None = None,
+        data: Any = None,
+    ) -> Any:
+        try:
+            return await super()._request_mimo(endpoint, method=method, params=params, data=data)
+        except genshin.GenshinException as e:
+            if e.retcode == -510001:  # Invalid fields in calculation
+                raise HoyoBuddyError(
+                    message=LocaleStr(
+                        key="gi_mimo_start_desc",
+                        url="https://act.hoyolab.com/ys/event/bbs-event-20251029points/index.html",
+                    )
+                ) from e
+            raise
+
     def set_lang(self, locale: Locale) -> None:
         if self._account.game is Game.STARRAIL and locale is Locale.turkish:
             self.lang = "en-us"
@@ -707,17 +727,7 @@ class GenshinClient(ProxyGenshinClient):
     async def get_mimo_tasks(
         self, *, game_id: int, version_id: int
     ) -> Sequence[genshin.models.MimoTask]:
-        try:
-            return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
-        except genshin.GenshinException as e:
-            if e.retcode == -510001:  # Invalid fields in calculation
-                raise HoyoBuddyError(
-                    message=LocaleStr(
-                        key="gi_mimo_start_desc",
-                        url="https://act.hoyolab.com/ys/event/bbs-event-20251029points/index.html",
-                    )
-                ) from e
-            raise
+        return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int

@@ -354,7 +354,7 @@ class ZZZBuildMenuButton(ui.Button):
 
 class ContributeButton(ui.Button):
     def __init__(self) -> None:
-        super().__init__(label="Contribute", url="https://github.com/seriaati/zzz-guides/")
+        super().__init__(label="Contribute", url="https://szgf.seria.moe/")
 
 
 class ZZZBuildView(ui.LayoutView):

@@ -162,6 +162,8 @@ BANNER_TYPE_NAMES: Final[dict[Game, dict[int, LocaleStr]]] = {
         3: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_3"),
         1: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_1"),
         5: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_5"),
+        102: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_102"),
+        103: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_103"),
     },
 }
 

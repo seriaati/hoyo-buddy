@@ -824,13 +824,13 @@ challenge_command_anomaly_desc: Genereer Anomaly Arbitration kaart
 anomaly_arbitration: Anomaly Arbitration
 account_settings_title: "Accountinstellingen"
 account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
-public_account_desc: "Account instellen als openbaar\\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
-daily_checkin_desc: "Automatische dagelijkse check-in\\nClaims automatisch beloningen bij het web check-in evenement."
-redeem_code_desc: "Automatisch inwisselen van codes\\nWissel automatisch livestream codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor waarom."
+public_account_desc: "Account instellen als openbaar\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
+daily_checkin_desc: "Automatische dagelijkse check-in\nClaims automatisch beloningen bij het web check-in evenement."
+redeem_code_desc: "Automatisch inwisselen van codes\nWissel automatisch livestream codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor waarom."
 user_settings_title: "Gebruikersinstellingen"
 user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze gelden voor alle gameaccounts."
-dark_theme_desc: "Donker thema\\nLaat infographics een donker kleurenschema gebruiken, niet alle infographics ondersteunen deze functie."
-language_desc: "Taal\\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor waarom."
+dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken, niet alle infographics ondersteunen deze functie."
+language_desc: "Taal\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor waarom."
 language_select_placeholder: Selecteer een taal
 settings_dyk_desc: "\"Wist je dat?\" berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
 layout_view_edited: "Interactieve componenten zijn uitgeschakeld om systeembronnen te besparen, voer het commando opnieuw uit als je ze wilt gebruiken."

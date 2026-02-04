@@ -8,6 +8,7 @@ __all__ = (
     "HardChallenge",
     "ImgTheaterData",
     "ShiyuDefense",
+    "ShiyuDefenseV2",
     "SpiralAbyss",
     "StarRailAPCShadow",
     "StarRailChallenge",
@@ -48,4 +49,8 @@ class HardChallenge(genshin.models.HardChallenge):
 
 
 class AnomalyRecord(genshin.models.AnomalyRecord):
+    lang: str
+
+
+class ShiyuDefenseV2(genshin.models.ShiyuDefenseV2):
     lang: str

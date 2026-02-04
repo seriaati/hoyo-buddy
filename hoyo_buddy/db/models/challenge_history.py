@@ -82,6 +82,9 @@ class ChallengeHistory(BaseModel):
             msg = f"Loading data for {challenge_type} is not implemented."
             raise NotImplementedError(msg)
 
+        if challenge_type is ChallengeType.SHIYU_DEFENSE and "pass_fifth_floor" in raw_copy:
+            model = genshin.models.ShiyuDefenseV2
+
         return model.model_validate(raw_copy)
 
     @classmethod
@@ -104,7 +107,7 @@ class ChallengeHistory(BaseModel):
             start_time = data.schedule.start_datetime
             end_time = data.schedule.end_datetime
             name = None
-        elif isinstance(data, genshin.models.ShiyuDefense):
+        elif isinstance(data, (genshin.models.ShiyuDefense, genshin.models.ShiyuDefenseV2)):
             start_time = data.begin_time
             end_time = data.end_time
             name = None

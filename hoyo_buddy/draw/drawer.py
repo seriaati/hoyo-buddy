@@ -134,12 +134,12 @@ class Drawer:
         return image.resize((im_width, im_height), resample=Image.Resampling.LANCZOS)
 
     @staticmethod
-    def top_crop(image: Image.Image, height: int) -> Image.Image:
+    def top_crop(image: Image.Image, height: int, *, top_offset: int = 0) -> Image.Image:
         """Crop an image from the top."""
         left = 0
-        top = 0
+        top = top_offset
         right = image.width
-        bottom = height
+        bottom = top + height
         return image.crop((left, top, right, bottom))
 
     @staticmethod

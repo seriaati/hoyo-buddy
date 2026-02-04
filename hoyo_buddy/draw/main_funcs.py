@@ -859,3 +859,29 @@ async def draw_anomaly_card(
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)
+
+
+async def draw_shiyu_v2_card(
+    draw_input: DrawInput, shiyu: genshin.models.ShiyuDefenseV2, uid: int | None
+) -> File:
+    urls: list[str] = []
+    if shiyu.fourth_frontier is not None:
+        for layer in shiyu.fourth_frontier.layers:
+            urls.extend([char.icon for char in layer.characters])
+            if layer.bangboo is not None:
+                urls.append(layer.bangboo.icon)
+
+    if shiyu.fifth_frontier is not None:
+        for layer in shiyu.fifth_frontier.layers:
+            urls.append(layer.boss_icon)
+            urls.extend([char.icon for char in layer.characters])
+            if layer.bangboo is not None:
+                urls.append(layer.bangboo.icon)
+
+    await download_images(urls, draw_input.session)
+
+    card = funcs.zzz.ShiyuV2Card(shiyu, uid=uid, locale=draw_input.locale)
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)

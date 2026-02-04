@@ -24,6 +24,7 @@ Challenge: TypeAlias = (
     | genshin.models.DeadlyAssault
     | genshin.models.HardChallenge
     | genshin.models.AnomalyRecord
+    | genshin.models.ShiyuDefenseV2
 )
 ChallengeWithLang: TypeAlias = (
     models.StarRailChallenge
@@ -35,6 +36,7 @@ ChallengeWithLang: TypeAlias = (
     | models.DeadlyAssault
     | models.HardChallenge
     | models.AnomalyRecord
+    | models.ShiyuDefenseV2
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow

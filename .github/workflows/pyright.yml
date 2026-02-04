@@ -39,4 +39,4 @@ jobs:
 
       - name: Run Pyright
         run: |
-          uv run pyright hoyo_buddy/
+          uv run basedpyright

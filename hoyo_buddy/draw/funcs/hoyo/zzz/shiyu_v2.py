@@ -20,8 +20,6 @@ class ShiyuV2Card:
         self, data: genshin.models.ShiyuDefenseV2, *, uid: int | None, locale: str
     ) -> None:
         self.data = data
-        self.im = Drawer.open_image("hoyo-buddy-assets/assets/shiyu-v2/bg.png")
-        self.drawer = Drawer(ImageDraw.Draw(self.im), folder="shiyu-v2", dark_mode=False, sans=True)
         self.locale = Locale(locale)
         self.uid = uid
 
@@ -347,6 +345,9 @@ class ShiyuV2Card:
             start_pos = (start_pos[0] + 1155, start_pos[1])
 
     def draw(self) -> BytesIO:
+        self.im = Drawer.open_image("hoyo-buddy-assets/assets/shiyu-v2/bg.png")
+        self.drawer = Drawer(ImageDraw.Draw(self.im), folder="shiyu-v2", dark_mode=False, sans=True)
+
         self.write_stats()
         self.draw_fourth_frontier()
         self.draw_fifth_frontier()

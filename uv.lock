@@ -1052,11 +1052,9 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
-lint = [
-    { name = "ruff" },
-]
-type-check = [
+dev = [
     { name = "basedpyright" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -1102,8 +1100,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-lint = [{ name = "ruff", specifier = ">=0.12.3" }]
-type-check = [{ name = "basedpyright", specifier = ">=1.37.3" }]
+dev = [
+    { name = "basedpyright", specifier = ">=1.37.3" },
+    { name = "ruff", specifier = ">=0.12.3" },
+]
 
 [[package]]
 name = "httpcore"

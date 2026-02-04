@@ -47,6 +47,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 version = "1.16.16"
 
+[dependency-groups]
+lint = ["ruff>=0.12.3"]
+type-check = ["basedpyright>=1.37.3"]
+
+[tool.uv]
+default-groups = ["type-check"]
+
 [tool.uv.sources]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
@@ -71,7 +78,3 @@ typeCheckingMode = "standard"
 location = "./migrations"
 src_folder = "./."
 tortoise_orm = "hoyo_buddy.db.config.DB_CONFIG"
-
-[dependency-groups]
-lint = ["ruff>=0.12.3"]
-type-check = ["basedpyright>=1.37.3"]

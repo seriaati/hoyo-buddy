@@ -80,8 +80,6 @@ class AutocompleteSetup:
                 return api.fetch_books()
             case ambr.ItemCategory.TCG:
                 return api.fetch_tcg_cards()
-            case _:
-                return None
 
     @classmethod
     def _get_yatta_task(
@@ -270,8 +268,6 @@ class AutocompleteSetup:
                         func = api.fetch_drive_discs
                     case ZZZItemCategory.BANGBOOS:
                         func = api.fetch_bangboos
-                    case _:
-                        return []
 
                 latest_items = await func()
                 items = await func(version=version)

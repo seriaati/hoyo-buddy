@@ -70,7 +70,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        import uvloop  # pyright: ignore[reportMissingImports]
+        import uvloop
     except ImportError:
         asyncio.run(main())
     else:

@@ -73,8 +73,8 @@ class AbyssEnemyView(View):
             # Reset wave index
             self._wave_index = 0
             for index in range(2):
-                wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
-                wave_btn.disabled = True
+                disabled_wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
+                disabled_wave_btn.disabled = True
 
         # Update wave button color
         for index in range(2):

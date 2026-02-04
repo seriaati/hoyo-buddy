@@ -7,7 +7,7 @@ from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients.hakushin import ZZZItemCategory
-from hoyo_buddy.models.zzz_event import ZZZEventCalendar
+from hoyo_buddy.models.zzz_event import ZZZEventCalendar, ZZZGachaEventWeapon, ZZZWeaponGachaEvent
 from hoyo_buddy.ui.hoyo.event_calendar import EventCalendarView
 from hoyo_buddy.ui.hoyo.events import EventsView
 from hoyo_buddy.utils import ephemeral
@@ -51,13 +51,21 @@ class EventsCommand:
             events = await client.get_zzz_event_calendar(account.uid)
             gacha_calendar = await client.get_zzz_gacha_calendar(account.uid)
 
+            weapon_banners: list[ZZZWeaponGachaEvent] = []
+
             for banner in gacha_calendar.weapons:
+                banner_weapons: list[ZZZGachaEventWeapon] = []
+
                 for weapon in banner.weapons:
                     name = EventsCommand.get_weapon_name(i, weapon.id, locale) or "???"
-                    weapon.__dict__["name"] = name
+                    banner_weapons.append(ZZZGachaEventWeapon(**weapon.model_dump(), name=name))
+
+                weapon_banners.append(
+                    ZZZWeaponGachaEvent(**banner.model_dump(), weapons=banner_weapons)
+                )
 
             calendar = ZZZEventCalendar(
-                events=events, characters=gacha_calendar.characters, weapons=gacha_calendar.weapons
+                events=events, characters=gacha_calendar.characters, weapons=weapon_banners
             )
         else:
             calendar = None

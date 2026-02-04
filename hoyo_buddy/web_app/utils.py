@@ -149,15 +149,15 @@ async def fetch_gacha_names(
     if non_cached_item_ids:
         # Update the cache with the new item names
         if game is Game.ZZZ:
-            map_: dict[str, str] = await fetch_json_file(
+            zzz_map: dict[str, str] = await fetch_json_file(
                 f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
             )
-            item_names = {int(k): v for k, v in map_.items()}
+            item_names = {int(k): v for k, v in zzz_map.items()}
         elif game is Game.STARRAIL:
-            map_: dict[str, str] = await fetch_json_file(
+            hsr_map: dict[str, str] = await fetch_json_file(
                 f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
             )
-            item_names = {int(k): v for k, v in map_.items()}
+            item_names = {int(k): v for k, v in hsr_map.items()}
         elif game is Game.GENSHIN:
             async with AmbrAPIClient(locale) as client:
                 item_names = await client.fetch_item_id_to_name_map()

@@ -420,9 +420,9 @@ class ProfileView(View, PlayerEmbedMixin):
         )
 
         if card_settings.custom_primary_color is None:
-            primary: str = character_data.primary
+            primary = character_data.primary
             if card_settings.dark_mode:
-                primary: str = character_data.primary_dark or primary
+                primary = character_data.primary_dark or primary
         else:
             primary = card_settings.custom_primary_color
 

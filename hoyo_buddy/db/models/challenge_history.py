@@ -69,7 +69,7 @@ class ChallengeHistory(BaseModel):
         lang = getattr(challenge, "lang", None)
         if lang is None:
             # NOTE: Backward compatibility, old data has lang attr, new data doesn't
-            challenge.__dict__["lang"] = self.lang
+            challenge.__dict__["lang"] = self.lang  # pyright: ignore[reportIndexIssue]
         return cast("ChallengeWithLang", challenge)
 
     @classmethod

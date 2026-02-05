@@ -97,6 +97,8 @@ class BlockListCard:
         if isinstance(block, SingleBlock):
             icon = drawer.open_static(block.icon)
             icon = drawer.resize_crop(icon, (block.icon_size, block.icon_size))
+            if icon.size != mask.size:
+                icon = drawer.resize_crop(icon, mask.size)
             icon = drawer.mask_image_with_image(icon, mask)
             im.alpha_composite(icon, (102 - block.icon_size // 2, 102 - block.icon_size // 2))
         else:

@@ -646,6 +646,7 @@ characters_embed_max_level_characters: 滿級角色
 natlan_reputation: "聲望等級: {reputation}, 部落: {tribes}"
 shiyu_overview: 總覽
 shiyu_total_clear_time: "總通關時間:"
+shiyu_clear_time: 通關時間
 shiyu_highest_frontier: "最高通關防線:"
 shiyu_relevant_season: "統計周期:"
 shiyu_1_frontier: 第一防線
@@ -741,7 +742,7 @@ mimo_info_embed_desc: "這是一個由 Hoyoverse 推出的永久性活動，你�
 mimo_auto_finish_and_claim_button_label: 自動完成任務並領取積分
 mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自動完成部份任務並領取所有已完成任務的積分。
 mimo_auto_buy_button_label: 自動購買獎勵
-mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買星穹/菲林，它不會把積分存起來！"
+mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買原石/星穹/菲林，它不會把積分存起來！"
 mimo_cmd_desc: 管理旅行 Mimo 活動
 mimo_view_shop_button_label: 商店
 mimo_buy_item_select_placeholder: 選擇一個要購買的商品…
@@ -854,3 +855,5 @@ fake_settings_button_title: 設定搬家啦！
 captcha_not_showing_up: "CAPTCHA沒有顯示？"
 open_captcha_button_label: 點擊開始驗證
 captcha_verifying: 驗證中...
+build_cmd_zzz_desc: 查看一個絕區零代理人的指南及養成建議
+elation: 歡愉

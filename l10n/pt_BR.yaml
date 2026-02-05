@@ -644,6 +644,7 @@ characters_embed_max_level_characters: Personagens de Nível Máximo
 natlan_reputation: "Nível de Reputação: {reputation}, Tribos: {tribes}"
 shiyu_overview: Visão Geral
 shiyu_total_clear_time: "Tempo total de conclusão:"
+shiyu_clear_time: Tempo de limpeza
 shiyu_highest_frontier: "Fronteira Mais Alta Concluída:"
 shiyu_relevant_season: "Temporada Relevante:"
 shiyu_1_frontier: Primeira Fronteira
@@ -739,7 +740,7 @@ mimo_info_embed_desc: "Este é um evento permanente da Hoyoverse, onde você pod
 mimo_auto_finish_and_claim_button_label: Concluir tarefas e resgatar pontos automaticamente
 mimo_auto_finish_and_claim_desc: O Hoyo Buddy pode concluir certas tarefas e resgatar pontos de todas as tarefas concluídas automaticamente.
 mimo_auto_buy_button_label: Comprar recompensas automaticamente
-mimo_auto_buy_desc: "O Hoyo Buddy comprará jades estelares/policromos sempre que possível, ele não tentará economizar pontos!"
+mimo_auto_buy_desc: "O Hoyo Buddy comprará primocrystais/jades estelares/policromos sempre que possível, ele não tentará economizar pontos!"
 mimo_cmd_desc: Gerenciamento do evento Mimo Viajante
 mimo_view_shop_button_label: Loja
 mimo_buy_item_select_placeholder: Selecione um item para comprar...
@@ -822,15 +823,15 @@ challenge_command_anomaly_desc: Gerar cartão de Arbitragem de Anomalias
 anomaly_arbitration: Arbitragem de Anomalias
 account_settings_title: "Configurações da Conta"
 account_settings_desc: "As configurações aqui são únicas para cada conta do jogo."
-public_account_desc: "Definir conta como pública\nSe habilitado, outras pessoas podem ver os dados da sua conta em alguns comandos, como </profile>."
-daily_checkin_desc: "Check-in diário automático\nReivindica recompensas automaticamente no evento de check-in na web."
-redeem_code_desc: "Resgate automático de código\nResgata automaticamente códigos de livestream e outros códigos de presente. O botão fica desabilitado se você não estiver logado com e-mail e senha, veja a [FAQ](:docs/FAQ:) para saber o porquê."
+public_account_desc: "Definir conta como pública\\nSe habilitado, outras pessoas podem ver os dados da sua conta em alguns comandos, como </profile>."
+daily_checkin_desc: "Check-in diário automático\\nReivindica recompensas automaticamente no evento de check-in na web."
+redeem_code_desc: "Resgate automático de código\\nResgata automaticamente códigos de livestream e outros códigos de presente. O botão fica desabilitado se você não estiver logado com e-mail e senha, veja a [FAQ](:docs/FAQ:) para saber o porquê."
 user_settings_title: "Configurações do Usuário"
 user_settings_desc: "As configurações aqui estão vinculadas à sua conta do Discord, elas se aplicam a todas as contas do jogo."
-dark_theme_desc: "Tema escuro\nFaz com que os infográficos usem um esquema de cores escuro, nem todos os infográficos suportam este recurso."
-language_desc: "Idioma\nO Hoyo Buddy responderá a você neste idioma. Alguns textos ainda podem estar em inglês, veja a [FAQ](:docs/FAQ:) para saber o porquê."
+dark_theme_desc: "Tema escuro\\nFaz com que os infográficos usem um esquema de cores escuro, nem todos os infográficos suportam este recurso."
+language_desc: "Idioma\\nO Hoyo Buddy responderá a você neste idioma. Alguns textos ainda podem estar em inglês, veja a [FAQ](:docs/FAQ:) para saber o porquê."
 language_select_placeholder: Selecione um idioma
-settings_dyk_desc: "Mensagens \"Você sabia?\"\nMostre dicas úteis aleatórias quando você usar comandos do bot."
+settings_dyk_desc: "Mensagens \"Você sabia?\"\\nMostre dicas úteis aleatórias quando você usar comandos do bot."
 layout_view_edited: "Os componentes interativos foram desabilitados para economizar recursos do sistema, execute o comando novamente se quiser usá-los."
 mimo_title: Configurações do Traveling Mimo
 mimo_minimum_point_label: Pontos mínimos para manter
@@ -852,3 +853,5 @@ fake_settings_button_title: As configurações foram movidas!
 captcha_not_showing_up: "CAPTCHA não está aparecendo?"
 open_captcha_button_label: Clique para iniciar a verificação
 captcha_verifying: Verificando...
+build_cmd_zzz_desc: Veja builds e guias de um agente de Zenless Zone Zero
+elation: A Euforia

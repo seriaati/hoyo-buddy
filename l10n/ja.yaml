@@ -644,6 +644,7 @@ characters_embed_max_level_characters: 最大レベルキャラクター
 natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
 shiyu_total_clear_time: "合計クリア時間："
+shiyu_clear_time: クリアタイム
 shiyu_highest_frontier: "クリアした最高フロンティア："
 shiyu_relevant_season: "関連シーズン："
 shiyu_1_frontier: 第一フロンティア
@@ -739,7 +740,7 @@ mimo_info_embed_desc: "これはHoYoverseによる常設イベントで、タス
 mimo_auto_finish_and_claim_button_label: 自動でタスクを完了してポイントを受け取る
 mimo_auto_finish_and_claim_desc: Hoyo Buddyは特定のタスクを完了し、完了したすべてのタスクのポイントを自動的に受け取ることができます。
 mimo_auto_buy_button_label: 自動で報酬を購入する
-mimo_auto_buy_desc: "Hoyo Buddyは可能な限り星玉/ポリクロームを購入します。ポイントを節約しようとはしません！"
+mimo_auto_buy_desc: "Hoyo Buddyは可能な限り原石/星玉/フィルムを購入します。ポイントを節約しようとはしません！"
 mimo_cmd_desc: 旅するMimoイベント管理
 mimo_view_shop_button_label: ショップ
 mimo_buy_item_select_placeholder: 購入するアイテムを選択...
@@ -822,15 +823,15 @@ challenge_command_anomaly_desc: 異相仲裁カードを生成
 anomaly_arbitration: 異相仲裁
 account_settings_title: "アカウント設定"
 account_settings_desc: "ここの設定は各ゲームアカウントに固有です。"
-public_account_desc: "アカウントを公開に設定\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
-daily_checkin_desc: "自動デイリーチェックイン\nウェブチェックインイベントで自動的に報酬を受け取ります。"
-redeem_code_desc: "自動コード引き換え\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
+public_account_desc: "アカウントを公開に設定\\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
+daily_checkin_desc: "自動デイリーチェックイン\\nウェブチェックインイベントで自動的に報酬を受け取ります。"
+redeem_code_desc: "自動コード引き換え\\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
 user_settings_title: "ユーザー設定"
 user_settings_desc: "ここの設定はDiscordアカウントにリンクされており、すべてのゲームアカウントに適用されます。"
-dark_theme_desc: "ダークテーマ\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
-language_desc: "言語\nHoyo Buddyはこの言語で応答します。一部のテキストは英語のままである場合があります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
+dark_theme_desc: "ダークテーマ\\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
+language_desc: "言語\\nHoyo Buddyはこの言語で応答します。一部のテキストは英語のままである場合があります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
 language_select_placeholder: 言語を選択
-settings_dyk_desc: "「知っていましたか?」メッセージ\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
+settings_dyk_desc: "「知っていましたか?」メッセージ\\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
 layout_view_edited: "システムリソースを節約するためにインタラクティブコンポーネントが無効になりました。使用したい場合はコマンドを再実行してください。"
 mimo_title: トラベリングミモ設定
 mimo_minimum_point_label: 保持する最小ポイント
@@ -852,3 +853,5 @@ fake_settings_button_title: 設定が移動しました！
 captcha_not_showing_up: "CAPTCHAが表示されませんか？"
 open_captcha_button_label: クリックして認証を開始
 captcha_verifying: 認証中...
+build_cmd_zzz_desc: ゼンレスゾーンゼロエージェントのビルドとガイドを表示します
+elation: 愉悦

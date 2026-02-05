@@ -58,10 +58,20 @@ class EventsCommand:
 
                 for weapon in banner.weapons:
                     name = EventsCommand.get_weapon_name(i, weapon.id, locale) or "???"
-                    banner_weapons.append(ZZZGachaEventWeapon(**weapon.model_dump(), name=name))
+                    banner_weapons.append(
+                        ZZZGachaEventWeapon.model_construct(
+                            _fields_set=weapon.__pydantic_fields_set__,
+                            **weapon.model_dump(),
+                            name=name,
+                        )
+                    )
 
                 weapon_banners.append(
-                    ZZZWeaponGachaEvent(**banner.model_dump(), weapons=banner_weapons)
+                    ZZZWeaponGachaEvent.model_construct(
+                        _fields_set=banner.__pydantic_fields_set__,
+                        **banner.model_dump(exclude={"weapons"}),
+                        weapons=banner_weapons,
+                    )
                 )
 
             calendar = ZZZEventCalendar(

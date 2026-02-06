@@ -357,7 +357,11 @@ class ChallengeView(View):
             )
 
         if self.challenge_type is ChallengeType.SHIYU_DEFENSE:
-            raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
+            try:
+                raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
+            except ValueError:
+                return None
+
             is_v2 = "pass_fifth_floor" in raw
             challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
             if not is_v2:

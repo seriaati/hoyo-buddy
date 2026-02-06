@@ -21,7 +21,7 @@ uv sync --frozen --no-dev  # Install production dependencies only
 ruff check                               # Lint code
 ruff check --fix --unsafe-fixes          # Auto-fix linting issues
 ruff format                              # Format code
-pyright hoyo_buddy/                      # Type checking, missing import errors can be ignored
+basedpyright hoyo_buddy/                      # Type checking, missing import errors can be ignored
 ```
 
 ### Database Operations
@@ -132,7 +132,7 @@ Don't add unnecessary comments.
 
 - Limited test coverage focusing on critical components
 - Quality gates enforced via GitHub Actions
-- Ruff and pyright checks required for CI
+- Ruff and basedpyright checks required for CI
 
 ### Production Deployment
 

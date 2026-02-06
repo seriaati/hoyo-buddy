@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import sys
 from typing import Any
 
@@ -13,10 +12,9 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.logging import InterceptHandler
-from hoyo_buddy.utils.misc import get_project_version, should_ignore_error
+from hoyo_buddy.utils import get_project_version, should_ignore_error
 
-__all__ = ("setup_async_event_loop", "setup_logging", "setup_sentry", "wrap_task_factory")
+__all__ = ("setup_async_event_loop", "setup_sentry", "wrap_task_factory")
 
 _tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
 
@@ -55,31 +53,6 @@ def wrap_task_factory() -> None:
         return t
 
     loop.set_task_factory(new_factory)
-
-
-def setup_logging(log_dir: str) -> None:
-    logger.remove()
-    logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
-
-    loggers = ("uvicorn", "uvicorn.access", "uvicorn.error", "fastapi", "asyncio", "starlette")
-
-    for logger_name in loggers:
-        logging_logger = logging.getLogger(logger_name)
-        logging_logger.handlers = []
-        logging_logger.propagate = True
-
-    if CONFIG.is_dev:
-        logging.getLogger("tortoise").setLevel(logging.DEBUG)
-    else:
-        logger.disable("hoyo_buddy.db.models.base")
-        logger.disable("aiohttp.web_log")
-
-    logging.getLogger("discord.app_commands.tree").addFilter(
-        lambda record: "Ignoring exception in autocomplete for" not in record.getMessage()
-    )
-    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-
-    logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")
 
 
 def setup_sentry(sentry_dsn: str | None) -> None:

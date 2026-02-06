@@ -10,8 +10,7 @@ from discord.app_commands import Choice
 
 from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
 from hoyo_buddy.enums import Game
-from hoyo_buddy.utils import sleep
-from hoyo_buddy.utils.misc import get_game_latest_stable_version
+from hoyo_buddy.utils import get_game_latest_stable_version, sleep
 
 from .clients import ambr, yatta
 from .clients.hakushin import ItemCategory as HakushinItemCategory

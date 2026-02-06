@@ -17,8 +17,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import contains_masked_link
-from hoyo_buddy.utils.misc import get_template_num
+from hoyo_buddy.utils import contains_masked_link, get_template_num
 
 from . import models
 

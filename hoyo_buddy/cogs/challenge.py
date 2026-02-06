@@ -13,8 +13,7 @@ from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import ChallengeType
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
 from hoyo_buddy.types import User  # noqa: TC001
-from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.misc import handle_autocomplete_errors
+from hoyo_buddy.utils import ephemeral, handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy

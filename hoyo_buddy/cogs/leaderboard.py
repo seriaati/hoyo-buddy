@@ -25,8 +25,7 @@ from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.ui.hoyo.leaderboard.akasha import AkashaLbPaginator
-from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.misc import handle_autocomplete_errors
+from hoyo_buddy.utils import ephemeral, handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy

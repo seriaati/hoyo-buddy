@@ -13,7 +13,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_HSR_ENKA_LANG,
     LOCALE_TO_ZZZ_ENKA_LANG,
 )
-from hoyo_buddy.utils.misc import capture_exception
+from hoyo_buddy.utils import capture_exception
 
 from ..ui.hoyo.profile.view import ProfileView
 

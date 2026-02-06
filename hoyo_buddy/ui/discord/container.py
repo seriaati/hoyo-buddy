@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from hoyo_buddy.utils.misc import is_valid_hex_color
+from hoyo_buddy.utils import is_valid_hex_color
 
 from .action_row import ActionRow
 from .section import Section

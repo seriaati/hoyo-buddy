@@ -7,7 +7,7 @@ from hoyo_buddy.db.models import User
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils.misc import is_hb_birthday
+from hoyo_buddy.utils import is_hb_birthday
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale

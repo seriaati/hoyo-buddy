@@ -47,8 +47,7 @@ from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
-from hoyo_buddy.utils import format_float, human_format_number
-from hoyo_buddy.utils.misc import get_template_num
+from hoyo_buddy.utils import format_float, get_template_num, human_format_number
 
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect

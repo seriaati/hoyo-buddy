@@ -10,7 +10,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings, get_locale
 from hoyo_buddy.exceptions import AccountNotFoundError
-from hoyo_buddy.utils.misc import handle_autocomplete_errors
+from hoyo_buddy.utils import handle_autocomplete_errors
 
 from ..commands.farm import Action, FarmCommand
 from ..enums import Game, Locale

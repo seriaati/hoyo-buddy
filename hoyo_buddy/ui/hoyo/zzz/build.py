@@ -9,7 +9,7 @@ import szgf
 from hoyo_buddy import emojis, ui
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.draw.card_data import CARD_DATA
-from hoyo_buddy.utils.misc import create_bullet_list
+from hoyo_buddy.utils import create_bullet_list
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

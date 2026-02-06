@@ -14,8 +14,7 @@ from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 from hoyo_buddy.ui.settings.button import FakeSettingsButton
-from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.misc import handle_autocomplete_errors
+from hoyo_buddy.utils import ephemeral, handle_autocomplete_errors
 
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand

@@ -7,7 +7,7 @@ from PIL import ImageDraw
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils.misc import format_time
+from hoyo_buddy.utils import format_time
 
 if TYPE_CHECKING:
     from io import BytesIO

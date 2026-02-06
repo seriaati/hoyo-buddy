@@ -23,11 +23,11 @@ from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
-from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.gacha import (
+from hoyo_buddy.utils import (
     check_gi_item_is_standard,
     check_hsr_item_is_standard,
     check_zzz_item_is_standard,
+    ephemeral,
     fetch_gi_banners,
     fetch_hsr_banners,
 )

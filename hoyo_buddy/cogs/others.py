@@ -18,7 +18,7 @@ from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.exceptions import NotAnImageError
 from hoyo_buddy.ui.paginator import Page, PaginatorView
-from hoyo_buddy.utils.misc import get_changelog_url, parse_changelog, shorten_preserving_newlines
+from hoyo_buddy.utils import get_changelog_url, parse_changelog, shorten_preserving_newlines
 
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON

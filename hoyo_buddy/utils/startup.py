@@ -12,7 +12,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.utils import get_project_version, should_ignore_error
+from hoyo_buddy.utils.misc import get_project_version, should_ignore_error
 
 __all__ = ("setup_async_event_loop", "setup_sentry", "wrap_task_factory")
 

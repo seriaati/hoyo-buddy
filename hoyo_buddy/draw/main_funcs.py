@@ -25,7 +25,7 @@ from hoyo_buddy.models import (
     ZZZDrawData,
     ZZZEnkaCharacter,
 )
-from hoyo_buddy.utils import get_game_latest_stable_version
+from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 

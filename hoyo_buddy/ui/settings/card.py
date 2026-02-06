@@ -21,7 +21,7 @@ from hoyo_buddy.ui.hoyo.profile.templates import (
     TEMPLATE_PREVIEWS,
     TEMPLATES,
 )
-from hoyo_buddy.utils import get_template_name, get_template_num, is_valid_hex_color
+from hoyo_buddy.utils.misc import get_template_name, get_template_num, is_valid_hex_color
 from hoyo_buddy.web_app.utils import get_gacha_icon
 
 if TYPE_CHECKING:

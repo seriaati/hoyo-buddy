@@ -17,7 +17,8 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.types import Interaction, User
-from hoyo_buddy.utils import ephemeral, handle_autocomplete_errors
+from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy

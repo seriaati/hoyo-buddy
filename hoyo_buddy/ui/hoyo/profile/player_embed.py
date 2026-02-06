@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
-from hoyo_buddy.utils import blur_uid
+from hoyo_buddy.utils.misc import blur_uid
 
 if TYPE_CHECKING:
     import enka

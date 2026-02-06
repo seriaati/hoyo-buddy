@@ -17,7 +17,7 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_hsr_element_emoji, get_hsr_path_emoji
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr, translator
-from hoyo_buddy.utils import shorten_preserving_newlines
+from hoyo_buddy.utils.misc import shorten_preserving_newlines
 
 __all__ = ("ItemCategory", "YattaAPIClient")
 

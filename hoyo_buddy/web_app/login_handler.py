@@ -11,7 +11,7 @@ from loguru import logger
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
-from hoyo_buddy.utils import get_project_version
+from hoyo_buddy.utils.misc import get_project_version
 
 from ..constants import GEETEST_SERVERS
 from ..l10n import LocaleStr, translator

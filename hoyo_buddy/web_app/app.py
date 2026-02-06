@@ -20,7 +20,8 @@ from hoyo_buddy.db import GachaHistory
 from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.utils import dict_cookie_to_str, get_project_version
+from hoyo_buddy.utils import dict_cookie_to_str
+from hoyo_buddy.utils.misc import get_project_version
 
 from . import pages
 from .login_handler import handle_action_ticket, handle_mobile_otp, handle_session_mmt

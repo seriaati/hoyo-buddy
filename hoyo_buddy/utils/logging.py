@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import inspect
 import logging
+import random
 import sys
+from typing import TYPE_CHECKING
 
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
+
+if TYPE_CHECKING:
+    from typing import Any
 
 __all__ = ("setup_logging",)
 
@@ -27,6 +32,37 @@ class InterceptHandler(logging.Handler):
             depth += 1
 
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+
+
+def _production_log_filter(record: dict[str, Any]) -> bool:
+    """Filter out high-volume, low-value logs in production.
+
+    Removes:
+    - Cache hit/miss DEBUG logs (already tracked in Redis metrics)
+    - Routine SELECT query logs (keep INSERT/UPDATE/DELETE for auditing)
+    - Routine API request logs (duplicated in external libraries)
+    - 90% of supporter ID logs (sample to reduce volume)
+    """
+    message = record["message"]
+
+    if record["level"].name == "DEBUG":
+        # Filter cache operations
+        if "Cache hit" in message or "Cache miss" in message:
+            return False
+
+        # Filter SELECT queries (keep INSERT/UPDATE/DELETE)
+        if "execute_query" in message and "SELECT" in message:
+            return False
+
+        # Filter routine API request logs
+        if "Fetching text from" in message or "_request_hook" in message:
+            return False
+
+        # Sample supporter ID logs (10% only)
+        if "Supporter IDs:" in message:
+            return random.random() < 0.1
+
+    return True
 
 
 def setup_logging(log_dir: str) -> None:
@@ -51,4 +87,21 @@ def setup_logging(log_dir: str) -> None:
     )
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
 
-    logger.add(log_dir, rotation="2 hours", retention="1 week", level="DEBUG")
+    add_kwargs: dict[str, Any] = {
+        "rotation": CONFIG.log_rotation_size,
+        "retention": CONFIG.log_retention_count,
+        "compression": CONFIG.log_compression,
+        "level": CONFIG.log_level,
+        "serialize": CONFIG.log_structured,
+        "enqueue": True,
+        "diagnose": CONFIG.is_dev,
+        "backtrace": CONFIG.is_dev,
+    }
+
+    if CONFIG.log_structured:
+        add_kwargs["format"] = CONFIG.log_format
+
+    if not CONFIG.is_dev:
+        add_kwargs["filter"] = _production_log_filter
+
+    logger.add(log_dir, **add_kwargs)

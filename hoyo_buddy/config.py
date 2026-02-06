@@ -53,6 +53,16 @@ class Config(BaseSettings):
     prometheus: bool = False
     novelai: bool = False
 
+    # Logging configuration
+    log_rotation_size: str = "20 MB"
+    log_retention_count: int = 10
+    log_compression: str = "gz"
+    log_level: str = "DEBUG"
+    log_structured: bool = False
+    log_format: str = (
+        "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

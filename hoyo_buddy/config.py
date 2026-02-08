@@ -58,10 +58,6 @@ class Config(BaseSettings):
     log_retention_count: int = 10
     log_compression: str = "gz"
     log_level: str = "DEBUG"
-    log_structured: bool = False
-    log_format: str = (
-        "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
-    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

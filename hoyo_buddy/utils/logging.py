@@ -92,14 +92,10 @@ def setup_logging(log_dir: str) -> None:
         "retention": CONFIG.log_retention_count,
         "compression": CONFIG.log_compression,
         "level": CONFIG.log_level,
-        "serialize": CONFIG.log_structured,
         "enqueue": True,
         "diagnose": CONFIG.is_dev,
         "backtrace": CONFIG.is_dev,
     }
-
-    if CONFIG.log_structured:
-        add_kwargs["format"] = CONFIG.log_format
 
     if not CONFIG.is_dev:
         add_kwargs["filter"] = _production_log_filter

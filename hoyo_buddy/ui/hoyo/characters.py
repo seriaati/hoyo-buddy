@@ -468,7 +468,7 @@ class CharactersView(PaginatorView):
 
         if self.path_filters and self.filter is GIFilter.NONE:
             total_chars = sum(
-                self.path_char_counts[path.name.lower()] for path in self.path_filters
+                self.path_char_counts.get(path.name.lower(), 0) for path in self.path_filters
             )
             embed.add_field(
                 name=LocaleStr(

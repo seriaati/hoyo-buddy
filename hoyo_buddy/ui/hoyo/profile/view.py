@@ -316,7 +316,7 @@ class ProfileView(View, PlayerEmbedMixin):
             characters = [
                 i[1]
                 for i in sorted(
-                    self.characters.items(), key=lambda x: (x[0] not in self.character_ids)
+                    self.characters.items(), key=lambda x: x[0] not in self.character_ids
                 )
             ]
             self.add_item(

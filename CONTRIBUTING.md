@@ -85,10 +85,9 @@ You **MUST** write your code with proper type hints, and make sure there are no 
 
 #### Commands
 
-To check for type errors manually, run:
+To check for type errors, run:
 
 ```bash
-uv sync
 basedpyright
 ```
 

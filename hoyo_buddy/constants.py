@@ -339,6 +339,7 @@ YATTA_PATH_TO_GPY_PATH = {
     yatta.PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
     yatta.PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
     yatta.PathType.MEMORY: genshin.models.StarRailPath.REMEMBRANCE,
+    yatta.PathType.ELATION: genshin.models.StarRailPath.ELATION,
 }
 
 GPY_PATH_TO_EKNA_PATH = {
@@ -350,6 +351,7 @@ GPY_PATH_TO_EKNA_PATH = {
     genshin.models.StarRailPath.NIHILITY: enka.hsr.Path.NIHILITY,
     genshin.models.StarRailPath.DESTRUCTION: enka.hsr.Path.DESTRUCTION,
     genshin.models.StarRailPath.REMEMBRANCE: enka.hsr.Path.REMEMBRANCE,
+    genshin.models.StarRailPath.ELATION: enka.hsr.Path.ELATION,
 }
 
 YATTA_COMBAT_TYPE_TO_ELEMENT = {

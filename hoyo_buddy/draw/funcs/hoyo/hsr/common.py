@@ -35,6 +35,8 @@ class BubbleWithTrace:
     trace: enka.hsr.character.Trace | hb_models.Trace
 
 
+# Hakushin is dead and we are so fucked
+
 SHORT_NAME_TO_ANCHOR = {
     "Knight": {
         "A": "Point03",
@@ -198,6 +200,27 @@ SHORT_NAME_TO_ANCHOR = {
         "F1": "Point19",
         "F2": "Point20",
         "F3": "Point21",
+    },
+    "Elation": {
+        "A": "Point01",  # Normal attack
+        "B": "Point02",  # Skill
+        "C": "Point03",  # Ultimate
+        "D": "Point04",  # Talent
+        "E": "Point05",  # Technique
+        "E1": "Point06",
+        "A1": "Point07",
+        "B1": "Point08",
+        "E3": "Point09",
+        "E2": "Point10",
+        "E5": "Point11",
+        "E4": "Point12",
+        "A2": "Point13",
+        "A3": "Point14",
+        "A4": "Point15",
+        "B2": "Point16",
+        "B3": "Point17",
+        "B4": "Point18",
+        "F1": "Point22",
     },
 }
 
@@ -416,6 +439,33 @@ PATH_BUBBLES = {
             SmallBubble("D2"),
         ),
     ),
+    "Elation": (
+        (
+            LevelBubble("A"),
+            BigBubble("A1"),
+            SmallBubble("A2"),
+            SmallBubble("A3"),
+            SmallBubble("A4"),
+        ),
+        (
+            LevelBubble("B"),
+            BigBubble("B1"),
+            SmallBubble("B2"),
+            SmallBubble("B3"),
+            SmallBubble("B4"),
+        ),
+        (
+            LevelBubble("C"),
+            BigBubble("E1"),
+            SmallBubble("E4"),
+            SmallBubble("E5"),
+        ),
+        (
+            LevelBubble("D"),
+            SmallBubble("E2"),
+            SmallBubble("E3"),
+        ),
+    )
 }
 # fmt: on
 
@@ -482,6 +532,7 @@ def get_character_stats(
             enka.hsr.StatType.CRIT_DMG,
             enka.hsr.StatType.EFFECT_RES,
             enka.hsr.StatType.HEALING_BOOST,
+            enka.hsr.StatType.ELATION_DMG_BOOST,
         )
 
         for stat_type in stat_types:
@@ -493,7 +544,7 @@ def get_character_stats(
         max_dmg_add = character.highest_dmg_bonus_stat
         stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
     else:
-        attr_types = (1, 2, 5, 10, 58, 9, 3, 4, 6, 11, 7)
+        attr_types = (1, 2, 5, 10, 58, 9, 3, 4, 6, 11, 7, 71)
         for attr_type in attr_types:
             stat = next((s for s in character.stats if s.type == attr_type), None)
             if stat is None:
@@ -507,6 +558,17 @@ def get_character_stats(
             stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
         else:
             max_dmg_add = None
+
+    # Remove stats with value 0 until we have at most 12 stats
+    while len(stats) > 12:
+        zero_stat_key = next((k for k, v in stats.items() if v in {"0", "0.0%", "0.0"}), None)
+        if zero_stat_key is None:
+            break
+        stats.pop(zero_stat_key, None)
+
+    # If there are still more than 12, keep the first 12
+    if len(stats) > 12:
+        stats = dict(list(stats.items())[:12])
 
     return stats, max_dmg_add
 

@@ -393,6 +393,7 @@ class GenshinClient(ProxyGenshinClient):
                         formatted_value=sub_property.value,
                     )
                     for sub_property in relic.properties
+                    if sub_property.property_type in prop_icons
                 ],
                 type=enka.hsr.RelicType(relic.pos),
             )
@@ -414,6 +415,7 @@ class GenshinClient(ProxyGenshinClient):
                     formatted_value=prop.final,
                 )
                 for prop in c.properties
+                if prop.property_type in prop_icons
             ],
             traces=[
                 models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)

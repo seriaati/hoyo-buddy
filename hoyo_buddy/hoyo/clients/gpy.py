@@ -7,6 +7,7 @@ import enka
 import genshin
 import hakushin
 import orjson
+import redis.asyncio as aioredis
 from loguru import logger
 from tortoise import Tortoise
 
@@ -56,6 +57,15 @@ class MimoClaimTaksResult(NamedTuple):
     all_claimed: bool
 
 
+def _create_gpy_cache() -> genshin.cache.BaseCache:
+    """Create the genshin.py API cache, using Redis if available."""
+    static_ttl = 3600 * 24 * 31  # 31 days
+    if CONFIG.redis_url:
+        redis = aioredis.from_url(CONFIG.redis_url)
+        return genshin.RedisCache(redis, static_ttl=static_ttl)
+    return genshin.SQLiteCache(static_ttl=static_ttl)
+
+
 class ProxyGenshinClient(genshin.Client):
     def __init__(
         self,
@@ -67,7 +77,7 @@ class ProxyGenshinClient(genshin.Client):
         super().__init__(
             *args,
             debug=True,
-            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
+            cache=_create_gpy_cache(),
             region=region,
             proxy=CONFIG.proxy if region is genshin.Region.OVERSEAS and use_proxy else None,
             **kwargs,

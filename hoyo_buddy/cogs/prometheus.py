@@ -148,7 +148,7 @@ class PrometheusCog(commands.Cog):
 
         if i.type is InteractionType.application_command:
             if isinstance(i.command, app_commands.Command):
-                parameters = i.namespace.__dict__
+                parameters = {k: str(v) for k, v in i.namespace.__dict__.items()}
                 command_name = self.bot.get_command_name(i.command)
                 logger.info(f"[Command][{i.user.id}] {command_name}", parameters=parameters)
             elif isinstance(i.command, app_commands.ContextMenu):

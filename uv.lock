@@ -948,6 +948,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "hb-data"
+version = "0.1.0"
+source = { git = "https://github.com/seriaati/hb-data#796d8f3efaa1f0fe65d748a6d501b5ca2286fb32" }
+dependencies = [
+    { name = "aiofiles" },
+    { name = "aiohttp" },
+    { name = "loguru" },
+    { name = "orjson" },
+    { name = "pydantic" },
+]
+
+[[package]]
 name = "hiredis"
 version = "3.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1031,6 +1043,7 @@ dependencies = [
     { name = "fonttools" },
     { name = "genshin", extra = ["auth", "socks-proxy", "sqlite"] },
     { name = "hakushin-py" },
+    { name = "hb-data" },
     { name = "jishaku" },
     { name = "loguru" },
     { name = "novelai" },
@@ -1079,6 +1092,7 @@ requires-dist = [
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite", "socks-proxy"], git = "https://github.com/thesadru/genshin.py?branch=master" },
     { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },
+    { name = "hb-data", git = "https://github.com/seriaati/hb-data" },
     { name = "jishaku", specifier = ">=2.5.2" },
     { name = "loguru", specifier = ">=0.7.2" },
     { name = "novelai", git = "https://github.com/seriaati/NovelAI-API" },

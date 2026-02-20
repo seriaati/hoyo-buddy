@@ -216,7 +216,7 @@ class Drawer:
     def mask_image_with_color(
         cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0
     ) -> Image.Image:
-        if opacity != 1.0:
+        if opacity != 1.0:  # noqa: RUF069
             mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
             return ImageChops.multiply(image, mask)
         colored_image = Image.new("RGBA", image.size, color)

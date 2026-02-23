@@ -77,6 +77,8 @@ CARD_API_ENDPOINTS = {
     "src": "http://localhost:7652/star-rail-card",
 }
 
+TOP_PERCENT_RANK_DECIMALS = 4
+
 
 class ProfileView(View, PlayerEmbedMixin):
     def __init__(
@@ -223,7 +225,8 @@ class ProfileView(View, PlayerEmbedMixin):
 
         character_calc = user_calc.calculations[0]
         top_percent = LocaleStr(
-            key="top_percent", percent=format_float(character_calc.top_percent, decimals=4)
+            key="top_percent",
+            percent=format_float(character_calc.top_percent, decimals=TOP_PERCENT_RANK_DECIMALS),
         ).translate(self.locale)
         ranking = (
             f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"

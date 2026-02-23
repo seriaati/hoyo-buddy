@@ -223,7 +223,7 @@ class ProfileView(View, PlayerEmbedMixin):
 
         character_calc = user_calc.calculations[0]
         top_percent = LocaleStr(
-            key="top_percent", percent=format_float(character_calc.top_percent)
+            key="top_percent", percent=format_float(character_calc.top_percent, decimals=4)
         ).translate(self.locale)
         ranking = (
             f"{top_percent} ({character_calc.ranking}/{human_format_number(character_calc.out_of)})"

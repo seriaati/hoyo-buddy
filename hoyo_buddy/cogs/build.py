@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import hb_data
 import szgf
 from discord import app_commands
 from discord.ext import commands
@@ -9,6 +10,7 @@ from loguru import logger
 
 from hoyo_buddy.commands.build import BuildCommand
 from hoyo_buddy.commands.configs import COMMANDS
+from hoyo_buddy.constants import locale_to_zenless_data_lang
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import Game, Locale
@@ -96,10 +98,15 @@ class Build(commands.GroupCog):
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
 
+        async with hb_data.ZZZClient() as client:
+            characters = client.get_characters(
+                lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
+            )
+
         return [
-            c
-            for c in self._get_choices(locale, Game.ZZZ)
-            if current.lower() in c.name.lower() and c.value in self.guides
+            app_commands.Choice(name=c.name, value=str(c.id))
+            for c in characters
+            if current.lower() in c.name.lower() and str(c.id) in self.guides
         ][:25]
 
     @commands.is_owner()

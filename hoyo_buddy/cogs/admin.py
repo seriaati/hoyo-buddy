@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
 import genshin
+import hb_data
 import szgf
 from discord.ext import commands
 from tortoise import Tortoise
@@ -246,11 +247,15 @@ class Admin(commands.Cog):
         async with AmbrAPIClient() as client:
             gi_rarity_map = await client.fetch_rarity_map()
 
+        async with hb_data.ZZZClient() as client:
+            zzz_rarity_map = client.get_rarity_map()
+
         await message.edit(content="Updating gacha rarities...")
 
         for game, rarity_map in (
             (genshin.Game.GENSHIN, gi_rarity_map),
             (genshin.Game.STARRAIL, hsr_rarity_map),
+            (genshin.Game.ZZZ, zzz_rarity_map),
         ):
             for item_id, rarity in rarity_map.items():
                 await GachaHistory.filter(game=game, item_id=item_id).update(rarity=rarity)

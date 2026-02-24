@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 
 import enka
 import genshin
-import hakushin
+import hb_data
 from discord import ButtonStyle
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
@@ -910,28 +910,20 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 c.id for c in self.view.zzz_characters if isinstance(c, ZZZCharacter)
             }
 
-            async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as client:
-                zzz_charas = await client.fetch_characters()
-                new = await client.fetch_new()
+            async with hb_data.ZZZClient() as client:
+                zzz_charas = client.get_characters()
 
                 for chara in zzz_charas:
-                    if (
-                        chara.id in current_chara_ids
-                        or chara.rarity is None
-                        or chara.element is None
-                        or chara.id in new.character_ids
-                    ):
+                    if chara.id in current_chara_ids:
                         continue
-
-                    chara_detail = await client.fetch_character_detail(chara.id)
 
                     self.view.zzz_characters.append(
                         UnownedZZZCharacter(
                             id=chara.id,
-                            rarity=chara.rarity,
+                            rarity=chara.rarity_str,
                             element=genshin.models.ZZZElementType(chara.element.value),
                             specialty=genshin.models.ZZZSpecialty(chara.specialty.value),
-                            faction_name=chara_detail.faction.name,
+                            faction_name=chara.faction_name,
                             banner_icon=f"https://act-webstatic.hoyoverse.com/game_record/zzz/role_vertical_painting/role_vertical_painting_{chara.id}.png",
                         )
                     )

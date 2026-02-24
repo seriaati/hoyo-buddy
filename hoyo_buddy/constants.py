@@ -9,7 +9,6 @@ import akasha
 import ambr
 import enka
 import genshin
-import hakushin
 import yatta
 from discord import app_commands
 from loguru import logger
@@ -262,14 +261,6 @@ LOCALE_TO_YATTA_LANG: dict[Locale, yatta.Language] = {
     Locale.vietnamese: yatta.Language.VI,
 }
 
-LOCALE_TO_HAKUSHIN_LANG: dict[Locale, hakushin.Language] = {
-    Locale.chinese: hakushin.Language.ZH,
-    Locale.taiwan_chinese: hakushin.Language.ZH,
-    Locale.japanese: hakushin.Language.JA,
-    Locale.korean: hakushin.Language.KO,
-    Locale.american_english: hakushin.Language.EN,
-}
-
 
 LOCALE_TO_GI_ENKA_LANG: dict[Locale, enka.gi.Language] = {
     Locale.taiwan_chinese: enka.gi.Language.TRADITIONAL_CHINESE,
@@ -364,25 +355,6 @@ YATTA_COMBAT_TYPE_TO_ELEMENT = {
     yatta.CombatType.THUNDER: HSRElement.THUNDER,
 }
 
-HAKUSHIN_GI_ELEMENT_TO_ELEMENT = {
-    hakushin.enums.GIElement.ANEMO: GenshinElement.ANEMO,
-    hakushin.enums.GIElement.GEO: GenshinElement.GEO,
-    hakushin.enums.GIElement.ELECTRO: GenshinElement.ELECTRO,
-    hakushin.enums.GIElement.DENDRO: GenshinElement.DENDRO,
-    hakushin.enums.GIElement.PYRO: GenshinElement.PYRO,
-    hakushin.enums.GIElement.CRYO: GenshinElement.CRYO,
-    hakushin.enums.GIElement.HYDRO: GenshinElement.HYDRO,
-}
-
-HAKUSHIN_HSR_ELEMENT_TO_ELEMENT = {
-    hakushin.enums.HSRElement.WIND: HSRElement.WIND,
-    hakushin.enums.HSRElement.FIRE: HSRElement.FIRE,
-    hakushin.enums.HSRElement.ICE: HSRElement.ICE,
-    hakushin.enums.HSRElement.THUNDER: HSRElement.THUNDER,
-    hakushin.enums.HSRElement.PHYSICAL: HSRElement.PHYSICAL,
-    hakushin.enums.HSRElement.QUANTUM: HSRElement.QUANTUM,
-    hakushin.enums.HSRElement.IMAGINARY: HSRElement.IMAGINARY,
-}
 
 ENKA_GI_ELEMENT_TO_ELEMENT = {
     enka.gi.Element.ANEMO: GenshinElement.ANEMO,
@@ -508,14 +480,6 @@ WEB_APP_URLS = {
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))
 
-HAKUSHIN_HSR_SKILL_TYPE_NAMES = {
-    "Normal": "hsr.normal_attack",
-    "BPSkill": "hsr.skill",
-    "Ultra": "hsr.ultimate",
-    "Maze": "hsr.technique",
-    "MazeNormal": "hsr.technique",
-    "Talent": "hsr.talent",
-}
 GI_SKILL_TYPE_KEYS = {
     1: "gi.skill",
     2: "gi.burst",
@@ -809,10 +773,6 @@ def is_standard_item(game: Game, item_id: int) -> bool:
         msg = f"Game {game} is missing from the standard items list."
         raise ValueError(msg)
     return item_id in STANDARD_ITEMS[game]
-
-
-def locale_to_hakushin_lang(locale: Locale) -> hakushin.Language:
-    return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)
 
 
 # From https://www.prydwen.gg/zenless/guides/disk-drives-stats/
@@ -1396,3 +1356,21 @@ GPY_TYPE_TO_YATTA_PROP_TYPE = {v: k for k, v in YATTA_PROP_TYPE_TO_GPY_TYPE.item
 EMPTY_CHAR = "‎ "
 MW_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType}
 MW_EVENT_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType if "EVENT" in e.name}
+
+NOT_ASCENDED_LEVEL_TO_ASCENSION: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {80: 5, 70: 4, 60: 3, 50: 2, 40: 1, 20: 0},
+    Game.STARRAIL: {70: 5, 60: 4, 50: 3, 40: 2, 30: 1, 20: 0},
+}
+"""Map non-ascended levels to ascension numbers for each game."""
+
+ASCENDED_LEVEL_TO_ASCENSION: Final[dict[Game, dict[tuple[int, int], int]]] = {
+    Game.GENSHIN: {(80, 90): 6, (70, 80): 5, (60, 70): 4, (50, 60): 3, (40, 50): 2, (20, 40): 1},
+    Game.STARRAIL: {(70, 80): 6, (60, 70): 5, (50, 60): 4, (40, 50): 3, (30, 40): 2, (20, 30): 1},
+}
+"""Map ascended level ranges to ascension numbers for each game."""
+
+ASCENSION_TO_MAX_LEVEL: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {0: 20, 1: 40, 2: 50, 3: 60, 4: 70, 5: 80, 6: 90},
+    Game.STARRAIL: {0: 20, 1: 30, 2: 40, 3: 50, 4: 60, 5: 70, 6: 80},
+}
+"""Map ascension numbers to maximum levels for each game."""

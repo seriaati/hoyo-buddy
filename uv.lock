@@ -939,18 +939,22 @@ wheels = [
 [[package]]
 name = "hakushin-py"
 version = "0.5.2"
-source = { git = "https://github.com/seriaati/hakushin-py#047c3914d566eaf3955d006ea355aa69b97bdd19" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "loguru" },
     { name = "pydantic" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/c5/53/31099e389a5e48cc7e1b648443d85291ac02bae505d3bff2ae187d3abfd9/hakushin_py-0.5.2.tar.gz", hash = "sha256:d006c1f5340087c43133731f89143d219f5f2a685446eb478ddc0ec39d306d27", size = 59745, upload-time = "2026-01-05T04:27:03.517Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/f3/ee7609a75f1ef9b2ec7a9b8caa5ff6f6465d3a2c2d4c54aea6c8b5137fcb/hakushin_py-0.5.2-py3-none-any.whl", hash = "sha256:5dc98306a222ea160ac72d1479f76aba659e53d41656e00b0c828c9336314f05", size = 65907, upload-time = "2026-01-05T04:27:04.258Z" },
+]
 
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#796d8f3efaa1f0fe65d748a6d501b5ca2286fb32" }
+source = { git = "https://github.com/seriaati/hb-data#20092bb4032f6e9b9b83abc04986b4617a5f852f" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -1042,7 +1046,6 @@ dependencies = [
     { name = "flet", extra = ["web"] },
     { name = "fonttools" },
     { name = "genshin", extra = ["auth", "socks-proxy", "sqlite"] },
-    { name = "hakushin-py" },
     { name = "hb-data" },
     { name = "jishaku" },
     { name = "loguru" },
@@ -1091,7 +1094,6 @@ requires-dist = [
     { name = "flet", extras = ["web"], specifier = "==0.28.3" },
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite", "socks-proxy"], git = "https://github.com/thesadru/genshin.py?branch=master" },
-    { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },
     { name = "hb-data", git = "https://github.com/seriaati/hb-data" },
     { name = "jishaku", specifier = ">=2.5.2" },
     { name = "loguru", specifier = ">=0.7.2" },

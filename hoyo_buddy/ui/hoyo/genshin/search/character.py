@@ -2,12 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import hakushin
 from discord import ButtonStyle, Member, User
 
-from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS, locale_to_hakushin_lang
+from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import (
     Button,
@@ -30,9 +28,7 @@ if TYPE_CHECKING:
 
 
 class CharacterUI(View):
-    def __init__(
-        self, character_id: str, *, hakushin: bool, author: User | Member, locale: Locale
-    ) -> None:
+    def __init__(self, character_id: str, *, author: User | Member, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
         self.character_id = character_id
         self.character_level = 90
@@ -41,13 +37,7 @@ class CharacterUI(View):
         self.const_index = 0
         self.story_index = 0
         self.quote_index = 0
-        self.selected_page = 8 if hakushin else 0
-
-        # hakushin specific
-        self.hakushin = hakushin
-        self.skill_index = 0
-        self.passive_index = 0
-        self._hakushin_translator = HakushinTranslator(self.locale)
+        self.selected_page = 0
 
     async def fetch_character_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale) as api:
@@ -90,65 +80,12 @@ class CharacterUI(View):
                 character_fetter.quotes,
             )
 
-    async def fetch_hakushin_character_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale) as api:
-            manual_weapon = await api.fetch_manual_weapon()
-
-        async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-        ) as api:
-            character_detail = await api.fetch_character_detail(self.character_id)
-        return self._hakushin_translator.get_character_embed(
-            character_detail, self.character_level, manual_weapon
-        )
-
-    async def fetch_hakushin_skill_embed(
-        self,
-    ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterSkill]]:
-        async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-        ) as api:
-            character_detail = await api.fetch_character_detail(self.character_id)
-
-        skill = character_detail.skills[self.skill_index]
-        return (
-            self._hakushin_translator.get_character_skill_embed(skill, self.talent_level),
-            character_detail.skills,
-        )
-
-    async def fetch_hakushin_passive_embed(
-        self,
-    ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterPassive]]:
-        async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-        ) as api:
-            character_detail = await api.fetch_character_detail(self.character_id)
-            passive = character_detail.passives[self.passive_index]
-        return (
-            self._hakushin_translator.get_character_passive_embed(passive),
-            character_detail.passives,
-        )
-
-    async def fetch_hakushin_const_embed(
-        self,
-    ) -> tuple[DefaultEmbed, list[hakushin.gi.CharacterConstellation]]:
-        async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-        ) as api:
-            character_detail = await api.fetch_character_detail(self.character_id)
-            const = character_detail.constellations[self.const_index]
-
-        return (
-            self._hakushin_translator.get_character_const_embed(const),
-            character_detail.constellations,
-        )
-
     async def update(self, i: Interaction) -> None:
         if not i.response.is_done():
             await i.response.defer(ephemeral=ephemeral(i))
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected_page, hakushin=self.hakushin))
+        self.add_item(PageSelector(self.selected_page))
 
         match self.selected_page:
             case 0:
@@ -216,61 +153,6 @@ class CharacterUI(View):
                         ]
                     )
                 )
-            case 5:
-                embed, skills = await self.fetch_hakushin_skill_embed()
-                self.add_item(EnterTalentLevel(label=LocaleStr(key="change_skill_level_label")))
-
-                skill_options: list[SelectOption] = []
-                for index, skill in enumerate(skills):
-                    skill_type_key = GI_SKILL_TYPE_KEYS.get(index)
-                    label_prefix = (
-                        LocaleStr(key=skill_type_key) if skill_type_key is not None else None
-                    )
-                    label = (
-                        f"{label_prefix.translate(self.locale)}: {skill.name}"
-                        if label_prefix is not None
-                        else skill.name
-                    )
-                    skill_options.append(
-                        SelectOption(
-                            label=label, value=str(index), default=index == self.skill_index
-                        )
-                    )
-                self.add_item(ItemSelector(skill_options, "skill_index"))
-            case 6:
-                embed, passives = await self.fetch_hakushin_passive_embed()
-                self.add_item(
-                    ItemSelector(
-                        [
-                            SelectOption(
-                                label=p.name, value=str(i), default=i == self.passive_index
-                            )
-                            for i, p in enumerate(passives)
-                            if p.name
-                        ],
-                        "passive_index",
-                    )
-                )
-            case 7:
-                embed, consts = await self.fetch_hakushin_const_embed()
-                self.add_item(
-                    ItemSelector(
-                        [
-                            SelectOption(
-                                label=f"{i + 1}. {c.name}",
-                                value=str(i),
-                                default=i == self.const_index,
-                            )
-                            for i, c in enumerate(consts)
-                        ],
-                        "const_index",
-                    )
-                )
-            case 8:
-                embed = await self.fetch_hakushin_character_embed()
-                self.add_item(
-                    EnterCharacterLevel(label=LocaleStr(key="change_character_level_label"))
-                )
             case _:
                 msg = f"Invalid page index: {self.selected_page}"
                 raise ValueError(msg)
@@ -326,56 +208,24 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 
 class PageSelector(Select[CharacterUI]):
-    def __init__(self, current: int, *, hakushin: bool) -> None:
-        if hakushin:
-            options = [
-                SelectOption(
-                    label=LocaleStr(key="character_profile_page_label"),
-                    value="8",
-                    default=current == 8,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="search.agent_page.skills"), value="5", default=current == 5
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_passives_page_label"),
-                    value="6",
-                    default=current == 6,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_const_page_label"),
-                    value="7",
-                    default=current == 7,
-                ),
-            ]
-        else:
-            options = [
-                SelectOption(
-                    label=LocaleStr(key="character_profile_page_label"),
-                    value="0",
-                    default=current == 0,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_talents_page_label"),
-                    value="1",
-                    default=current == 1,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_const_page_label"),
-                    value="2",
-                    default=current == 2,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_stories_page_label"),
-                    value="3",
-                    default=current == 3,
-                ),
-                SelectOption(
-                    label=LocaleStr(key="character_quotes_page_label"),
-                    value="4",
-                    default=current == 4,
-                ),
-            ]
+    def __init__(self, current: int) -> None:
+        options = [
+            SelectOption(
+                label=LocaleStr(key="character_profile_page_label"), value="0", default=current == 0
+            ),
+            SelectOption(
+                label=LocaleStr(key="character_talents_page_label"), value="1", default=current == 1
+            ),
+            SelectOption(
+                label=LocaleStr(key="character_const_page_label"), value="2", default=current == 2
+            ),
+            SelectOption(
+                label=LocaleStr(key="character_stories_page_label"), value="3", default=current == 3
+            ),
+            SelectOption(
+                label=LocaleStr(key="character_quotes_page_label"), value="4", default=current == 4
+            ),
+        ]
         super().__init__(options=options, row=4)
 
     async def callback(self, i: Interaction) -> Any:

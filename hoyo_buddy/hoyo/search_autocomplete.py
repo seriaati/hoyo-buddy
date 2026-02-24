@@ -2,47 +2,22 @@ from __future__ import annotations
 
 import asyncio
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, ClassVar, Final
+from typing import TYPE_CHECKING, Any, ClassVar
 
-import hakushin
-import hakushin.clients
 from discord.app_commands import Choice
 
-from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
+from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_YATTA_LANG
 from hoyo_buddy.enums import Game
 from hoyo_buddy.utils import sleep
-from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
 from .clients import ambr, yatta
-from .clients.hakushin import ItemCategory as HakushinItemCategory
-from .clients.hakushin import ZZZItemCategory
 
 if TYPE_CHECKING:
     from types import CoroutineType
 
     import aiohttp
 
-    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
-
-TO_HAKUSHIN_ITEM_CATEGORY: Final[
-    dict[ambr.ItemCategory | yatta.ItemCategory, HakushinItemCategory]
-] = {
-    ambr.ItemCategory.CHARACTERS: HakushinItemCategory.GI_CHARACTERS,
-    ambr.ItemCategory.WEAPONS: HakushinItemCategory.WEAPONS,
-    ambr.ItemCategory.ARTIFACT_SETS: HakushinItemCategory.ARTIFACT_SETS,
-    yatta.ItemCategory.CHARACTERS: HakushinItemCategory.HSR_CHARACTERS,
-    yatta.ItemCategory.LIGHT_CONES: HakushinItemCategory.LIGHT_CONES,
-    yatta.ItemCategory.RELICS: HakushinItemCategory.RELICS,
-}
-HAKUSHIN_ITEM_CATEGORY_GAME_MAP: Final[dict[HakushinItemCategory, Game]] = {
-    HakushinItemCategory.GI_CHARACTERS: Game.GENSHIN,
-    HakushinItemCategory.HSR_CHARACTERS: Game.STARRAIL,
-    HakushinItemCategory.WEAPONS: Game.GENSHIN,
-    HakushinItemCategory.LIGHT_CONES: Game.STARRAIL,
-    HakushinItemCategory.ARTIFACT_SETS: Game.GENSHIN,
-    HakushinItemCategory.RELICS: Game.STARRAIL,
-}
 
 
 class AutocompleteSetup:
@@ -98,48 +73,6 @@ class AutocompleteSetup:
                 return api.fetch_books()
 
     @classmethod
-    def _get_hakushin_gi_task(
-        cls, api: hakushin.clients.GIClient, category: HakushinItemCategory
-    ) -> CoroutineType[Any, Any, list[Any]] | None:
-        match category:
-            case HakushinItemCategory.GI_CHARACTERS:
-                return api.fetch_characters()
-            case HakushinItemCategory.WEAPONS:
-                return api.fetch_weapons()
-            case HakushinItemCategory.ARTIFACT_SETS:
-                return api.fetch_artifact_sets()
-            case _:
-                return None
-
-    @classmethod
-    def _get_hakushin_hsr_task(
-        cls, api: hakushin.clients.HSRClient, category: HakushinItemCategory
-    ) -> CoroutineType[Any, Any, list[Any]] | None:
-        match category:
-            case HakushinItemCategory.HSR_CHARACTERS:
-                return api.fetch_characters()
-            case HakushinItemCategory.LIGHT_CONES:
-                return api.fetch_light_cones()
-            case HakushinItemCategory.RELICS:
-                return api.fetch_relic_sets()
-            case _:
-                return None
-
-    @classmethod
-    def _get_hakushin_zzz_task(
-        cls, api: hakushin.clients.ZZZClient, category: ZZZItemCategory
-    ) -> CoroutineType[Any, Any, list[Any]] | None:
-        match category:
-            case ZZZItemCategory.AGENTS:
-                return api.fetch_characters()
-            case ZZZItemCategory.W_ENGINES:
-                return api.fetch_weapons()
-            case ZZZItemCategory.DRIVE_DISCS:
-                return api.fetch_drive_discs()
-            case ZZZItemCategory.BANGBOOS:
-                return api.fetch_bangboos()
-
-    @classmethod
     async def _setup_ambr(cls, session: aiohttp.ClientSession) -> None:
         game = Game.GENSHIN
 
@@ -165,118 +98,6 @@ class AutocompleteSetup:
                 await sleep("search_autofill")
 
     @classmethod
-    async def _setup_hakushin(cls, session: aiohttp.ClientSession) -> None:
-        for locale, lang in LOCALE_TO_HAKUSHIN_LANG.items():
-            gi_api = hakushin.HakushinAPI(hakushin.Game.GI, lang, session=session)
-            hsr_api = hakushin.HakushinAPI(hakushin.Game.HSR, lang, session=session)
-            zzz_api = hakushin.HakushinAPI(hakushin.Game.ZZZ, lang, session=session)
-
-            for category in HakushinItemCategory:
-                game = HAKUSHIN_ITEM_CATEGORY_GAME_MAP[category]
-                if game is Game.GENSHIN:
-                    coro = cls._get_hakushin_gi_task(gi_api, category)
-                else:
-                    coro = cls._get_hakushin_hsr_task(hsr_api, category)
-
-                if coro is not None:
-                    task = asyncio.create_task(coro)
-                    cls._tasks[game][category][locale] = task
-                    await sleep("search_autofill")
-
-            for category in ZZZItemCategory:
-                game = Game.ZZZ
-                coro = cls._get_hakushin_zzz_task(zzz_api, category)
-                if coro is not None:
-                    task = asyncio.create_task(coro)
-                    cls._tasks[game][category][locale] = task
-                    await sleep("search_autofill")
-
-    @classmethod
-    def _add_to_beta_results(
-        cls,
-        game: Game,
-        category: ambr.ItemCategory | yatta.ItemCategory | ZZZItemCategory,
-        locale: Locale,
-    ) -> None:
-        if isinstance(category, ambr.ItemCategory | yatta.ItemCategory):
-            hakushin_category = TO_HAKUSHIN_ITEM_CATEGORY.get(category)
-            if hakushin_category is None:
-                return
-            task = cls._tasks[game][hakushin_category].get(locale)
-        else:
-            task = cls._tasks[game][category].get(locale)
-
-        if task is None:
-            return
-        items = task.result()
-        beta_ids = cls._category_beta_ids.get((game, category), [])
-
-        for beta_id in beta_ids:
-            item = next((i for i in items if str(i.id) == str(beta_id)), None)
-            if item is None:
-                continue
-
-            cls._beta_result[game][locale].append(Choice(name=item.name, value=str(item.id)))
-            cls._beta_id_to_category[str(item.id)] = category.value
-
-    @classmethod
-    async def _fetch_new_item_ids(
-        cls, session: aiohttp.ClientSession, game: Game, category: ItemCategory
-    ) -> list[str | int]:
-        version = await get_game_latest_stable_version(session, game=game)
-
-        if isinstance(category, ambr.ItemCategory):
-            async with hakushin.HakushinAPI(hakushin.Game.GI, session=session) as api:
-                match category:
-                    case ambr.ItemCategory.WEAPONS:
-                        func = api.fetch_weapons
-                    case ambr.ItemCategory.ARTIFACT_SETS:
-                        func = api.fetch_artifact_sets
-                    case ambr.ItemCategory.CHARACTERS:
-                        func = api.fetch_characters
-                    case _:
-                        return []
-
-                latest_items = await func()
-                items = await func(version=version)
-                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
-
-        elif isinstance(category, yatta.ItemCategory):
-            async with hakushin.HakushinAPI(hakushin.Game.HSR, session=session) as api:
-                match category:
-                    case yatta.ItemCategory.LIGHT_CONES:
-                        func = api.fetch_light_cones
-                    case yatta.ItemCategory.RELICS:
-                        func = api.fetch_relic_sets
-                    case yatta.ItemCategory.CHARACTERS:
-                        func = api.fetch_characters
-                    case _:
-                        return []
-
-                latest_items = await func()
-                items = await func(version=version)
-                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
-
-        elif isinstance(category, ZZZItemCategory):
-            async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
-                match category:
-                    case ZZZItemCategory.AGENTS:
-                        func = api.fetch_characters
-                    case ZZZItemCategory.W_ENGINES:
-                        func = api.fetch_weapons
-                    case ZZZItemCategory.DRIVE_DISCS:
-                        func = api.fetch_drive_discs
-                    case ZZZItemCategory.BANGBOOS:
-                        func = api.fetch_bangboos
-
-                latest_items = await func()
-                items = await func(version=version)
-                return [item.id for item in latest_items if item.id not in {i.id for i in items}]
-
-        else:
-            return []
-
-    @classmethod
     async def start(
         cls, session: aiohttp.ClientSession
     ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
@@ -290,7 +111,6 @@ class AutocompleteSetup:
         creat_task_tasks = [
             asyncio.create_task(cls._setup_ambr(session)),
             asyncio.create_task(cls._setup_yatta(session)),
-            asyncio.create_task(cls._setup_hakushin(session)),
         ]
         await asyncio.gather(*creat_task_tasks, return_exceptions=True)
 
@@ -302,35 +122,8 @@ class AutocompleteSetup:
         ]
         await asyncio.gather(*tasks, return_exceptions=True)
 
-        beta_categories: list[tuple[Game, ItemCategory]] = [
-            (Game.GENSHIN, ambr.ItemCategory.CHARACTERS),
-            (Game.STARRAIL, yatta.ItemCategory.CHARACTERS),
-            (Game.GENSHIN, ambr.ItemCategory.WEAPONS),
-            (Game.STARRAIL, yatta.ItemCategory.LIGHT_CONES),
-            (Game.GENSHIN, ambr.ItemCategory.ARTIFACT_SETS),
-            (Game.STARRAIL, yatta.ItemCategory.RELICS),
-            (Game.ZZZ, ZZZItemCategory.AGENTS),
-            (Game.ZZZ, ZZZItemCategory.W_ENGINES),
-            (Game.ZZZ, ZZZItemCategory.DRIVE_DISCS),
-            (Game.ZZZ, ZZZItemCategory.BANGBOOS),
-        ]
-        beta_category_tasks: list[tuple[Game, ItemCategory, asyncio.Task]] = []
-
-        for game, category in beta_categories:
-            coro = cls._fetch_new_item_ids(session, game, category)
-            task = asyncio.create_task(coro)
-            beta_category_tasks.append((game, category, task))
-
-        await asyncio.gather(*(task for _, _, task in beta_category_tasks), return_exceptions=True)
-        for game, category, task in beta_category_tasks:
-            beta_ids = task.result()
-            cls._category_beta_ids[game, category] = beta_ids
-
         for game, categories in cls._tasks.items():
             for category, locales in categories.items():
-                if isinstance(category, HakushinItemCategory):
-                    continue
-
                 beta_ids = cls._category_beta_ids.get((game, category), [])
                 beta_ids = [str(i) for i in beta_ids]
 
@@ -344,17 +137,8 @@ class AutocompleteSetup:
                         if hasattr(item, "rarity") and item.rarity is None:
                             continue
 
-                        # only hakushin has beta items
-                        if isinstance(category, ZZZItemCategory) and str(item.id) in beta_ids:
-                            continue
-
                         cls._result[game][category][locale].append(
                             Choice(name=item.name, value=str(item.id))
                         )
-
-        for game in (Game.GENSHIN, Game.STARRAIL, Game.ZZZ):
-            for category in list(TO_HAKUSHIN_ITEM_CATEGORY.keys()) + list(ZZZItemCategory):
-                for locale in LOCALE_TO_HAKUSHIN_LANG:
-                    cls._add_to_beta_results(game, category, locale)
 
         return cls._result, cls._beta_id_to_category, cls._beta_result

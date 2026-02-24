@@ -161,7 +161,7 @@ async def fetch_gacha_names(
         elif game is Game.GENSHIN:
             async with AmbrAPIClient(locale) as client:
                 item_names = await client.fetch_item_id_to_name_map()
-            async with hb_data.gi.GIClient() as client:
+            async with hb_data.GIClient() as client:
                 mw_costumes = client.get_mw_costumes()
                 mw_items = client.get_mw_items()
                 item_names.update({costume.id: costume.name for costume in mw_costumes})
@@ -193,7 +193,7 @@ async def fetch_gacha_icons() -> dict[str, str]:
         gacha_icons.update({character.id: character.icon for character in characters})
         gacha_icons.update({str(weapon.id): weapon.icon for weapon in weapons})
 
-    async with hb_data.gi.GIClient() as client:
+    async with hb_data.GIClient() as client:
         mw_items = client.get_mw_items()
         gacha_icons.update({str(item.id): item.icon for item in mw_items})
 

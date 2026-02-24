@@ -14,7 +14,7 @@ from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
-from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.hoyo.clients import ambr, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
@@ -236,8 +236,6 @@ class Profile(
             category = ambr.ItemCategory.CHARACTERS
         elif game is Game.STARRAIL:
             category = yatta.ItemCategory.CHARACTERS
-        elif game is Game.ZZZ:
-            category = hakushin.ZZZItemCategory.AGENTS
         else:
             return []
 

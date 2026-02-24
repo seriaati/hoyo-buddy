@@ -490,7 +490,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             enka.GenshinClient() as enka_gi,
             enka.HSRClient() as enka_hsr,
             enka.ZZZClient() as enka_zzz,
-            hb_data.gi.GIClient() as gi_client,
+            hb_data.GIClient() as gi_client,
+            hb_data.ZZZClient() as zzz_client,
         ):
             await asyncio.gather(
                 # Update enka.py assets
@@ -506,6 +507,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                 translator.fetch_mi18n_files(),
                 # hb-data
                 gi_client.download(force=True),
+                zzz_client.download(force=True),
             )
 
     async def update_zzz_assets(self) -> None:

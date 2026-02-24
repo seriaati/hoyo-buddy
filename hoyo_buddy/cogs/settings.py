@@ -13,7 +13,7 @@ from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.hoyo.clients import ambr, yatta
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings.view import CardSettingsView, SettingsView
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
@@ -34,8 +34,6 @@ class Settings(commands.Cog):
             category = ambr.ItemCategory.CHARACTERS
         elif game is Game.STARRAIL:
             category = yatta.ItemCategory.CHARACTERS
-        elif game is Game.ZZZ:
-            category = hakushin.ZZZItemCategory.AGENTS
         else:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 

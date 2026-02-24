@@ -4,7 +4,7 @@ import contextlib
 from typing import TYPE_CHECKING, Literal, cast
 
 import ambr
-import hakushin
+import hb_data
 from discord import File
 from genshin.models import ZZZFullAgent
 
@@ -466,21 +466,18 @@ async def fetch_zzz_draw_data(
 
     version: str | None = None
 
-    async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=session) as api:
+    async with hb_data.ZZZClient() as client:
+        data_characters = client.get_characters()
+        data_drive_discs = client.get_drive_discs()
+
         # Fetch name data
         if fetch_name_data:
-            version = await get_game_latest_stable_version(session, game=Game.ZZZ)
-
-            for agent in agents:
-                if agent.id in name_datas:
-                    continue
-
-                detail = await api.fetch_character_detail(agent.id, version=version)
-                full_name = detail.info.full_name if detail.info is not None else detail.name
-                name_datas[agent.id] = AgentNameData(
-                    short_name=detail.name, full_name=full_name
-                ).model_dump()
-
+            name_datas.update(
+                {
+                    char.id: {"short_name": char.name, "full_name": char.full_name}
+                    for char in data_characters
+                }
+            )
             await JSONFile.write(name_datas_path, name_datas)
 
         # Fetch agent images
@@ -488,16 +485,17 @@ async def fetch_zzz_draw_data(
             template = cast("Literal[1, 2]", template)
             if version is None:
                 version = await get_game_latest_stable_version(session, game=Game.ZZZ)
-            characters = await api.fetch_characters(version=version)
 
             if template == 2:
                 agent_images = {
                     char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
-                    for char in characters
+                    for char in data_characters
                 }
             else:  # template == 1
-                agent_images = {char.id: char.image for char in characters}
-                skin_images = {skin.id: skin.image for char in characters for skin in char.skins}
+                agent_images = {char.id: char.image for char in data_characters}
+                skin_images = {
+                    skin.id: skin.image for char in data_characters for skin in char.skins
+                }
                 agent_images.update(skin_images)
 
             agent_images_path = _get_images_path(template, use_m3_art)
@@ -505,10 +503,11 @@ async def fetch_zzz_draw_data(
 
         # Fetch disc icons
         if fetch_disc_icons:
-            items = await api.fetch_items()
             for agent in agents:
                 for disc in agent.discs:
-                    disc_item = next((item for item in items if item.id == disc.id), None)
+                    disc_item = next(
+                        (d_disc for d_disc in data_drive_discs if d_disc.id == disc.id), None
+                    )
                     if disc_item is None:
                         continue
                     disc_icons[disc.id] = disc_item.icon
@@ -734,8 +733,8 @@ async def draw_shiyu_card(
         if bangboo is not None
     ]
     if any(not hasattr(bangboo, "icon") for bangboo in bangboos):
-        async with hakushin.HakushinAPI(hakushin.Game.ZZZ, session=draw_input.session) as api:
-            bangboo_icons = {bangboo.id: bangboo.icon for bangboo in await api.fetch_bangboos()}
+        async with hb_data.ZZZClient() as client:
+            bangboo_icons = {bangboo.id: bangboo.icon for bangboo in client.get_bangboos()}
 
         for bangboo in bangboos:
             if not hasattr(bangboo, "icon") and bangboo.id in bangboo_icons:
@@ -807,12 +806,7 @@ async def draw_assault_card(
 
 
 async def draw_hard_challenge(
-    draw_input: DrawInput,
-    data: genshin.models.HardChallenge,
-    uid: str,
-    *,
-    mode: HardChallengeMode,
-    stygian_detail: hakushin.gi.StygianDetail,
+    draw_input: DrawInput, data: genshin.models.HardChallenge, uid: str, *, mode: HardChallengeMode
 ) -> File:
     urls: list[str] = []
     challenges = data.single_player.challenges if mode == "single" else data.multi_player.challenges
@@ -820,23 +814,9 @@ async def draw_hard_challenge(
         urls.append(challenge.enemy.icon)
         urls.extend(char.icon for char in challenge.team)
 
-    for level in stygian_detail.levels.values():
-        for e in level.enemies.values():
-            if e.recommendation is None:
-                continue
-
-            for rec in {e.recommendation.recommend, e.recommendation.dont_recommend}:
-                if rec is None:
-                    continue
-
-                presets = hakushin.utils.extract_sprite_presets(rec)
-                urls.extend(p[1] for p in presets)
-
     await download_images(urls, draw_input.session)
 
-    card = funcs.genshin.HardChallengeCard(
-        data, uid, draw_input.locale, mode=mode, stygian_detail=stygian_detail
-    )
+    card = funcs.genshin.HardChallengeCard(data, uid, draw_input.locale, mode=mode)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

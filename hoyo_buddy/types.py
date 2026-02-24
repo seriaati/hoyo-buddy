@@ -12,7 +12,7 @@ import genshin
 from . import models
 from .bot import HoyoBuddy
 from .enums import Game, Locale
-from .hoyo.clients import ambr, hakushin, yatta
+from .hoyo.clients import ambr, yatta
 
 Challenge: TypeAlias = (
     genshin.models.StarRailChallenge
@@ -73,9 +73,7 @@ Builds: TypeAlias = (
     | dict[str, list[enka.zzz.Build]]
 )
 
-ItemCategory: TypeAlias = (
-    ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
-)
+ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory
 AutocompleteChoices: TypeAlias = Mapping[
     Game, Mapping[ItemCategory, Mapping[Locale, list[discord.app_commands.Choice[str]]]]
 ]

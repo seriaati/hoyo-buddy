@@ -12,7 +12,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import Game, Locale
-from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.hoyo.clients import ambr, yatta
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction
 
@@ -39,8 +39,6 @@ class Build(commands.GroupCog):
             characters = self.bot.search_autofill[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
         elif game is Game.STARRAIL:
             characters = self.bot.search_autofill[Game.STARRAIL][yatta.ItemCategory.CHARACTERS]
-        elif game is Game.ZZZ:
-            characters = self.bot.search_autofill[Game.ZZZ][hakushin.ZZZItemCategory.AGENTS]
         else:
             characters = {}
 

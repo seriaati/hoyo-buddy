@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import hakushin
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, Select, SelectOption, TextInput, View
@@ -17,69 +14,36 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from discord import Member, User
-    from hakushin.models.hsr import LightConeDetail as HakushinLCDetail
-    from yatta import LightConeDetail
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 
 class LightConeUI(View):
-    def __init__(
-        self, light_cone_id: str, *, hakushin: bool, author: User | Member, locale: Locale
-    ) -> None:
+    def __init__(self, light_cone_id: str, *, author: User | Member, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
 
         self._light_cone_id = light_cone_id
         self._light_cone_level = 80
         self._superimpose = 1
-        self._lc_detail: LightConeDetail | HakushinLCDetail | None = None
-
-        self._hakushin = hakushin
 
     @staticmethod
     def _convert_manual_avatar(manual_avatar: dict[str, dict[str, str]]) -> dict[str, str]:
         return {stat_id: stat["name"] for stat_id, stat in manual_avatar.items()}
 
     async def _fetch_embed(self) -> DefaultEmbed:
-        if self._hakushin:
-            async with YattaAPIClient(self.locale) as api:
-                manual_avatar = await api.fetch_manual_avatar()
+        async with YattaAPIClient(self.locale) as api:
+            try:
+                light_cone_id = int(self._light_cone_id)
+            except ValueError:
+                raise InvalidQueryError from None
 
-            async with hakushin.HakushinAPI(
-                hakushin.Game.HSR, locale_to_hakushin_lang(self.locale)
-            ) as api:
-                try:
-                    light_cone_id = int(self._light_cone_id)
-                except ValueError:
-                    raise InvalidQueryError from None
-
-                lc_detail = await api.fetch_light_cone_detail(light_cone_id)
-
+            lc_detail = await api.fetch_light_cone_detail(light_cone_id)
             self._lc_detail = lc_detail
-            translator = HakushinTranslator(self.locale)
-            embed = translator.get_light_cone_embed(
-                lc_detail,
-                self._light_cone_level,
-                self._superimpose,
-                self._convert_manual_avatar(manual_avatar),
-                locale_to_hakushin_lang(self.locale),
+            manual_avatar = await api.fetch_manual_avatar()
+            return api.get_light_cone_embed(
+                lc_detail, self._light_cone_level, self._superimpose, manual_avatar
             )
-        else:
-            async with YattaAPIClient(self.locale) as api:
-                try:
-                    light_cone_id = int(self._light_cone_id)
-                except ValueError:
-                    raise InvalidQueryError from None
-
-                lc_detail = await api.fetch_light_cone_detail(light_cone_id)
-                self._lc_detail = lc_detail
-                manual_avatar = await api.fetch_manual_avatar()
-                embed = api.get_light_cone_embed(
-                    lc_detail, self._light_cone_level, self._superimpose, manual_avatar
-                )
-
-        return embed
 
     def _setup_items(self) -> None:
         self.clear_items()

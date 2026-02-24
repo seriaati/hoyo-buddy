@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import hb_data
 from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON
+from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON, locale_to_zenless_data_lang
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
@@ -163,8 +164,16 @@ class Settings(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
+
+        async with hb_data.ZZZClient() as client:
+            characters = client.get_characters(
+                lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
+            )
+
         choices = [
-            c for c in self._get_choices(locale, Game.ZZZ) if current.lower() in c.name.lower()
+            app_commands.Choice(name=c.name, value=str(c.id))
+            for c in characters
+            if current.lower() in c.name.lower()
         ]
         return choices[:25]
 

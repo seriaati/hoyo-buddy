@@ -165,3 +165,4 @@ hoyo_buddy/bot/data/*.json
 .vscode/
 test.py
 test_*.py
+.hb_data/

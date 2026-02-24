@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import hakushin
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import locale_to_hakushin_lang
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, Select, SelectOption, TextInput, View
 from hoyo_buddy.utils import ephemeral
@@ -23,16 +20,13 @@ if TYPE_CHECKING:
 
 
 class WeaponUI(View):
-    def __init__(
-        self, weapon_id: str, *, hakushin: bool, author: User | Member, locale: Locale
-    ) -> None:
+    def __init__(self, weapon_id: str, *, author: User | Member, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
 
         self.weapon_id = weapon_id
         self.weapon_level = 90
         self.refinement = 1
         self.max_refinement = 1
-        self.hakushin = hakushin
 
     async def _fetch_weapon_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale) as api:
@@ -51,31 +45,7 @@ class WeaponUI(View):
 
             return embed
 
-    async def _fetch_hakushin_weapon_embed(self) -> DefaultEmbed:
-        async with AmbrAPIClient(self.locale) as api:
-            manual_weapon = await api.fetch_manual_weapon()
-
-        async with hakushin.HakushinAPI(
-            hakushin.Game.GI, locale_to_hakushin_lang(self.locale)
-        ) as api:
-            try:
-                weapon_id = int(self.weapon_id)
-            except ValueError:
-                raise InvalidQueryError from None
-
-            weapon_detail = await api.fetch_weapon_detail(weapon_id)
-
-        translator = HakushinTranslator(self.locale)
-        embed = translator.get_weapon_embed(
-            weapon_detail, self.weapon_level, self.refinement, manual_weapon
-        )
-        self.max_refinement = len(weapon_detail.refinments)
-
-        return embed
-
     async def _get_embed(self) -> DefaultEmbed:
-        if self.hakushin:
-            return await self._fetch_hakushin_weapon_embed()
         return await self._fetch_weapon_embed()
 
     def _setup_items(self) -> None:

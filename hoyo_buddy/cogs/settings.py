@@ -2,18 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import hb_data
 from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON
+from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON, locale_to_zenless_data_lang
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.hoyo.clients import ambr, yatta
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings.view import CardSettingsView, SettingsView
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
@@ -34,8 +35,6 @@ class Settings(commands.Cog):
             category = ambr.ItemCategory.CHARACTERS
         elif game is Game.STARRAIL:
             category = yatta.ItemCategory.CHARACTERS
-        elif game is Game.ZZZ:
-            category = hakushin.ZZZItemCategory.AGENTS
         else:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
@@ -165,8 +164,16 @@ class Settings(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
+
+        async with hb_data.ZZZClient() as client:
+            characters = client.get_characters(
+                lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
+            )
+
         choices = [
-            c for c in self._get_choices(locale, Game.ZZZ) if current.lower() in c.name.lower()
+            app_commands.Choice(name=c.name, value=str(c.id))
+            for c in characters
+            if current.lower() in c.name.lower()
         ]
         return choices[:25]
 

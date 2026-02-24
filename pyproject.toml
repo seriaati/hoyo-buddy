@@ -7,7 +7,6 @@ dependencies = [
   "asyncpg>=0.29.0",
   "asyncpg-listen>=0.0.6",
   "discord-py[speed]>=2.5.0",
-  "hakushin-py>=0.4.4",
   "jishaku>=2.5.2",
   "loguru>=0.7.2",
   "novelai",
@@ -39,6 +38,7 @@ dependencies = [
   "akasha-py",
   "szgf>=0.1.1",
   "aiosqlite==0.22.0",
+  "hb-data",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }
@@ -53,12 +53,12 @@ dev = ["ruff>=0.12.3", "basedpyright>=1.37.3"]
 [tool.uv.sources]
 novelai = { git = "https://github.com/seriaati/NovelAI-API" }
 genshin = { git = "https://github.com/thesadru/genshin.py", branch = "master" }
-hakushin-py = { git = "https://github.com/seriaati/hakushin-py" }
 enka = { git = "https://github.com/seriaati/enka-py" }
 yatta-py = { git = "https://github.com/seriaati/yatta" }
 ambr-py = { git = "https://github.com/seriaati/ambr" }
 akasha-py = { git = "https://github.com/seriaati/akasha-py.git" }
 szgf = { git = "https://github.com/seriaati/zzz-guides" }
+hb-data = { git = "https://github.com/seriaati/hb-data" }
 
 [tool.pyright]
 enableTypeIgnoreComments = false

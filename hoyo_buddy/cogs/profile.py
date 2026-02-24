@@ -3,18 +3,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 import enka
+import hb_data
 from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy import dismissibles
 from hoyo_buddy.commands.configs import COMMANDS, CommandName
 from hoyo_buddy.commands.profile import ProfileCommand
-from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
+from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_zenless_data_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
-from hoyo_buddy.hoyo.clients import ambr, hakushin, yatta
+from hoyo_buddy.hoyo.clients import ambr, yatta
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.types import Interaction, User
 from hoyo_buddy.utils import ephemeral
@@ -234,16 +235,23 @@ class Profile(
 
         if game is Game.GENSHIN:
             category = ambr.ItemCategory.CHARACTERS
+            choices = self.bot.search_autofill[game][category].get(
+                locale, self.bot.search_autofill[game][category][Locale.american_english]
+            )
         elif game is Game.STARRAIL:
             category = yatta.ItemCategory.CHARACTERS
+            choices = self.bot.search_autofill[game][category].get(
+                locale, self.bot.search_autofill[game][category][Locale.american_english]
+            )
         elif game is Game.ZZZ:
-            category = hakushin.ZZZItemCategory.AGENTS
+            async with hb_data.ZZZClient() as client:
+                characters = client.get_characters(
+                    lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
+                )
+            choices = [app_commands.Choice(name=c.name, value=str(c.id)) for c in characters]
         else:
             return []
 
-        choices = self.bot.search_autofill[game][category].get(
-            locale, self.bot.search_autofill[game][category][Locale.american_english]
-        )
         if not choices:
             return []
 

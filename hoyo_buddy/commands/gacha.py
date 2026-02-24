@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 from typing import TYPE_CHECKING, Any
 
+import hb_data
 import orjson
 import pandas as pd
 
@@ -20,7 +21,6 @@ from hoyo_buddy.exceptions import (
     UIDMismatchError,
 )
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinZZZClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import (
@@ -53,26 +53,28 @@ class GachaCommand:
     async def _uigf_fill_item_rarities(
         records: list[dict[str, Any]], game: Game
     ) -> list[dict[str, Any]]:
+        fetch_map = not all("rank_type" in record for record in records)
+        if not fetch_map:
+            return records
+
         if game is Game.GENSHIN:
-            api = AmbrAPIClient()
+            async with AmbrAPIClient() as client:
+                rarity_map = await client.fetch_rarity_map()
         elif game is Game.STARRAIL:
-            api = YattaAPIClient()
+            async with YattaAPIClient() as client:
+                rarity_map = await client.fetch_rarity_map()
         elif game is Game.ZZZ:
-            api = HakushinZZZClient()
+            async with hb_data.ZZZClient() as client:
+                rarity_map = client.get_rarity_map()
         else:
             msg = f"Rarity fetching is not implemented for {game}"
             raise ValueError(msg)
 
-        fetch_map = not all("rank_type" in record for record in records)
-        if fetch_map:
-            async with api:
-                rarity_map = await api.fetch_rarity_map()
+        for record in records:
+            if "rank_type" in record:
+                continue
 
-            for record in records:
-                if "rank_type" in record:
-                    continue
-
-                record["rank_type"] = rarity_map[record["item_id"]]
+            record["rank_type"] = rarity_map[record["item_id"]]
 
         return records
 
@@ -322,9 +324,8 @@ class GachaCommand:
             records.sort(key=lambda x: x.id)
 
             if records:
-                # Fetch rarity map with Hakushin API
-                async with HakushinZZZClient() as client:
-                    rarity_map = await client.fetch_rarity_map()
+                async with hb_data.ZZZClient() as client:
+                    rarity_map = client.get_rarity_map()
 
                 before = await GachaHistory.get_wish_count(account)
                 await GachaHistory.bulk_create(

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import hb_data
+
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.db.utils import get_locale
-from hoyo_buddy.enums import Game, Locale
-from hoyo_buddy.hoyo.clients.hakushin import ZZZItemCategory
+from hoyo_buddy.enums import Game
 from hoyo_buddy.models.zzz_event import ZZZEventCalendar, ZZZGachaEventWeapon, ZZZWeaponGachaEvent
 from hoyo_buddy.ui.hoyo.event_calendar import EventCalendarView
 from hoyo_buddy.ui.hoyo.events import EventsView
@@ -17,17 +18,6 @@ if TYPE_CHECKING:
 
 
 class EventsCommand:
-    @staticmethod
-    def get_weapon_name(i: Interaction, weapon_id: int, locale: Locale) -> str | None:
-        try:
-            choices = i.client.search_autofill[Game.ZZZ][ZZZItemCategory.W_ENGINES][locale]
-        except KeyError:
-            return None
-        for choice in choices:
-            if choice.value == str(weapon_id):
-                return choice.name
-        return None
-
     @staticmethod
     async def run(i: Interaction, *, user: User, account: HoyoAccount | None) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
@@ -48,6 +38,9 @@ class EventsCommand:
         elif account.game is Game.STARRAIL:
             calendar = await client.get_starrail_event_calendar()
         elif account.game is Game.ZZZ:
+            async with hb_data.ZZZClient() as d_client:
+                weapon_names = {weapon.id: weapon.name for weapon in d_client.get_weapons()}
+
             events = await client.get_zzz_event_calendar(account.uid)
             gacha_calendar = await client.get_zzz_gacha_calendar(account.uid)
 
@@ -57,7 +50,7 @@ class EventsCommand:
                 banner_weapons: list[ZZZGachaEventWeapon] = []
 
                 for weapon in banner.weapons:
-                    name = EventsCommand.get_weapon_name(i, weapon.id, locale) or "???"
+                    name = weapon_names.get(weapon.id, "???")
                     banner_weapons.append(
                         ZZZGachaEventWeapon.model_construct(
                             _fields_set=weapon.__pydantic_fields_set__,

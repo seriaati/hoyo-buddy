@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
 import enka
 import genshin
-import hakushin
 import orjson
 import redis.asyncio as aioredis
 from loguru import logger
@@ -44,6 +43,7 @@ from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep
+from hoyo_buddy.utils.game import get_ascension_from_level, get_max_level_from_ascension
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -185,9 +185,7 @@ class GenshinClient(ProxyGenshinClient):
             icon=character.weapon.icon,
             refinement=character.weapon.refinement,
             level=character.weapon.level,
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                character.weapon.ascension, hakushin.Game.GI
-            ),
+            max_level=get_max_level_from_ascension(character.weapon.ascension, Game.GENSHIN),
             rarity=character.weapon.rarity,
             stats=[
                 models.HoyolabGIStat(
@@ -313,11 +311,9 @@ class GenshinClient(ProxyGenshinClient):
             artifacts=artifacts,
             friendship_level=character.friendship,
             level=character.level,
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(
-                    character.level, ascended=True, game=hakushin.Game.GI
-                ),
-                hakushin.Game.GI,
+            max_level=get_max_level_from_ascension(
+                get_ascension_from_level(character.level, ascended=True, game=Game.GENSHIN),
+                Game.GENSHIN,
             ),
             icon=icon,
             costume=costume,
@@ -373,11 +369,9 @@ class GenshinClient(ProxyGenshinClient):
                 level=c.equip.level,
                 superimpose=c.equip.rank,
                 name=c.equip.name,
-                max_level=hakushin.utils.get_max_level_from_ascension(
-                    hakushin.utils.get_ascension_from_level(
-                        c.equip.level, ascended=True, game=hakushin.Game.HSR
-                    ),
-                    hakushin.Game.HSR,
+                max_level=get_max_level_from_ascension(
+                    get_ascension_from_level(c.equip.level, ascended=True, game=Game.STARRAIL),
+                    Game.STARRAIL,
                 ),
                 rarity=c.equip.rarity,
                 stats=[],  # to be filled in later by add_lc_stats
@@ -435,11 +429,8 @@ class GenshinClient(ProxyGenshinClient):
                 models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
                 for eidolon in c.ranks
             ],
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(
-                    c.level, ascended=True, game=hakushin.Game.HSR
-                ),
-                hakushin.Game.HSR,
+            max_level=get_max_level_from_ascension(
+                get_ascension_from_level(c.level, ascended=True, game=Game.STARRAIL), Game.STARRAIL
             ),
             path=GPY_PATH_TO_EKNA_PATH[c.path],
         )

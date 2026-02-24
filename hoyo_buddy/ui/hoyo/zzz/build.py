@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-import hakushin
 import szgf
 
 from hoyo_buddy import emojis, ui
@@ -309,7 +308,7 @@ class ZZZBuildContainer(ui.Container):
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(
-                    f"## {emojis.ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.CHAIN]} Agent Gameplay Guide"
+                    f"## {emojis.ZZZ_GUIDE_SKILL_TYPE_EMOJIS['chain']} Agent Gameplay Guide"
                 ),
                 accessory=ContainerButton("View", ZZZBuildSkillContainer(guide), guide),
             ),

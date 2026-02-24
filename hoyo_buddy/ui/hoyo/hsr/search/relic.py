@@ -2,12 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import hakushin
 from discord import ButtonStyle, Member, User
 
 from hoyo_buddy.emojis import get_relic_pos_emoji
 from hoyo_buddy.exceptions import InvalidQueryError
-from hoyo_buddy.hoyo.clients.hakushin import HakushinTranslator
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
@@ -21,14 +19,10 @@ RELIC_POS: tuple[str, ...] = ("neck", "head", "hand", "object", "foot", "body")
 
 
 class RelicSetUI(View):
-    def __init__(
-        self, relic_set_id: str, *, hakushin: bool, author: User | Member, locale: Locale
-    ) -> None:
+    def __init__(self, relic_set_id: str, *, author: User | Member, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
         self._relic_set_id = relic_set_id
         self._relic_embeds: dict[str, DefaultEmbed] = {}
-
-        self._hakushin = hakushin
 
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
@@ -38,23 +32,13 @@ class RelicSetUI(View):
         except ValueError as e:
             raise InvalidQueryError from e
 
-        if self._hakushin:
-            async with hakushin.HakushinAPI(hakushin.Game.HSR) as api:
-                relic_set_detail = await api.fetch_relic_set_detail(relic_id)
+        async with YattaAPIClient(self.locale) as api:
+            relic_set_detail = await api.fetch_relic_set_detail(relic_id)
 
-            translator = HakushinTranslator(self.locale)
             self._relic_embeds = {
-                RELIC_POS[index]: translator.get_relic_embed(relic_set_detail, relic)
-                for index, relic in enumerate(relic_set_detail.parts.values())
+                relic.pos: api.get_relic_embed(relic_set_detail, relic)
+                for relic in relic_set_detail.relics
             }
-        else:
-            async with YattaAPIClient(self.locale) as api:
-                relic_set_detail = await api.fetch_relic_set_detail(relic_id)
-
-                self._relic_embeds = {
-                    relic.pos: api.get_relic_embed(relic_set_detail, relic)
-                    for relic in relic_set_detail.relics
-                }
 
         for pos in self._relic_embeds:
             self.add_item(RelicPosButton(pos))

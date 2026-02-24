@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import genshin
-import hakushin
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
@@ -30,19 +29,11 @@ class HardChallengeCard:
         locale: Locale,
         *,
         mode: HardChallengeMode,
-        stygian_detail: hakushin.gi.StygianDetail,
     ) -> None:
         self._data = data
         self._uid = uid
         self._locale = locale
         self._mode = mode
-        self._stygian_detail = stygian_detail
-        self._enemy_recommendations = {
-            enemy_id: enemy.recommendation
-            for level in self._stygian_detail.levels.values()
-            for enemy_id, enemy in level.enemies.items()
-            if enemy.recommendation is not None
-        }
 
     def _write_period(self, drawer: Drawer) -> None:
         season = self._data.season
@@ -277,79 +268,6 @@ class HardChallengeCard:
 
         return pill
 
-    def _draw_enemy_weakness(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        recommendation: str | None,
-        *,
-        is_advantage: bool,
-    ) -> None:
-        if recommendation is None:
-            return
-
-        line = 1
-        pill_pos = (pos[0] + 48, pos[1] + 752)
-        max_width = pill_pos[0] + 776
-
-        for rec in recommendation.split(" | "):
-            rec_text = rec
-            icon_urls: list[str] = []
-            presets = hakushin.utils.extract_sprite_presets(rec)
-
-            for keyword, icon_url in presets:
-                rec_text = rec_text.replace("{" + keyword + "}", "").strip()
-                icon_urls.append(icon_url)
-
-            icons: list[Image.Image] = []
-            for icon_url in icon_urls:
-                icon = (
-                    drawer.open_static(
-                        icon_url,
-                        size=LEYLINE_ICON_SIZE
-                        if LEYLINE_ICON_KEYWORD in icon_url
-                        else DEFAULT_ICON_SIZE,
-                    )
-                    if icon_url
-                    else None
-                )
-                if icon is not None:
-                    icons.append(icon)
-
-            pill = self._create_pill(drawer, is_advantage=is_advantage, text=rec_text, icons=icons)
-            if pill_pos[0] + pill.width > max_width:
-                pill_pos = (pos[0] + 48, pill_pos[1] + pill.height + 25)
-                line += 1
-
-            if line > 3:
-                break  # Only draw up to 3 lines of pills
-
-            im.paste(pill, pill_pos, pill)
-            pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
-
-    def _draw_enemy_weaknesses(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        recommendation: hakushin.gi.StygianEnemyRecommendation,
-    ) -> None:
-        text = LocaleStr(key="hard_challenge_enemy_weakness")
-        drawer.write(
-            text,
-            size=40,
-            style="bold",
-            position=(pos[0] + 48, pos[1] + 667),
-            color=LIGHT_PURPLE,
-            locale=self._locale,
-        )
-
-        self._draw_enemy_weakness(drawer, im, pos, recommendation.recommend, is_advantage=True)
-        self._draw_enemy_weakness(
-            drawer, im, pos, recommendation.dont_recommend, is_advantage=False
-        )
-
     def _draw_challenge_stats(
         self,
         drawer: Drawer,
@@ -447,10 +365,6 @@ class HardChallengeCard:
 
         self._draw_challenge_team(drawer, im, pos, challenge)
         self._draw_challenge_stats(drawer, im, pos, challenge)
-
-        recommendation = self._enemy_recommendations.get(challenge.enemy.id)
-        if recommendation is not None:
-            self._draw_enemy_weaknesses(drawer, im, pos, recommendation)
 
     def draw(self) -> io.BytesIO:
         background = Drawer.open_image("hoyo-buddy-assets/assets/hard-challenge/bk.png")

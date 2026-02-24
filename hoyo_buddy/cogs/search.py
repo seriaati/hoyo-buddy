@@ -5,13 +5,12 @@ import datetime
 import random
 from typing import TYPE_CHECKING, Any
 
-import hakushin as hakushin_api
 from discord import app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8, locale_to_hakushin_lang
+from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
@@ -21,7 +20,7 @@ from hoyo_buddy.utils.misc import get_now, handle_autocomplete_errors
 from ..emojis import PROJECT_AMBER
 from ..enums import BetaItemCategory, Game, Locale
 from ..exceptions import InvalidQueryError
-from ..hoyo.clients import ambr, hakushin, yatta
+from ..hoyo.clients import ambr, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
 from ..types import Interaction
@@ -29,7 +28,6 @@ from ..ui import URLButtonView
 from ..ui.hoyo.genshin import search as gi_search
 from ..ui.hoyo.hsr import search as hsr_search
 from ..ui.hoyo.hsr.search.light_cone import LightConeUI
-from ..ui.hoyo.zzz import search as zzz_search
 
 if TYPE_CHECKING:
     from enum import StrEnum
@@ -44,7 +42,6 @@ class Search(commands.Cog):
         self._search_categories: dict[Game, list[StrEnum]] = {
             Game.GENSHIN: list(ambr.ItemCategory),
             Game.STARRAIL: list(yatta.ItemCategory),
-            Game.ZZZ: list(hakushin.ZZZItemCategory),
         }
         self._beta_id_to_category: dict[str, str] = {}
 
@@ -109,8 +106,6 @@ class Search(commands.Cog):
                     category = ambr.ItemCategory(category_str)
                 elif game is Game.STARRAIL:
                     category = yatta.ItemCategory(category_str)
-                elif game is Game.ZZZ:
-                    category = hakushin.ZZZItemCategory(category_str)
                 else:
                     continue
 
@@ -227,7 +222,6 @@ class Search(commands.Cog):
 
         locale = await get_locale(i)
 
-        is_beta = query in self._beta_id_to_category
         category = self._beta_id_to_category.get(query, category_value)
 
         if game is Game.GENSHIN:
@@ -238,15 +232,11 @@ class Search(commands.Cog):
 
             match category:
                 case ambr.ItemCategory.CHARACTERS:
-                    character_ui = gi_search.CharacterUI(
-                        query, author=i.user, locale=locale, hakushin=is_beta
-                    )
+                    character_ui = gi_search.CharacterUI(query, author=i.user, locale=locale)
                     await character_ui.update(i)
 
                 case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = gi_search.WeaponUI(
-                        query, hakushin=is_beta, author=i.user, locale=locale
-                    )
+                    weapon_ui = gi_search.WeaponUI(query, author=i.user, locale=locale)
                     await weapon_ui.start(i)
 
                 case ambr.ItemCategory.NAMECARDS:
@@ -258,9 +248,7 @@ class Search(commands.Cog):
                         await i.followup.send(embed=embed)
 
                 case ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_ui = gi_search.ArtifactSetUI(
-                        query, author=i.user, locale=locale, hakushin=is_beta
-                    )
+                    artifact_set_ui = gi_search.ArtifactSetUI(query, author=i.user, locale=locale)
                     await artifact_set_ui.start(i)
 
                 case ambr.ItemCategory.FOOD:
@@ -369,9 +357,7 @@ class Search(commands.Cog):
                         await i.followup.send(embed=embed)
 
                 case yatta.ItemCategory.LIGHT_CONES:
-                    light_cone_ui = LightConeUI(
-                        query, author=i.user, locale=locale, hakushin=is_beta
-                    )
+                    light_cone_ui = LightConeUI(query, author=i.user, locale=locale)
                     await light_cone_ui.start(i)
 
                 case yatta.ItemCategory.BOOKS:
@@ -379,9 +365,7 @@ class Search(commands.Cog):
                     await book_ui.start(i)
 
                 case yatta.ItemCategory.RELICS:
-                    relic_set_ui = hsr_search.RelicSetUI(
-                        query, author=i.user, locale=locale, hakushin=is_beta
-                    )
+                    relic_set_ui = hsr_search.RelicSetUI(query, author=i.user, locale=locale)
                     await relic_set_ui.start(i)
 
                 case yatta.ItemCategory.CHARACTERS:
@@ -389,53 +373,9 @@ class Search(commands.Cog):
                     character_id = int(query)
 
                     character_ui = hsr_search.CharacterUI(
-                        character_id, author=i.user, locale=locale, hakushin=is_beta
+                        character_id, author=i.user, locale=locale
                     )
                     await character_ui.start(i)
-
-        elif game is Game.ZZZ:
-            try:
-                category = hakushin.ZZZItemCategory(category)
-            except ValueError as e:
-                raise InvalidQueryError from e
-
-            match category:
-                case hakushin.ZZZItemCategory.AGENTS:
-                    self._ensure_query_is_int(query)
-                    agent_id = int(query)
-
-                    view = zzz_search.AgentSearchView(agent_id, author=i.user, locale=locale)
-                    await view.start(i)
-                case hakushin.ZZZItemCategory.BANGBOOS:
-                    self._ensure_query_is_int(query)
-                    bangboo_id = int(query)
-
-                    await i.response.defer(ephemeral=ephemeral(i))
-                    translator = hakushin.HakushinTranslator(locale)
-                    async with hakushin_api.HakushinAPI(
-                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
-                    ) as api:
-                        disc = await api.fetch_bangboo_detail(bangboo_id)
-                    embed = translator.get_bangboo_embed(disc)
-                    await i.followup.send(embed=embed)
-                case hakushin.ZZZItemCategory.W_ENGINES:
-                    self._ensure_query_is_int(query)
-                    engine_id = int(query)
-
-                    view = zzz_search.EngineSearchView(engine_id, author=i.user, locale=locale)
-                    await view.start(i)
-                case hakushin.ZZZItemCategory.DRIVE_DISCS:
-                    self._ensure_query_is_int(query)
-                    disc_id = int(query)
-
-                    await i.response.defer(ephemeral=ephemeral(i))
-                    translator = hakushin.HakushinTranslator(locale)
-                    async with hakushin_api.HakushinAPI(
-                        hakushin_api.Game.ZZZ, locale_to_hakushin_lang(locale)
-                    ) as api:
-                        disc = await api.fetch_drive_disc_detail(disc_id)
-                    embed = translator.get_disc_embed(disc)
-                    await i.followup.send(embed=embed)
 
         await show_anniversary_dismissible(i)
 
@@ -489,8 +429,6 @@ class Search(commands.Cog):
                     category = ambr.ItemCategory(i.namespace.category)
                 elif game is Game.STARRAIL:
                     category = yatta.ItemCategory(i.namespace.category)
-                elif game is Game.ZZZ:
-                    category = hakushin.ZZZItemCategory(i.namespace.category)
                 else:
                     return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
             except ValueError:

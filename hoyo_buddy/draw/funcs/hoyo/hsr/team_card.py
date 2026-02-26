@@ -83,19 +83,15 @@ class HSRTeamCard:
             max_width=363,
         )
 
-        stats_layer = drawer.open_asset("stats_layer.png")
-        im.alpha_composite(stats_layer, (330, 120))
-
-        stats, max_dmg_add = get_character_stats(character)
+        stats, _ = get_character_stats(character)
 
         start_pos = (387, 143)
         x_diff = 164
         y_diff = 57
 
-        for i, stat in enumerate(stats.values()):
-            if i == len(stats.values()) - 1 and max_dmg_add is not None:
-                icon = get_stat_icon(max_dmg_add, size=(52, 48), mask_color=WHITE)
-                im.alpha_composite(icon, (494, 402))
+        for i, (icon, stat) in enumerate(stats.items()):
+            icon_im = get_stat_icon(filename=icon, size=(48, 48), mask_color=WHITE)
+            im.alpha_composite(icon_im, (start_pos[0] - 55, start_pos[1] - icon_im.height // 2))
 
             drawer.write(stat, size=26, position=start_pos, style="regular", anchor="lm")
 

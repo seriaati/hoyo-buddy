@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import asyncio
 import sys
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import sentry_sdk
 from loguru import logger
@@ -12,6 +14,9 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.utils.misc import get_project_version, should_ignore_error
 
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
+
 __all__ = ("setup_async_event_loop", "setup_sentry", "wrap_task_factory")
 
 _tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
@@ -21,7 +26,7 @@ def wrap_task_factory() -> None:
     loop = asyncio.get_running_loop()
     original_factory = loop.get_task_factory()
 
-    async def coro_wrapper(coro: asyncio._CoroutineLike[Any], coro_name: str | None = None) -> Any:
+    async def coro_wrapper(coro: Coroutine[Any, Any, Any], coro_name: str | None = None) -> Any:
         try:
             return await coro
         except Exception as e:
@@ -37,7 +42,7 @@ def wrap_task_factory() -> None:
             raise
 
     def new_factory(
-        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs
+        loop: asyncio.AbstractEventLoop, coro: Coroutine[Any, Any, Any], **kwargs
     ) -> asyncio.Task[Any] | asyncio.Future[Any]:
         wrapped_coro = coro_wrapper(coro, coro_name=kwargs.get("name"))
 

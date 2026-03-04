@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Challenge, ChallengeWithLang
 
+
 CHALLENGE_MODELS: dict[ChallengeType, type[Challenge]] = {
     ChallengeType.SPIRAL_ABYSS: genshin.models.SpiralAbyss,
     ChallengeType.IMG_THEATER: genshin.models.ImgTheaterData,

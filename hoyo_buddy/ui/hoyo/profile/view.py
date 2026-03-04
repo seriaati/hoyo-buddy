@@ -9,7 +9,7 @@ import aiohttp
 import akasha
 import enka
 from discord import File
-from genshin.models import ZZZFullAgent, ZZZPartialAgent
+from genshin.models import ZZZPartialAgent
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
@@ -42,8 +42,8 @@ from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
-from hoyo_buddy.types import Builds, Character, HoyolabCharacter
-from hoyo_buddy.ui import Button, Select, ToggleUIButton, View
+from hoyo_buddy.types import Builds, HoyolabCharacter
+from hoyo_buddy.ui import ToggleUIButton, View
 from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
@@ -64,10 +64,11 @@ if TYPE_CHECKING:
 
     import yatta
     from discord import Member, User
-    from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats
+    from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats, ZZZFullAgent
 
     from hoyo_buddy.db import CardSettings, HoyoAccount
-    from hoyo_buddy.types import Builds, Interaction
+    from hoyo_buddy.types import Builds, Character, Interaction
+    from hoyo_buddy.ui import Button, Select
 
 
 CARD_API_ENDPOINTS = {

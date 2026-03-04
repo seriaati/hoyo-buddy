@@ -17,11 +17,9 @@ from genshin.models import (
     SpiralAbyss,
     StarRailAPCShadow,
     StarRailChallenge,
-    StarRailChallengeSeason,
     StarRailPureFiction,
     TheaterBuff,
 )
-from genshin.models import Character as GICharacter
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
@@ -33,7 +31,7 @@ from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
+from hoyo_buddy.types import Challenge, ChallengeWithBuff
 from hoyo_buddy.ui import Button, Select, SelectOption, ToggleButton, View
 from hoyo_buddy.ui.discord.select import PaginatorSelect
 from hoyo_buddy.utils import blur_uid, get_floor_difficulty
@@ -46,10 +44,12 @@ if TYPE_CHECKING:
     import aiohttp
     import genshin
     from discord import File, Member, User
+    from genshin.models import Character as GICharacter
+    from genshin.models import StarRailChallengeSeason
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
+    from hoyo_buddy.types import Buff, Challenge, ChallengeWithLang, HardChallengeMode, Interaction
 
 ShowUIDChallenge: TypeAlias = (
     ShiyuDefense

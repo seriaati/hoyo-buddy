@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import hb_data
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.db import HoyoAccount, Settings
+from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
 from hoyo_buddy.models.zzz_event import ZZZEventCalendar, ZZZGachaEventWeapon, ZZZWeaponGachaEvent
@@ -14,6 +14,8 @@ from hoyo_buddy.ui.hoyo.events import EventsView
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
+
     from ..types import Interaction, User
 
 

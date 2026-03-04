@@ -24,6 +24,7 @@ if TYPE_CHECKING:
 
     from ..schema import Params
 
+
 __all__ = ("FinishPage",)
 
 

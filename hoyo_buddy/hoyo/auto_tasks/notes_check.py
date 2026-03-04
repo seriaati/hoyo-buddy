@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, ClassVar, TypeAlias
 
 import discord
 import genshin
-from genshin.models import HonkaiNotes, HSREvent, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import HonkaiNotes, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import NotesNotify, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
-from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale, NotesNotifyType
 from hoyo_buddy.icons import (
     BATTERY_CHARGE_ICON,
@@ -34,7 +34,10 @@ from hoyo_buddy.utils import get_now, sleep
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from genshin.models import HSREvent
+
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.embeds import ErrorEmbed
 
 Notes: TypeAlias = GenshinNotes | HonkaiNotes | StarRailNote | ZZZNotes
 

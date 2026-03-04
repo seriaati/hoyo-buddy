@@ -12,13 +12,14 @@ from hoyo_buddy.emojis import ADD, DELETE
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient, ItemCategory
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import DrawInput, ItemWithTrailing
+from hoyo_buddy.models import ItemWithTrailing
 from hoyo_buddy.ui import Button, Page, PaginatorView, ToggleButton
 
 if TYPE_CHECKING:
     from discord import Member, User
     from discord.file import File
 
+    from hoyo_buddy.models import DrawInput
     from hoyo_buddy.types import Interaction
 
 

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.draw.drawer import WHITE
 
 if TYPE_CHECKING:
     from PIL import Image
+
+    from hoyo_buddy.draw.drawer import Drawer
 
 
 class HSRChallengeUIDMixin:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import bisect
 from typing import TYPE_CHECKING
 
-from genshin.models import VideoStoreState, ZZZNotes
+from genshin.models import VideoStoreState
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
@@ -12,6 +12,8 @@ from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     from io import BytesIO
+
+    from genshin.models import ZZZNotes
 
 __all__ = ("draw_zzz_notes",)
 

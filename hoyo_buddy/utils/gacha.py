@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db.models.gacha_history import GachaHistory
 
+
 HSR_BANNER_URL = "https://starrailstation.com/api/v1/warp_config"
 ZZZ_BANNER_URL = "https://zzz.rng.moe/api/v1/gacha/config?game=zzz"
 GI_BANNER_URL = "https://raw.githubusercontent.com/MadeBaruna/paimon-moe-api/refs/heads/main/src/data/banners.ts"

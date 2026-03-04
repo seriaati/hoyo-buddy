@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game, Locale
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from genshin.models import Exploration, PartialGenshinUserStats
+    from PIL import Image
 
 
 class ExplorationCard:

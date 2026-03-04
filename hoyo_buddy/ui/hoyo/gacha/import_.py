@@ -6,7 +6,7 @@ import discord
 import genshin
 
 from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
-from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk, update_gacha_nums
+from hoyo_buddy.db import GachaHistory, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import LINK, LOADING
 from hoyo_buddy.enums import Game
@@ -17,6 +17,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, TextInput, URLButtonView, View
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 

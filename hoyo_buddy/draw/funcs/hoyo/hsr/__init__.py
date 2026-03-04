@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .anomaly import AnomalyArbitrationCard
 from .apc_shadow import APCShadowCard
 from .build_card import draw_hsr_build_card

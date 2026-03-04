@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Member, User
+from discord import ButtonStyle
 
 from hoyo_buddy.constants import EQUIP_ID_TO_ARTIFACT_POS
 from hoyo_buddy.emojis import get_artifact_pos_emoji
@@ -12,6 +12,8 @@ from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
+    from discord import Member, User
+
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction

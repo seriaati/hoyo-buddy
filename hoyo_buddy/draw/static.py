@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
     import aiohttp
 
+
 __all__ = ("download_images",)
 
 ZZZ_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/zzz/")

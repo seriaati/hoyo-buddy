@@ -14,15 +14,10 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
-    DoubleBlock,
-    HoyolabGICharacter,
-    HoyolabHSRCharacter,
     SingleBlock,
     UnownedGICharacter,
     UnownedHSRCharacter,
-    UnownedZZZCharacter,
     ZZZDrawData,
-    ZZZEnkaCharacter,
 )
 from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
@@ -50,7 +45,18 @@ if TYPE_CHECKING:
         ZZZPartialAgent,
     )
 
-    from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
+    from hoyo_buddy.models import (
+        DoubleBlock,
+        DrawInput,
+        FarmData,
+        HoyolabGICharacter,
+        HoyolabHSRCharacter,
+        ItemWithDescription,
+        ItemWithTrailing,
+        Reward,
+        UnownedZZZCharacter,
+        ZZZEnkaCharacter,
+    )
     from hoyo_buddy.models.draw import ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 

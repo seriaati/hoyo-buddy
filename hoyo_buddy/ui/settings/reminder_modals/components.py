@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from hoyo_buddy.constants import DB_SMALLINT_MAX
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import BooleanSelect, Label, TextDisplay, TextInput, WeekdaySelect

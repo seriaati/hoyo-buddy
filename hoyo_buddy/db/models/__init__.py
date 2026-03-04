@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .card_settings import CardSettings
 from .challenge_history import ChallengeHistory
 from .custom_image import CustomImage

@@ -9,13 +9,14 @@ import genshin
 from tortoise import fields
 
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, REGION_TO_PLATFORM, SERVER_RESET_HOURS
-from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.enums import Game
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.utils import blur_uid, get_now
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
+    from hoyo_buddy.enums import Platform
     from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 
     from .farm_notify import FarmNotify

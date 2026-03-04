@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import discord
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
@@ -12,7 +12,7 @@ from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import DefaultEmbed, ErrorEmbed
 from ..emojis import get_game_emoji
-from ..enums import GeetestType, Locale
+from ..enums import GeetestType
 from ..exceptions import (
     BlockedByAutoModError,
     HoyoBuddyError,
@@ -22,6 +22,9 @@ from ..exceptions import (
 )
 from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
+
+if TYPE_CHECKING:
+    from ..enums import Locale
 
 __all__ = ("get_error_embed",)
 

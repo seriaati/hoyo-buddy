@@ -8,13 +8,14 @@ import discord
 from loguru import logger
 
 from hoyo_buddy.constants import AUTO_TASK_COMMANDS, AUTO_TASK_FEATURE_KEYS
-from hoyo_buddy.db.models import DiscordEmbed, HoyoAccount, Settings
+from hoyo_buddy.db.models import DiscordEmbed, Settings
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot.bot import HoyoBuddy
+    from hoyo_buddy.db.models import HoyoAccount
     from hoyo_buddy.types import AutoTaskType
 
 

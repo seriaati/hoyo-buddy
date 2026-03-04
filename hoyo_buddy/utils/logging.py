@@ -1,17 +1,12 @@
-from __future__ import annotations
-
 import inspect
 import logging
 import random
 import sys
-from typing import TYPE_CHECKING
+from typing import Any
 
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
-
-if TYPE_CHECKING:
-    from typing import Any
 
 __all__ = ("setup_logging",)
 

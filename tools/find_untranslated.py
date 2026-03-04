@@ -5,8 +5,6 @@ Usage:
     python find_untranslated.py zh_CN.yaml --output missing_translations.yaml
 """
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
 

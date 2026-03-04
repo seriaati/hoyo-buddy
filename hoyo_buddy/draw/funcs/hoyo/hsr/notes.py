@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import format_timedelta
 
@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from genshin.models import StarRailNote
+
+    from hoyo_buddy.enums import Locale
 
 __all__ = ("draw_hsr_notes_card",)
 

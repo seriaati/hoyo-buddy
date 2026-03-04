@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from genshin.models import StarRailDetailCharacter as HSRCharacter
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import DARK_SURFACE, LIGHT_SURFACE, Drawer
 from hoyo_buddy.l10n import LevelStr, LocaleStr
@@ -12,6 +12,8 @@ from hoyo_buddy.models import DynamicBKInput, UnownedHSRCharacter
 if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
+
+    from PIL import Image
 
     from hoyo_buddy.enums import Locale
 

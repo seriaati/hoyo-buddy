@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .abyss import SpiralAbyssCard
 from .build_card import draw_genshin_card
 from .build_card2 import GITempTwoBuildCard

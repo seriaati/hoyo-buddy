@@ -7,18 +7,22 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageFont
 
 from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
-from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.models import DynamicBKInput, TopPadding
+from hoyo_buddy.l10n import translator
+from hoyo_buddy.models import TopPadding
 from hoyo_buddy.utils import get_static_img_path
 
 from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
+    from PIL import ImageDraw
+
+    from hoyo_buddy.l10n import LocaleStr
+    from hoyo_buddy.models import DynamicBKInput
     from hoyo_buddy.types import FontStyle
 
 __all__ = ("Drawer",)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from hoyo_buddy.db import HoyoAccount, User, get_dyk
+from hoyo_buddy.db import HoyoAccount, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.l10n import EnumStr, LocaleStr
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
     import discord
 
+    from hoyo_buddy.db import User
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 

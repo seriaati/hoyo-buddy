@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+if TYPE_CHECKING:
+    from pydantic import ValidationInfo
 
 __all__ = (
     "SRGFRecord",

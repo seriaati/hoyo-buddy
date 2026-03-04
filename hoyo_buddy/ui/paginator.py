@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
     from ..types import Interaction, User
 
+
 __all__ = ("Page", "PaginatorView")
 
 

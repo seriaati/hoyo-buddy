@@ -10,7 +10,7 @@ from hoyo_buddy import emojis
 from hoyo_buddy.db import User, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_checkin_card
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Locale, Platform
+from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, Reward
 from hoyo_buddy.ui import Button, View
@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     from genshin.models import DailyRewardInfo
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 CHECK_IN_URLS = {

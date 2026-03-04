@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 import discord
 from discord.utils import MISSING
 
-from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.l10n import translator
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.l10n import LocaleStr
 
 __all__ = ("TextInput",)
 

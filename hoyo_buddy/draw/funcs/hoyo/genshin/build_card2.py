@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 from hoyo_buddy.constants import convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
-from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
+from hoyo_buddy.models import HoyolabGICharacter
 
 from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER
 
@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     import enka
+
+    from hoyo_buddy.models import HoyolabGITalent
 
 
 __all__ = ("GITempTwoBuildCard",)

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord.utils as dutils
-from discord import Member, User
 from seria.utils import shorten
 
 from hoyo_buddy.emojis import PROJECT_AMBER
@@ -14,6 +13,7 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     from ambr.models import BookDetail, BookVolume
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Locale

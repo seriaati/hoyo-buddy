@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import genshin.models
 
 __all__ = (

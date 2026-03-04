@@ -36,7 +36,7 @@ from hoyo_buddy.constants import (
     contains_traveler_id,
     convert_fight_prop,
 )
-from hoyo_buddy.db import HoyoAccount, JSONFile
+from hoyo_buddy.db import JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement, Locale
 from hoyo_buddy.exceptions import HoyoBuddyError
@@ -49,6 +49,8 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     import yatta
+
+    from hoyo_buddy.db import HoyoAccount
 
 
 class MimoClaimTaksResult(NamedTuple):

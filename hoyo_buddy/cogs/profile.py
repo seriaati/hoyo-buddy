@@ -8,7 +8,7 @@ from discord import app_commands
 from discord.ext.commands import GroupCog
 
 from hoyo_buddy import dismissibles
-from hoyo_buddy.commands.configs import COMMANDS, CommandName
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.profile import ProfileCommand
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_to_zenless_data_lang
 from hoyo_buddy.db import HoyoAccount, get_locale
@@ -23,6 +23,7 @@ from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.commands.configs import CommandName
 
 
 def gen_character_id_rename(max_: int) -> dict[str, app_commands.locale_str]:

@@ -6,7 +6,7 @@ from discord import ButtonStyle
 from discord.utils import format_dt
 
 from hoyo_buddy.constants import UTC_8
-from hoyo_buddy.db import HoyoAccount, get_dyk
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import FeatureNotImplementedError
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
     import genshin
 
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 

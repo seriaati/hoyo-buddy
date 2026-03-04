@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from hoyo_buddy.config import CONFIG
 
 DB_CONFIG = {

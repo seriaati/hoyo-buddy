@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     import enka
+    from PIL import Image
 
     from hoyo_buddy.models import HoyolabHSRCharacter as HSRCharacter
 

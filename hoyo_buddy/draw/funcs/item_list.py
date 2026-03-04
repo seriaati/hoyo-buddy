@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.models import ItemWithDescription, ItemWithTrailing
+from hoyo_buddy.models import ItemWithTrailing
 
 from ..drawer import (
     DARK_ON_SURFACE,
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models import ItemWithDescription
 
 
 def draw_item_list(

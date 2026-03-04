@@ -32,13 +32,14 @@ from hoyo_buddy.constants import (
     UTC_8,
 )
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
     import genshin
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, SleepTime
 
 

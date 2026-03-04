@@ -4,7 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
-from discord import File, Member, User
+from discord import File
 
 from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import draw_locale, get_dyk
@@ -18,7 +18,7 @@ from hoyo_buddy.emojis import (
     TRAILBLAZE_POWER,
     get_game_emoji,
 )
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
@@ -27,7 +27,10 @@ from hoyo_buddy.ui import Button, Select, SelectOption, View
 if TYPE_CHECKING:
     import io
 
+    from discord import Member, User
+
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
 NotesWithCard: TypeAlias = (

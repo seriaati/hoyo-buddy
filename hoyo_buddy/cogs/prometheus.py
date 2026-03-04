@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Final
 
 import prometheus_client
 import psutil
-from discord import Guild, Interaction, InteractionType, app_commands
+from discord import InteractionType, app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 from prometheus_client import Counter, Gauge
@@ -18,6 +18,8 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models import HoyoAccount
 
 if TYPE_CHECKING:
+    from discord import Guild, Interaction
+
     from hoyo_buddy.bot.bot import HoyoBuddy
 
 

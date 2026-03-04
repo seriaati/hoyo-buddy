@@ -10,15 +10,17 @@ import orjson
 from discord import ButtonStyle
 
 from hoyo_buddy.constants import UIGF_GAME_KEYS
-from hoyo_buddy.db import GachaHistory, HoyoAccount, get_dyk
+from hoyo_buddy.db import GachaHistory, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import DELETE, EXPORT
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

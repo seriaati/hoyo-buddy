@@ -17,9 +17,9 @@ from hoyo_buddy.constants import (
     MIMO_SUPPORT_GAMES,
 )
 from hoyo_buddy.db.models import DiscordEmbed
-from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import (
@@ -33,6 +33,8 @@ from hoyo_buddy.utils import (
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.embeds import ErrorEmbed
+    from hoyo_buddy.enums import Game
     from hoyo_buddy.types import AutoTaskType
 
 

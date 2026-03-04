@@ -48,12 +48,7 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError, NoCharsFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.models import (
-    DrawInput,
-    UnownedGICharacter,
-    UnownedHSRCharacter,
-    UnownedZZZCharacter,
-)
+from hoyo_buddy.models import UnownedGICharacter, UnownedHSRCharacter, UnownedZZZCharacter
 from hoyo_buddy.ui import (
     Button,
     GoBackButton,
@@ -76,6 +71,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models import DrawInput
     from hoyo_buddy.types import Interaction
 
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from discord import ButtonStyle, Member, User
+from discord import ButtonStyle
 
 from hoyo_buddy.constants import GI_SKILL_TYPE_KEYS
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -21,6 +21,7 @@ from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
     import ambr
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Locale

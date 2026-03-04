@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Member, User
+from discord import ButtonStyle
 from seria.utils import create_bullet_list
 
 from hoyo_buddy.embeds import DefaultEmbed
@@ -12,6 +12,7 @@ from hoyo_buddy.ui import Button, Label, Modal, TextInput, View
 
 if TYPE_CHECKING:
     import aiohttp
+    from discord import Member, User
     from genshin import Game
 
     from hoyo_buddy.db import HoyoAccount

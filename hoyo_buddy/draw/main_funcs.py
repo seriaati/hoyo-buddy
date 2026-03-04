@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Literal, cast
 import ambr
 import hb_data
 from discord import File
-from genshin.models import ZZZFullAgent
 
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS
 from hoyo_buddy.db.models import JSONFile
@@ -46,7 +45,9 @@ if TYPE_CHECKING:
         StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
+        ZZZFullAgent,
         ZZZNotes,
+        ZZZPartialAgent,
     )
 
     from hoyo_buddy.models import DrawInput, FarmData, ItemWithDescription, ItemWithTrailing, Reward
@@ -599,13 +600,9 @@ async def draw_zzz_build_card(
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZFullAgent | UnownedZZZCharacter]
+    draw_input: DrawInput, agents: Sequence[ZZZPartialAgent | UnownedZZZCharacter]
 ) -> File:
-    urls: list[str] = []
-    for agent in agents:
-        urls.append(agent.banner_icon)
-        if isinstance(agent, ZZZFullAgent) and agent.w_engine is not None:
-            urls.append(agent.w_engine.icon)
+    urls = [agent.banner_icon for agent in agents]
 
     await download_images(urls, draw_input.session)
     buffer = await draw_input.loop.run_in_executor(

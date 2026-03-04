@@ -12,7 +12,7 @@ from discord import ButtonStyle
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
-from genshin.models import ZZZFullAgent as ZZZCharacter
+from genshin.models import ZZZPartialAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
 
 from hoyo_buddy.constants import (

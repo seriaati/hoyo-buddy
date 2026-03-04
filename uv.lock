@@ -954,7 +954,7 @@ wheels = [
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#2fe0907b7c509e4d32a4600707c7fac585483e38" }
+source = { git = "https://github.com/seriaati/hb-data#ff9bdd52711abb80c3d5414c0b6adf5a6becdd1c" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

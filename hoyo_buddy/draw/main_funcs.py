@@ -413,7 +413,7 @@ async def draw_zzz_notes_card(draw_input: DrawInput, notes: ZZZNotes) -> BytesIO
     )
 
 
-def _get_images_path(template: Literal[1, 2], use_m3_art: bool) -> str:
+def _get_images_path(template: Literal[1, 2], *, use_m3_art: bool) -> str:
     if template == 2:
         return "zzz_m3_cinema_art.json" if use_m3_art else "zzz_m6_cinema_art.json"
     return "zzz_images.json"
@@ -435,7 +435,7 @@ async def fetch_zzz_draw_data(
     agent_images: dict[int, str] = {}
     if template in {1, 2}:
         template = cast("Literal[1, 2]", template)
-        agent_images_path = _get_images_path(template, use_m3_art)
+        agent_images_path = _get_images_path(template, use_m3_art=use_m3_art)
         agent_images = await JSONFile.read(agent_images_path, int_key=True)
     else:  # 3, 4
         agent_images = {agent.id: agent.banner_icon for agent in agents}
@@ -498,7 +498,7 @@ async def fetch_zzz_draw_data(
                 }
                 agent_images.update(skin_images)
 
-            agent_images_path = _get_images_path(template, use_m3_art)
+            agent_images_path = _get_images_path(template, use_m3_art=use_m3_art)
             await JSONFile.write(agent_images_path, agent_images)
 
         # Fetch disc icons

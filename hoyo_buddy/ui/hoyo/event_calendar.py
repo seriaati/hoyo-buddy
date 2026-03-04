@@ -460,10 +460,14 @@ class ChallengeSelector(ItemSelector):
             key = "memory_of_chaos"
         elif challenge.type is genshin.models.ChallengeType.PURE_FICTION:
             key = "pure_fiction"
-        else:
+        elif challenge.type is genshin.models.ChallengeType.APC_SHADOW:
             key = "apocalyptic_shadow"
+        elif challenge.type is genshin.models.ChallengeType.ANOMALY_ARBITRATION:
+            key = "anomaly_arbitration"
+        else:
+            key = None
 
-        name = LocaleStr(key=key, append=f": {challenge.name}")
+        name = challenge.name if key is None else LocaleStr(key=key, append=f": {challenge.name}")
         return LocaleStr(
             custom_str="{name} ({star}/{max_star})",
             name=name,

@@ -686,6 +686,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         await super().close()
 
     @property
-    def ram_usage(self) -> int:
+    def ram_usage(self) -> float:
         """The bot's current RAM usage in MB"""
         return self.process.memory_info().rss / 1024**2

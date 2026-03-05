@@ -603,8 +603,7 @@ class CharactersView(PaginatorView):
 
         elif self.game is Game.ZZZ:
             agents = await client.get_zzz_agents()
-            full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
-            self.zzz_characters = full_agents  # pyright: ignore[reportAttributeAccessIssue]
+            self.zzz_characters = agents  # pyright: ignore[reportAttributeAccessIssue]
 
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))

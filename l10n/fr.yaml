@@ -399,7 +399,6 @@ resin_reminder_button.label: Rappel de résine
 resin_reminder_modal.title: Paramètres de rappel de la résine
 reward_claimed_title: Les récompenses de connexion quotidienne été prises
 saturday: Samedi
-search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
 search_command_category_param_description: Dans quelle catégorie rechercher
 search_cmd_category_param_name: catégorie
@@ -640,6 +639,7 @@ characters_embed_max_level_characters: ""
 natlan_reputation: ""
 shiyu_overview: ""
 shiyu_total_clear_time: ""
+shiyu_clear_time: ""
 shiyu_highest_frontier: ""
 shiyu_relevant_season: ""
 shiyu_1_frontier: ""
@@ -842,3 +842,11 @@ card_settings_hsr_desc: ""
 card_settings_zzz_desc: ""
 card_settings_character_param: ""
 disabled_label: ""
+none: ""
+fake_settings_button_label: ""
+fake_settings_button_title: ""
+captcha_not_showing_up: ""
+open_captcha_button_label: ""
+captcha_verifying: ""
+build_cmd_zzz_desc: ""
+elation: ""

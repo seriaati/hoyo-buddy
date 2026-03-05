@@ -8,15 +8,15 @@ about_command.translators: المترجمين
 about_command.uptime: مدة التشغيل
 about_command.website: الموقع الرسمي
 about_command_description: عَن البوت
-about_embed.description: ""
+about_embed.description: "بوت ديسكورد بمزايا عديدة ، سهل الاستخدام ، مصمم بشكل جميل صنع من أجل العاب هويوفيرس"
 abundance: ابوندنس
 abyss.battles_won_fought: "المعارك التي تم الفوز بها/خوضها: {val1}/{val2}"
 abyss.deepest_descent: "أعمق نزول: {val}"
 abyss.floor: "الطابق  {val}"
-abyss.overview: ""
-abyss.damage: ""
-abyss.stats: ""
-honkai:_star_rail: ""
+abyss.overview: ملخص الهاوية الحلزونية
+abyss.damage: معلومات الضرر
+abyss.stats: إحصائيات
+honkai:_star_rail: "هونكاي: ستار ريل"
 abyss.phase_select.placeholder: اختر مرحلة
 abyss.total_stars: "إجمالي النجوم: {val}"
 abyss_chamber.challenge_target.embed.field.name: هدف التحدي
@@ -39,9 +39,9 @@ accounts_command_description: أدارة حساباتك
 action_in_cooldown_error_message: "يرجى المحاولة مرة أخرى في {available_time}."
 action_in_cooldown_error_title: الأمر في وقت التهدئة
 add_account_button_label: اضافة حسابات
-add_hoyolab_acc.embed.description: ""
+add_hoyolab_acc.embed.description: "- [أي طريقة استعمل؟](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: اختر طريقة لاضافة حساباتك
-adding_accounts_description: ""
+adding_accounts_description: "- [هل  صديق هويو أمن؟](:docs/Account-Security:)\n- [سياسة الخصوصية](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: اختر منصة حسابك
 ai_gen_image_error_message: تحقق من ما كتبته وحاول مرة اخرى
 ai_gen_image_error_title: حدث خطأ أثناء إنشاء الفن باستخدام الذكاء الاصطناعي
@@ -57,15 +57,15 @@ auto_redeem_footer: قم بإيقاف تشغيل الاسترداد التلقا
 auto_redeem_toggle.label: استرداد تلقائي للكود
 books: كتب
 captcha.embed.description: "اضعط على الزر ادناه لاكمال تحقق CAPTCHA"
-challenge_type_select.placeholder: ""
-challenge_view.buff_used_in: ""
-challenge_view.team: ""
-chamber_button_label: ""
-change_character_level_label: ""
-change_skill_level_label: ""
-change_talent_level_label: ""
-change_weapon_level_label: ""
-chara_level.modal.title: ""
+challenge_type_select.placeholder: اختر وضع اللعب
+challenge_view.buff_used_in: مستعمل في
+challenge_view.team: "الفريق {team}"
+chamber_button_label: "الغرفة {value}"
+change_character_level_label: تغيير مستوى الشخصية
+change_skill_level_label: تغيير مستوى المهارة
+change_talent_level_label: تغيير مستوى الموهبة
+change_weapon_level_label: تغيير مستوى السلاح
+chara_level.modal.title: ادخل مستوى الشخصية
 character_const_page_label: ""
 character_embed_description: ""
 character_passives_page_label: ""
@@ -399,7 +399,6 @@ resin_reminder_button.label: ""
 resin_reminder_modal.title: ""
 reward_claimed_title: ""
 saturday: ""
-search_autocomplete_no_results: ""
 search_autocomplete_not_setup: ""
 search_command_category_param_description: ""
 search_cmd_category_param_name: ""
@@ -640,6 +639,7 @@ characters_embed_max_level_characters: ""
 natlan_reputation: ""
 shiyu_overview: ""
 shiyu_total_clear_time: ""
+shiyu_clear_time: ""
 shiyu_highest_frontier: ""
 shiyu_relevant_season: ""
 shiyu_1_frontier: ""
@@ -842,3 +842,11 @@ card_settings_hsr_desc: ""
 card_settings_zzz_desc: ""
 card_settings_character_param: ""
 disabled_label: ""
+none: ""
+fake_settings_button_label: ""
+fake_settings_button_title: ""
+captcha_not_showing_up: ""
+open_captcha_button_label: ""
+captcha_verifying: ""
+build_cmd_zzz_desc: ""
+elation: ""

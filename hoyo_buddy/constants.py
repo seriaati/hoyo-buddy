@@ -520,6 +520,7 @@ ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
+    Locale.chinese: "CHS",
     Locale.german: "DE",
     Locale.american_english: "EN",
     Locale.spain_spanish: "ES",

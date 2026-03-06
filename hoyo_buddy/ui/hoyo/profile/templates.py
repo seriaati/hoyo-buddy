@@ -1,6 +1,5 @@
 # Determine button states based on template and game.
 # Templates aren't based on enums, games are.
-from __future__ import annotations
 
 from hoyo_buddy.enums import Game
 

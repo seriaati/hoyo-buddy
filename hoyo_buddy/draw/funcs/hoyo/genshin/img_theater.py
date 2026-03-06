@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import genshin
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.draw.drawer import Drawer
@@ -13,6 +13,8 @@ from hoyo_buddy.utils import seconds_to_time
 
 if TYPE_CHECKING:
     import io
+
+    from PIL import Image
 
 
 class ImgTheaterCard:

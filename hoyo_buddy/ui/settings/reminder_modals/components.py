@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from hoyo_buddy.constants import DB_SMALLINT_MAX
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import BooleanSelect, Label, TextDisplay, TextInput, WeekdaySelect
@@ -23,7 +21,7 @@ MAX_NOTIF_COUNT: Label[TextInput] = Label(
 )
 NOTIFY_TIME: Label[TextInput] = Label(
     text=LocaleStr(key="notif_modal.notify_time.label"),
-    component=TextInput(is_digit=True, min_value=1, max_value=24),
+    component=TextInput(is_digit=True, min_value=0, max_value=24),
     description=LocaleStr(key="notif_modal.notify_time.description"),
 )
 NOTIFY_WEEKDAY: Label[WeekdaySelect] = Label(

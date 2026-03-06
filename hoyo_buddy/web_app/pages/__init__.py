@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .dev_mode import *
 from .dev_tools import *
 from .device_info import *

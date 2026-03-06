@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 
 from hoyo_buddy.config import CONFIG
@@ -26,7 +24,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        import uvloop  # pyright: ignore[reportMissingImports]
+        import uvloop
     except ImportError:
         asyncio.run(main())
     else:

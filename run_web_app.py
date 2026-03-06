@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import contextlib
 
@@ -50,7 +48,7 @@ async def main() -> None:
 if __name__ == "__main__":
     with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
         try:
-            import uvloop  # pyright: ignore[reportMissingImports]
+            import uvloop
         except ImportError:
             asyncio.run(main())
         else:

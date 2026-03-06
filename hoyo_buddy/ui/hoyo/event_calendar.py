@@ -8,7 +8,7 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import BLOCK_COLORS
-from hoyo_buddy.db import HoyoAccount, draw_locale
+from hoyo_buddy.db import draw_locale
 from hoyo_buddy.draw.main_funcs import draw_block_list_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     import discord
 
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.models.zzz_event import ZZZEventCalendar
     from hoyo_buddy.types import Interaction, User
@@ -459,10 +460,14 @@ class ChallengeSelector(ItemSelector):
             key = "memory_of_chaos"
         elif challenge.type is genshin.models.ChallengeType.PURE_FICTION:
             key = "pure_fiction"
-        else:
+        elif challenge.type is genshin.models.ChallengeType.APC_SHADOW:
             key = "apocalyptic_shadow"
+        elif challenge.type is genshin.models.ChallengeType.ANOMALY_ARBITRATION:
+            key = "anomaly_arbitration"
+        else:
+            key = None
 
-        name = LocaleStr(key=key, append=f": {challenge.name}")
+        name = challenge.name if key is None else LocaleStr(key=key, append=f": {challenge.name}")
         return LocaleStr(
             custom_str="{name} ({star}/{max_star})",
             name=name,

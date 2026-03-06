@@ -77,7 +77,7 @@ Only the following environment variables are required to run the bot:
 
 ### Code Style and Quality
 
-To prevent errors in the earliest stage possible, and to ensure consistent code style, this project uses pyright for type checking, and ruff for linting and formatting.
+To prevent errors in the earliest stage possible, and to ensure consistent code style, this project uses basedpyright for type checking, and ruff for linting and formatting.
 
 There are GitHub Actions set up to check for type and linting errors on pull requests, you will be required to fix any errors before your pull request can be merged.
 
@@ -85,11 +85,10 @@ You **MUST** write your code with proper type hints, and make sure there are no 
 
 #### Commands
 
-To check for type errors manually, run:
+To check for type errors, run:
 
 ```bash
-uv sync --group type-check # run if pyright is not installed
-pyright .
+basedpyright
 ```
 
 To check for linting errors + formatting + auto-fixes, run:

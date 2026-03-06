@@ -13,12 +13,13 @@ from hoyo_buddy.constants import (
     CONCURRENT_TASK_NUM,
     HB_GAME_TO_GPY_GAME,
     MAX_PROXY_ERROR_NUM,
+    MIMO_AUTO_DRAW_SUPPORT_GAMES,
     MIMO_SUPPORT_GAMES,
 )
 from hoyo_buddy.db.models import DiscordEmbed
-from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import (
@@ -32,6 +33,8 @@ from hoyo_buddy.utils import (
 
 if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.embeds import ErrorEmbed
+    from hoyo_buddy.enums import Game
     from hoyo_buddy.types import AutoTaskType
 
 
@@ -417,7 +420,7 @@ class AutoMimoDraw(AutoMimoMixin):
 
                 # Auto draw
                 queue = await cls.build_auto_task_queue(
-                    "mimo_draw", games=MIMO_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
+                    "mimo_draw", games=MIMO_AUTO_DRAW_SUPPORT_GAMES, region=genshin.Region.OVERSEAS
                 )
                 if queue.empty():
                     logger.debug(f"Queue is empty for {cls.__name__}")

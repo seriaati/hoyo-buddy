@@ -32,54 +32,15 @@ from hoyo_buddy.constants import (
     UTC_8,
 )
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
     import genshin
 
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, SleepTime
-
-__all__ = (
-    "add_to_hoyo_codes",
-    "blur_uid",
-    "capitalize_first_word",
-    "capture_exception",
-    "contains_masked_link",
-    "convert_chara_id_to_ambr_format",
-    "convert_code_to_redeem_url",
-    "convert_to_title_case",
-    "dict_cookie_to_str",
-    "ephemeral",
-    "error_handler",
-    "fetch_json",
-    "format_float",
-    "format_time",
-    "format_timedelta",
-    "get_discord_protocol_url",
-    "get_discord_url",
-    "get_discord_user_md_link",
-    "get_discord_user_protocol_url",
-    "get_floor_difficulty",
-    "get_mimo_task_str",
-    "get_mimo_task_url",
-    "get_now",
-    "get_pixiv_proxy_img",
-    "get_project_version",
-    "get_static_img_path",
-    "human_format_number",
-    "is_hb_birthday",
-    "is_image_url",
-    "is_valid_hex_color",
-    "measure_time",
-    "remove_html_tags",
-    "seconds_to_time",
-    "should_ignore_error",
-    "sleep",
-    "test_url_validity",
-    "upload_image",
-)
 
 
 def get_now(tz: datetime.timezone | None = None) -> datetime.datetime:
@@ -279,7 +240,7 @@ def get_floor_difficulty(floor_name: str, season_name: str) -> str:
 
 def get_static_img_path(image_url: str) -> pathlib.Path:
     if not image_url:
-        msg = "Invalid image URL"
+        msg = "Image URL is an empty string"
         raise ValueError(msg)
 
     parsed_url = urlparse(image_url)
@@ -478,7 +439,11 @@ def get_mimo_task_url(task: genshin.models.MimoTask) -> str | None:
     if not task.jump_url:
         return None
 
-    url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    try:
+        url_data: dict[str, Any] = orjson.loads(task.jump_url)
+    except orjson.JSONDecodeError:
+        return None
+
     host, type_, args = url_data.get("host"), url_data.get("type"), url_data.get("args")
     if host != "hoyolab" or args is None:
         return None

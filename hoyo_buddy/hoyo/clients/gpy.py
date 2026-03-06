@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
 import enka
 import genshin
-import hakushin
 import orjson
+import redis.asyncio as aioredis
 from loguru import logger
 from tortoise import Tortoise
 
@@ -28,7 +28,7 @@ from hoyo_buddy.constants import (
     POST_REPLIES,
     YATTA_PROP_TYPE_TO_GPY_TYPE,
     ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY,
-    ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE,
+    ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE,
     ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE,
     ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY,
     ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY,
@@ -36,24 +36,36 @@ from hoyo_buddy.constants import (
     contains_traveler_id,
     convert_fight_prop,
 )
-from hoyo_buddy.db import HoyoAccount, JSONFile
+from hoyo_buddy.db import JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement, Locale
 from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import sleep
+from hoyo_buddy.utils.game import get_ascension_from_level, get_max_level_from_ascension
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     import yatta
 
+    from hoyo_buddy.db import HoyoAccount
+
 
 class MimoClaimTaksResult(NamedTuple):
     finished: list[genshin.models.MimoTask]
     claimed_points: int
     all_claimed: bool
+
+
+def _create_gpy_cache() -> genshin.cache.BaseCache:
+    """Create the genshin.py API cache, using Redis if available."""
+    static_ttl = 3600 * 24 * 31  # 31 days
+    if CONFIG.redis_url:
+        redis = aioredis.from_url(CONFIG.redis_url)
+        return genshin.RedisCache(redis, static_ttl=static_ttl)
+    return genshin.SQLiteCache(static_ttl=static_ttl)
 
 
 class ProxyGenshinClient(genshin.Client):
@@ -67,7 +79,7 @@ class ProxyGenshinClient(genshin.Client):
         super().__init__(
             *args,
             debug=True,
-            cache=genshin.SQLiteCache(static_ttl=3600 * 24 * 31),
+            cache=_create_gpy_cache(),
             region=region,
             proxy=CONFIG.proxy if region is genshin.Region.OVERSEAS and use_proxy else None,
             **kwargs,
@@ -104,6 +116,26 @@ class GenshinClient(ProxyGenshinClient):
             use_proxy=False,
         )
         self._account = account
+
+    async def _request_mimo(
+        self,
+        endpoint: str,
+        *,
+        method: str | None = None,
+        params: Mapping[str, Any] | None = None,
+        data: Any = None,
+    ) -> Any:
+        try:
+            return await super()._request_mimo(endpoint, method=method, params=params, data=data)
+        except genshin.GenshinException as e:
+            if e.retcode == -510001:  # Invalid fields in calculation
+                raise HoyoBuddyError(
+                    message=LocaleStr(
+                        key="gi_mimo_start_desc",
+                        url="https://act.hoyolab.com/ys/event/bbs-event-20251029points/index.html",
+                    )
+                ) from e
+            raise
 
     def set_lang(self, locale: Locale) -> None:
         if self._account.game is Game.STARRAIL and locale is Locale.turkish:
@@ -155,9 +187,7 @@ class GenshinClient(ProxyGenshinClient):
             icon=character.weapon.icon,
             refinement=character.weapon.refinement,
             level=character.weapon.level,
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                character.weapon.ascension, hakushin.Game.GI
-            ),
+            max_level=get_max_level_from_ascension(character.weapon.ascension, Game.GENSHIN),
             rarity=character.weapon.rarity,
             stats=[
                 models.HoyolabGIStat(
@@ -283,11 +313,9 @@ class GenshinClient(ProxyGenshinClient):
             artifacts=artifacts,
             friendship_level=character.friendship,
             level=character.level,
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(
-                    character.level, ascended=True, game=hakushin.Game.GI
-                ),
-                hakushin.Game.GI,
+            max_level=get_max_level_from_ascension(
+                get_ascension_from_level(character.level, ascended=True, game=Game.GENSHIN),
+                Game.GENSHIN,
             ),
             icon=icon,
             costume=costume,
@@ -343,11 +371,9 @@ class GenshinClient(ProxyGenshinClient):
                 level=c.equip.level,
                 superimpose=c.equip.rank,
                 name=c.equip.name,
-                max_level=hakushin.utils.get_max_level_from_ascension(
-                    hakushin.utils.get_ascension_from_level(
-                        c.equip.level, ascended=True, game=hakushin.Game.HSR
-                    ),
-                    hakushin.Game.HSR,
+                max_level=get_max_level_from_ascension(
+                    get_ascension_from_level(c.equip.level, ascended=True, game=Game.STARRAIL),
+                    Game.STARRAIL,
                 ),
                 rarity=c.equip.rarity,
                 stats=[],  # to be filled in later by add_lc_stats
@@ -373,6 +399,7 @@ class GenshinClient(ProxyGenshinClient):
                         formatted_value=sub_property.value,
                     )
                     for sub_property in relic.properties
+                    if sub_property.property_type in prop_icons
                 ],
                 type=enka.hsr.RelicType(relic.pos),
             )
@@ -394,6 +421,7 @@ class GenshinClient(ProxyGenshinClient):
                     formatted_value=prop.final,
                 )
                 for prop in c.properties
+                if prop.property_type in prop_icons
             ],
             traces=[
                 models.Trace(anchor=skill.anchor, icon=skill.item_url, level=skill.level)
@@ -403,11 +431,8 @@ class GenshinClient(ProxyGenshinClient):
                 models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
                 for eidolon in c.ranks
             ],
-            max_level=hakushin.utils.get_max_level_from_ascension(
-                hakushin.utils.get_ascension_from_level(
-                    c.level, ascended=True, game=hakushin.Game.HSR
-                ),
-                hakushin.Game.HSR,
+            max_level=get_max_level_from_ascension(
+                get_ascension_from_level(c.level, ascended=True, game=Game.STARRAIL), Game.STARRAIL
             ),
             path=GPY_PATH_TO_EKNA_PATH[c.path],
         )
@@ -477,7 +502,7 @@ class GenshinClient(ProxyGenshinClient):
             id=agent.id,
             name=agent.name,
             level=agent.level,
-            element=ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE[agent.elements[0]],
+            element=ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE[agent.elements[0]],
             w_engine=w_engine,
             properties=props,
             discs=discs,
@@ -707,17 +732,7 @@ class GenshinClient(ProxyGenshinClient):
     async def get_mimo_tasks(
         self, *, game_id: int, version_id: int
     ) -> Sequence[genshin.models.MimoTask]:
-        try:
-            return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
-        except genshin.GenshinException as e:
-            if e.retcode == -510001:  # Invalid fields in calculation
-                raise HoyoBuddyError(
-                    message=LocaleStr(
-                        key="gi_mimo_start_desc",
-                        url="https://act.hoyolab.com/ys/event/bbs-event-20240828mimo/index.html",
-                    )
-                ) from e
-            raise
+        return await super().get_mimo_tasks(game_id=game_id, version_id=version_id)
 
     async def finish_and_claim_mimo_tasks(
         self, *, game_id: int, version_id: int

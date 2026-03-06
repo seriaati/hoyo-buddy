@@ -33,10 +33,10 @@ jobs:
 
       - name: Install Project
         run: |
-          uv sync --frozen --group type-check
+          uv sync --frozen
           uv pip uninstall uvloop
           echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
       - name: Run Pyright
         run: |
-          uv run pyright hoyo_buddy/
+          uv run basedpyright

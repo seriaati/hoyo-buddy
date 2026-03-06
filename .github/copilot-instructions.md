@@ -15,7 +15,7 @@ uv sync --frozen
 ```bash
 ruff format                         # Format code (100 char lines)
 ruff check --fix --unsafe-fixes     # Auto-fix linting
-pyright hoyo_buddy/                 # Type check (~30-60s, ignore missing import errors)
+basedpyright hoyo_buddy/                 # Type check (~30-60s, ignore missing import errors)
 ```
 
 **3. Database changes** (if models modified):

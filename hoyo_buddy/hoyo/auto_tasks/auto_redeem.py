@@ -15,7 +15,7 @@ from hoyo_buddy.constants import (
     MAX_PROXY_ERROR_NUM,
 )
 from hoyo_buddy.db.models import DiscordEmbed
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import capture_exception, error_handler, get_now
@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+    from hoyo_buddy.enums import Game
 
 
 class AutoRedeem(AutoTaskMixin):

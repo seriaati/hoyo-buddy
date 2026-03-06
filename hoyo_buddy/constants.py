@@ -9,7 +9,6 @@ import akasha
 import ambr
 import enka
 import genshin
-import hakushin
 import yatta
 from discord import app_commands
 from loguru import logger
@@ -262,14 +261,6 @@ LOCALE_TO_YATTA_LANG: dict[Locale, yatta.Language] = {
     Locale.vietnamese: yatta.Language.VI,
 }
 
-LOCALE_TO_HAKUSHIN_LANG: dict[Locale, hakushin.Language] = {
-    Locale.chinese: hakushin.Language.ZH,
-    Locale.taiwan_chinese: hakushin.Language.ZH,
-    Locale.japanese: hakushin.Language.JA,
-    Locale.korean: hakushin.Language.KO,
-    Locale.american_english: hakushin.Language.EN,
-}
-
 
 LOCALE_TO_GI_ENKA_LANG: dict[Locale, enka.gi.Language] = {
     Locale.taiwan_chinese: enka.gi.Language.TRADITIONAL_CHINESE,
@@ -327,6 +318,7 @@ YATTA_PATH_TO_HSR_PATH = {
     yatta.PathType.WARLOCK: HSRPath.NIHILITY,
     yatta.PathType.WARRIOR: HSRPath.DESTRUCTION,
     yatta.PathType.MEMORY: HSRPath.REMEMBRANCE,
+    yatta.PathType.ELATION: HSRPath.ELATION,
 }
 
 YATTA_PATH_TO_GPY_PATH = {
@@ -338,6 +330,7 @@ YATTA_PATH_TO_GPY_PATH = {
     yatta.PathType.WARLOCK: genshin.models.StarRailPath.NIHILITY,
     yatta.PathType.WARRIOR: genshin.models.StarRailPath.DESTRUCTION,
     yatta.PathType.MEMORY: genshin.models.StarRailPath.REMEMBRANCE,
+    yatta.PathType.ELATION: genshin.models.StarRailPath.ELATION,
 }
 
 GPY_PATH_TO_EKNA_PATH = {
@@ -349,6 +342,7 @@ GPY_PATH_TO_EKNA_PATH = {
     genshin.models.StarRailPath.NIHILITY: enka.hsr.Path.NIHILITY,
     genshin.models.StarRailPath.DESTRUCTION: enka.hsr.Path.DESTRUCTION,
     genshin.models.StarRailPath.REMEMBRANCE: enka.hsr.Path.REMEMBRANCE,
+    genshin.models.StarRailPath.ELATION: enka.hsr.Path.ELATION,
 }
 
 YATTA_COMBAT_TYPE_TO_ELEMENT = {
@@ -361,25 +355,6 @@ YATTA_COMBAT_TYPE_TO_ELEMENT = {
     yatta.CombatType.THUNDER: HSRElement.THUNDER,
 }
 
-HAKUSHIN_GI_ELEMENT_TO_ELEMENT = {
-    hakushin.enums.GIElement.ANEMO: GenshinElement.ANEMO,
-    hakushin.enums.GIElement.GEO: GenshinElement.GEO,
-    hakushin.enums.GIElement.ELECTRO: GenshinElement.ELECTRO,
-    hakushin.enums.GIElement.DENDRO: GenshinElement.DENDRO,
-    hakushin.enums.GIElement.PYRO: GenshinElement.PYRO,
-    hakushin.enums.GIElement.CRYO: GenshinElement.CRYO,
-    hakushin.enums.GIElement.HYDRO: GenshinElement.HYDRO,
-}
-
-HAKUSHIN_HSR_ELEMENT_TO_ELEMENT = {
-    hakushin.enums.HSRElement.WIND: HSRElement.WIND,
-    hakushin.enums.HSRElement.FIRE: HSRElement.FIRE,
-    hakushin.enums.HSRElement.ICE: HSRElement.ICE,
-    hakushin.enums.HSRElement.THUNDER: HSRElement.THUNDER,
-    hakushin.enums.HSRElement.PHYSICAL: HSRElement.PHYSICAL,
-    hakushin.enums.HSRElement.QUANTUM: HSRElement.QUANTUM,
-    hakushin.enums.HSRElement.IMAGINARY: HSRElement.IMAGINARY,
-}
 
 ENKA_GI_ELEMENT_TO_ELEMENT = {
     enka.gi.Element.ANEMO: GenshinElement.ANEMO,
@@ -505,14 +480,6 @@ WEB_APP_URLS = {
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))
 
-HAKUSHIN_HSR_SKILL_TYPE_NAMES = {
-    "Normal": "hsr.normal_attack",
-    "BPSkill": "hsr.skill",
-    "Ultra": "hsr.ultimate",
-    "Maze": "hsr.technique",
-    "MazeNormal": "hsr.technique",
-    "Talent": "hsr.talent",
-}
 GI_SKILL_TYPE_KEYS = {
     1: "gi.skill",
     2: "gi.burst",
@@ -553,6 +520,7 @@ ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
+    Locale.chinese: "CHS",
     Locale.german: "DE",
     Locale.american_english: "EN",
     Locale.spain_spanish: "ES",
@@ -642,7 +610,7 @@ ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
     enka.zzz.SkillType.CORE_SKILL: genshin.models.ZZZSkillType.CORE_SKILL,
 }
 
-ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
+ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE = {
     enka.zzz.Element.PHYSICAL: genshin.models.ZZZElementType.PHYSICAL,
     enka.zzz.Element.FIRE: genshin.models.ZZZElementType.FIRE,
     enka.zzz.Element.ICE: genshin.models.ZZZElementType.ICE,
@@ -650,6 +618,7 @@ ZZZ_ENKA_ELEMENT_TO_ZZZELEMENTTYPE = {
     enka.zzz.Element.ETHER: genshin.models.ZZZElementType.ETHER,
     enka.zzz.Element.FIRE_FROST: genshin.models.ZZZElementType.ICE,  # Miyabi element
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
+    enka.zzz.Element.ZHEN_ASSAULT: genshin.models.ZZZElementType.PHYSICAL,  # YSG element
 }
 
 ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
@@ -723,13 +692,13 @@ UIGF_GAME_KEYS: Final[dict[Game, str]] = {
 BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
     Game.GENSHIN: {301: "50/50", 302: "50/50", 500: "50/50"},
     Game.STARRAIL: {11: "50/50", 12: "75/25", 21: "50/50", 22: "75/25"},
-    Game.ZZZ: {2: "50/50", 3: "75/25"},
+    Game.ZZZ: {2: "50/50", 3: "75/25", 102: "50/50", 103: "75/25"},
 }
 
 BANNER_FIVE_STAR_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
     Game.GENSHIN: {301: 90, 302: 80, 200: 90, 500: 90, 100: 20, 1000: 70, 2000: 70},
     Game.STARRAIL: {11: 90, 12: 80, 1: 90, 2: 50, 21: 90, 22: 80},
-    Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80},
+    Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80, 102: 90, 103: 80},
 }
 
 STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
@@ -805,10 +774,6 @@ def is_standard_item(game: Game, item_id: int) -> bool:
         msg = f"Game {game} is missing from the standard items list."
         raise ValueError(msg)
     return item_id in STANDARD_ITEMS[game]
-
-
-def locale_to_hakushin_lang(locale: Locale) -> hakushin.Language:
-    return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)
 
 
 # From https://www.prydwen.gg/zenless/guides/disk-drives-stats/
@@ -1260,6 +1225,7 @@ def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
 
 AUTO_REDEEM_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 MIMO_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
+MIMO_AUTO_DRAW_SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ)
 AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
     "redeem": 3600 * 2,  # 2 hours
     "mimo_task": 3600 * 4,  # 4 hours
@@ -1391,3 +1357,21 @@ GPY_TYPE_TO_YATTA_PROP_TYPE = {v: k for k, v in YATTA_PROP_TYPE_TO_GPY_TYPE.item
 EMPTY_CHAR = "‎ "
 MW_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType}
 MW_EVENT_BANNER_TYPES = {e.value for e in genshin.models.MWBannerType if "EVENT" in e.name}
+
+NOT_ASCENDED_LEVEL_TO_ASCENSION: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {80: 5, 70: 4, 60: 3, 50: 2, 40: 1, 20: 0},
+    Game.STARRAIL: {70: 5, 60: 4, 50: 3, 40: 2, 30: 1, 20: 0},
+}
+"""Map non-ascended levels to ascension numbers for each game."""
+
+ASCENDED_LEVEL_TO_ASCENSION: Final[dict[Game, dict[tuple[int, int], int]]] = {
+    Game.GENSHIN: {(80, 90): 6, (70, 80): 5, (60, 70): 4, (50, 60): 3, (40, 50): 2, (20, 40): 1},
+    Game.STARRAIL: {(70, 80): 6, (60, 70): 5, (50, 60): 4, (40, 50): 3, (30, 40): 2, (20, 30): 1},
+}
+"""Map ascended level ranges to ascension numbers for each game."""
+
+ASCENSION_TO_MAX_LEVEL: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {0: 20, 1: 40, 2: 50, 3: 60, 4: 70, 5: 80, 6: 90},
+    Game.STARRAIL: {0: 20, 1: 30, 2: 40, 3: 50, 4: 60, 5: 70, 6: 80},
+}
+"""Map ascension numbers to maximum levels for each game."""

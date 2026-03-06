@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 from hoyo_buddy.utils.misc import blur_uid
 
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     import genshin
 
     from hoyo_buddy.db.models.hoyo_account import HoyoAccount
+    from hoyo_buddy.enums import Locale
 
 
 class PlayerEmbedMixin:

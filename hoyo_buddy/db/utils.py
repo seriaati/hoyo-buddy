@@ -1,5 +1,4 @@
 # pyright: reportAssignmentType=false
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
@@ -15,7 +14,7 @@ from hoyo_buddy.constants import (
     ZZZ_DISC_SUBSTATS,
 )
 from hoyo_buddy.draw.card_data import CARD_DATA
-from hoyo_buddy.enums import Game, LeaderboardType, Locale, Platform
+from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import contains_masked_link
 from hoyo_buddy.utils.misc import get_template_num
@@ -28,6 +27,7 @@ if TYPE_CHECKING:
     import asyncpg
     import genshin
 
+    from hoyo_buddy.enums import LeaderboardType
     from hoyo_buddy.types import Interaction
 
 __all__ = (

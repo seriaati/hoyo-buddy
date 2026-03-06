@@ -3,12 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hoyo_buddy.constants import CHALLENGE_TYPE_GAMES
-from hoyo_buddy.db import HoyoAccount, Settings
+from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_locale
 
 from ..ui.hoyo.challenge import ChallengeView
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
+
     from ..enums import ChallengeType
     from ..types import Interaction, User
 

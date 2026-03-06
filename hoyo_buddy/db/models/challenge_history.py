@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.types import Challenge, ChallengeWithLang
 
+
 CHALLENGE_MODELS: dict[ChallengeType, type[Challenge]] = {
     ChallengeType.SPIRAL_ABYSS: genshin.models.SpiralAbyss,
     ChallengeType.IMG_THEATER: genshin.models.ImgTheaterData,
@@ -69,7 +70,7 @@ class ChallengeHistory(BaseModel):
         lang = getattr(challenge, "lang", None)
         if lang is None:
             # NOTE: Backward compatibility, old data has lang attr, new data doesn't
-            challenge.__dict__["lang"] = self.lang
+            challenge.__dict__["lang"] = self.lang  # pyright: ignore[reportIndexIssue]
         return cast("ChallengeWithLang", challenge)
 
     @classmethod
@@ -81,6 +82,9 @@ class ChallengeHistory(BaseModel):
         if model is None:
             msg = f"Loading data for {challenge_type} is not implemented."
             raise NotImplementedError(msg)
+
+        if challenge_type is ChallengeType.SHIYU_DEFENSE and "pass_fifth_floor" in raw_copy:
+            model = genshin.models.ShiyuDefenseV2
 
         return model.model_validate(raw_copy)
 
@@ -104,7 +108,7 @@ class ChallengeHistory(BaseModel):
             start_time = data.schedule.start_datetime
             end_time = data.schedule.end_datetime
             name = None
-        elif isinstance(data, genshin.models.ShiyuDefense):
+        elif isinstance(data, (genshin.models.ShiyuDefense, genshin.models.ShiyuDefenseV2)):
             start_time = data.begin_time
             end_time = data.end_time
             name = None

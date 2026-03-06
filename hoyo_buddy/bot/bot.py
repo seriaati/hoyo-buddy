@@ -14,6 +14,7 @@ import asyncpg_listen
 import discord
 import enka
 import genshin
+import hb_data
 import psutil
 from discord import app_commands
 from discord.ext import commands
@@ -44,7 +45,7 @@ from hoyo_buddy.db.models import CardSettings, Settings
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale, Platform
+from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
@@ -68,6 +69,7 @@ if TYPE_CHECKING:
     from aiohttp_client_cache.session import CachedSession
 
     from hoyo_buddy.config import Config
+    from hoyo_buddy.enums import Platform
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
@@ -489,6 +491,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             enka.GenshinClient() as enka_gi,
             enka.HSRClient() as enka_hsr,
             enka.ZZZClient() as enka_zzz,
+            hb_data.GIClient() as gi_client,
+            hb_data.ZZZClient() as zzz_client,
         ):
             await asyncio.gather(
                 # Update enka.py assets
@@ -502,6 +506,9 @@ class HoyoBuddy(commands.AutoShardedBot):
                 self.update_hsr_assets(),
                 # Fetch mi18n files
                 translator.fetch_mi18n_files(),
+                # hb-data
+                gi_client.download(force=True),
+                zzz_client.download(force=True),
             )
 
     async def update_zzz_assets(self) -> None:
@@ -680,6 +687,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         await super().close()
 
     @property
-    def ram_usage(self) -> int:
+    def ram_usage(self) -> float:
         """The bot's current RAM usage in MB"""
         return self.process.memory_info().rss / 1024**2

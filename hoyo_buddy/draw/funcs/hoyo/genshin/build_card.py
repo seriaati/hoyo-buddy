@@ -2,18 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from enka.gi import FightPropType, Talent
-from PIL import Image, ImageDraw
+from enka.gi import FightPropType
+from PIL import ImageDraw
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
 from hoyo_buddy.enums import Locale
-from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
+from hoyo_buddy.models import HoyolabGICharacter
 
 if TYPE_CHECKING:
     import io
 
-    from enka.gi import Character
+    from enka.gi import Character, Talent
+    from PIL import Image
+
+    from hoyo_buddy.models import HoyolabGITalent
 
 
 __all__ = ("draw_genshin_card",)

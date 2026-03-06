@@ -644,6 +644,7 @@ characters_embed_max_level_characters: 最大レベルキャラクター
 natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
 shiyu_overview: 概要
 shiyu_total_clear_time: "合計クリア時間："
+shiyu_clear_time: クリアタイム
 shiyu_highest_frontier: "クリアした最高フロンティア："
 shiyu_relevant_season: "関連シーズン："
 shiyu_1_frontier: 第一フロンティア
@@ -739,7 +740,7 @@ mimo_info_embed_desc: "これはHoYoverseによる常設イベントで、タス
 mimo_auto_finish_and_claim_button_label: 自動でタスクを完了してポイントを受け取る
 mimo_auto_finish_and_claim_desc: Hoyo Buddyは特定のタスクを完了し、完了したすべてのタスクのポイントを自動的に受け取ることができます。
 mimo_auto_buy_button_label: 自動で報酬を購入する
-mimo_auto_buy_desc: "Hoyo Buddyは可能な限り星玉/ポリクロームを購入します。ポイントを節約しようとはしません！"
+mimo_auto_buy_desc: "Hoyo Buddyは可能な限り原石/星玉/フィルムを購入します。ポイントを節約しようとはしません！"
 mimo_cmd_desc: 旅するMimoイベント管理
 mimo_view_shop_button_label: ショップ
 mimo_buy_item_select_placeholder: 購入するアイテムを選択...
@@ -852,3 +853,5 @@ fake_settings_button_title: 設定が移動しました！
 captcha_not_showing_up: "CAPTCHAが表示されませんか？"
 open_captcha_button_label: クリックして認証を開始
 captcha_verifying: 認証中...
+build_cmd_zzz_desc: ゼンレスゾーンゼロエージェントのビルドとガイドを表示します
+elation: 愉悦

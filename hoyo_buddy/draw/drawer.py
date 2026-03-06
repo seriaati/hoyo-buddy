@@ -7,18 +7,22 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageFont
 
 from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
-from hoyo_buddy.l10n import LocaleStr, translator
-from hoyo_buddy.models import DynamicBKInput, TopPadding
+from hoyo_buddy.l10n import translator
+from hoyo_buddy.models import TopPadding
 from hoyo_buddy.utils import get_static_img_path
 
 from .fonts import *  # noqa: F403
 
 if TYPE_CHECKING:
+    from PIL import ImageDraw
+
+    from hoyo_buddy.l10n import LocaleStr
+    from hoyo_buddy.models import DynamicBKInput
     from hoyo_buddy.types import FontStyle
 
 __all__ = ("Drawer",)
@@ -134,12 +138,12 @@ class Drawer:
         return image.resize((im_width, im_height), resample=Image.Resampling.LANCZOS)
 
     @staticmethod
-    def top_crop(image: Image.Image, height: int) -> Image.Image:
+    def top_crop(image: Image.Image, height: int, *, top_offset: int = 0) -> Image.Image:
         """Crop an image from the top."""
         left = 0
-        top = 0
+        top = top_offset
         right = image.width
-        bottom = height
+        bottom = top + height
         return image.crop((left, top, right, bottom))
 
     @staticmethod
@@ -216,7 +220,7 @@ class Drawer:
     def mask_image_with_color(
         cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0
     ) -> Image.Image:
-        if opacity != 1.0:
+        if opacity != 1.0:  # noqa: RUF069
             mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
             return ImageChops.multiply(image, mask)
         colored_image = Image.new("RGBA", image.size, color)
@@ -669,9 +673,12 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        return cls.open_image(
-            get_static_img_path(url), size, mask_color=mask_color, opacity=opacity
-        )
+        try:
+            image_path = get_static_img_path(url)
+        except ValueError:
+            return Image.new("RGBA", (1, 1), (0, 0, 0, 0))
+        else:
+            return cls.open_image(image_path, size, mask_color=mask_color, opacity=opacity)
 
     def open_asset(
         self,

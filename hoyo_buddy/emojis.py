@@ -1,9 +1,6 @@
-from __future__ import annotations
-
 from typing import Final
 
 import genshin
-import hakushin
 
 from hoyo_buddy.config import CONFIG
 
@@ -110,6 +107,7 @@ HSR_PATH_EMOJIS: dict[str, str] = {
     HSRPath.PRESERVATION: "<:PRESERVATION:1220141073700094083>",
     HSRPath.ABUNDANCE: "<:ABUNDANCE:1220141134706118666>",
     HSRPath.REMEMBRANCE: "<:REMEMBRANCE:1313365363227889725>",
+    HSRPath.ELATION: "<:HSRPathElation:1457952623302017199>",
 }
 ZZZ_ELEMENT_EMOJIS: dict[ZZZElement, str] = {
     ZZZElement.FIRE: "<:FIRE:1261296222237626478>",
@@ -159,20 +157,13 @@ TOGGLE_EMOJIS: dict[bool, str] = {
     True: "<:TOGGLE_ON:1350269111334338560>",
 }
 
-ZZZ_SKILL_TYPE_EMOJIS: dict[hakushin.enums.ZZZSkillType, str] = {
-    hakushin.enums.ZZZSkillType.ASSIST: "<:Icon_Switch:1271096975131021426>",
-    hakushin.enums.ZZZSkillType.BASIC: "<:Icon_Normal:1271096817978839123>",
-    hakushin.enums.ZZZSkillType.CHAIN: "<:Icon_UltimateReady:1271096958647406642>",
-    hakushin.enums.ZZZSkillType.DODGE: "<:Icon_Evade:1271096823649407117>",
-    hakushin.enums.ZZZSkillType.SPECIAL: "<:Icon_SpecialReady:1271096829320364213>",
-}
 ZZZ_SKILL_TYPE_CORE = "<:Icon_CoreSkill:1271096929014648873>"
 ZZZ_GUIDE_SKILL_TYPE_EMOJIS: dict[str, str] = {
-    "assist": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.ASSIST],
-    "basic": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.BASIC],
-    "chain": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.CHAIN],
-    "dodge": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.DODGE],
-    "special": ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.SPECIAL],
+    "assist": "<:Icon_Switch:1271096975131021426>",
+    "basic": "<:Icon_Normal:1271096817978839123>",
+    "chain": "<:Icon_UltimateReady:1271096958647406642>",
+    "dodge": "<:Icon_Evade:1271096823649407117>",
+    "special": "<:Icon_SpecialReady:1271096829320364213>",
     "core": ZZZ_SKILL_TYPE_CORE,
 }
 ZZZ_DISC_ICON = "<:ZZZDiscIcon:1450017211124285502>"
@@ -247,18 +238,8 @@ def get_hsr_element_emoji(element: str) -> str:
     return HSR_ELEMENT_EMOJIS[HSRElement(element.title())]
 
 
-def get_zzz_element_emoji(
-    element: ZZZElement
-    | hakushin.enums.ZZZElement
-    | hakushin.zzz.CharacterProp
-    | genshin.models.ZZZElementType,
-) -> str:
-    name = (
-        genshin.models.ZZZElementType(element.id).name
-        if isinstance(element, hakushin.zzz.CharacterProp)
-        else element.name
-    )
-    return ZZZ_ELEMENT_EMOJIS[ZZZElement(name.title())]
+def get_zzz_element_emoji(element: ZZZElement | genshin.models.ZZZElementType) -> str:
+    return ZZZ_ELEMENT_EMOJIS[ZZZElement(element.name.title())]
 
 
 def get_hsr_path_emoji(path: str) -> str:

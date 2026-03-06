@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, Member, User, app_commands
+from discord import ButtonStyle, app_commands
 
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -13,6 +13,7 @@ from hoyo_buddy.utils import ephemeral, get_now
 
 if TYPE_CHECKING:
     from ambr.models import Abyss, AbyssResponse
+    from discord import Member, User
 
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Locale
@@ -73,8 +74,8 @@ class AbyssEnemyView(View):
             # Reset wave index
             self._wave_index = 0
             for index in range(2):
-                wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
-                wave_btn.disabled = True
+                disabled_wave_btn: WaveButton = self.get_item(f"wave_{index}_btn")
+                disabled_wave_btn.disabled = True
 
         # Update wave button color
         for index in range(2):

@@ -3,18 +3,21 @@ from __future__ import annotations
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db import FarmNotify, HoyoAccount, Settings
+from hoyo_buddy.db import FarmNotify
 from hoyo_buddy.db.utils import draw_locale
 from hoyo_buddy.models import DrawInput
 
 from ..embeds import ErrorEmbed
-from ..enums import Game, Locale
+from ..enums import Game
 from ..exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from ..hoyo.clients import ambr
 from ..l10n import LocaleStr
 from ..ui.hoyo.genshin.farm_notify import FarmNotifyView
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount, Settings
+
+    from ..enums import Locale
     from ..types import Interaction
 
 

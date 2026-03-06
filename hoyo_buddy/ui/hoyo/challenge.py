@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 import discord
-import hakushin
 from ambr.utils import remove_html_tags
 from genshin.models import (
     AnomalyRecord,
@@ -14,41 +13,25 @@ from genshin.models import (
     HardChallenge,
     ImgTheaterData,
     ShiyuDefense,
+    ShiyuDefenseV2,
     SpiralAbyss,
     StarRailAPCShadow,
     StarRailChallenge,
-    StarRailChallengeSeason,
     StarRailPureFiction,
     TheaterBuff,
 )
-from genshin.models import Character as GICharacter
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import (
-    GAME_CHALLENGE_TYPES,
-    GPY_LANG_TO_LOCALE,
-    TRAVELER_IDS,
-    locale_to_hakushin_lang,
-)
+from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
-from hoyo_buddy.draw.main_funcs import (
-    draw_anomaly_card,
-    draw_apc_shadow_card,
-    draw_assault_card,
-    draw_hard_challenge,
-    draw_img_theater_card,
-    draw_moc_card,
-    draw_pure_fiction_card,
-    draw_shiyu_card,
-    draw_spiral_abyss_card,
-)
+from hoyo_buddy.draw import main_funcs as draw_funcs
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import ChallengeType, Game
 from hoyo_buddy.exceptions import NoChallengeDataError
 from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.types import Buff, Challenge, ChallengeWithBuff, HardChallengeMode
+from hoyo_buddy.types import Challenge, ChallengeWithBuff
 from hoyo_buddy.ui import Button, Select, SelectOption, ToggleButton, View
 from hoyo_buddy.ui.discord.select import PaginatorSelect
 from hoyo_buddy.utils import blur_uid, get_floor_difficulty
@@ -61,13 +44,16 @@ if TYPE_CHECKING:
     import aiohttp
     import genshin
     from discord import File, Member, User
+    from genshin.models import Character as GICharacter
+    from genshin.models import StarRailChallengeSeason
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.types import Challenge, ChallengeWithLang, Interaction
+    from hoyo_buddy.types import Buff, Challenge, ChallengeWithLang, HardChallengeMode, Interaction
 
 ShowUIDChallenge: TypeAlias = (
     ShiyuDefense
+    | ShiyuDefenseV2
     | DeadlyAssault
     | HardChallenge
     | StarRailChallenge
@@ -237,7 +223,7 @@ class ChallengeView(View):
             return challenge.season
         if isinstance(challenge, ImgTheaterData):
             return challenge.schedule.id
-        if isinstance(challenge, ShiyuDefense):
+        if isinstance(challenge, (ShiyuDefense, ShiyuDefenseV2)):
             return challenge.schedule_id
         if isinstance(challenge, DeadlyAssault):
             return challenge.id
@@ -365,22 +351,28 @@ class ChallengeView(View):
             )
 
         if self.challenge_type is ChallengeType.SHIYU_DEFENSE:
-            raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
+            try:
+                raw = await client.get_shiyu_defense(self.account.uid, previous=previous, raw=True)
+            except ValueError:
+                return None
+
+            is_v2 = "pass_fifth_floor" in raw
             challenge = ChallengeHistory.load_data(raw, challenge_type=self.challenge_type)
-            challenge = cast("ShiyuDefense", challenge)
+            if not is_v2:
+                challenge = cast("ShiyuDefense", challenge)
 
-            # Backward compatibility, ShiyuDefenseCharacter.mindscape is added in
-            # https://github.com/thesadru/genshin.py/commit/4e17d37f84048d2b0a478b45e374f980a7bbe3a3
-            is_new_ver = (
-                challenge.floors
-                and challenge.floors[0].node_1.characters
-                and hasattr(challenge.floors[0].node_1.characters[0], "mindscape")
-            )
+                # Backward compatibility, ShiyuDefenseCharacter.mindscape is added in
+                # https://github.com/thesadru/genshin.py/commit/4e17d37f84048d2b0a478b45e374f980a7bbe3a3
+                is_new_ver = (
+                    challenge.floors
+                    and challenge.floors[0].node_1.characters
+                    and hasattr(challenge.floors[0].node_1.characters[0], "mindscape")
+                )
 
-            # No need to fetch agent ranks if the data is using new version
-            if challenge.has_data and not self.agent_ranks and not is_new_ver:
-                agents = await client.get_zzz_agents(self.account.uid)
-                self.agent_ranks = {agent.id: agent.rank for agent in agents}
+                # No need to fetch agent ranks if the data is using new version
+                if challenge.has_data and not self.agent_ranks and not is_new_ver:
+                    agents = await client.get_zzz_agents(self.account.uid)
+                    self.agent_ranks = {agent.id: agent.rank for agent in agents}
 
             return raw
 
@@ -414,6 +406,9 @@ class ChallengeView(View):
         elif isinstance(challenge, AnomalyRecord):
             if not challenge.mini_boss_records:
                 raise exc
+        elif isinstance(challenge, ShiyuDefenseV2):
+            if challenge.brief_info is None:
+                raise exc
         elif not challenge.has_data:
             raise exc
 
@@ -423,6 +418,7 @@ class ChallengeView(View):
             SpiralAbyss
             | ImgTheaterData
             | ShiyuDefense
+            | ShiyuDefenseV2
             | DeadlyAssault
             | HardChallenge
             | AnomalyRecord,
@@ -456,47 +452,47 @@ class ChallengeView(View):
         uid = self.uid if self.show_uid else None
 
         if isinstance(self.challenge, SpiralAbyss):
-            return await draw_spiral_abyss_card(draw_input, self.challenge, self.characters)
+            return await draw_funcs.draw_spiral_abyss_card(
+                draw_input, self.challenge, self.characters
+            )
         if isinstance(self.challenge, StarRailChallenge):
-            return await draw_moc_card(
+            return await draw_funcs.draw_moc_card(
                 draw_input, self.challenge, self.get_season(self.challenge), uid
             )
         if isinstance(self.challenge, StarRailPureFiction):
-            return await draw_pure_fiction_card(
+            return await draw_funcs.draw_pure_fiction_card(
                 draw_input, self.challenge, self.get_season(self.challenge), uid
             )
         if isinstance(self.challenge, StarRailAPCShadow):
-            return await draw_apc_shadow_card(
+            return await draw_funcs.draw_apc_shadow_card(
                 draw_input, self.challenge, self.get_season(self.challenge), uid
             )
         if isinstance(self.challenge, ImgTheaterData):
             traveler = next((c for c in self.characters if c.id in TRAVELER_IDS), None)
-            return await draw_img_theater_card(
+            return await draw_funcs.draw_img_theater_card(
                 draw_input,
                 self.challenge,
                 {chara.id: chara.constellation for chara in self.characters},
                 traveler.element if traveler is not None else None,
             )
         if isinstance(self.challenge, DeadlyAssault):
-            return await draw_assault_card(draw_input, self.challenge, uid)
+            return await draw_funcs.draw_assault_card(draw_input, self.challenge, uid)
         if isinstance(self.challenge, HardChallenge):
-            async with hakushin.HakushinAPI(
-                hakushin.Game.GI, lang=locale_to_hakushin_lang(locale)
-            ) as api:
-                stygian_detail = await api.fetch_stygian_detail(self.challenge.season.id)
-
-            return await draw_hard_challenge(
+            return await draw_funcs.draw_hard_challenge(
                 draw_input,
                 self.challenge,
                 str(self.uid) if self.show_uid else blur_uid(self.uid),
                 mode=self.hard_challenge_mode,
-                stygian_detail=stygian_detail,
             )
         if isinstance(self.challenge, ShiyuDefense):
-            return await draw_shiyu_card(draw_input, self.challenge, self.agent_ranks, uid)
+            return await draw_funcs.draw_shiyu_card(
+                draw_input, self.challenge, self.agent_ranks, uid
+            )
+        if isinstance(self.challenge, ShiyuDefenseV2):
+            return await draw_funcs.draw_shiyu_v2_card(draw_input, self.challenge, uid)
 
         if isinstance(self.challenge, AnomalyRecord):  # pyright: ignore[reportUnnecessaryIsInstance]
-            return await draw_anomaly_card(draw_input, self.challenge, uid)
+            return await draw_funcs.draw_anomaly_card(draw_input, self.challenge, uid)
 
         msg = f"Drawing for {self.challenge_type!r} is not implemented"
         raise NotImplementedError(msg)

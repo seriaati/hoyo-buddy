@@ -72,10 +72,14 @@ class DiscordEmbed(BaseModel):
             if not getattr(notif_settings, failure_field):
                 return
 
-        await super().create(
-            data=embed.to_dict(),
-            user_id=user_id,
-            account_id=account_id,
-            task_type=task_type,
-            type="default" if isinstance(embed, DefaultEmbed) else "error",
-        )
+        try:
+            await super().create(
+                data=embed.to_dict(),
+                user_id=user_id,
+                account_id=account_id,
+                task_type=task_type,
+                type="default" if isinstance(embed, DefaultEmbed) else "error",
+            )
+        except IntegrityError:
+            # The account got deleted at the time this embed was created
+            return

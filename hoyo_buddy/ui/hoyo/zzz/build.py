@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-import hakushin
 import szgf
 
 from hoyo_buddy import emojis, ui
@@ -107,7 +106,7 @@ class ZZZBuildDiscContainer(ui.Container):
                     ui.TextDisplay(f"### {disc_set.name}\n{replace_emojis(disc_set.description)}"),
                     accessory=discord.ui.Thumbnail(media=disc_set.icon),
                 )
-            items.extend((item, discord.ui.Separator()))
+            items.extend((item, discord.ui.Separator(spacing=discord.SeparatorSpacing.large)))
         items.pop()  # Remove last separator
         return items
 
@@ -139,7 +138,7 @@ class ZZZBuildWeaponContainer(ui.Container):
                 )
             else:
                 item = ui.TextDisplay(f"## {section.name}\n{replace_emojis(section.description)}")
-            items.extend((item, discord.ui.Separator()))
+            items.extend((item, discord.ui.Separator(spacing=discord.SeparatorSpacing.large)))
         items.pop()  # Remove last separator
         return items
 
@@ -157,7 +156,7 @@ class ZZZBuildSkillMindscapeContainer(ui.Container):
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.TextDisplay("## Ability Priority"),
             *self.build_skill_priority(skill_priority),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.TextDisplay("## Mindscapes"),
             *self.build_minscapes(mindscapes),
         )
@@ -176,10 +175,10 @@ class ZZZBuildSkillMindscapeContainer(ui.Container):
                 priority_level_strs.append(f"{emoji} {skill_type.value.capitalize()}")
             priority_strs.append(" = ".join(priority_level_strs).strip())
 
-        return [
-            ui.TextDisplay(create_bullet_list(priority_strs, prefix="1. ")),
-            ui.TextDisplay(replace_emojis(skill_priority.description)),
-        ]
+        texts = [ui.TextDisplay(create_bullet_list(priority_strs, prefix="1. "))]
+        if skill_priority.description:
+            texts.append(ui.TextDisplay(replace_emojis(skill_priority.description)))
+        return texts
 
     def build_minscapes(self, mindscapes: list[szgf.MindscapeSection]) -> list[ui.TextDisplay]:
         if not mindscapes:
@@ -221,7 +220,9 @@ class ZZZBuildSkillContainer(ui.Container):
                 text = ui.TextDisplay(
                     f"## {skill.title}\n{replace_emojis(skill.description)}\n\n{replace_emojis(skill.explanation)}"
                 )
-            items.extend((text, discord.ui.Separator()))
+            items.extend(
+                (text, discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large))
+            )
         items.pop()  # Remove last separator
         return items
 
@@ -249,7 +250,9 @@ class ZZZBuildTeamContainer(ui.Container):
         for team in team_section.teams:
             members = ", ".join(member.name for member in team.characters)
             text = ui.TextDisplay(f"## {team.name}\nMembers: {members}\n\n{team.description or ''}")
-            items.extend((text, discord.ui.Separator()))
+            items.extend(
+                (text, discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small))
+            )
         items.pop()  # Remove last separator
         return items
 
@@ -297,36 +300,39 @@ class ZZZBuildContainer(ui.Container):
             ui.TextDisplay(f"# {get_rarity_emoji(guide)} {guide.character.name} | Agent Guide"),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
-            ui.TextDisplay(replace_emojis(guide.description)),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.TextDisplay(
+                replace_emojis(
+                    f"{guide.description}\n\nAuthor: {guide.author}\nLast Updated: {guide.last_updated}"
+                )
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(
-                    f"## {emojis.ZZZ_SKILL_TYPE_EMOJIS[hakushin.enums.ZZZSkillType.CHAIN]} Agent Gameplay Guide"
+                    f"## {emojis.ZZZ_GUIDE_SKILL_TYPE_EMOJIS['chain']} Agent Gameplay Guide"
                 ),
                 accessory=ContainerButton("View", ZZZBuildSkillContainer(guide), guide),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(f"## {emojis.ZZZ_WENGINE_ICON} Best W-Engines"),
                 accessory=ContainerButton("View", ZZZBuildWeaponContainer(guide), guide),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(f"## {emojis.ZZZ_DISC_ICON} Drive Disc Sets"),
                 accessory=ContainerButton("View", ZZZBuildDiscContainer(guide), guide),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(f"## {emojis.ZZZ_STAT_EMOJIS['hp']} Recommended Stats"),
                 accessory=ContainerButton("View", ZZZBuildStatsContainer(guide), guide),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(f"## {emojis.ZZZ_SKILL_TYPE_CORE} Ability & Mindscape Priority"),
                 accessory=ContainerButton("View", ZZZBuildSkillMindscapeContainer(guide), guide),
             ),
-            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large),
             ui.Section(
                 ui.TextDisplay(f"## {emojis.ZZZ_CHARACTER_ICON} Team Building Guide"),
                 accessory=ContainerButton("View", ZZZBuildTeamContainer(guide), guide),
@@ -347,7 +353,7 @@ class ZZZBuildMenuButton(ui.Button):
 
 class ContributeButton(ui.Button):
     def __init__(self) -> None:
-        super().__init__(label="Contribute", url="https://github.com/seriaati/zzz-guides/")
+        super().__init__(label="Contribute", url="https://szgf.seria.moe/")
 
 
 class ZZZBuildView(ui.LayoutView):

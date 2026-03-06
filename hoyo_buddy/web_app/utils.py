@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, cast
 import ambr
 import asyncpg
 import flet as ft
-import hakushin
+import hb_data
 import orjson
 from cryptography.fernet import Fernet
 
@@ -149,21 +149,21 @@ async def fetch_gacha_names(
     if non_cached_item_ids:
         # Update the cache with the new item names
         if game is Game.ZZZ:
-            map_: dict[str, str] = await fetch_json_file(
+            zzz_map: dict[str, str] = await fetch_json_file(
                 f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
             )
-            item_names = {int(k): v for k, v in map_.items()}
+            item_names = {int(k): v for k, v in zzz_map.items()}
         elif game is Game.STARRAIL:
-            map_: dict[str, str] = await fetch_json_file(
+            hsr_map: dict[str, str] = await fetch_json_file(
                 f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
             )
-            item_names = {int(k): v for k, v in map_.items()}
+            item_names = {int(k): v for k, v in hsr_map.items()}
         elif game is Game.GENSHIN:
             async with AmbrAPIClient(locale) as client:
                 item_names = await client.fetch_item_id_to_name_map()
-            async with hakushin.HakushinAPI(hakushin.Game.GI) as client:
-                mw_costumes = await client.fetch_mw_costumes()
-                mw_items = await client.fetch_mw_items()
+            async with hb_data.GIClient() as client:
+                mw_costumes = client.get_mw_costumes()
+                mw_items = client.get_mw_items()
                 item_names.update({costume.id: costume.name for costume in mw_costumes})
                 item_names.update({item.id: item.name for item in mw_items})
         else:
@@ -193,13 +193,9 @@ async def fetch_gacha_icons() -> dict[str, str]:
         gacha_icons.update({character.id: character.icon for character in characters})
         gacha_icons.update({str(weapon.id): weapon.icon for weapon in weapons})
 
-    async with hakushin.HakushinAPI(hakushin.Game.GI) as client:
-        mw_costumes = await client.fetch_mw_costumes()
-        mw_items = await client.fetch_mw_items()
-
-        # Costume takes precedence over item icon if both exist
-        gacha_icons.update({str(item.id): item.icon for item in mw_items if item.icon is not None})
-        gacha_icons.update({str(costume.id): costume.icon for costume in mw_costumes})
+    async with hb_data.GIClient() as client:
+        mw_items = client.get_mw_items()
+        gacha_icons.update({str(item.id): item.icon for item in mw_items})
 
         for item in mw_items:
             if "Component Catalog" in item.name:

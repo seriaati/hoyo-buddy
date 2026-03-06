@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 from discord import utils as dutils
-from genshin.models import ZZZFullAgent, ZZZSkillType
 from genshin.models import ZZZPropertyType as PropType
-from PIL import Image, ImageDraw
+from genshin.models import ZZZSkillType
+from PIL import ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
@@ -16,6 +16,9 @@ from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
     from io import BytesIO
+
+    from genshin.models import ZZZFullAgent
+    from PIL import Image
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
     from hoyo_buddy.models.draw import ZZZTemp1CardData

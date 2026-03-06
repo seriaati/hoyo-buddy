@@ -401,7 +401,6 @@ resin_reminder_button.label: Pengingat resin
 resin_reminder_modal.title: Pengaturan Pengingat Resin
 reward_claimed_title: Hadiah absen harian telah diklaim
 saturday: Sabtu
-search_autocomplete_no_results: Hasil tidak ditemukan
 search_autocomplete_not_setup: "Pilihan pelengkapan otomatis penelusuran belum disiapkan, coba lagi nanti."
 search_command_category_param_description: Pencarian kategori
 search_cmd_category_param_name: kategori
@@ -642,6 +641,7 @@ characters_embed_max_level_characters: ""
 natlan_reputation: ""
 shiyu_overview: ""
 shiyu_total_clear_time: ""
+shiyu_clear_time: ""
 shiyu_highest_frontier: ""
 shiyu_relevant_season: ""
 shiyu_1_frontier: ""
@@ -844,3 +844,11 @@ card_settings_hsr_desc: ""
 card_settings_zzz_desc: ""
 card_settings_character_param: ""
 disabled_label: ""
+none: Tidak ada
+fake_settings_button_label: ""
+fake_settings_button_title: ""
+captcha_not_showing_up: ""
+open_captcha_button_label: ""
+captcha_verifying: ""
+build_cmd_zzz_desc: ""
+elation: ""

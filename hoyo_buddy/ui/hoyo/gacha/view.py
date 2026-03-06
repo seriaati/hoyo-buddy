@@ -15,7 +15,7 @@ from hoyo_buddy.constants import (
     STANDARD_ITEMS,
     WEB_APP_URLS,
 )
-from hoyo_buddy.db import GachaHistory, GachaStats, HoyoAccount, get_dyk, get_last_gacha_num
+from hoyo_buddy.db import GachaHistory, GachaStats, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     import aiohttp
     import asyncpg
 
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.models.gacha import GIBanner, HSRBanner
     from hoyo_buddy.types import Interaction, User

@@ -10,7 +10,7 @@ from hoyo_buddy.constants import MIMO_SUPPORT_GAMES
 from hoyo_buddy.db.models import Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings import reminder
@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from hoyo_buddy.db.models.card_settings import CardSettings
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

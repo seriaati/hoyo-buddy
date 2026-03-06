@@ -1,7 +1,5 @@
 """Custom models used in Hoyo Buddy."""
 
-from __future__ import annotations
-
 from .challenge import *
 from .draw import *
 from .enka_zzz import *

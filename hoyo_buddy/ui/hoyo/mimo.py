@@ -19,7 +19,7 @@ from hoyo_buddy.emojis import (
     SHOPPING_CART,
     TASK_LIST,
 )
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import MimoUnavailableError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import GoBackButton
@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from hoyo_buddy.db import HoyoAccount
+    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

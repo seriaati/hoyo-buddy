@@ -3,7 +3,7 @@ from __future__ import annotations
 import urllib.parse
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db import HoyoAccount, User, get_locale
+from hoyo_buddy.db import User, get_locale
 
 from ..constants import GEETEST_SERVERS
 from ..embeds import DefaultEmbed
@@ -12,6 +12,8 @@ from ..models import GeetestCommandPayload
 from ..ui import URLButtonView
 
 if TYPE_CHECKING:
+    from hoyo_buddy.db import HoyoAccount
+
     from ..bot import HoyoBuddy
     from ..enums import GeetestType
     from ..types import Interaction

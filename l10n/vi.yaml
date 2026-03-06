@@ -646,6 +646,7 @@ characters_embed_max_level_characters: Nhân vật Cấp độ Tối đa
 natlan_reputation: "Cấp Danh Vọng: {reputation}, Bộ Tộc: {tribes}"
 shiyu_overview: Tổng quan
 shiyu_total_clear_time: "Tổng thời gian sử dụng:"
+shiyu_clear_time: Thời Gian Hoàn Thành
 shiyu_highest_frontier: "Phòng Tuyến Cao Nhất Đã Hoàn Thành:"
 shiyu_relevant_season: "Chu Kỳ Liên Quan:"
 shiyu_1_frontier: Phòng Tuyến 1
@@ -855,3 +856,4 @@ captcha_not_showing_up: "CAPTCHA không hiển thị?"
 open_captcha_button_label: Nhấp để bắt đầu xác minh
 captcha_verifying: Đang xác minh...
 build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero
+elation: Hoan Lạc

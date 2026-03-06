@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import IntEnum, StrEnum
 
 
@@ -98,6 +96,7 @@ class HSRPath(StrEnum):
     PRESERVATION = "Preservation"  # 存護
     ABUNDANCE = "Abundance"  # 豐饒
     REMEMBRANCE = "Remembrance"  # 記憶
+    ELATION = "Elation"  # 歡愉
 
 
 class Platform(StrEnum):

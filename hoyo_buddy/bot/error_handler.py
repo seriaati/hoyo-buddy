@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import discord
 from ambr.exceptions import DataNotFoundError as AmbrDataNotFoundError
 from discord.utils import format_dt
 from enka import errors as enka_errors
 from genshin import errors as ge
-from hakushin.errors import NotFoundError as HakushinNotFoundError
 from yatta.exceptions import DataNotFoundError as YattaDataNotFoundError
 
 from ..embeds import DefaultEmbed, ErrorEmbed
 from ..emojis import get_game_emoji
-from ..enums import GeetestType, Locale
+from ..enums import GeetestType
 from ..exceptions import (
     BlockedByAutoModError,
     HoyoBuddyError,
@@ -23,6 +22,9 @@ from ..exceptions import (
 )
 from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
+
+if TYPE_CHECKING:
+    from ..enums import Locale
 
 __all__ = ("get_error_embed",)
 
@@ -159,7 +161,7 @@ def get_error_embed(error: Exception, locale: Locale) -> tuple[ErrorEmbed | Defa
     if isinstance(error, ExceptionGroup):
         error = error.exceptions[0]
 
-    if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError | HakushinNotFoundError):
+    if isinstance(error, AmbrDataNotFoundError | YattaDataNotFoundError):
         error = InvalidQueryError()
 
     if isinstance(error, discord.HTTPException):

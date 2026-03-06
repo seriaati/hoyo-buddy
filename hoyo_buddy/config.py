@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Any, Literal
 
 from dotenv import load_dotenv
@@ -52,6 +50,12 @@ class Config(BaseSettings):
     schedule: bool = False
     prometheus: bool = False
     novelai: bool = False
+
+    # Logging configuration
+    log_rotation_size: str = "20 MB"
+    log_retention_count: int = 10
+    log_compression: str = "gz"
+    log_level: str = "DEBUG"
 
     model_config = SettingsConfigDict(
         env_file=".env",

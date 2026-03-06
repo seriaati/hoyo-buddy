@@ -646,6 +646,7 @@ characters_embed_max_level_characters: Maximaal Niveau Karakters
 natlan_reputation: "Reputatieniveau: {reputation}, Stammen: {tribes}"
 shiyu_overview: Overzicht
 shiyu_total_clear_time: "Totale Clear-Tijd:"
+shiyu_clear_time: Clear-Tijd
 shiyu_highest_frontier: "Hoogste Frontier Voltooid:"
 shiyu_relevant_season: "Relevant Seizoen:"
 shiyu_1_frontier: Eerste Frontier
@@ -741,7 +742,7 @@ mimo_info_embed_desc: "Dit is een permanent evenement van Hoyoverse, waar je tak
 mimo_auto_finish_and_claim_button_label: Taken automatisch afronden en punten claimen
 mimo_auto_finish_and_claim_desc: Hoyo Buddy kan bepaalde taken automatisch voltooien en voor alle voltooide taken punten claimen.
 mimo_auto_buy_button_label: Beloningen automatisch kopen
-mimo_auto_buy_desc: "Hoyo Buddy koopt stellarjades/polychromes wanneer dat mogelijk is, en probeert niet om punten te sparen!"
+mimo_auto_buy_desc: "Hoyo Buddy koopt Primogems/Sterrenjades/Polychromen wanneer mogelijk, het zal niet proberen punten te sparen!"
 mimo_cmd_desc: Traveling Mimo evenementen management
 mimo_view_shop_button_label: Winkel
 mimo_buy_item_select_placeholder: Selecteer een item om te kopen...
@@ -854,3 +855,5 @@ fake_settings_button_title: Instellingen zijn verplaatst!
 captcha_not_showing_up: "CAPTCHA wordt niet weergegeven?"
 open_captcha_button_label: Klik om verificatie te starten
 captcha_verifying: Verifiëren...
+build_cmd_zzz_desc: Bekijk de builds en gidsen van een Zenless Zone Zero karakter
+elation: Elation

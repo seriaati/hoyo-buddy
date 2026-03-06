@@ -646,6 +646,7 @@ characters_embed_max_level_characters: Personajes con nivel máximo
 natlan_reputation: "Reputación Tribal: {tribes}"
 shiyu_overview: Resumen
 shiyu_total_clear_time: "Tiempo total de completado:"
+shiyu_clear_time: Tiempo de limpieza
 shiyu_highest_frontier: "Frente más alto alcanzado:"
 shiyu_relevant_season: "Estadísticas de la temporada:"
 shiyu_1_frontier: Frente N° 1
@@ -741,7 +742,7 @@ mimo_info_embed_desc: "Este es un evento permanente de Hoyoverse, donde puedes c
 mimo_auto_finish_and_claim_button_label: Finalizar tareas automáticamente y reclamar puntos
 mimo_auto_finish_and_claim_desc: Hoyo Buddy puede finalizar ciertas tareas y reclamar puntos de todas las tareas completadas automáticamente.
 mimo_auto_buy_button_label: Compra automática de recompensas
-mimo_auto_buy_desc: "Hoyo Buddy comprará jades estelares/policromos siempre que sea posible, ¡no intentará ahorrar puntos!"
+mimo_auto_buy_desc: "Hoyo Buddy comprará primogemas/jades estelares/policromos siempre que sea posible, ¡no intentará ahorrar puntos!"
 mimo_cmd_desc: Gestión de eventos de Mimo Viajero
 mimo_view_shop_button_label: Tienda
 mimo_buy_item_select_placeholder: Selecciona un ítem para comprar...
@@ -854,3 +855,5 @@ fake_settings_button_title: ¡La configuración se ha movido!
 captcha_not_showing_up: "¿No aparece el CAPTCHA?"
 open_captcha_button_label: Haz clic para iniciar la verificación
 captcha_verifying: Verificando...
+build_cmd_zzz_desc: Ver las builds y guías de un personaje de Zenless Zone Zero
+elation: Exultación

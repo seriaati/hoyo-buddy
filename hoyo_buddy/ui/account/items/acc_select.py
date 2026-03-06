@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 from discord.utils import get as dget
 
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import PaginatorSelect, SelectOption
+from hoyo_buddy.ui import PaginatorSelect
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
+    from hoyo_buddy.ui import SelectOption
 
     from ..view import AccountManager
 else:

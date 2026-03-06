@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from hoyo_buddy.commands.characters import CharactersCommand
-from hoyo_buddy.commands.configs import COMMANDS, CommandName
+from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
 from hoyo_buddy.db import HoyoAccount, Settings
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
@@ -17,6 +17,7 @@ from hoyo_buddy.utils.misc import handle_autocomplete_errors
 
 if TYPE_CHECKING:
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.commands.configs import CommandName
 
 
 class Characters(

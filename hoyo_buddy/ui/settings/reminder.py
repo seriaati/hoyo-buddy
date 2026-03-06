@@ -165,6 +165,7 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
     NotesNotifyType.VIDEO_STORE: 30,
     NotesNotifyType.RIDU_POINTS: 60,
     NotesNotifyType.ZZZ_BOUNTY: 60,
+    NotesNotifyType.STAMINA: 10,
 }
 
 SUPPORT_GAMES: set[Game] = {Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI}

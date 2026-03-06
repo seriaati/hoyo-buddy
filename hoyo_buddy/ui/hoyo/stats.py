@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from hoyo_buddy.db import HoyoAccount, get_dyk
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.enums import Game
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     import genshin
     from genshin.models import RecordCard
 
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 

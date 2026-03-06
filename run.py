@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import concurrent.futures
 import contextlib
@@ -70,7 +68,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        import uvloop  # pyright: ignore[reportMissingImports]
+        import uvloop
     except ImportError:
         asyncio.run(main())
     else:

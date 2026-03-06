@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Final
 
 import prometheus_client
 import psutil
-from discord import Guild, Interaction, InteractionType, app_commands
+from discord import InteractionType, app_commands
 from discord.ext import commands, tasks
 from loguru import logger
 from prometheus_client import Counter, Gauge
@@ -18,6 +18,8 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models import HoyoAccount
 
 if TYPE_CHECKING:
+    from discord import Guild, Interaction
+
     from hoyo_buddy.bot.bot import HoyoBuddy
 
 
@@ -148,7 +150,7 @@ class PrometheusCog(commands.Cog):
 
         if i.type is InteractionType.application_command:
             if isinstance(i.command, app_commands.Command):
-                parameters = i.namespace.__dict__
+                parameters = {k: str(v) for k, v in i.namespace.__dict__.items()}
                 command_name = self.bot.get_command_name(i.command)
                 logger.info(f"[Command][{i.user.id}] {command_name}", parameters=parameters)
             elif isinstance(i.command, app_commands.ContextMenu):

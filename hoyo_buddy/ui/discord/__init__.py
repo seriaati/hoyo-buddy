@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .action_row import *
 from .button import *
 from .container import *

@@ -6,7 +6,7 @@ import discord
 from seria.utils import create_bullet_list
 
 from hoyo_buddy import ui
-from hoyo_buddy.db import HoyoAccount, draw_locale, get_dyk
+from hoyo_buddy.db import draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_exploration_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     import genshin
 
     from hoyo_buddy.bot import HoyoBuddy
+    from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
 import genshin
+import hb_data
 import szgf
 from discord.ext import commands
 from tortoise import Tortoise
@@ -15,7 +16,6 @@ from hoyo_buddy.db.models.gacha_history import GachaHistory
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.emojis import get_game_emoji
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
-from hoyo_buddy.hoyo.clients.hakushin import HakushinZZZClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.utils import add_to_hoyo_codes
@@ -247,8 +247,8 @@ class Admin(commands.Cog):
         async with AmbrAPIClient() as client:
             gi_rarity_map = await client.fetch_rarity_map()
 
-        async with HakushinZZZClient() as client:
-            zzz_rarity_map = await client.fetch_rarity_map()
+        async with hb_data.ZZZClient() as client:
+            zzz_rarity_map = client.get_rarity_map()
 
         await message.edit(content="Updating gacha rarities...")
 

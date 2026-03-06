@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 
 import enka
 import genshin
-import hakushin
+import hb_data
 from discord import ButtonStyle
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
-from genshin.models import ZZZFullAgent as ZZZCharacter
+from genshin.models import ZZZPartialAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
 
 from hoyo_buddy.constants import (
@@ -48,12 +48,7 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError, NoCharsFoundError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import EnumStr, LocaleStr
-from hoyo_buddy.models import (
-    DrawInput,
-    UnownedGICharacter,
-    UnownedHSRCharacter,
-    UnownedZZZCharacter,
-)
+from hoyo_buddy.models import UnownedGICharacter, UnownedHSRCharacter, UnownedZZZCharacter
 from hoyo_buddy.ui import (
     Button,
     GoBackButton,
@@ -76,6 +71,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.models import DrawInput
     from hoyo_buddy.types import Interaction
 
 
@@ -468,7 +464,7 @@ class CharactersView(PaginatorView):
 
         if self.path_filters and self.filter is GIFilter.NONE:
             total_chars = sum(
-                self.path_char_counts[path.name.lower()] for path in self.path_filters
+                self.path_char_counts.get(path.name.lower(), 0) for path in self.path_filters
             )
             embed.add_field(
                 name=LocaleStr(
@@ -607,8 +603,7 @@ class CharactersView(PaginatorView):
 
         elif self.game is Game.ZZZ:
             agents = await client.get_zzz_agents()
-            full_agents = list(await client.get_zzz_agent_info([agent.id for agent in agents]))
-            self.zzz_characters = full_agents  # pyright: ignore[reportAttributeAccessIssue]
+            self.zzz_characters = agents  # pyright: ignore[reportAttributeAccessIssue]
 
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))
@@ -910,28 +905,20 @@ class ShowOwnedOnly(ToggleButton[CharactersView]):
                 c.id for c in self.view.zzz_characters if isinstance(c, ZZZCharacter)
             }
 
-            async with hakushin.HakushinAPI(hakushin.Game.ZZZ) as client:
-                zzz_charas = await client.fetch_characters()
-                new = await client.fetch_new()
+            async with hb_data.ZZZClient() as client:
+                zzz_charas = client.get_characters()
 
                 for chara in zzz_charas:
-                    if (
-                        chara.id in current_chara_ids
-                        or chara.rarity is None
-                        or chara.element is None
-                        or chara.id in new.character_ids
-                    ):
+                    if chara.id in current_chara_ids:
                         continue
-
-                    chara_detail = await client.fetch_character_detail(chara.id)
 
                     self.view.zzz_characters.append(
                         UnownedZZZCharacter(
                             id=chara.id,
-                            rarity=chara.rarity,
+                            rarity=chara.rarity_str,
                             element=genshin.models.ZZZElementType(chara.element.value),
                             specialty=genshin.models.ZZZSpecialty(chara.specialty.value),
-                            faction_name=chara_detail.faction.name,
+                            faction_name=chara.faction_name,
                             banner_icon=f"https://act-webstatic.hoyoverse.com/game_record/zzz/role_vertical_painting/role_vertical_painting_{chara.id}.png",
                         )
                     )

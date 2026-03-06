@@ -6,7 +6,6 @@ from discord import utils as dutils
 from genshin.models import (
     ZZZAgentProperty,
     ZZZElementType,
-    ZZZFullAgent,
     ZZZPropertyType,
     ZZZSkillType,
     ZZZSpecialty,
@@ -15,6 +14,8 @@ from genshin.models import (
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
+    from genshin.models import ZZZFullAgent
+
     from hoyo_buddy.models import ZZZEnkaCharacter, ZZZStat
 
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {

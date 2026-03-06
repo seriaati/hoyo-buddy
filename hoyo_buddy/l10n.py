@@ -8,23 +8,19 @@ import re
 from typing import TYPE_CHECKING, Any, Final, Literal, Self, TypeAlias
 
 import aiofiles
-import ambr
 import anyio
 import genshin
 import orjson
-import yatta
 from discord import app_commands
 from loguru import logger
 from seria.utils import read_json, read_yaml, shorten
 
 from hoyo_buddy.emojis import INFO
-from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.enums import Game
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
     GPY_LANG_TO_LOCALE,
-    HAKUSHIN_GI_ELEMENT_TO_ELEMENT,
-    HAKUSHIN_HSR_ELEMENT_TO_ELEMENT,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
     ZENLESS_DATA_LANG_TO_LOCALE,
@@ -37,8 +33,11 @@ if TYPE_CHECKING:
     from enum import StrEnum
     from types import TracebackType
 
-    import hakushin
+    import ambr
+    import yatta
     from discord.app_commands.translator import TranslationContextTypes
+
+    from hoyo_buddy.enums import Locale
 
 
 __all__ = ("AppCommandTranslator", "LocaleStr", "Translator")
@@ -162,6 +161,8 @@ BANNER_TYPE_NAMES: Final[dict[Game, dict[int, LocaleStr]]] = {
         3: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_3"),
         1: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_1"),
         5: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_5"),
+        102: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_102"),
+        103: LocaleStr(mi18n_game="gacha-zzz", key="gacha_type_103"),
     },
 }
 
@@ -396,20 +397,10 @@ class Translator:
         return string.key
 
     def get_traveler_name(
-        self,
-        character: ambr.Character | hakushin.gi.Character,
-        locale: Locale,
-        *,
-        gender_symbol: bool = True,
+        self, character: ambr.Character, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
-        if isinstance(character, ambr.Character):
-            element = AMBR_ELEMENT_TO_ELEMENT[character.element]
-        elif character.element is not None:  # hakushin.gi.Character
-            element = HAKUSHIN_GI_ELEMENT_TO_ELEMENT[character.element]
-        else:
-            element = None
-
-        element_str = "" if element is None else self.translate(EnumStr(element), locale)
+        element = AMBR_ELEMENT_TO_ELEMENT[character.element]
+        element_str = self.translate(EnumStr(element), locale)
         gender_str = ("♂" if "5" in character.id else "♀") if gender_symbol else ""
         return (
             f"{character.name} ({element_str}) ({gender_str})"
@@ -418,20 +409,11 @@ class Translator:
         )
 
     def get_trailblazer_name(
-        self,
-        character: yatta.Character | hakushin.hsr.Character,
-        locale: Locale,
-        *,
-        gender_symbol: bool = True,
+        self, character: yatta.Character, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
-        if isinstance(character, yatta.Character):
-            element_str = self.translate(
-                EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
-            )
-        else:
-            element_str = self.translate(
-                EnumStr(HAKUSHIN_HSR_ELEMENT_TO_ELEMENT[character.element]), locale
-            )
+        element_str = self.translate(
+            EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
+        )
 
         # Only gender_str if is trailblazer
         # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)

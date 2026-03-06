@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 from collections import defaultdict
 from collections.abc import Mapping
@@ -12,7 +10,7 @@ import genshin
 from . import models
 from .bot import HoyoBuddy
 from .enums import Game, Locale
-from .hoyo.clients import ambr, hakushin, yatta
+from .hoyo.clients import ambr, yatta
 
 Challenge: TypeAlias = (
     genshin.models.StarRailChallenge
@@ -24,6 +22,7 @@ Challenge: TypeAlias = (
     | genshin.models.DeadlyAssault
     | genshin.models.HardChallenge
     | genshin.models.AnomalyRecord
+    | genshin.models.ShiyuDefenseV2
 )
 ChallengeWithLang: TypeAlias = (
     models.StarRailChallenge
@@ -35,6 +34,7 @@ ChallengeWithLang: TypeAlias = (
     | models.DeadlyAssault
     | models.HardChallenge
     | models.AnomalyRecord
+    | models.ShiyuDefenseV2
 )
 ChallengeWithBuff: TypeAlias = (
     genshin.models.StarRailAPCShadow
@@ -71,9 +71,7 @@ Builds: TypeAlias = (
     | dict[str, list[enka.zzz.Build]]
 )
 
-ItemCategory: TypeAlias = (
-    ambr.ItemCategory | yatta.ItemCategory | hakushin.ItemCategory | hakushin.ZZZItemCategory
-)
+ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory
 AutocompleteChoices: TypeAlias = Mapping[
     Game, Mapping[ItemCategory, Mapping[Locale, list[discord.app_commands.Choice[str]]]]
 ]

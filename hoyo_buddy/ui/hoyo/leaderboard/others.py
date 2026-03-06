@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from hoyo_buddy.db import Leaderboard
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui import Button, Page, PaginatorView
+from hoyo_buddy.ui import Page, PaginatorView
 from hoyo_buddy.utils import blur_uid
 
 if TYPE_CHECKING:
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.embeds import DefaultEmbed
     from hoyo_buddy.enums import Game, LeaderboardType, Locale
     from hoyo_buddy.types import Interaction, User
+    from hoyo_buddy.ui import Button
 
 
 class LbPaginator(PaginatorView):

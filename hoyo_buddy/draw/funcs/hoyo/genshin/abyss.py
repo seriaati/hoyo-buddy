@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 from hoyo_buddy.constants import TRAVELER_IDS
 from hoyo_buddy.draw.drawer import Drawer
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from io import BytesIO
 
     import genshin
+    from PIL import Image
 
 
 class SpiralAbyssCard:

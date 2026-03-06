@@ -120,8 +120,8 @@ class DeviceInfoForm(ft.Column):
             show_error_banner(page, message=str(exc))
             return
 
-        await page.shared_preferences.set(f"hb.{self._params.user_id}.device_id", device_id)
-        await page.shared_preferences.set(f"hb.{self._params.user_id}.device_fp", device_fp)
+        await ft.SharedPreferences().set(f"hb.{self._params.user_id}.device_id", device_id)
+        await ft.SharedPreferences().set(f"hb.{self._params.user_id}.device_fp", device_fp)
 
         page.go(f"/finish?{self._params.to_query_string()}")
 

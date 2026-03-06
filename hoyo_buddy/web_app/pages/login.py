@@ -106,9 +106,9 @@ class LoginPage(ft.View):
         page: ft.Page = e.page
         page.session["hb.user_id"] = int(self.user_data["id"])
 
-        original_route = await page.shared_preferences.get("hb.original_route")
+        original_route = await ft.SharedPreferences().get("hb.original_route")
         if original_route:
-            asyncio.create_task(page.shared_preferences.remove("hb.original_route"))
+            asyncio.create_task(ft.SharedPreferences().remove("hb.original_route"))
             page.go(original_route)
         else:
             page.go("/platforms")
@@ -116,7 +116,7 @@ class LoginPage(ft.View):
     async def on_login_button_click(self, e: ft.ControlEvent) -> None:
         page: ft.Page = e.page
         state = secrets.token_urlsafe(32)
-        await page.shared_preferences.set("hb.oauth_state", state)
+        await ft.SharedPreferences().set("hb.oauth_state", state)
         redirect_url = f"{WEB_APP_URLS[CONFIG.env]}/custom_oauth_callback"
         client_id = CONFIG.discord_client_id
         oauth_url = f"https://discord.com/oauth2/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_url}&scope=identify&state={state}"

@@ -94,7 +94,7 @@ class GenQRCodeButton(ft.FilledButton):
             elif status is genshin.models.QRCodeStatus.CONFIRMED:
                 dict_cookies = {key: morsel.value for key, morsel in cookies.items()}
                 encrypted_cookies = encrypt_string(dict_cookie_to_str(dict_cookies))
-                await page.shared_preferences.set(
+                await ft.SharedPreferences().set(
                     f"hb.{self._params.user_id}.cookies", encrypted_cookies
                 )
                 page.go(f"/finish?{self._params.to_query_string()}")

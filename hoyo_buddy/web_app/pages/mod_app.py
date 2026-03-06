@@ -112,13 +112,13 @@ class LoginDetailForm(ft.Column):
         device_id = dict_cookies.pop("x-rpc-device_id", None)
         device_fp = dict_cookies.pop("x-rpc-device_fp", None)
         if device_id is not None:
-            await page.shared_preferences.set(f"hb.{self._params.user_id}.device_id", device_id)
+            await ft.SharedPreferences().set(f"hb.{self._params.user_id}.device_id", device_id)
         if device_fp is not None:
-            await page.shared_preferences.set(f"hb.{self._params.user_id}.device_fp", device_fp)
+            await ft.SharedPreferences().set(f"hb.{self._params.user_id}.device_fp", device_fp)
 
         cookies = dict_cookie_to_str(dict_cookies)
         encrypted_cookies = encrypt_string(cookies)
-        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await ft.SharedPreferences().set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
     @property

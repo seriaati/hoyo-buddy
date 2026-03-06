@@ -72,7 +72,7 @@ class CookiesForm(ft.Column):
 
         show_loading_snack_bar(page, locale=self._locale)
         encrypted_cookies = encrypt_string(cookies.value)
-        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await ft.SharedPreferences().set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
 

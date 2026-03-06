@@ -126,7 +126,7 @@ class DevToolsCookieForm(ft.Column):
             show_loading_snack_bar(page, locale=self._locale)
             cookies = f"ltuid_v2={ltuid_v2.value}; account_id_v2={account_id_v2.value}; ltoken_v2={ltoken_v2.value}; ltmid_v2={ltmid_v2.value}; account_mid_v2={account_mid_v2.value}"
             encrypted_cookies = encrypt_string(cookies)
-            await page.shared_preferences.set(
+            await ft.SharedPreferences().set(
                 f"hb.{self._params.user_id}.cookies", encrypted_cookies
             )
             page.go(f"/finish?{self._params.to_query_string()}")

@@ -208,7 +208,7 @@ class EmailPassWordForm(ft.Column):
 
         if isinstance(email_result, genshin.models.SessionMMT):
             logger.debug(f"[{self._params.user_id}] Saving action ticket to client storage")
-            await page.shared_preferences.set(
+            await ft.SharedPreferences().set(
                 f"hb.{self._params.user_id}.action_ticket",
                 orjson.dumps(result.model_dump()).decode(),
             )
@@ -232,7 +232,7 @@ class EmailPassWordForm(ft.Column):
         cookies = result.to_str()
         logger.debug(f"[{self._params.user_id}] Got cookies: {cookies}")
         encrypted_cookies = encrypt_string(cookies)
-        await page.shared_preferences.set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
+        await ft.SharedPreferences().set(f"hb.{self._params.user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
     async def on_submit(self, e: ft.ControlEvent) -> None:

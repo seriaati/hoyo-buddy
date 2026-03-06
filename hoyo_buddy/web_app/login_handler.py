@@ -36,16 +36,16 @@ async def handle_session_mmt(
     mobile: str | None = None,
 ) -> None:
     logger.debug(f"[{params.user_id}] Got SessionMMT with type {mmt_type}")
-    await page.shared_preferences.set(f"hb.{params.user_id}.gt_type", mmt_type)
+    await ft.SharedPreferences().set(f"hb.{params.user_id}.gt_type", mmt_type)
 
     if email is not None:
-        await page.shared_preferences.set(f"hb.{params.user_id}.email", encrypt_string(email))
+        await ft.SharedPreferences().set(f"hb.{params.user_id}.email", encrypt_string(email))
     if password is not None:
-        await page.shared_preferences.set(
+        await ft.SharedPreferences().set(
             f"hb.{params.user_id}.password", encrypt_string(password)
         )
     if mobile is not None:
-        await page.shared_preferences.set(f"hb.{params.user_id}.mobile", encrypt_string(mobile))
+        await ft.SharedPreferences().set(f"hb.{params.user_id}.mobile", encrypt_string(mobile))
 
     # Save mmt data to db
     conn = await asyncpg.connect(CONFIG.db_url)
@@ -59,7 +59,7 @@ async def handle_session_mmt(
         await conn.close()
 
     # Save current params
-    await page.shared_preferences.set(f"hb.{params.user_id}.params", params.to_query_string())
+    await ft.SharedPreferences().set(f"hb.{params.user_id}.params", params.to_query_string())
 
     locale = locale or Locale.american_english
     payload = GeetestLoginPayload(
@@ -187,8 +187,8 @@ class EmailVerifyCodeButton(ft.FilledButton):
             show_error_banner(page, message=str(exc))
             return
 
-        encrypted_email = await page.shared_preferences.get(f"hb.{self._user_id}.email")
-        encrypted_password = await page.shared_preferences.get(f"hb.{self._user_id}.password")
+        encrypted_email = await ft.SharedPreferences().get(f"hb.{self._user_id}.email")
+        encrypted_password = await ft.SharedPreferences().get(f"hb.{self._user_id}.password")
         if not isinstance(encrypted_email, str) or not isinstance(encrypted_password, str):
             show_error_banner(page, message="Cannot find email or password in client storage.")
             return
@@ -211,7 +211,7 @@ class EmailVerifyCodeButton(ft.FilledButton):
 
         cookies = result.to_str()
         encrypted_cookies = encrypt_string(cookies)
-        await page.shared_preferences.set(f"hb.{self._user_id}.cookies", encrypted_cookies)
+        await ft.SharedPreferences().set(f"hb.{self._user_id}.cookies", encrypted_cookies)
         page.go(f"/finish?{self._params.to_query_string()}")
 
 
@@ -225,8 +225,8 @@ async def handle_action_ticket(
     locale: Locale,
     device_id: str,
 ) -> None:
-    await page.shared_preferences.set(f"hb.{params.user_id}.email", encrypt_string(email))
-    await page.shared_preferences.set(f"hb.{params.user_id}.password", encrypt_string(password))
+    await ft.SharedPreferences().set(f"hb.{params.user_id}.email", encrypt_string(email))
+    await ft.SharedPreferences().set(f"hb.{params.user_id}.password", encrypt_string(password))
     page.show_dialog(
         EmailVerifyDialog(
             ticket=result, locale=locale, user_id=params.user_id, params=params, device_id=device_id
@@ -301,7 +301,7 @@ class MobileVerifyCodeButton(ft.TextButton):
         else:
             cookies = result.to_str()
             encrypted_cookies = encrypt_string(cookies)
-            await page.shared_preferences.set(f"hb.{self._user_id}.cookies", encrypted_cookies)
+            await ft.SharedPreferences().set(f"hb.{self._user_id}.cookies", encrypted_cookies)
             page.go(f"/finish?{self._params.to_query_string()}")
 
 

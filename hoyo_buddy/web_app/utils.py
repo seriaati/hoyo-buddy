@@ -71,13 +71,13 @@ class ErrorBanner(ft.Banner):
             actions=actions,
         )
 
-    async def launch_url(self, e: ft.ControlEvent) -> None:
+    async def launch_url(self, e: ft.Event) -> None:
         page = cast("ft.Page", e.page)
         if self.url is None:
             return
         await page.launch_url(self.url, web_popup_window_name=ft.UrlTarget.BLANK.value)
 
-    async def on_action_click(self, e: ft.ControlEvent) -> None:
+    async def on_action_click(self, e: ft.Event) -> None:
         page = cast("ft.Page", e.page)
         page.pop_dialog()
 
@@ -113,11 +113,11 @@ def clear_storage(
     device_fp: bool = False,
 ) -> None:
     if cookies:
-        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.cookies"))
+        asyncio.create_task(ft.SharedPreferences().remove(f"hb.{user_id}.cookies"))
     if device_id:
-        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.device_id"))
+        asyncio.create_task(ft.SharedPreferences().remove(f"hb.{user_id}.device_id"))
     if device_fp:
-        asyncio.create_task(page.shared_preferences.remove(f"hb.{user_id}.device_fp"))
+        asyncio.create_task(ft.SharedPreferences().remove(f"hb.{user_id}.device_fp"))
 
 
 async def fetch_json_file(filename: str) -> Any:
@@ -133,7 +133,7 @@ async def fetch_gacha_names(
     page: ft.Page, *, gachas: Sequence[GachaHistory], locale: Locale, game: Game
 ) -> dict[int, str]:
     cached_gacha_names: dict[str, str] = (
-        await page.shared_preferences.get(f"hb.{locale}.{game.name}.gacha_names") or {}
+        await ft.SharedPreferences().get(f"hb.{locale}.{game.name}.gacha_names") or {}
     )
 
     result: dict[int, str] = {}
@@ -175,7 +175,7 @@ async def fetch_gacha_names(
 
         cached_gacha_names.update({str(k): v for k, v in item_names.items()})
         asyncio.create_task(
-            page.shared_preferences.set(
+            ft.SharedPreferences().set(
                 f"hb.{locale}.{game.name}.gacha_names", cached_gacha_names
             )
         )

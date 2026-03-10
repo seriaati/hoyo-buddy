@@ -750,7 +750,7 @@ mimo_tasks_button_label: 임무
 mimo_buy_item_amount_label: 갯수
 mimo_item_available_time: "{time} 후 재충전"
 mimo_auto_task_embed_footer: /mimo를 사용하여 파견 보상을 설정하고 상점에서 전리품을 수령하세요.
-mimo_auto_task_embed_desc: "호요 버디가 {finish}건의 의뢰를 완료하여 {claim_point} 포인트 전리품을 수령했습니다."
+mimo_auto_task_embed_desc: "호요 버디가 {finish}건의 의뢰를 완료하여 {claim_point} 포인트를 수령했습니다."
 checkin_reward_embed_footer: /check-in을 사용하여 전송 알림 수신 여부를 설정하세요.
 mimo_status: "상태: {status}"
 mimo_auto_buy_embed_desc: "호요 버디가 {points} 포인트를 사용해서 {item} 아이템을 대신 구매했어요!\n만약 아래에 리딤 코드가 있다면, </redeem>에서 직접 입력해 보상을 받아 가세요."

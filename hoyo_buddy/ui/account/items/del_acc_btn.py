@@ -41,20 +41,21 @@ class DeleteAccountButton(Button[AccountManager]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        account = self.view.selected_account
+        view = self.view
+        account = view.selected_account
         assert account is not None
         await account.delete()
 
-        new_account = await HoyoAccount.filter(user=self.view.user).first()
+        new_account = await HoyoAccount.filter(user=view.user).first()
         if new_account is not None:
             new_account.current = True
             await new_account.save(update_fields=("current",))
 
         embed = DefaultEmbed(
-            self.view.locale,
+            view.locale,
             title=LocaleStr(key="account_deleted_title"),
             description=LocaleStr(key="account_deleted_description", account=str(account)),
         )
-        self.view.clear_items()
-        self.view.add_item(DeleteAccountContinue())
-        await i.response.edit_message(embed=embed, view=self.view)
+        view.clear_items()
+        view.add_item(DeleteAccountContinue())
+        await i.response.edit_message(embed=embed, view=view)

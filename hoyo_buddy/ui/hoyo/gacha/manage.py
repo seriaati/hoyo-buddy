@@ -54,17 +54,20 @@ class DeleteButton(Button[GachaLogManageView]):
         )
 
     async def callback(self, i: Interaction) -> Any:
+        view = self.view
+        locale = view.locale
+        account = view.account
         embed = ErrorEmbed(
-            self.view.locale,
+            locale,
             title=LocaleStr(key="gacha_log_delete_confirm_embed_title"),
             description=LocaleStr(key="gacha_log_delete_confirm_embed_description"),
         )
-        embed.add_acc_info(self.view.account)
+        embed.add_acc_info(account)
 
-        self.view.clear_items()
-        self.view.add_item(DeleteConfirmButton())
-        self.view.add_item(DeleteCancelButton())
-        await i.response.edit_message(embed=embed, view=self.view)
+        view.clear_items()
+        view.add_item(DeleteConfirmButton())
+        view.add_item(DeleteCancelButton())
+        await i.response.edit_message(embed=embed, view=view)
 
 
 class DeleteConfirmButton(Button[GachaLogManageView]):

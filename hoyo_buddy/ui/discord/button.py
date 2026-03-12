@@ -92,12 +92,13 @@ class GoBackButton[V_co: View](Button):
         self.view: V_co
 
     async def callback(self, i: Interaction) -> Any:
-        self.view.clear_items()
+        view = self.view
+        view.clear_items()
         for item in self.original_children:
             if isinstance(item, Button | Select):
-                self.view.add_item(item, translate=False)
+                view.add_item(item, translate=False)
 
-        kwargs: dict[str, Any] = {"view": self.view}
+        kwargs: dict[str, Any] = {"view": view}
         if self.embeds is not None:
             kwargs["embeds"] = self.embeds
 
@@ -205,20 +206,22 @@ class ToggleUIButton[V_co: View](Button):
             return
 
         if self._mode == "hide":
-            children = self.view.children.copy()
+            view = self.view
+            children = view.children.copy()
             children.remove(self)
             self._items = children  # pyright: ignore[reportAttributeAccessIssue]
-            self.view.clear_items()
+            view.clear_items()
 
             self._mode = "show"
             self._set_style()
-            self.view.add_item(self)
+            view.add_item(self)
         else:
-            self.view.clear_items()
-            self.view.add_items(self._items)
+            view = self.view
+            view.clear_items()
+            view.add_items(self._items)
 
             self._mode = "hide"
             self._set_style()
-            self.view.add_item(self)
+            view.add_item(self)
 
-        await i.response.edit_message(view=self.view)
+        await i.response.edit_message(view=view)

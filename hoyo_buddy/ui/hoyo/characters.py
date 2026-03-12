@@ -995,14 +995,15 @@ class FilterButton(Button[CharactersView]):
         self._items = items
 
     async def callback(self, i: Interaction) -> None:
-        back_button = CustomGoBackButton(self.view.children)
-        self.view.clear_items()
+        view = self.view
+        back_button = CustomGoBackButton(view.children)
+        view.clear_items()
 
         for item in self._items:
-            self.view.add_item(item)
-        self.view.add_item(back_button)
+            view.add_item(item)
+        view.add_item(back_button)
 
-        await i.response.edit_message(view=self.view)
+        await i.response.edit_message(view=view)
 
 
 class CharactersPerPageModal(Modal):

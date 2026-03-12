@@ -29,22 +29,24 @@ class AddAccountButton(Button[AccountManager]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        view = self.view
+        locale = view.locale
         embed = DefaultEmbed(
-            self.view.locale,
+            locale,
             title=LocaleStr(key="add_account_button_label"),
             description=LocaleStr(key="account_add_start_message"),
         )
-        self.view.clear_items()
+        view.clear_items()
         params = Params(
-            locale=self.view.locale.value,
+            locale=locale.value,
             user_id=i.user.id,
             channel_id=i.channel.id if i.channel is not None else None,
             guild_id=i.guild.id if i.guild is not None else None,
         )
-        self.view.add_item(
+        view.add_item(
             Button(
                 label=LocaleStr(key="hbls_button_label"),
                 url=WEB_APP_URLS[i.client.env] + f"/platforms?{params.to_query_string()}",
             )
         )
-        await i.response.edit_message(embed=embed, view=self.view)
+        await i.response.edit_message(embed=embed, view=view)

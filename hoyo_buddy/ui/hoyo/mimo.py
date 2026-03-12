@@ -254,18 +254,19 @@ class ViewShopButton(ui.Button[MimoView]):
     async def callback(self, i: Interaction) -> None:
         await i.response.defer()
 
-        shop_items = await self.view.client.get_mimo_shop_items(
-            game_id=self.view.mimo_game.id, version_id=self.view.mimo_game.version_id
+        view = self.view
+        shop_items = await view.client.get_mimo_shop_items(
+            game_id=view.mimo_game.id, version_id=view.mimo_game.version_id
         )
-        points = await self.view.client.get_mimo_point_count()
+        points = await view.client.get_mimo_point_count()
 
-        go_back_button = GoBackButton(self.view.children)
-        self.view.clear_items()
-        self.view.add_item(go_back_button)
-        self.view.add_item(ShopItemSelector(shop_items, points))
+        go_back_button = GoBackButton(view.children)
+        view.clear_items()
+        view.add_item(go_back_button)
+        view.add_item(ShopItemSelector(shop_items, points))
 
-        embed = self.view.get_shop_embed(points, shop_items)
-        await i.edit_original_response(embed=embed, view=self.view)
+        embed = view.get_shop_embed(points, shop_items)
+        await i.edit_original_response(embed=embed, view=view)
 
 
 class BuyItemModal(ui.Modal):
@@ -462,14 +463,15 @@ class LotteryInfoButton(ui.Button[MimoView]):
 
     async def callback(self, i: Interaction) -> None:
         await i.response.defer()
-        lottery_info = await self.view.client.get_mimo_lottery_info(
-            game_id=self.view.game_id, version_id=self.view.version_id
+        view = self.view
+        lottery_info = await view.client.get_mimo_lottery_info(
+            game_id=view.game_id, version_id=view.version_id
         )
-        embed = self.view.get_lottery_info_embed(lottery_info)
-        go_back_button = GoBackButton(self.view.children)
-        self.view.clear_items()
-        self.view.add_item(go_back_button)
-        self.view.add_item(
+        embed = view.get_lottery_info_embed(lottery_info)
+        go_back_button = GoBackButton(view.children)
+        view.clear_items()
+        view.add_item(go_back_button)
+        view.add_item(
             LotteryDrawButton(disabled=lottery_info.current_count >= lottery_info.limit_count)
         )
-        await i.edit_original_response(embed=embed, view=self.view)
+        await i.edit_original_response(embed=embed, view=view)

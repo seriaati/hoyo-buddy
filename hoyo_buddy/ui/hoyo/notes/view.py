@@ -278,6 +278,7 @@ class AccountSwitcher(Select[NotesView]):
             msg = f"Account not found for {uid} in {game}"
             raise ValueError(msg)
 
-        self.view.account = account
-        self.view.clear_items()
-        await self.view.start(i, acc_select=self)
+        view = self.view
+        view.account = account
+        view.clear_items()
+        await view.start(i, acc_select=self)

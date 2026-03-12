@@ -29,12 +29,18 @@ class Settings(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
-    def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
+    async def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
         """Get character autocomplete choices."""
         if game is Game.GENSHIN:
             category = ambr.ItemCategory.CHARACTERS
         elif game is Game.STARRAIL:
             category = yatta.ItemCategory.CHARACTERS
+        elif game is Game.ZZZ:
+            async with hb_data.ZZZClient() as client:
+                characters = client.get_characters(
+                    lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
+                )
+            return [app_commands.Choice(name=c.name, value=str(c.id)) for c in characters]
         else:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
@@ -44,8 +50,10 @@ class Settings(commands.Cog):
 
         return characters.get(locale, characters[Locale.american_english])
 
-    def _get_character_name(self, game: Game, character_id: str, locale: Locale) -> str | None:
-        choices = self._get_choices(locale, game)
+    async def _get_character_name(
+        self, game: Game, character_id: str, locale: Locale
+    ) -> str | None:
+        choices = await self._get_choices(locale, game)
         for choice in choices:
             if choice.value == character_id:
                 return choice.name
@@ -63,7 +71,7 @@ class Settings(commands.Cog):
 
         locale = await get_locale(i)
 
-        character_name = self._get_character_name(game, character_id, locale)
+        character_name = await self._get_character_name(game, character_id, locale)
         if character_name is None:
             raise InvalidQueryError
 
@@ -143,7 +151,9 @@ class Settings(commands.Cog):
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         choices = [
-            c for c in self._get_choices(locale, Game.GENSHIN) if current.lower() in c.name.lower()
+            c
+            for c in await self._get_choices(locale, Game.GENSHIN)
+            if current.lower() in c.name.lower()
         ]
         return choices[:25]
 
@@ -154,7 +164,9 @@ class Settings(commands.Cog):
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
         choices = [
-            c for c in self._get_choices(locale, Game.STARRAIL) if current.lower() in c.name.lower()
+            c
+            for c in await self._get_choices(locale, Game.STARRAIL)
+            if current.lower() in c.name.lower()
         ]
         return choices[:25]
 
@@ -164,15 +176,9 @@ class Settings(commands.Cog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-
-        async with hb_data.ZZZClient() as client:
-            characters = client.get_characters(
-                lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
-            )
-
         choices = [
-            app_commands.Choice(name=c.name, value=str(c.id))
-            for c in characters
+            c
+            for c in await self._get_choices(locale, Game.ZZZ)
             if current.lower() in c.name.lower()
         ]
         return choices[:25]

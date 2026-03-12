@@ -1,857 +1,859 @@
-about_command.contribute: 貢献する
-about_command.developer: 開発者
-about_command.discord_server: Discordサーバー
-about_command.guild_count: サーバー数
-about_command.ram_usage: RAM使用量
-about_command.support: 寄付する
-about_command.translators: 翻訳者
-about_command.uptime: 稼働時間
-about_command.website: 公式ウェブサイト
-about_command_description: Botについて
-about_embed.description: "機能豊富で使いやすく、美しくデザインされたHoyoverseゲーム専用のDiscordボットです。"
-abundance: 豊穣
-abyss.battles_won_fought: "勝利/戦闘回数：{val1}/{val2}"
-abyss.deepest_descent: "到達層：{val}"
-abyss.floor: "第{val}層"
-abyss.overview: 深境螺旋概要
-abyss.damage: ダメージ情報
-abyss.stats: ステータス
-honkai:_star_rail: "崩壊：スターレイル"
-abyss.phase_select.placeholder: 期を選択
-abyss.total_stars: "合計獲得★：{val}"
-abyss_chamber.challenge_target.embed.field.name: 挑戦目標
-abyss_chamber.embed.title: "第{floor_index}層 - 第{chamber_index}間"
-abyss_chamber.enemy_level.embed.field.name: 敵Lv.
-abyss_chamber.ley_line_disorder.embed.field.name: 地脈異常
-abyss_enemy.item_description: "HP：{HP}"
-acc_no_default_param_desc: このコマンドを実行するアカウント
-account_autocomplete_param_description: "このコマンドを実行するアカウント。デフォルトは/accountsで選択されたものになります"
-account_autocomplete_param_name: アカウント
-account_deleted_description: "{account} は削除されました。"
-account_deleted_title: アカウント削除完了
-account_manager_footer: 選択されたアカウントが、すべてのコマンドで使用されるデフォルトのアカウントになります
-account_manager_no_accounts_description: まだアカウントがありません。
-account_manager_title: アカウントマネージャー
-account_not_found_error_message: "指定されたクエリのアカウントが見つかりませんでした。ご自身で入力する代わりに、オートコンプリートの選択肢から選んでください。"
-account_not_found_error_title: アカウントが見つかりません
-account_username: ユーザー名
-accounts_command_description: アカウントを管理します
-action_in_cooldown_error_message: "{available_time} にもう一度お試しください。"
-action_in_cooldown_error_title: クールダウン中
-add_account_button_label: アカウントを追加
-add_hoyolab_acc.embed.description: "- [どの方法を使用すればよいですか？](:docs/FAQ#which-login-method-should-i-use:)"
-add_hoyolab_acc.embed.title: アカウントを追加する方法を選択してください
-adding_accounts_description: "- [Hoyo Buddyは安全ですか？](:docs/Account-Security:)\n- [プライバシーポリシー](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
-adding_accounts_title: アカウントのプラットフォームを選択してください
-ai_gen_image_error_message: プロンプトを確認して、もう一度お試しください。
-ai_gen_image_error_title: AIによる画像生成中にエラーが発生しました
-already_claimed_description: また明日！
-already_claimed_title: デイリーチェックイン報酬は既に受け取り済みです
-anemo: 風
-artifact_set_four_piece_embed_description: "4セット：{bonus_4}"
-artifact_set_two_piece_embed_description: "2セット：{bonus_2}"
-artifact_sets: 聖遺物セット
-auto_checkin_button_label: 自動デイリーチェックイン
-auto_locale_option_label: クライアントの言語に従う
-auto_redeem_footer: 自動コード交換をオフにするには /redeem を使用してください
-auto_redeem_toggle.label: 自動コード交換
-books: 書籍
-captcha.embed.description: "下のボタンをクリックしてCAPTCHA認証を完了してください。\n"
-challenge_type_select.placeholder: ゲームモードを選択
-challenge_view.buff_used_in: 使用先
-challenge_view.team: "チーム {team}"
-chamber_button_label: "第{value}間"
-change_character_level_label: キャラクターレベルを変更
-change_skill_level_label: スキルレベルを変更
-change_talent_level_label: 天賦レベルを変更
-change_weapon_level_label: 武器レベルを変更
-chara_level.modal.title: キャラクターレベルを入力
-character_const_page_label: 星座
-character_embed_description: "{rarity}★ {element}\n誕生日：{birthday}\n星座：{constellation}\n所属：{affiliation}\n"
-character_passives_page_label: 固有天賦
-character_profile_page_label: プロフィール
-character_quotes_page_label: セリフ
-character_stories_page_label: ストーリー
-character_talents_page_label: 天賦
-character_voices_page_label: ボイス
-characters: キャラクター
-characters.embed.element_max_friendship: "好感度MAXの{element}キャラクター"
-characters.embed.element_not_max_friendship: "好感度未MAXの{element}キャラクター"
-characters.embed.max_friendship: 好感度MAXキャラクター
-characters.embed.not_max_friendship: 好感度未MAXキャラクター
-characters.embed.owned_characters: 所持キャラクター
-characters.embed.title: キャラクター概要
-characters.filter.element.placeholder: 元素フィルターを選択...
-characters.filter.max_friendship: 好感度MAX
-characters.filter.none: なし
-characters.filter.not_max_friendship: 好感度未MAX
-characters.filter.path.placeholder: 運命フィルターを選択...
-characters.filter.placeholder: フィルターを選択...
-characters.level_order.footer: "レベル順：{order}"
-characters.extra_detail.footer: "キャラクターの詳細を表示するには /profile を使用してください"
-hsr.ultimate: 必殺技
-hsr.normal_attack: 通常攻撃
-hsr.skill: 戦闘スキル
-hsr.talent: 天賦
-hsr.technique: 秘技
-gi.skill: 元素スキル
-gi.burst: 元素爆発
-gi.passive: 固有天賦
-characters.sorter.constellation: 星座
-characters.sorter.eidolon: 星魂
-characters.sorter.element: 元素
-characters.sorter.friendship: 好感度
-characters.sorter.level: レベル
-characters.sorter.path: 運命
-characters.sorter.placeholder: ソート基準を選択...
-characters.sorter.rarity: レアリティ
-characters.sorter.hsr_type: 屬性
-characters_cmd_genshin_desc: 原神のキャラクターを表示・フィルタリングします
-characters_cmd_hsr_desc: 崩壊：スターレイルのキャラクターを表示・フィルタリングします
-characters_cmd_zzz_desc: ゼンレスゾーンゼロのエージェントを表示・フィルタリングします
-characters_cmd_honkai_desc: 崩壊3rdのキャラクターを表示・フィルタリングします
-checkin_button_label: チェックイン
-checkin_command_description: ゲームのデイリーチェックイン
-complete_captcha_button_label: CAPTCHA認証を完了
-complete_geetest_button_description: 下のボタンをクリックしてGeeTest認証を完了してください
-complete_geetest_button_label: GeeTest認証を完了
-const_refine_str: "{const}凸{refine}重"
-continue_button_label: 続ける
-cryo: 氷
-daily_button.label: デイリーリマインダー
-daily_check_in: デイリーチェックイン
-daily_checkin_embed_description: "今月チェックインした日数：{day}日\nチェックインを逃した日数：{missed}日\n"
-daily_modal.title: デイリーリマインダー設定
-delete_account_button_label: 選択したアカウントを削除
-dendro: 草
-destruction: 壊滅
-devtools_button_label: DevToolsを使用 (デスクトップのみ)
-devtools_instructions_description: "1. [HoYoLAB](https://www.hoyolab.com/home) または [米游社](https://www.miyoushe.com/ys/) (中国大陸プレイヤー向け) にログインします\n2. F12 または Ctrl+Shift+I を押してDevToolsを開きます\n3. 上部のナビゲーションバーにある >> アイコンを押します\n4. `Application` タブをクリックします\n5. 左側のサイドバーにある `Cookies` をクリックします\n6. 現在表示しているウェブサイト (例：https://www.hoyolab.com) をクリックします\n7. `Filter` ボックスに `v2` と入力します\n8. 下のボタンをクリックします\n9. 各クッキーの `Value` をコピーし、ボックスに貼り付けます"
-dice_cost_embed_field_name: サイコロコスト
-download_image_failed_error_message: "ステータスコード {status} で画像 {url} のダウンロードに失敗しました。\n後でもう一度試すか、別の画像で試すか、画像URLが有効か確認してください。"
-download_image_failed_error_title: 画像ダウンロード失敗
-edit_nickname_modal_title: ニックネームを編集
-eidolon_superimpose_str: "{eidolon}凸{superimpose}重"
-electro: 雷
-email_verification_dialog_title: 認証が必要です
-email_verification_dialog_content: Hoyoverseから受信したメール認証コードを入力してください。
-email_verification_dialog_action: 認証
-email_verification_field_label: 認証コード
-email-geetest.embed.title: メール認証コード送信のためのCAPTCHA認証が必要です
-email_password_button_label: メールアドレスとパスワードを使用
-email_password_modal_email_input_label: メールアドレスまたはユーザー名
-email_password_modal_password_input_label: パスワード
-enter_email_password_instructions_description: "メールアドレスとパスワードは、GoogleやAppleなどのアカウントではなく、**HoYoverseアカウント**のものを指します。\n- [これはどのように機能しますか？](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [HoYoverseアカウントを持っていません (Google、Facebookなどでログインしています)](:docs/Before-Start:)\n- [私はコンソールプレイヤーです](:docs/Before-Start#i-am-a-console-player:)"
-enter_light_cone_level.button.label: 光円錐レベルを変更
-dark_theme: ダークテーマ
-card_dark_theme_desc: このキャラクターのビルドカードにダークカラースキームを使用します。
-error_footer: "サポートが必要な場合は、/about にあるDiscordサーバーでヘルプを見つけることができます"
-error_title: エラーが発生しました
-erudition: 知恵
-days: 日
-exceptions.card_not_ready_error.message: "新しいキャラクターがリリースされた際、彼らのビルドカードの色を指定する必要があります。\nゲームアップデート後数日経ってもこのメッセージが表示される場合は、忘れている可能性があるため、[Discordサーバー](https://link.seria.moe/hb-dc) でお知らせください。"
-exceptions.card_not_ready_error.title: "{character_name} のカードデータはまだ準備できていません。"
-exped.embed.description: 1つ以上の探索派遣が完了しました
-exped_button.label: 探索派遣リマインダー
-exped_modal.title: 探索派遣リマインダー設定
-exploration.chests: 開放した宝箱
-exploration.common_chests: 普通
-exploration.exquisite_chests: 精巧
-exploration.luxurious_chests: 豪華
-exploration.placeholder: 未実装
-exploration.placeholder_quote: '"どんな旅にも終わりがある。焦らなくてもいいんだよ。"\n\n  - 鍾離'
-exploration.precious_chests: 貴重
-exploration.progress: "探索度：{progress}%"
-exploration.remarkable_chests: 不思議
-exploration.title: 世界探索
-exploration.waypoints: 解放したワープポイント
-exploration_command_description: 原神での探索統計を表示します
-farm_add_command.item_already_in_list: アイテムは既にリストにあります
-farm_add_command.item_already_in_list_description: このアイテムは既に育成リマインダーリストにあります。
-farm_add_command_description: キャラクター/武器をリストに追加し、素材が収集可能な日に通知を受け取ります
-farm_check.farmable_today: "{name} の素材は本日収集可能です"
-farm_check.use_farm_notify: "リマインダー設定は /farm reminder を使用してください\n本日収集可能な全アイテムを表示するには /farm view を使用してください"
-farm_notify.add_item: アイテムを追加
-farm_notify.add_item.embed.description: "アイテムを追加するには </farm add> コマンドを使用してください"
-farm_notify.description: このリストにあるキャラクター/武器の素材が収集可能な日に通知されます。
-farm_notify.empty: 育成リマインダーリストにアイテムがありません
-farm_notify.empty_description: </farm add> コマンドを使用して育成リマインダーリストにアイテムを追加してください
-farm_notify.remove_item: アイテムを削除
-farm_notify.remove_item.embed.description: "アイテムを削除するには </farm remove> コマンドを使用してください"
-farm_notify.title: 育成リマインダーリスト
-farm_reminder_command_description: キャラクター/武器の素材が収集可能な日に通知します
-farm_remove_command.item_not_found: アイテムが見つかりません
-farm_remove_command.item_not_found_description: このアイテムは育成リマインダーリストにありません。
-farm_remove_command_description: キャラクター/武器を育成リマインダーリストから削除します
-farm_view.happy_farming: 🌾 育成頑張ってください！
-farm_view.set_reminder: リマインダーを設定
-farm_view.set_reminder.embed.description: "リマインダーを設定するには </farm reminder> コマンドを使用してください"
-farm_view.sundays: 日曜日はすべての秘境が開放されます
-farm_view.weekday_select.placeholder: 曜日を選択
-farm_view_command_description: 原神で収集可能な秘境を表示します
-fire: 炎
-floor_select_label: "第{value}層"
-fontaine: フォンテーヌ
-food: 料理
-friday: 金曜日
-furnishing_sets: 調度品セット
-furnishings: 調度品
-furniture_embed_description: "{comfort_icon} 快適度：{comfort}\n{load_icon} 負荷：{load}\n信頼ランク：{trust}\n製作時間：{hour}時間"
-game_maintenance_description: しばらくしてからもう一度お試しください
-game_maintenance_title: ゲームはメンテナンス中です
-geeetest_verification_complete: 認証完了
-geetest.embed.title: ログイン前にCAPTCHA認証が必要です
-geetest.no_need: GeeTestは不要です
-geetest.no_need.description: "GeeTest認証は必要ありませんでした！なぜここに？"
-geetest.required: GeeTest認証が必要です
-geetest.required.description: "</geetest> コマンドを使用し、GeeTestを引き起こしたアカウントを選択し、`{geetest_type}` を選択して認証を完了してください"
-geetest_command_description: GeeTest認証を完了します
-geetest_cmd_type_param_desc: GeeTest認証のタイプ
-geetest_command_type_param_name: タイプ
-genshin_impact: 原神
-geo: 岩
-gi_daily.embed.description: デイリー依頼または冒険遭遇がまだ完了していません
-gift_code_modal.code_input.label: "コード {num}"
-gift_code_modal.title: ギフトコードを入力
-harmony: 調和
-honkai_impact_3rd: 崩壊3rd
+about_command.contribute: Contribuir
+about_command.developer: Desarrollador
+about_command.discord_server: Servidor de Discord
+about_command.guild_count: Cantidad de servidores
+about_command.ram_usage: Uso de RAM
+about_command.support: Donar
+about_command.translators: Traductores
+about_command.uptime: Tiempo de actividad
+about_command.website: Sitio web oficial
+about_command_description: Sobre el bot
+about_embed.description: "Un bot de Discord con muchas funciones, fácil de usar y bellamente diseñado, hecho para jugadores de Hoyoverse."
+abundance: Abundancia
+abyss.battles_won_fought: "Batallas Ganadas/Libradas: {val1}/{val2}"
+abyss.deepest_descent: "Descenso más profundo: {val}"
+abyss.floor: "Piso {val}"
+abyss.overview: Resumen del Espiral del Abismo
+abyss.damage: INFO. DE DAÑO
+abyss.stats: STATS
+honkai:_star_rail: "Honkai: Star Rail"
+abyss.phase_select.placeholder: Selecciona una fase
+abyss.total_stars: "Estrellas totales: {val}"
+abyss_chamber.challenge_target.embed.field.name: Objetivo del desafío
+abyss_chamber.embed.title: "Piso {floor_index} - Cámara {chamber_index}"
+abyss_chamber.enemy_level.embed.field.name: Nivel de enemigo
+abyss_chamber.ley_line_disorder.embed.field.name: Crecida de Línea Ley
+abyss_enemy.item_description: "Vida: {HP}"
+acc_no_default_param_desc: Cuenta con la que ejecutar este comando
+account_autocomplete_param_description: "Cuenta con la que ejecutar este comando, por defecto se usa la seleccionada en /accounts"
+account_autocomplete_param_name: cuenta
+account_deleted_description: "{account} ha sido eliminada."
+account_deleted_title: Cuenta eliminada
+account_manager_footer: La cuenta seleccionada será la predeterminada para todos los comandos.
+account_manager_no_accounts_description: Aún no tienes ninguna cuenta.
+account_manager_title: Administrador de cuentas
+account_not_found_error_message: "No se pudo encontrar una cuenta con la consulta proporcionada. Por favor, selecciona una opción del autocompletado en lugar de escribir tu propia consulta."
+account_not_found_error_title: Cuenta no encontrada
+account_username: Nombre de usuario
+accounts_command_description: Administra tus cuentas
+action_in_cooldown_error_message: "Por favor, inténtalo de nuevo a las {available_time}."
+action_in_cooldown_error_title: Acción en recarga
+add_account_button_label: Agregar cuentas
+add_hoyolab_acc.embed.description: "- [¿Qué método debo usar?](:docs/FAQ#which-login-method-should-i-use:)"
+add_hoyolab_acc.embed.title: Seleccione un método para agregar sus Cuentas
+adding_accounts_description: "- [¿Hoyo Buddy es seguro?](:docs/Account-Security:)\n- [Políticas de Privacidad](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
+adding_accounts_title: Selecciona la plataforma de tu cuenta
+ai_gen_image_error_message: Revisa tu solicitud e inténtalo de nuevo.
+ai_gen_image_error_title: Ocurrió un error al generar el arte con IA
+already_claimed_description: ¡Vuelve mañana!
+already_claimed_title: El login diario ya ha sido reclamado
+anemo: Anemo
+artifact_set_four_piece_embed_description: "4 Piezas: {bonus_4}"
+artifact_set_two_piece_embed_description: "2 Piezas: {bonus_2}"
+artifact_sets: Set de Artefactos
+auto_checkin_button_label: Reclamo de login diario automático
+auto_locale_option_label: Seguir el idioma del cliente
+auto_redeem_footer: Desactiva el canje automático de códigos con /redeem
+auto_redeem_toggle.label: Canjear códigos automáticamente
+books: Libros
+captcha.embed.description: "Haz clic en el botón de abajo para completar el CAPTCHA.\n"
+challenge_type_select.placeholder: Selecciona un modo de juego
+challenge_view.buff_used_in: Utilizado en
+challenge_view.team: "team {team}"
+chamber_button_label: "Sala {value}"
+change_character_level_label: Cambiar nivel de personaje
+change_skill_level_label: Cambiar nivel de habilidad
+change_talent_level_label: Cambiar nivel de talento
+change_weapon_level_label: Cambiar nivel de arma
+chara_level.modal.title: Ingresa el nivel de personaje
+character_const_page_label: Constelaciones
+character_embed_description: "{rarity}★ {element}\nCumpleaño: {birthday}\nConstelación: {constellation}\nAfiliación: {affiliation}\n"
+character_passives_page_label: Pasivas
+character_profile_page_label: Perfil
+character_quotes_page_label: Frases
+character_stories_page_label: Historias
+character_talents_page_label: Talentos
+character_voices_page_label: Voces
+characters: Personajes
+characters.embed.element_max_friendship: "Personajes {element} con máxima amistad"
+characters.embed.element_not_max_friendship: "Personajes {element} sin máxima amistad"
+characters.embed.max_friendship: Personajes con máxima amistad
+characters.embed.not_max_friendship: Personajes sin máxima amistad
+characters.embed.owned_characters: Personajes obtenidos
+characters.embed.title: Descripción de personaje
+characters.filter.element.placeholder: Selecciona filtro de elementos...
+characters.filter.max_friendship: Máxima amistad
+characters.filter.none: Ninguno
+characters.filter.not_max_friendship: Sin máxima amistad
+characters.filter.path.placeholder: Selecciona los filtros de ruta...
+characters.filter.placeholder: Selecciona un filtro...
+characters.level_order.footer: "Orden de nivel: {order}"
+characters.extra_detail.footer: "Usa /profile para ver los detalles de un personaje"
+hsr.ultimate: Ultimate
+hsr.normal_attack: Ataque Normal
+hsr.skill: Habilidad
+hsr.talent: Talento
+hsr.technique: Técnica
+gi.skill: Habilidad Elemental
+gi.burst: Habilidad Definitiva
+gi.passive: Pasiva
+characters.sorter.constellation: Constelación
+characters.sorter.eidolon: Eidolon
+characters.sorter.element: Elemento
+characters.sorter.friendship: Amistad
+characters.sorter.level: Nivel
+characters.sorter.path: Vías
+characters.sorter.placeholder: Selecciona una clasificación...
+characters.sorter.rarity: Rareza
+characters.sorter.hsr_type: Tipo
+characters_cmd_genshin_desc: Ver y filtrar tus personajes de Genshin Impact
+characters_cmd_hsr_desc: Ver y filtrar tus personajes de Honkai Star Rail
+characters_cmd_zzz_desc: Ver y filtrar tus agentes de Zenless Zone Zero
+characters_cmd_honkai_desc: Ver y filtrar tus personajes de Honkai Impact 3rd
+checkin_button_label: Registro
+checkin_command_description: Login diario del juego
+complete_captcha_button_label: Completa el CAPTCHA
+complete_geetest_button_description: Haga clic en el botón a continuación para completar la verificación Geetest
+complete_geetest_button_label: Geetest completo
+const_refine_str: "C{const}R{refine}"
+continue_button_label: Continuar
+cryo: Cryo
+daily_button.label: Recordatorio diario
+daily_check_in: Login diario
+daily_checkin_embed_description: "{day} día(s) de login diario reclamados este mes\nSe perdieron {missed} día(s) de login diario\n"
+daily_modal.title: Configurar el login diario
+delete_account_button_label: Eliminar cuenta selecionada
+dendro: Dendro
+destruction: Destrucción
+devtools_button_label: Con DevTools (solo escritorio)
+devtools_instructions_description: "1. Inicia sesión en [HoYoLAB](https://www.hoyolab.com/home) o [Miyoushe](https://www.miyoushe.com/ys/) (para jugadores de CN)\n2. Abre las Herramientas de Desarrollo presionando F12 o Ctrl+Shift+I\n3. Haz clic en el ícono >> en la barra de navegación superior\n4. Haz clic en la pestaña `Aplicación`\n5. Haz clic en `Cookies` en la barra lateral izquierda\n6. Haz clic en el sitio web en el que estás (por ejemplo, https://www.hoyolab.com)\n7. Escribe `v2` en el cuadro de `Filtro`\n8. Haz clic en el botón de abajo\n9. Copia el `Valor` de cada cookie y pégalos en los cuadros"
+dice_cost_embed_field_name: Costo de Dados
+download_image_failed_error_message: "No se pudo descargar la imagen {url} con el código de estado {status}.\nIntenta nuevamente más tarde, prueba con otra imagen o verifica si la URL de la imagen es válida."
+download_image_failed_error_title: Error al descargar la imagen
+edit_nickname_modal_title: Editar nombre de imagen
+eidolon_superimpose_str: "E{eidolon}S{superimpose}"
+electro: Electro
+email_verification_dialog_title: Verificación requerida
+email_verification_dialog_content: "Por favor, ingresa el código de verificación de correo recibido de Hoyoverse."
+email_verification_dialog_action: Verificar
+email_verification_field_label: Código de verificación
+email-geetest.embed.title: Se requiere verificación CAPTCHA para enviar el código de verificación por correo
+email_password_button_label: Con correo y contraseña
+email_password_modal_email_input_label: Correo o Nombre de usuario
+email_password_modal_password_input_label: Constraseña
+enter_email_password_instructions_description: "El correo y contraseña se refieren al **correo y contraseña de la cuenta de Hoyoverse**, no a cuentas de Google, Apple, etc.\n- [¿Cómo funciona este método de inicio de sesión?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [No tengo una cuenta de Hoyoverse (inicio sesión con Google, Facebook, etc.)](:docs/Before-Start:)\n- [Soy un jugador de consola](:docs/Before-Start#i-am-a-console-player:)"
+enter_light_cone_level.button.label: Cambiar el nivel del cono de luz
+dark_theme: Tema oscuro
+card_dark_theme_desc: Usa un esquema de color oscuro para la tarjeta de build de este personaje.
+error_footer: "Puedes encontrar ayuda en nuestro servidor de Discord, link en /about"
+error_title: A ocurrido un error
+erudition: Erudición
+days: días
+exceptions.card_not_ready_error.message: "Cuando se lanzan nuevos personajes, necesito especificar los colores para sus tarjetas de equipamiento.\nSi ves este mensaje varios días después de una actualización del juego, por favor notifícalo en el [servidor de Discord](https://link.seria.moe/hb-dc) ya que podría haber olvidado hacerlo."
+exceptions.card_not_ready_error.title: "Los datos de la tarjeta de {character_name} aún no están listos."
+exped.embed.description: Una (o más) expediciones han terminado
+exped_button.label: Recordatorio de expedición
+exped_modal.title: Configurar Recordatorio de expedición
+exploration.chests: Cofres desbloqueados
+exploration.common_chests: Común
+exploration.exquisite_chests: Sofisticados
+exploration.luxurious_chests: Lujosos
+exploration.placeholder: Aún no lanzado
+exploration.placeholder_quote: '"Cada viaje tiene su final. No te apresures."
+
+  -Zhongli'
+exploration.precious_chests: Valiosos
+exploration.progress: "Progreso de Exploración: {progress}%"
+exploration.remarkable_chests: Extraños
+exploration.title: Exploración de mundo
+exploration.waypoints: Teletransportes desbloqueados
+exploration_command_description: Ver estadísticas de exploración en Genshin Impact
+farm_add_command.item_already_in_list: El ítem ya se encuentra en la lista
+farm_add_command.item_already_in_list_description: Este ítem ya está en tu lista de recordatorios para farmeo.
+farm_add_command_description: Agrega un personaje/arma para notificarte cuando los materiales sean farmeables
+farm_check.farmable_today: "Los materiales para {name} se pueden farmear hoy"
+farm_check.use_farm_notify: "Usa /farm reminder para configurar recordatorios de farmeo\nUsa /farm view para ver todos los ítems farmeables de hoy"
+farm_notify.add_item: Agregar ítem
+farm_notify.add_item.embed.description: "Para agregar ítems, usa el comando </farm add> "
+farm_notify.description: Recibirás un recordatorio cuando los materiales de los personajes/armas en esta lista se puedan farmear.
+farm_notify.empty: No cuentas con ítems en tu lista de recordatorios para farmeo
+farm_notify.empty_description: Agrega ítems a tu lista de recordatorios para farmeo usando el comando </farm add>
+farm_notify.remove_item: Eliminar ítem
+farm_notify.remove_item.embed.description: "Para eliminar ítems, usa el comando </farm remove>"
+farm_notify.title: Lista de recordatorios de farmeo
+farm_reminder_command_description: Te notificará cuando los materiales de los personajes/armas sean farmeables
+farm_remove_command.item_not_found: Ítem no encontrado
+farm_remove_command.item_not_found_description: Este ítem no está en tu lista de recordatorios para farmeo.
+farm_remove_command_description: Eliminar personaje/arma de la lista de recordatorios de farmeo.
+farm_view.happy_farming: 🌾 ¡Feliz farmeo!
+farm_view.set_reminder: Configurar recordatorios
+farm_view.set_reminder.embed.description: "Para configurar recordatorios, usa el comando </farm reminder>"
+farm_view.sundays: Todos los dominios están disponibles el Domingo
+farm_view.weekday_select.placeholder: Selecciona un día de la semana
+farm_view_command_description: Ver dominios farmeables en Genshin Impact
+fire: Fuego
+floor_select_label: "Piso {value}"
+fontaine: Fontaine
+food: Piso
+friday: Viernes
+furnishing_sets: Conjuntos de muebles
+furnishings: Muebles
+furniture_embed_description: "{comfort_icon} Comodidad: {comfort}\n{load_icon} Carga: {load}\nConfianza: {trust}\nTiempo de creación: {hour}h"
+game_maintenance_description: Por favor inténtalo de nuevo más tarde
+game_maintenance_title: El juego está en mantenimiento
+geeetest_verification_complete: Verificación completa
+geetest.embed.title: Se requiere verificación CAPTCHA antes de iniciar sesión
+geetest.no_need: No es necesario el Geetest
+geetest.no_need.description: "¡Nunca necesitaste hacer un geetest!. ¡¿Por qué estás aquí?!"
+geetest.required: Se requiere verificación de Geetest
+geetest.required.description: "Usa el comando </geetest>, elige la cuenta que activó el geetest y selecciona `{geetest_type}` para completar la verificación"
+geetest_command_description: Verificación Geetest completa
+geetest_cmd_type_param_desc: Tipo de verificación Geetest
+geetest_command_type_param_name: tipo
+genshin_impact: Genshin Impact
+geo: Geo
+gi_daily.embed.description: Las recompensas de encargo o encuentros de aventura aún no se han completado
+gift_code_modal.code_input.label: "Código {num}"
+gift_code_modal.title: Ingresa el código de regalo
+harmony: Armonía
+honkai_impact_3rd: Honkai Impact 3rd
 hoyolab: HoYoLAB
-hsr_daily.embed.description: デイリー訓練がまだ完了していません
-hydro: 水
-ice: 氷 (HI3)
-imaginary: 虚数
-inazuma: 稲妻
-instructions_title: 手順
-interaction_failed_description: "このビューはあなたが開始したものではないため、使用できません。"
-interaction_failed_title: インタラクション失敗
-invalid_category_selected: 無効なカテゴリが選択されました
-invalid_color_error_message: "有効な色は16進数カラーコードである必要があります (例: #FF0000)"
-invalid_color_error_title: 無効な色
-invalid_cookies_description: </accounts> を使用してアカウントを再度追加し、クッキーを更新してください
-invalid_cookies_title: 無効なクッキー
-invalid_email_password_description: "入力されたメールアドレスまたはパスワードが正しくありません。確認してもう一度お試しください。"
-invalid_email_password_title: 無効なメールアドレスまたはパスワード
-invalid_game_selected: 無効なゲームが選択されました
-invalid_image_url_error_message: "有効な画像URLは、画像拡張子を含み、公開アクセス可能な画像ファイルへの直接URLである必要があります。"
-invalid_image_url_error_title: 無効な画像URL
-invalid_input.input_needs_to_be_int: "入力 `{input}` は整数である必要があります"
-invalid_input.input_out_of_range.max_value: "入力 `{input}` は {max_value} 以下である必要があります"
-invalid_input.input_out_of_range.min_value: "入力 `{input}` は {min_value} 以上である必要があります"
-invalid_input_error_title: 無効な入力
-invalid_query_error_message: "指定されたクエリで何も見つかりませんでした。ご自身で入力する代わりに、オートコンプリートの選択肢から選んでください。"
-invalid_query_error_title: 無効なクエリ
-invalid_verification_code_description: 認証コードを確認してもう一度お試しください。
-invalid_verification_code_title: 無効な認証コード
-items: アイテム
-level_str: "Lv.{level}"
-light_cones: 光円錐
-living_beings: 生物誌
-liyue: 璃月
-loading_text: 読み込み中...
-make_up_for_checkin_button_label: チェックインを補う
-materials: 素材
-memory_of_chaos: 混沌の記憶
-miyoushe: 米游社
-moc_card_battles_fought: "戦闘回数：{battles}"
-moc_card_cycles_used: "消費ラウンド数：{cycles}"
-moc_card_farthest_stage: "到達ステージ：{stage}"
-moc_quick_clear: クイッククリア
-monday: 月曜日
-mondstadt: モンド
-nod_krai: ナド・クライ
-namecards: 名刺の飾り紋
-next_page_option_label: 次のページ
-nickname_modal_label: ニックネーム
-nickname_modal_placeholder: "メインアカウント、アジアアカウント..."
-nihility: 虚無
-no_account_found_for_games_error_message: "以下のいずれかのゲームのアカウントがありません。 </accounts> で追加してください。"
-no_account_found_for_games_platform_error_message: "{platform} に以下のいずれかのゲームのアカウントがありません。 </accounts> で追加してください。"
-no_account_found_for_games_error_title: アカウントが見つかりません
-no_accounts_autocomplete_choice: まだアカウントがありません。/accounts で追加してください
-profile_character_param_name: "キャラクター-{num}"
-no_challenge_data_err_message: "この期の {challenge} データが見つかりません。{challenge} をまだ開始していないか、データが準備できていない可能性があります。後でもう一度お試しください。"
-no_challenge_data_err_title: "{challenge} データなし"
-no_characters_found_error_message: 別のフィルターで再試行してください
-no_characters_found_error_title: 選択したフィルターでキャラクターが見つかりませんでした
-no_game_accounts_error_message: "この {platform} アカウントにはゲームアカウントがありません。"
-notes-card.gi.completed: 完了
-notes-card.gi.daily-commissions: デイリー依頼
-notes-card.gi.expedition-finished: 完了
-notes-card.gi.expedition-remaining: "残り {time}"
-notes-card.gi.realm-currency: 洞天宝銭
-notes-card.gi.remaining: 残り
-notes-card.gi.resin: 天然樹脂
-notes-card.gi.resin-discounts: 征討領域報酬減額
-notes-card.hsr.echo-of-war-discounts: 歴戦余韻報酬制限
-notes-card.hsr.reserved-power: 予備開拓力
-notes.item_full_in_time: "{emoji} {in_time} で満タン"
-notes.stamina_label: スタミナリマインダー
-notes.stamina: "スタミナ：{cur}/{max}、{time} で満タン"
-notes.train_score: "デイリー勲功：{cur}/{max}"
-notes.superstring_dimension: 超弦空間
-notes.superstring_dimension_value: "現在のスコア：{score}"
-notes.memorial_arena: 記憶戦場
-notes.memorial_arena_value: "挑戦報酬：{rewards_cur}/{rewards_max}\nSSSランク報酬：{sss_cur}/{sss_max}"
-notes.elysian_realm: 古の楽園
-notes.elysian_realm_value: "現在のスコア：{cur}/{max}"
-notes_available: "{emoji} {in_time} 後に利用可能"
-notes_command_description: リアルタイムノートを表示します
-notif.embed.footer: /notes を使用してリマインダーを設定します
-notif_modal.enabled.label: 有効
+hsr_daily.embed.description: Los entrenamientos diarios aún no se han completado
+hydro: Hydro
+ice: Hielo
+imaginary: Imaginario
+inazuma: Inazuma
+instructions_title: Instrucciones
+interaction_failed_description: "Esta vista no ha sido iniciada por ti, por lo tanto no puedes usarla."
+interaction_failed_title: Interacción fallida
+invalid_category_selected: Categoría seleccionada no válida
+invalid_color_error_message: "Un color válido debe ser un código de color hexadecimal, por ejemplo: #FF0000."
+invalid_color_error_title: Color no válido
+invalid_cookies_description: Actualice sus cookies agregando nuevamente sus cuentas usando </accounts>
+invalid_cookies_title: Cookies no válidas
+invalid_email_password_description: "El correo o la contraseña que proporcionó es incorrecto, por favor verifique e intente nuevamente."
+invalid_email_password_title: Correo o contraseña no válidos
+invalid_game_selected: Juego seleccionado no válido
+invalid_image_url_error_message: "Una URL de imagen válida debe ser una URL directa a un archivo de imagen que contenga una extensión de imagen y sea accesible públicamente"
+invalid_image_url_error_title: URL de imagen no válida
+invalid_input.input_needs_to_be_int: "La entrada `{input}` debe ser un número entero"
+invalid_input.input_out_of_range.max_value: "La entrada `{input}` debe ser menor o igual a {max_value}"
+invalid_input.input_out_of_range.min_value: "La entrada `{input}` debe ser mayor o igual a {min_value}"
+invalid_input_error_title: Entrada no válida
+invalid_query_error_message: "No se puede encontrar nada con la consulta proporcionada, seleccione opciones de autocompletar en lugar de escribir su propia consulta."
+invalid_query_error_title: Consulta no válida
+invalid_verification_code_description: Verifique el código de verificación y vuelva a intentarlo.
+invalid_verification_code_title: Código de verificación no válido
+items: Ítems
+level_str: "Niv.{level}"
+light_cones: Cono de luz
+living_beings: Seres Vivos
+liyue: Liyue
+loading_text: Cargando...
+make_up_for_checkin_button_label: Recuperar login diario
+materials: Materiales
+memory_of_chaos: Evocación caótica
+miyoushe: Miyoushe - HoYoLAB chino
+moc_card_battles_fought: "Batallas libradas: {battles}"
+moc_card_cycles_used: "Ciclos realizados: {cycles}"
+moc_card_farthest_stage: "Etapa alcanzada: {stage}"
+moc_quick_clear: Borrado rápido
+monday: Lunes
+mondstadt: Mondstadt
+nod_krai: Nod Krai
+namecards: Tarjetas de presentación
+next_page_option_label: Siguiente página
+nickname_modal_label: Nombre de imagen
+nickname_modal_placeholder: "Cuenta principal, cuenta de Asia..."
+nihility: Nahilidad
+no_account_found_for_games_error_message: "No tienes una cuenta de uno de los siguientes juegos. Agrega una con </accounts>"
+no_account_found_for_games_platform_error_message: "No tienes una cuenta de uno de los siguientes juegos en {platform}. Agrega una con </accounts>"
+no_account_found_for_games_error_title: No se encontró ninguna cuenta
+no_accounts_autocomplete_choice: Aún no tienes ninguna cuenta. Agrega una con /accounts
+profile_character_param_name: "personaje-{num}"
+no_challenge_data_err_message: "No se han podido encontrar datos de {challenge} para esta fase. Es posible que aún no hayas comenzado {challenge} o que los datos no estén listos. Por favor, inténtalo de nuevo más tarde."
+no_challenge_data_err_title: "No hay datos de {challenge}"
+no_characters_found_error_message: Por favor inténtalo de nuevo con un filtro diferente
+no_characters_found_error_title: No se encontraron personajes con el filtro seleccionado
+no_game_accounts_error_message: "Esta cuenta de {platform} no tiene cuentas agregadas."
+notes-card.gi.completed: Completado
+notes-card.gi.daily-commissions: Misiones diarias
+notes-card.gi.expedition-finished: Completado
+notes-card.gi.expedition-remaining: "{time} Restante"
+notes-card.gi.realm-currency: Intramora
+notes-card.gi.remaining: Restante
+notes-card.gi.resin: Resina
+notes-card.gi.resin-discounts: Descuento de Resina
+notes-card.hsr.echo-of-war-discounts: Limite de Ecos de la guerra
+notes-card.hsr.reserved-power: Poder trazacaminos de reserva
+notes.item_full_in_time: "{emoji} completo en {in_time}"
+notes.stamina_label: Recordatorio de Stamina
+notes.stamina: "Stamina: {cur}/{max}, completa en {time}"
+notes.train_score: "Daily BP: {cur}/{max}"
+notes.superstring_dimension: Superstring Dimension
+notes.superstring_dimension_value: "Score actual: {score}"
+notes.memorial_arena: Memorial Arena
+notes.memorial_arena_value: "Recomenzas del desafio: {rewards_cur}/{rewards_max}\nRecompensas de SSS-rank: {sss_cur}/{sss_max}"
+notes.elysian_realm: Elysian Realm
+notes.elysian_realm_value: "Score actual: {cur}/{max}"
+notes_available: "{emoji} Disponible en {in_time}"
+notes_command_description: Ver notas en tiempo real
+notif.embed.footer: Usa /notes para configurar recordatorios
+notif_modal.enabled.label: Activado
 notif_modal.type_one.description: |
-  スタミナは「通知間隔」分ごとにチェックされ、スタミナが「閾値」以上になると通知が送信されます。
+  La Stamina se verifica cada "intervalo de notificación" en minutos, y las notificaciones comienzan a enviarse cuando la Stamina es mayor o igual al "limite".
 
-  「最大通知数」に達すると、通知が停止します。
+  Una vez que se alcanza el "máximo de notificaciones", estas se detienen.
 
-  スタミナを「閾値」未満の値まで消費すると、通知カウントがリセットされ、通知の送信が再開されます。
-notif_modal.max_notif_count.label: 最大通知回数
-notif_modal.max_notif_count.description: "送信する通知の最大数。"
-notif_modal.notify_interval.label: 通知間隔
-notif_modal.notify_interval.description: "各通知とチェックの間隔（分単位）。"
-notif_modal.notify_time.label: "通知時間"
-notif_modal.notify_time.description: "サーバーリセットのX時間前に通知（ゲームサーバーのタイムゾーンで午前4:00）。"
-notif_modal.notify_weekday.label: 通知する曜日
-notif_modal.threshold.label: しきい値
-notif_modal.threshold.description: "閾値に達した後に通知が送信されます。"
-notification_settings_button_label: 通知設定
-mimo_notification_settings: トラベリングミモの通知設定
-notification_settings_desc: 受信する通知を設定します。
-notification_settings_note: "注:Hoyo Buddyはダイレクトメッセージで通知を送信します。受信するにはDMを開いておいてください。"
-notify_on_failure_button_label: 失敗時に通知
-notify_on_success_button_label: 成功時に通知
-nsfw_prompt_error_message: "プロンプトにNSFWコンテンツが含まれています。別のプロンプトで再試行してください。"
-nsfw_prompt_error_title: NSFWプロンプトが検出されました
-page_footer: "ページ {current_page}/{total_pages}"
-pf_card_total_score: "合計スコア：{score}"
-physical: 物理
-player_not_found_description: 入力されたUIDを確認してください
-player_not_found_title: プレイヤーが存在しません
-preservation: 存護
-prev_page_option_label: 前のページ
-notify_feature: このノートリマインダー
-profile.add_image.button.label: カスタム画像を追加
-profile.add_image_modal.image_url.label: 画像URL
-profile.build.select.placeholder: ビルドを選択...
-profile.card_info.embed.description: "- カードで使用されているすべてのアセットはHoYoverseに帰属し、私はそれらを所有していません。\n- カードで使用されているすべてのファンアートは、それぞれのアーティストにクレジットされています。\n- Hoyo Buddyテンプレートのデザインはオリジナルであり、私の許可なく変更したり、自分で作成したと主張することは許可されていません。\n- ゲームデータは {provider} によって提供されています。\n"
-profile.card_info.embed.title: キャラクタービルドカードについて
-profile.card_settings.button.label: カード設定
-profile.image_settings.button.label: 画像設定
-profile.card_template_select.diff_author.description: "{author1} がデザインし、{author2} がプログラムしました"
-profile.card_template_select.encard.label: "ENCard テンプレート {num}"
-profile.card_template_select.enka_classic.label: クラシック Enka テンプレート
-profile.card_template_select.enkacard.label: "EnkaCard テンプレート {num}"
-profile.card_template_select.hb.label: "Hoyo Buddy テンプレート {num}"
-profile.card_template_select.placeholder: テンプレートを選択
-profile.card_template_select.src.label: "StarRailCard テンプレート {num}"
+  Cuando consumes tu Stamina por debajo del "limite", el contador de notificaciones se reinicia y el envío de notificaciones se reanuda.
+notif_modal.max_notif_count.label: Número máximo de notificaciones
+notif_modal.max_notif_count.description: "Número máximo de notificaciones a enviar. "
+notif_modal.notify_interval.label: Intervalo de notificación
+notif_modal.notify_interval.description: "Intervalo entre cada notificación y comprobación (en minutos). "
+notif_modal.notify_time.label: "Tiempo de notificación"
+notif_modal.notify_time.description: "Notificar X horas antes del reinicio del servidor (4:00 AM hora del servidor). "
+notif_modal.notify_weekday.label: Día de la semana para notificar
+notif_modal.threshold.label: Límite
+notif_modal.threshold.description: "La notificación se envía al alcanzar el limite"
+notification_settings_button_label: Configuración de notificaciones
+mimo_notification_settings: Configuración de notificaciones para Mimo Viajero
+notification_settings_desc: Configura qué notificaciones recibir.
+notification_settings_note: "Nota: Hoyo Buddy envía notificaciones a través de mensajes directos, asegúrate de que tus MD estén abiertos para recibirlos."
+notify_on_failure_button_label: Notificar si falla
+notify_on_success_button_label: Notificar si tiene éxito
+nsfw_prompt_error_message: "El mensaje contiene contenido NSFW, por favor intenta de nuevo con un mensaje diferente."
+nsfw_prompt_error_title: Mensaje NSFW detectado
+page_footer: "Página {current_page}/{total_pages}"
+pf_card_total_score: "Score total: {score}"
+physical: Físico
+player_not_found_description: Por favor verifique el UID proporcionado
+player_not_found_title: El jugador no existe
+preservation: Conservación
+prev_page_option_label: Pagina anterior
+notify_feature: Recordatorio de estas notas
+profile.add_image.button.label: Agregar imagen personalizada
+profile.add_image_modal.image_url.label: URL de la imagen
+profile.build.select.placeholder: Selecciona una build...
+profile.card_info.embed.description: "- Todos los recursos utilizados en las tarjetas pertenecen a Hoyoverse, no a mi.\n- Todos los fanarts utilizados en las tarjetas están acreditados a sus respectivos artistas.\n- Los diseños de las plantillas de Hoyo Buddy son originales, no está permitido modificarlos ni reclamarlos como propios sin mi permiso.\n- Los datos del juego son proporcionados por {provider}.\n"
+profile.card_info.embed.title: Sobre las tarjetas de builds de personajes
+profile.card_settings.button.label: Configurar tarjeta
+profile.image_settings.button.label: Configurar imagen
+profile.card_template_select.diff_author.description: "Diseñado por {author1} y programado por {author2}"
+profile.card_template_select.encard.label: "Plantilla de tarjeta EN {num}"
+profile.card_template_select.enka_classic.label: Plantilla Enka clásica
+profile.card_template_select.enkacard.label: "Plantilla de tarjeta Enka {num}"
+profile.card_template_select.hb.label: "Hoyo Buddy plantilla {num}"
+profile.card_template_select.placeholder: Selecciona una plantilla
+profile.card_template_select.src.label: "Plantilla de tarjeta Star Rail {num}"
 profile.character_select.genshin: "C{const}R{refine}"
 profile.character_select.hsr: "E{const}R{refine}"
-profile.character_select.zzz: "心象映画 {const}"
-profile.character_select.in_game: "ゲーム内ショーケース"
-profile.character_select.enka_network.description: Enka Network ビルド
-profile.generate_ai_art.button.label: AIアートを生成
-profile.generate_ai_art_modal.negative_prompt.label: ネガティブプロンプト
-profile.generate_ai_art_modal.prompt.label: プロンプト
-profile.image_select.custom_image.label: "カスタム画像 ({num})"
-profile.image_select.default_collection.label: "Hoyo Buddy コレクション ({num})"
-profile.image_select.none.label: 公式アート
-profile.image_select.placeholder: 画像を選択
-profile.player_info.button.label: プレイヤー情報
-profile_gi_embed_ar: 冒険ランク
-profile_gi_embed_world_level: 世界ランク
-profile.player_info.embed.description: "開拓レベル：{level}\n均衡レベル：{world_level}\nフレンド数：{friend_count}\n光円錐：{light_cones}\nキャラクター：{characters}\nアチーブメント：{achievements}\n"
-profile.player_info.hoyolab.embed.description: "開拓レベル：{level}\nキャラクター：{characters}\n宝箱：{chest}\n混沌の記憶：{moc}\nアチーブメント：{achievements}\n"
-profile.primary_color.button.label: 色を変更
-profile.primary_color_modal.color.label: 色 (16進コード)
-profile.primary_color_modal.title: カードの色を変更
-profile.remove_image.button.label: カスタム画像を削除
-profile_command_gi_description: 原神のキャラクタービルドカードとチームカードを生成します
-profile_command_hsr_description: 崩壊：スターレイルのキャラクタービルドカードとチームカードを生成します
-profile_command_zzz_description: ゼンレスゾーンゼロのエージェントビルドカードとチームカードを生成します
-profile_command_uid_param_description: "プレイヤーのUID。指定された場合、アカウントパラメータを上書きします"
-pt_button.label: 変転の塵リマインダー
-pt_modal.title: 変転の塵リマインダー設定
-pt_notify_embed_desc: "参量物質変化器は使えるようになりました！"
-pure_fiction: 虚構叙事
-pyro: 炎
-quantum: 量子
-read_story.button.label: ストーリーを読む
-real_time_notes: リアルタイムノート
-realm_curr_button.label: 洞天宝銭リマインダー
-realm_curr_modal.title: 洞天宝銭リマインダー設定
-redeeem_code.cookie_token_expired_description: "コード交換機能は、メールアドレスとパスワードでログインしたユーザーのみ利用可能です。 </accounts> でログインできます。"
-redeeem_code.cookie_token_expired_title: クッキートークン期限切れ
-redeeem_code.cookie_token_refresh_failed_description: "メールアドレスとパスワードの方法で </accounts> を使用してアカウントを再度追加してください。"
-redeeem_code.cookie_token_refresh_failed_title: クッキートークンの更新に失敗しました
-redeem_code.success: 交換成功
-redeem_codes_button.label: コードを交換
-redeem_command_description: ゲーム内報酬のコードを交換します
-redeem_command_embed.description: "最大5つの交換コードを入力して交換します。\nまたは、自動コード交換を有効にすることもできます。"
-redeem_command_embed.title: コード交換結果
-redeem_cooldown_embed.description: "交換のクールダウンのため、時間がかかる場合があります。"
-redeem_cooldown_embed.title: コードを交換中
-refinement_indicator: "精錬ランク {r}"
-relics: 遺物
-reminder_settings.not_set: 未設定
-reminder_settings.reminde.set.type1: "ステータス：{status}\nしきい値：{threshold}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}"
-reminder_settings.reminde.set.type2: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}"
-reminder_settings.reminde.set.type3: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：サーバーリセットの {notify_time} 時間前\n"
-reminder_settings.reminde.set.type4: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：サーバーリセットの {notify_time} 時間前\n通知曜日：{notify_weekday}"
-reminder_settings_title: リアルタイムノートリマインダー
-reminder_settings_desc: 特定のゲーム内イベントが発生したときにダイレクトメッセージで通知します。
-reminder_toggle: リマインダー
-resin_discount.embed.description: 週ボス報酬減額がまだ使用されていません
-resin_reminder_button.label: 樹脂リマインダー
-resin_reminder_modal.title: 樹脂リマインダー設定
-reward_claimed_title: デイリーチェックイン報酬受け取り済み
-saturday: 土曜日
-search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
-search_command_category_param_description: 検索するカテゴリ
-search_cmd_category_param_name: カテゴリ
-search_command_description: ゲーム関連のあらゆるものを検索します
-search_command_game_param_description: 検索するゲーム
-search_command_game_param_name: ゲーム
-search_command_query_param_description: 検索するクエリ
-search_command_query_param_name: クエリ
-select_account.embed.description: Hoyo Buddyに追加したいアカウントを選択します
-select_account.embed.title: 🎉 Hoyo Buddyへようこそ！
-settings_command_description: ユーザー設定を構成します
-skill_attributes_embed_field_name: "スキル属性 (Lv.{level})"
-skill_level.modal.title: スキルレベルを入力
-spiral_abyss: 深境螺旋
-stats_embed_field_name: ステータス
-sumeru: スメール
-sunday: 日曜日
-superimpose_indicator: "重畳ランク {s}"
-talent_level.modal.title: 天賦レベルを入力
-tcg: 七聖召喚
-the_hunt: 巡狩
-threshold.embed.description: "しきい値 ({threshold}) に到達しました"
-thunder: 雷 (HI3)
-thursday: 木曜日
-tuesday: 火曜日
-unreleased_content: 未実装コンテンツ
-user_autocomplete_param_description: "アカウントを検索するユーザー。デフォルトはあなたです"
-user_autocomplete_param_name: ユーザー
-user_no_accounts_autocomplete_choice: このユーザーはまだアカウントを持っていません
-view_card_button_label: カード表示
-view_dictionary_button_label: 図鑑表示
-volume_selector_placeholder: 読む巻を選択
-wave_button_label: "ウェーブ {value}"
-weapon_level.modal.title: 武器レベルを入力
-weapons: 武器
-wednesday: 水曜日
-week_boss_button.label: 週ボス報酬減額リマインダー
-week_boss_modal.title: 週ボス報酬減額リマインダー設定
-wind: 風 (HI3)
-yatta_character_detail_page_label: 詳細
-yatta_character_eidolon_page_label: 星魂
-yatta_character_embed_description: "{rarity}\n属性：{element}\n運命：{path}\n世界：{world}\n"
-yatta_character_skill_aoe_weakness_break_field_value: "範囲靭性削り：{aoe_weakness_break}"
-yatta_character_skill_energy_field_name: EP
-yatta_character_skill_energy_generation_field_value: "回復量：{energy_generation}"
-yatta_character_skill_energy_need_field_value: "消費量：{energy_need}"
-yatta_character_skill_single_weakness_break_field_value: "単体靭性削り：{single_weakness_break}"
-yatta_character_skill_spread_weakness_break_field_value: "拡散靭性削り：{spread_weakness_break}"
-yatta_character_skill_weakness_break_field_name: 靭性削り
-yatta_character_trace_page_label: 軌跡
-yatta_item_sources_field_name: 入手方法
-characters.show_owned_only: 所持キャラクターのみ表示
-redeem_code.ar_too_low: 冒険ランクが低すぎます
-data_not_public.title: データが公開されていません
-data_not_public.description: "戦績設定でデータ共有オプションを有効にしてください"
-not_implemented_error_title: 機能はまだ実装されていません
-not_implemented_error_only_game_message: "この機能は `{game}` アカウントにはまだ実装されていません。"
-not_implemented_error_message: "この機能は `{platform}` の `{game}` アカウントにはまだ実装されていません。"
-profile.build.current.label: 現在
-abyss_chamber.blessing.embed.field.name: 深淵の祝福
-apocalyptic_shadow: 末日の幻影
-apc_shadow.highest_diff_cleared: "クリアした最高難易度：{diff}"
-apc_shadow.times_challenged: "挑戦回数：{times}"
-apc_shadow.boss_defeated: ボス撃破
-apc_shadow.boss_defeated_no: ボス未撃破
-notes.bonus_sync_points: "追加適合値：{cur}/{max}"
-invalid_uid_format_title: 無効なUID形式
-invalid_uid_format_description: "UIDは9桁または10桁の数字である必要があります"
-zenless_zone_zero: ゼンレスゾーンゼロ
-img_theater_large_block_title: 幻想シアター
-img_theater_stats_line_five: "合計クリアタイム：{time}"
-img_theater_legend_block_support_chara: サポートキャラクター
-img_theater_legend_block_trial_chara: お試しキャラクター
-img_theater_fastest_team: " (最速)"
-challenge_view.view_buffs: バフを表示
-challenge_view.buff_select.placeholder: 表示するバフを選択...
-scratch_card.embed.description: スクラッチカードはまだ削られていません
-zzz_engagement_button.label: エンゲージメント
-zzz_engagement.embed.description: 今日のエンゲージメントはまだ完了していません
-video_store.embed.description: ビデオストアの収益はまだ受け取られていません
-scratch_card.incomplete: 未完了
-reminder_modal.title: "{notify} リマインダー設定"
-set_cur_temp_as_default.done: 完了
-third_party_card_temp_error_title: このサードパーティカードテンプレートでエラーが発生しました
-third_party_card_temp_error_message: "このキャラクターのカードテンプレートはHoyo Buddyのテンプレートにリセットされました。このエラーが続く場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) でヘルプを求めてください。"
-account_locked_title: アカウントは20分間ロックされました
-account_locked_description: "パスワードを何度も間違えました。20分待ってからもう一度お試しください。アカウントを設定できない場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) でヘルプを求めてください。"
-ether: エーテル
-electric: 電撃
-profile.no_data.title: プレイヤーデータがありません
-profile.no_data.description: "信じられないかもしれませんが、ここに表示するものはありません。"
-characters.filter.specialty.placeholder: 専門分野フィルターを選択...
-zzz.basic: 通常攻撃
-zzz.dodge: 回避
-zzz.assist: 支援攻撃
-zzz.special: 特殊スキル
-zzz.chain: チェインアタック
-zzz.core: コアスキル
-characters.filter.faction.placeholder: 陣営フィルターを選択...
-characters.sorter.speciality: 専門分野
-characters.sorter.faction: 陣営
-characters.sorter.mindscape_cinema: 意識映写
-characters.embed.filter_text: "{filter} キャラクター"
-stats_command_description: ゲームアカウントの統計情報を表示します
-tears_of_themis: 未定事件簿
-honkai_suit_rarity: "ランク {rarity}"
-about_command.designers: デザイナー
-card_settings.modifying_for: "{name} のカード設定を変更中"
-card_settings_modifying_for_desc: すべてのカード設定は各キャラクターに固有です。一部のカードテンプレートは特定の設定をサポートしていない場合があります。
-card_settings.template: テンプレート
-card_settings_template_desc: "一部のサードパーティ製テンプレートはHoYoLAB/Miyousheキャラクターをサポートしていない場合があります。その場合、ボットはHoyo Buddyのテンプレートを使用します。"
-card_settings.card_color: 色
-card_settings.no_color: このカードテンプレートは色の変更をサポートしていません
-card_settings.color_default: デフォルト
-card_settings.current_image: 現在の画像
-card_settings.build_card_image: ビルドカード画像
-card_settings.team_card_image: チームカード画像
-profile.redraw_card_button_label: カードを再描画
-card_settings.footer: "完了したら、上のメッセージにある緑色のボタンをクリックしてカードを再描画してください"
-card_settings.description: "画像をアップロードして画像URLを取得するには </upload> を使用してください。\nPixivがサポートされています。アートワークの画像URLをコピーするだけです。"
-profile.team_dark_mode.button.label: チームカードダークテーマ
-team_card_dark_theme_desc: "チームカードにダークカラースキームを使用します。これは、どのキャラクターが含まれているかに関係なく、すべてのチームカードに適用されます。"
-profile.character_select.multi.placeholder: キャラクターを選択...
-zzz_search.agent_info: "レアリティ：{rarity}\n専門分野：{specialty}\n攻撃タイプ：{atk_type}\n陣営：{faction}\n属性：{element}"
-cat_zzz_agents: エージェント
-cat_zzz_bangboos: ボンプ
-cat_zzz_w_engines: Wエンジン
-cat_zzz_drive_discs: 音動ディスク
-search.agent_page.info: エージェント情報
-search.agent_page.skills: スキル
-search.agent_page.cinemas: 意識映写
-search.agent_page.placeholder: ページを選択...
-zzz.skill_type.placeholder: エージェントスキルを選択...
-zzz.cinema.placeholder: 意識映写を選択...
-zzz.engine.refinement_select.placeholder: 精錬レベルを選択...
-dyk_discord_server_updates: "アップデートノートは [Discordサーバー](<https://link.seria.moe/hb-dc>) に投稿しています"
-dyk_discord_server_feedback: "フィードバックは [Discordサーバー](<https://link.seria.moe/hb-dc>) で受け付けています"
-dyk_contact_me: "[Discordサーバー](<https://link.seria.moe/hb-dc>) でお問い合わせいただけます"
-dyk_need_help_no_title: "お困りですか？[Discordサーバー](<https://link.seria.moe/hb-dc>) に参加してください"
-dyk_donate_no_title: "Hoyo Buddyをお楽しみですか？[寄付](<https://link.seria.moe/donate>) をして私たちをサポートすることを検討してください"
-dyk_team: "Hoyo Buddyはプログラマー1名とデザイナー1名の小さなチームによって作られています"
-dyk_disable: このメッセージは /settings で無効にできます
-dyk_settings_lang: Botの言語は /settings で変更できます
-dyk_settings_theme: /settings を使用してライトテーマとダークテーマを切り替えることができます
-dyk_security: "アカウントのセキュリティに関する [記事](<:docs/Account-Security:>) があります"
-dyk_github: "Hoyo Buddyは [GitHub](<https://github.com/seriaati/hoyo-buddy>) でオープンソース化されています"
-dyk_python: Hoyo Buddyは純粋なPythonで書かれています
-dyk_team_card: /profile で複数のキャラクターを選択することでチームカードを生成できます
-dyk_set_default_acc: /accounts ですべてのコマンドを実行するために使用されるデフォルトアカウントを設定できます
-dyk_status_page: "ボットのステータスを[こちら](<https://status.seria.moe/?category=Hoyo%20Buddy>)で確認できます"
-status_page_btn_label: ステータスページ
-docs_page_btn_label: ドキュメント
-invite_page_btn_label: 招待
-invite_command_desc: Hoyo Buddyをあなたのサーバーに招待するか、アプリに追加してください
-help_command_desc: "困ったときは？ドキュメントを確認するか、Discordサーバーにご参加ください"
-title_dyk: "知っていましたか？"
-events_view_start_date_embed_field: 開始日時
-events_view_end_date_embed_field: 終了日時
-events_view_ann_select_placeholder: イベントを選択...
-events_view_banner_type_label: イベント祈願/跳躍/チャンネル
-events_command_description: 開催中のゲームイベントを表示します
-events_view_ann_type_select_placeholder: イベントタイプを選択...
-events_view_content_label: 全文を表示
-natlan: ナタ
-top_percent: "上位 {percent}%"
-profile_view_show_rank_button_label: ランキングを表示
-profile_view_show_rank_desc: "[akasha.cv](https://akasha.cv)でこのキャラクターのランキングを表示します。"
-submit_button_label: 送信
-show_tutorial_button_label: チュートリアルを表示
-close_button_label: 閉じる
-required_field_error_message: このフィールドは必須です
-accounts_added_snackbar_message: "アカウントが正常に追加されました。Discordに戻ります..."
-account_add_start_message: "下のボタンをクリックして指示に従いアカウントを追加してください。完了したら、</accounts> コマンドを使用して追加したアカウントを表示します。\nヘルプが必要な場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) に参加してください。"
-hbls_button_label: はじめましょう！
-gacha_import_url_modal_title: ガチャ履歴URLを入力
-gacha_import_embed_description: "下のボタンをクリックして、お使いのデバイスプラットフォームでガチャログURLを取得する方法の手順を表示してください。\n\n以下のサービスについては、指定のファイル形式でガチャ記録をエクスポートし、</gacha-log upload> でアップロードしてください\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
-extract_authkey_error_message: "URLからAuthkeyを抽出できませんでした。有効なURLで再試行してください。"
-extract_authkey_error_title: Authkey抽出失敗
-gacha_import_loading_embed_title: ガチャ履歴をインポート中
-gacha_import_pc_import_embed_desc: "スタートメニューでPowerShellを検索して開き、以下のコードをコピーして貼り付けてください。\nこのスクリプトはHoyo Buddyチームによって作成されており、安全に使用できます。"
+profile.character_select.zzz: "Cine Mental {const}"
+profile.character_select.in_game: "Presentación en juego"
+profile.character_select.enka_network.description: Build de Enka Network
+profile.generate_ai_art.button.label: Generar imagen con IA
+profile.generate_ai_art_modal.negative_prompt.label: Prompt negativo
+profile.generate_ai_art_modal.prompt.label: Prompt
+profile.image_select.custom_image.label: "Imagen personalizada ({num})"
+profile.image_select.default_collection.label: "Colección Hoyo Buddy ({num})"
+profile.image_select.none.label: Arte oficial
+profile.image_select.placeholder: Selecciona una imagen
+profile.player_info.button.label: Información del jugador
+profile_gi_embed_ar: Rango de Aventura
+profile_gi_embed_world_level: Nivel de Mundo
+profile.player_info.embed.description: "Nivel Trazacaminos: {level}\nNivel de Equilibro: {world_level}\nNúmero de amigos: {friend_count}\nConos de luz: {light_cones}\nPersonajes: {characters}\nLogros: {achievements}\n"
+profile.player_info.hoyolab.embed.description: "Nivel Trazacaminos: {level}\nPersonajes: {characters}\nCofres: {chest}\nEvocación caótica: {moc}\nLogros: {achievements}\n"
+profile.primary_color.button.label: Cambiar el color
+profile.primary_color_modal.color.label: Color (hex code)
+profile.primary_color_modal.title: Cambiar color de tarjeta
+profile.remove_image.button.label: Eliminar imagen personalizada
+profile_command_gi_description: Generar tarjetas de builds de personajes y equipos de Genshin Impact
+profile_command_hsr_description: Generar tarjetas de builds de personajes y equipos de Honkai Star Rail
+profile_command_zzz_description: Generar tarjetas de builds de agentes y equipos de Zenless Zone Zero
+profile_command_uid_param_description: "UID del jugador, esto anula el parámetro de la cuenta si se proporciona"
+pt_button.label: Recordatorio de Transmutador Paramétrico
+pt_modal.title: Configurar recordatorio de Transmutador Paramétrico
+pt_notify_embed_desc: "Transmutador paramétrico está listo para ser utilizado!"
+pure_fiction: Pura ficción
+pyro: Pyro
+quantum: Cuántico
+read_story.button.label: Leer historia
+real_time_notes: Notas en tiempo real
+realm_curr_button.label: Recordatorio de Intramora
+realm_curr_modal.title: Configurar recordatorio de Intramora
+redeeem_code.cookie_token_expired_description: "Las funciones de canje de códigos solo están disponibles para usuarios que iniciaron sesión con su correo y contraseña, puedes hacerlo con </accounts>"
+redeeem_code.cookie_token_expired_title: El token de cookie ha expirado
+redeeem_code.cookie_token_refresh_failed_description: "Por favor, agrega tus cuentas nuevamente utilizando </accounts> con el método de correo electrónico y contraseña."
+redeeem_code.cookie_token_refresh_failed_title: No se pudo actualizar el token de cookies
+redeem_code.success: Canjeado con éxito
+redeem_codes_button.label: Canjear códigos
+redeem_command_description: Canjear códigos por recompensas en el juego
+redeem_command_embed.description: "Ingresa hasta 5 códigos de canje para canjear.\nTambién puedes activar el canje automático de códigos."
+redeem_command_embed.title: Resultados del canje de códigos
+redeem_cooldown_embed.description: "Debido a los tiempos de espera para canjear, esto puede tardar un poco."
+redeem_cooldown_embed.title: Canjeando códigos
+refinement_indicator: "Refinamiento {r}"
+relics: Reliquias
+reminder_settings.not_set: No establecido
+reminder_settings.reminde.set.type1: "Estado: {status}\nLimite: {threshold}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}"
+reminder_settings.reminde.set.type2: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}"
+reminder_settings.reminde.set.type3: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\n"
+reminder_settings.reminde.set.type4: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificar: {notify_time} horas antes del reinicio del servidor\nDía de la semana para notificar: {notify_weekday}"
+reminder_settings_title: Recordatorios de notas en tiempo real
+reminder_settings_desc: Te notifica por Mensaje Directo cuando ocurren ciertos eventos en el juego.
+reminder_toggle: Recordatorio
+resin_discount.embed.description: Los descuentos de jefes semanales aún no se han utilizado
+resin_reminder_button.label: Recordatorio de resina
+resin_reminder_modal.title: Configurar Recordatorio de Resina
+reward_claimed_title: Recompensa de login diario reclamada
+saturday: Sábado
+search_autocomplete_not_setup: "Las opciones de autocompletar de búsqueda aún no están configuradas, por favor intenta nuevamente más tarde."
+search_command_category_param_description: Buscar en la categoría
+search_cmd_category_param_name: categoría
+search_command_description: Busca cualquier cosa relacionada con el juego
+search_command_game_param_description: Buscar en el juego
+search_command_game_param_name: juego
+search_command_query_param_description: Palabra clave para buscar
+search_command_query_param_name: consulta
+select_account.embed.description: Selecciona las cuentas que deseas agregar a Hoyo Buddy
+select_account.embed.title: 🎉 ¡Bienvenido a Hoyo Buddy!
+settings_command_description: Configurar tus ajustes de usuario
+skill_attributes_embed_field_name: "Atributos de habilidad (Nv.{level})"
+skill_level.modal.title: Ingresa el nivel de habilidad
+spiral_abyss: Espiral del Abismo
+stats_embed_field_name: " Estadísticas"
+sumeru: Sumeru
+sunday: Domingo
+superimpose_indicator: "Superposición {s}"
+talent_level.modal.title: Ingresa el Nivel de Talento
+tcg: TCG
+the_hunt: Cacería
+threshold.embed.description: "Se ha alcanzado el límite ({threshold})"
+thunder: Rayo
+thursday: Jueves
+tuesday: Martes
+unreleased_content: Contenido no lanzado
+user_autocomplete_param_description: "Usuario para buscar las cuentas, por defecto eres tú"
+user_autocomplete_param_name: usuario
+user_no_accounts_autocomplete_choice: Este usuario aún no tiene cuentas
+view_card_button_label: Carta
+view_dictionary_button_label: Diccionario
+volume_selector_placeholder: Selecciona un volumen para leer
+wave_button_label: "Oleada {value}"
+weapon_level.modal.title: Ingresa el Nivel de Arma
+weapons: Armas
+wednesday: Miércoles
+week_boss_button.label: Recordatorio de descuento de Jefes Semanales
+week_boss_modal.title: Configuración de Recordatorio de descuento de Jefes Semanales
+wind: Viento
+yatta_character_detail_page_label: Detalles
+yatta_character_eidolon_page_label: Eidolones
+yatta_character_embed_description: "{rarity}\nElemento: {element}\nVía: {path}\nMundo: {world}\n"
+yatta_character_skill_aoe_weakness_break_field_value: "AdE: {aoe_weakness_break}"
+yatta_character_skill_energy_field_name: Energía
+yatta_character_skill_energy_generation_field_value: "Generación: {energy_generation}"
+yatta_character_skill_energy_need_field_value: "Costo: {energy_need}"
+yatta_character_skill_single_weakness_break_field_value: "Único: {single_weakness_break}"
+yatta_character_skill_spread_weakness_break_field_value: "Propagación: {spread_weakness_break}"
+yatta_character_skill_weakness_break_field_name: Ruptura de Debilidad
+yatta_character_trace_page_label: Rastros
+yatta_item_sources_field_name: Fuentes
+characters.show_owned_only: Mostrar solo personajes propios
+redeem_code.ar_too_low: Rango de Aventura demasiado bajo
+data_not_public.title: Los datos no son públicos
+data_not_public.description: "Habilita la opción de compartir datos en la configuración de tu Registro de batallas"
+not_implemented_error_title: Función aún no implementada
+not_implemented_error_only_game_message: "Esta función aún no está implementada para las cuentas de {game}."
+not_implemented_error_message: "Esta función aún no está implementada para las cuentas de {game} en {platform}."
+profile.build.current.label: Actual
+abyss_chamber.blessing.embed.field.name: Bendición de la Luna del Abismo
+apocalyptic_shadow: Espejismo Apocalíptico
+apc_shadow.highest_diff_cleared: "Dificultad más alta superada: {diff}"
+apc_shadow.times_challenged: "Veces desafiado: {times}"
+apc_shadow.boss_defeated: Jefe Derrotado
+apc_shadow.boss_defeated_no: Jefe No Derrotado
+notes.bonus_sync_points: "Bono de Puntos de Sincronicidad : {cur}/{max}"
+invalid_uid_format_title: Formato de UID no válido
+invalid_uid_format_description: "El UID debe ser números de 9 a 10 dígitos"
+zenless_zone_zero: Zenless Zone Zero
+img_theater_large_block_title: Teatro Fantasía
+img_theater_stats_line_five: "Tiempo Total de Actuación: {time}"
+img_theater_legend_block_support_chara: Personaje de apoyo
+img_theater_legend_block_trial_chara: Personaje de prueba
+img_theater_fastest_team: "(más rápido)"
+challenge_view.view_buffs: Ver buffos
+challenge_view.buff_select.placeholder: Selecciona un buffo para ver...
+scratch_card.embed.description: Rasca y gana aún sin completar
+zzz_engagement_button.label: Actividades
+zzz_engagement.embed.description: Las actividades de hoy aún no se ha completado
+video_store.embed.description: Los ingresos de la tienda del videoclub aún no han sido reclamados
+scratch_card.incomplete: Incompleto
+reminder_modal.title: "Configurar recordatorio de {notify}"
+set_cur_temp_as_default.done: Hecho
+third_party_card_temp_error_title: Esta Plantilla de Tarjeta de Terceros Dio Error
+third_party_card_temp_error_message: "La plantilla de la tarjeta para este personaje ha sido restablecida a la plantilla de Hoyo Buddy. Si este error persiste, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
+account_locked_title: La cuenta ha estado bloqueada durante 20 minutos
+account_locked_description: "Ha ingresado la contraseña incorrecta demasiadas veces. Espera 20 minutos y vuelve a intentarlo. Si no puedes configurar tu cuenta, busca ayuda en nuestro [servidor de Discord] (<https://link.seria.moe/hb-dc>)."
+ether: Etéreo
+electric: Eléctrico
+profile.no_data.title: Datos de jugador no disponibles
+profile.no_data.description: "Lo creas o no, no hay nada que mostrar aquí."
+characters.filter.specialty.placeholder: Selecciona filtro de especialidades...
+zzz.basic: Ataque normal
+zzz.dodge: Evasión
+zzz.assist: Apoyo rápido
+zzz.special: Técnica especial
+zzz.chain: Técnica en cadena
+zzz.core: Técnica pasiva
+characters.filter.faction.placeholder: Selecciona filtro de facciones...
+characters.sorter.speciality: Especialidad
+characters.sorter.faction: Facción
+characters.sorter.mindscape_cinema: Cine Mental
+characters.embed.filter_text: "{filter} Personajes"
+stats_command_description: Ver estadísticas de la cuenta del juego
+tears_of_themis: Tear of Themis
+honkai_suit_rarity: "Rank {rarity}"
+about_command.designers: Diseñador(es)
+card_settings.modifying_for: "Modificando configuración de la tarjeta para {name}"
+card_settings_modifying_for_desc: Todas las configuraciones de tarjeta son únicas para cada personaje. Algunas plantillas de tarjeta pueden no admitir ciertas configuraciones.
+card_settings.template: Plantilla
+card_settings_template_desc: "Algunas plantillas de terceros pueden no admitir personajes de HoYoLAB/Miyoushe. En ese caso, el bot usará la plantilla de Hoyo Buddy."
+card_settings.card_color: Color
+card_settings.no_color: Esta plantilla de tarjeta no admite modificaciones de color
+card_settings.color_default: Por defecto
+card_settings.current_image: Imagen actual
+card_settings.build_card_image: Imagen de tarjeta de build
+card_settings.team_card_image: Imagen de tarjeta de equipo
+profile.redraw_card_button_label: Rehacer tarjeta
+card_settings.footer: "Cuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta"
+card_settings.description: "Usa </upload> para subir una imagen y obtener su URL.\nPixiv es compatible, solo copia la URL de la imagen de la ilustración."
+profile.team_dark_mode.button.label: Tema oscuro de tarjeta de equipo
+team_card_dark_theme_desc: "Usa un esquema de color oscuro para las tarjetas de equipo. Esto se aplica a todas las tarjetas de equipo, sin importar qué personajes estén en ellas."
+profile.character_select.multi.placeholder: Seleccionar personaje(s)...
+zzz_search.agent_info: "Rareza: {rarity}\nEspecialidad: {specialty}\nTipo de ataque: {atk_type}\nFacción: {faction}\nElemento: {element}"
+cat_zzz_agents: Agentes
+cat_zzz_bangboos: Bangbús
+cat_zzz_w_engines: Amplificadores
+cat_zzz_drive_discs: Pista de Discos
+search.agent_page.info: Info de Agente
+search.agent_page.skills: Habilidades
+search.agent_page.cinemas: Cine Mental
+search.agent_page.placeholder: Seleccione una página...
+zzz.skill_type.placeholder: Selecciona una habilidad de agente...
+zzz.cinema.placeholder: Selecciona un Cine Mental...
+zzz.engine.refinement_select.placeholder: Selecciona un nivel de refinamiento...
+dyk_discord_server_updates: "Publicamos notas de actualización en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_discord_server_feedback: "Puedes unirte a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_contact_me: "Puedes contactarnos en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_need_help_no_title: "¿Necesitas ayuda? Unete a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
+dyk_donate_no_title: " ¿Te gusta usar Hoyo Buddy? Considera [hacer una donación](<https://link.seria.moe/donate>) para apoyarnos"
+dyk_team: "Hoyo Buddy está hecho por un pequeño equipo de 1 programador y 1 diseñador"
+dyk_disable: Puedes desactivar este mensaje con /settings
+dyk_settings_lang: Puedes cambiar el idioma del bot con /settings
+dyk_settings_theme: Puedes cambiar entre el tema claro y oscuro usando /settings
+dyk_security: "Tenemos un [artículo](<:docs/Account-Security:>) sobre la seguridad de la cuenta"
+dyk_github: "Hoyo Buddy es de código abierto en [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
+dyk_python: Hoyo Buddy está codificado puramente en Python
+dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
+dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
+dyk_status_page: "Puedes ver el estado del bot [aquí](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Estado de la pagina
+docs_page_btn_label: Documentación
+invite_page_btn_label: Invitar
+invite_command_desc: Invita a Hoyo Buddy a tu servidor o agréguelo a tus aplicaciones
+help_command_desc: "¿Necesitas ayuda? Vé la documentación o únete a nuestro servidor de Discord"
+title_dyk: "¿Sabías que...?"
+events_view_start_date_embed_field: Hora de inicio
+events_view_end_date_embed_field: Hora de finalización
+events_view_ann_select_placeholder: Selecciona un evento...
+events_view_banner_type_label: Banners
+events_command_description: Ver eventos de juego en curso
+events_view_ann_type_select_placeholder: Selecciona un tipo de evento...
+events_view_content_label: Ver contenido completo
+natlan: Natlan
+top_percent: "Top {percent}%"
+profile_view_show_rank_button_label: Mostrar clasificación
+profile_view_show_rank_desc: "Muestra la clasificación de este personaje en [akasha.cv](https://akasha.cv)."
+submit_button_label: Entregado
+show_tutorial_button_label: Mostrar tutorial
+close_button_label: Cerrar
+required_field_error_message: Este campo es obligatorio
+accounts_added_snackbar_message: "Cuentas agregadas exitosamente, redireccionándote nuevamente a Discord..."
+account_add_start_message: "Haz clic en el botón de abajo y sigue las instrucciones para agregar tus cuentas. Cuando termines, usa el comando </accounts> para ver las cuentas que has agregado. Únete a nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>) si necesitas ayuda."
+hbls_button_label: ¡Empecemos!
+gacha_import_url_modal_title: Ingresa la URL de los registros del gacha
+gacha_import_embed_description: "Haz clic en el botón de abajo para ver cómo obtener la URL del registro del gacha en tu dispositivo.\n\nPara los servicios listados, exporta tus registros en el formato indicado y súbelos: </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+extract_authkey_error_message: "No se puede extraer la clave de autorización de la URL; inténtelo nuevamente con una URL válida."
+extract_authkey_error_title: Error en la extracción de clave de autorización
+gacha_import_loading_embed_title: Importando registros del gacha
+gacha_import_pc_import_embed_desc: "Busca y abre PowerShell desde el menú de inicio, luego copia y pega el siguiente código.\nEste script fue creado por el equipo de Hoyo Buddy y es seguro de usar."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
-gacha_import_pc_source_code: ソースコード
-gacha_import_loading_embed_description: "{loading_emoji} しばらく時間がかかる場合があります。お待ちください..."
-gacha_upload_invalid_file_error_title: 無効なファイル形式
-gacha_upload_invalid_file_error_message: "**{file_format}** ファイルのみ受け付けます。有効なファイルで再試行してください。"
-uid_mismatch_error_title: UID不一致
-uid_mismatch_error_message: "選択したアカウントのUIDがデータ内のUID ({uid}) と一致しません"
-gacha_import_command_description: ゲームからガチャ履歴をインポートします
-source_param_name: ソース
-source_param_description: ガチャ履歴のソース
-gacha_upload_command_description: 他のソースからガチャ履歴ファイルをアップロードしてHoyo Buddyにインポートします
-file_param_name: ファイル
-file_param_description: アップロードするガチャ履歴ファイル
-gacha_import_success_title: ガチャ履歴インポート完了
-gacha_import_success_message: "{count} 件のガチャ記録が正常にインポートされました。</gacha-log view> コマンドを使用して表示してください。"
-gacha_view_filter_button_label: フィルター
-gacha_view_search_field_label: 検索
-gacha_view_gacha_detail_title: ガチャアイテム詳細
-gacha_view_gacha_detail: "ID：{id}\n名前：{name}\n獲得日時：{time}"
-gacha_view_num_since_last: "最後の {rarity}★ から {pull} 回"
-gacha_view_filter_dialog_title: ガチャ履歴フィルター
-cancel_button_label: キャンセル
-gacha_view_filter_size_field_label: ページごとのアイテム数
-gacha_view_page_field_label: ページ
-gacha_log_stats_title: ガチャ履歴統計
-gacha_log_personal_stats_title: 個人統計
-gacha_log_personal_stats_lifetime: "生涯ガチャ回数: {pulls} ({currency} {emoji})"
-gacha_log_personal_stats_banner_total: "このバナーの総ガチャ回数: {pulls} ({currency} {emoji})"
-gacha_log_personal_stats_pity: "{rarity}★天井: {cur}/{max}"
-gacha_log_personal_stats_rarity_total: "合計{rarity}★: {total}"
-gacha_log_personal_stats_rarity_average: "{rarity}★あたりの平均ガチャ回数: {avg}"
-win_rate_stats: "{title} の50/50勝率：{win_rate}% ({wins}/{total})"
-gacha_log_global_stats_title: 全体統計
-gacha_log_global_stats_lifetime: "生涯ガチャ回数: {lifetime}"
-gacha_log_global_stats_luck: "{rarity}★運: {luck}"
-win_rate_global_stats: "{title} の50/50勝率：{win_rate}"
-gacha_log_view_full: ガチャ履歴全体を表示
-gacha_view_command_description: インポートされたガチャ履歴を表示します
-gacha_log_view_banner_type_selector_placeholder: ガチャの種類を選択...
-no_gacha_log_found_error_title: ガチャ履歴が見つかりません
-no_gacha_log_found_error_message: "</gacha-log import> または </gacha-log upload> を使用してガチャ履歴をインポートしてください。"
-gacha_log_manage_embed_title: ガチャ履歴管理
-gacha_log_manage_embed_description: "このアカウントには {count} 件のガチャ履歴があります。\n[UIGF](https://uigf.org) 形式でエクスポートできます。"
-gacha_log_export_button_label: UIGF形式でエクスポート
-gacha_log_delete_button_label: すべての履歴を削除
-gacha_log_delete_confirm_embed_title: 削除の確認
-gacha_log_delete_confirm_embed_description: "本当にこのアカウントの**すべての**ガチャ履歴を削除しますか？この操作は元に戻せません。"
-gacha_log_delete_confirm_button_label: 確認
-gacha_log_delete_done_embed_title: 削除完了
-gacha_log_delete_done_embed_description: このアカウントに属するすべてのガチャ履歴が正常に削除されました。
-gacha_manage_command_description: インポートされたガチャ履歴を管理します
-login_button_label: Discordでログイン
-star5_guaranteed: "現在の確定状態：ピックアップ確定"
-star5_no_guaranteed: "現在の確定状態：ピックアップ**未確定**"
-characters_view_show_max_level_only: 最大レベルのキャラクターのみ表示
-characters_embed_max_level_characters: 最大レベルキャラクター
-natlan_reputation: "評判レベル：{reputation}、部族：{tribes}"
-shiyu_overview: 概要
-shiyu_total_clear_time: "合計クリア時間："
-shiyu_clear_time: クリアタイム
-shiyu_highest_frontier: "クリアした最高フロンティア："
-shiyu_relevant_season: "関連シーズン："
-shiyu_1_frontier: 第一フロンティア
-shiyu_2_frontier: 第二フロンティア
-shiyu_3_frontier: 第三フロンティア
-shiyu_4_frontier: 第四フロンティア
-shiyu_5_frontier: 第五フロンティア
-shiyu_6_frontier: 第六フロンティア
-shiyu_7_frontier: 第七フロンティア
-shiyu_defense: 式輿防衛戦
-show_uid: UIDを表示
-no_leaderboard_found: ランキングが見つかりません
-akasha_character_param: キャラクター
-akasha_calculation_param: ランキング
-akasha_weapon_param: 武器
-akasha_weapon_param_desc: ランキングを表示する武器
-akasha_variant_param: バリアント
-akasha_variant_param_desc: "表示するランキングのバリアント。デフォルトはメインのものです"
-akasha_character_param_desc: ランキングを表示するキャラクター
-akasha_calculation_param_desc: 表示するランキング
-akasha_total_entries: "総エントリー数：{total}"
-leaderboard_akasha_command_description: 原神キャラクターダメージランキングを表示します (Akasha System 提供)
-akasha_you: あなた
-achievement_lb_title: アチーブメント数ランキング
-planar_fissure_label: 次元界分裂
-planar_fissure_desc: "{hour} 時間後に次元界分裂イベントが開催されます。開拓力を貯めておくことを忘れないでください！"
-notif_modal.hours_before.label: "イベント開始の {hours_before} 時間前に通知"
-reminder_settings.reminde.set.type5: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：イベント開始の {hours_before} 時間前"
-chest_lb_title: 開放した宝箱数ランキング
-abyss_dmg_lb_title: 深境螺旋・最大ダメージランキング
-theater_dmg_lb_title: 幻想シアター・最大ダメージランキング
-max_friendship_lb_title: 好感度MAXキャラクター数ランキング
-lb_view_command_description: ランキングを表示します
-leaderboard_not_found: ランキングが見つかりません
-currently_logged_in_as: "現在ログイン中のアカウント："
-not_you_label: "あなたではありませんか？クリックして別のアカウントでログイン"
-profile_show_substat_rolls: サブステータス強化回数を表示
-profile_show_substat_rolls_desc: サブステータスの最終値に何回の強化が寄与しているかを表示します。
-team_card_settings_embed_title: チームカード設定を変更中
-team_card_settings_embed_description: "チームカード設定は異なるゲームやアカウント間で共有されます。一部の設定に対する変更は、カードテンプレートでサポートされていない場合、カードに反映されないことがあります。\n完了したら、上のメッセージにある緑色のボタンをクリックしてカードを再描画してください。"
-characters.filter.rarity.placeholder: レアリティでフィルタリング...
-profile_command_character_param_desc: カードを生成するキャラクター
-weapon_type_filter_placeholder: 武器タイプフィルターを選択...
-redeem_cmd_available_codes: 利用可能なコード
-redeem_all_available_codes_button_label: 利用可能なすべてのコードを交換
-akasha_show_details: ランキング詳細を表示
-card_settings_hl_special_stats_button_label: 特殊ステータスを強調表示
-card_settings_hl_stats_desc: キャラクターの重要なステータスを色で強調表示します。
-challenge_command_abyss_desc: 深境螺旋カードを生成します
-challenge_command_theater_desc: 幻想シアターカードを生成します
-challenge_command_moc_desc: 混沌の記憶カードを生成します
-challenge_command_pf_desc: 虚構叙事カードを生成します
-challenge_command_apc_shadow_desc: 末日の幻影カードを生成します
-challenge_command_shiyu_desc: 式輿防衛戦カードを生成します
-account_select_placeholder: アカウントを選択
-guild_only_command_param_name: ギルドのみ
-guild_only_command_param_desc: ランキングにギルドメンバーのみを表示
-yes_choice: "はい"
-no_choice: "いいえ"
-akasha_guild_mode_not_supported: ギルド限定モードは使用できません
-akasha_guild_mode_not_supported_desc: "ギルドに参加している必要があり、ギルドメンバー数が100人未満、かつギルドメンバーの原神アカウント総数が30未満である必要があります。"
-time_remaining_str: "残り時間：{time}"
-banner_selector_placeholder: ガチャを選択...
-rarity_str: "{rarity}つ星"
-finished_status_field_name: ステータス
-unlocks_in_str: "{time} 後にアンロック"
-challenge_selector_placeholder: 挑戦を選択...
-upload_cmd_desc: "画像をアップロードしてリンクを取得します。これは /profile のカスタム画像で使用できます"
-not_an_image_error_title: 画像ではありません
-not_an_image_error_message: "アップロードされたファイルは画像ではありません。有効な画像ファイルで再試行してください。"
-upload_cmd_image_param_name: 画像
-upload_cmd_image_param_desc: アップロードする画像
-exploration_select_placeholder: 地域を選択...
-exploration_show_card_button_label: 探索カードを表示
-abyss_stats_const_use_rate: 星座使用率
-abyss_stats_teammate_use_rate: チームメイト使用率
-abyss_stats_weapon_use_rate: 武器使用率
-abyss_stats_artifact_use_rate: 聖遺物使用率
-build_cmd_genshin_desc: 原神キャラクターのビルドとガイドを表示します
-build_cmd_character_param_desc: ビルドを表示するキャラクター
-guide_title: "{name} のビルドとガイド"
-no_guide_available: このキャラクターにはまだ利用可能なガイドがありません
-show_playstyle_button_label: プレイスタイル
-show_synergy_button_label: シナジー
-characters_per_page_modal_title: ページごとのキャラクター数
-characters_per_page_num_label: 数
-card_settings_hl_substat_select_placeholder: 強調表示するサブステータスを選択...
-too_many_requests_error_banner_msg: "リクエストが多すぎます。後でもう一度お試しください。詳細については右のボタンをクリックしてください。"
-mimo_task_status_claimable: 受け取り可能
-mimo_finish_and_claim_button_label: タスクを完了してポイントを受け取る
-mimo_info_embed_title: 旅するMimoについて
-mimo_info_embed_desc: "これはHoYoverseによる常設イベントで、タスクを完了してポイントを獲得し、ポイントを使用してゲーム内報酬を購入できます。"
-mimo_auto_finish_and_claim_button_label: 自動でタスクを完了してポイントを受け取る
-mimo_auto_finish_and_claim_desc: Hoyo Buddyは特定のタスクを完了し、完了したすべてのタスクのポイントを自動的に受け取ることができます。
-mimo_auto_buy_button_label: 自動で報酬を購入する
-mimo_auto_buy_desc: "Hoyo Buddyは可能な限り原石/星玉/フィルムを購入します。ポイントを節約しようとはしません！"
-mimo_cmd_desc: 旅するMimoイベント管理
-mimo_view_shop_button_label: ショップ
-mimo_buy_item_select_placeholder: 購入するアイテムを選択...
-mimo_tasks_button_label: タスク
-mimo_buy_item_amount_label: 量
-mimo_item_available_time: "{time} 後に補充"
-mimo_auto_task_embed_footer: /mimo を使用して自動タスクと報酬購入を設定します
-mimo_auto_task_embed_desc: "Hoyo Buddyは {finish} 個のタスクを完了し、{claim_point} ポイントを受け取りました"
-checkin_reward_embed_footer: /check-in を使用して通知を設定します
-mimo_status: "ステータス：{status}"
-mimo_auto_buy_embed_desc: "Hoyo Buddyは {points} ポイントで {item} 個のアイテムを購入しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
-mimo_game_unavailable: "旅するMimoは現在 {game} では利用できません"
-generic_error_title: エラー
-on_button_label: "オン"
-off_button_label: "オフ"
-mimo_draw_redeem_success: "報酬はゲーム内メールを確認してください"
-image_settings_use_m3_art: M3アートを使用
-remembrance: 記憶
-dismissible_default_title: 新機能！
-dismissible_default_footer: このメッセージは一度だけ表示されます
-dismissible_m3_art_desc: 'ZZZエージェントカードで意識映写3のアートを使用できるようになりました。カード設定で「Hoyo Buddy テンプレート 2」を選択し、画像設定で「M3アートを使用」を切り替えてください。'
-dismissible_settings_v2: "わかりにくく散在していた設定とはおさらばです!Hoyo Buddyの設定が整理され、使いやすくなり、いくつかの新しい生活の質の機能が追加されました。</settings>で試してみてください"
-dismissible_card_settings_v2: "カード設定が整理され、使いやすくなりました。すべてのキャラクターにテンプレートを一括適用することもできます(長らく要望されていた機能です!)。</card-settings genshin>、</card-settings hsr>、</card-settings zzz>で試してみてください"
-mimo_lottery_info_hoyolab_decos: "...と {num} 個のHoYoLABデコレーション"
-zzz_deadly_assault: デッドリーアサルト
-challenge_command_assault_desc: デッドリーアサルトカードを生成します
-gi_mimo_start_desc: "まず [HoYoLAB]({url}) で旅するMimoイベントを設定してください"
-mimo_auto_draw_button_label: 自動抽選
-mimo_auto_draw_desc: "Hoyo Buddyは可能な限り抽選を行います。自動購入と自動抽選の両方が有効な場合、まず購入を試み、購入に十分なポイントがない場合に抽選します。"
-mimo_auto_draw_embed_desc: "Hoyo Buddyは {points} ポイントで以下のアイテムを抽選しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
-dismissible_hsr_temp2_desc: "HSRキャラクターカード用に新しいHoyo Buddyテンプレート2を使用できるようになりました。カード設定で選択してください。このテンプレートには横長の画像を使用することをお勧めします。"
-bounty_commission.embed.description: 依頼任務が完了していません
-ridu_points.embed.description: エリー都週間依頼ポイントが未達成です
-changelog_embed_title: 変更履歴
-web_events_notify_toggle_label: 新しいウェブイベント時に通知
-web_events_cmd_desc: 開催中のウェブイベントを表示し、通知を設定します
-web_events_embed_footer: /web-events を使用して通知を設定します
-auto_task_error_dm_content: "**{feature}** はエラーのため `{account}` で **__無効__** にされました。{command} を使用して再度有効にできます。\nこのエラーが続く場合や修正方法がわからない場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) でヘルプを求めてください。"
-is_support_custom_image_desc: カスタム画像をサポートしています
-is_not_support_custom_image_desc: カスタム画像をサポートしていません
-missing_permissions_error_title: Hoyo Buddyに必要な権限がありません
-missing_permissions_error_message: "Hoyo Buddyが正常に機能するには、以下の権限が必要です：\n- メッセージを送信\n- リンクを埋め込む\n- ファイルを添付\n- 外部の絵文字を使用する"
-blocked_by_auto_mod_error_title: このメッセージはAutoModによってブロックされました
-blocked_by_auto_mod_error_message: "コマンドを再実行するか、サーバー管理者に連絡してHoyo BuddyのAutoModを無効にしてください。"
-zzz.core_level.placeholder: コアスキルのレベルを選択...
-open_game_label: ゲームを開く
-open_game_cloud_label: ゲームを開く (クラウドゲーミング)
-open_game_vietnam_label: ゲームを開く (ベトナム版)
-gift_code_redeemed: ギフトコードは既に使用済みです
-show_ui_button_label: UIを表示
-hide_ui_button_label: UIを非表示
-image_file_too_large_error_title: 画像ファイルが大きすぎます
-image_file_too_large_error_message: "アップロードされた画像ファイルが大きすぎます。最大ファイルサイズは {size} MB です。"
-api_request_timeout_title: APIリクエストがタイムアウトしました
-dismissible_one_year_anniversary_title: Hoyo Buddyは1周年です！
-dismissible_one_year_anniversary_desc: "[特別なウェブページ](https://one.hb.seria.moe)にアクセスして、記念プレゼント企画に参加しましょう！"
-anniversary_dyk: "Hoyo Buddyは1周年です！[特別なウェブページ](<https://one.hb.seria.moe>)にアクセスして、記念プレゼント企画に参加しましょう！"
-authkey_timeout_title: Authkey タイムアウト
-authkey_timeout_message: "新しいガチャログURLを取得して再試行してください"
-invalid_authkey_title: 無効なAuthkey
-hard_challenge_period: "統計周期：{period}"
-hard_challenge_completion_time: "クリア時間"
-hard_challenge_team_composition: "チーム編成"
-hard_challenge_combat_statistics: "戦闘統計"
-hard_challenge_strongest_strike: "最大ダメージ"
-hard_challenge_damage_dealt: " 最大合計ダメージ"
-hard_challenge_enemy_weakness: "敵の弱点と耐性"
-hard_challenge_command_desc: 幽境の激戦カードを生成
-hard_challenge: "幽境の激戦"
-fetching_accounts: アカウント情報を取得中です。しばらくお待ちください...
-fetching_accounts_stuck: "このページで動作が停止している場合は、コマンドを再実行するか、お問い合わせください。問題を解決いたします。"
-aaa_acronym: アドレナリン回復
-changelog_command_desc: 最新の変更内容とアップデートを確認する
-account_game_mismatch_error_title: アカウントゲームミスマッチ
-account_game_mismatch_error_message: "使用しているアカウントは{game}のアカウントではありません"
-enka_api_error_title: Enka APIエラー
-enka_api_error_description: "Enka Networkからデータを取得中にエラーが発生しました。しばらくしてからもう一度お試しください。"
-cleared: クリア済み
-challenge_command_anomaly_desc: 異相仲裁カードを生成
-anomaly_arbitration: 異相仲裁
-account_settings_title: "アカウント設定"
-account_settings_desc: "ここの設定は各ゲームアカウントに固有です。"
-public_account_desc: "アカウントを公開に設定\\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
-daily_checkin_desc: "自動デイリーチェックイン\\nウェブチェックインイベントで自動的に報酬を受け取ります。"
-redeem_code_desc: "自動コード引き換え\\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
-user_settings_title: "ユーザー設定"
-user_settings_desc: "ここの設定はDiscordアカウントにリンクされており、すべてのゲームアカウントに適用されます。"
-dark_theme_desc: "ダークテーマ\\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
-language_desc: "言語\\nHoyo Buddyはこの言語で応答します。一部のテキストは英語のままである場合があります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
-language_select_placeholder: 言語を選択
-settings_dyk_desc: "「知っていましたか?」メッセージ\\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
-layout_view_edited: "システムリソースを節約するためにインタラクティブコンポーネントが無効になりました。使用したい場合はコマンドを再実行してください。"
-mimo_title: トラベリングミモ設定
-mimo_minimum_point_label: 保持する最小ポイント
-mimo_minimum_point_desc: "自動抽選時、Hoyo Buddyはポイントがこの値を上回るようにします。0に設定すると、可能な限り抽選します。"
-disable_all_button_label: すべての通知を無効にする
-apply_template_to_all_chars: 現在のテンプレートをすべてのキャラクターに適用
-apply_template_to_all_chars_desc: "すべての**将来および現在の**キャラクターが**{template}**を使用します。"
-apply_dark_theme_to_all_chars: 現在のダークテーマオプションをすべてのキャラクターに適用
-apply_dark_theme_to_all_chars_desc: "すべての**将来および現在の**キャラクターがダークテーマ**{status}**になります。"
-apply_label: 適用
-card_settings_genshin_desc: 原神のキャラクタービルドカードの見た目を変更
-card_settings_hsr_desc: "崩壊:スターレイルのキャラクタービルドカードの見た目を変更"
-card_settings_zzz_desc: ゼンレスゾーンゼロのエージェントビルドカードの見た目を変更
-card_settings_character_param: カード設定を変更するキャラクター
-disabled_label: 無効
-none: なし
-fake_settings_button_label: 設定
-fake_settings_button_title: 設定が移動しました！
-captcha_not_showing_up: "CAPTCHAが表示されませんか？"
-open_captcha_button_label: クリックして認証を開始
-captcha_verifying: 認証中...
-build_cmd_zzz_desc: ゼンレスゾーンゼロエージェントのビルドとガイドを表示します
-elation: 愉悦
+gacha_import_pc_source_code: Código fuente
+gacha_import_loading_embed_description: "{loading_emoji} Esto puede tardar un poco, por favor tenga paciencia..."
+gacha_upload_invalid_file_error_title: Formato de archivo no válido
+gacha_upload_invalid_file_error_message: "Solo se aceptan archivos **{file_format}**. Por favor intenta otra vez con un formato valido"
+uid_mismatch_error_title: El UID no coincide
+uid_mismatch_error_message: "El UID de la cuenta seleccionada no coincide con el UID en los datos ({uid})"
+gacha_import_command_description: Importar registros del gacha del juego
+source_param_name: fuente
+source_param_description: Fuente de los registros de gacha
+gacha_upload_command_description: Sube el archivo de registros del gacha desde otras fuentes para importarlo a Hoyo Buddy
+file_param_name: archivo
+file_param_description: Archivo de registros de gacha para subir
+gacha_import_success_title: Registros de gacha importados
+gacha_import_success_message: "{count} registros de gacha se han importado con éxito. Usa el comando </gacha-log view> para verlos."
+gacha_view_filter_button_label: Filtros
+gacha_view_search_field_label: Buscar
+gacha_view_gacha_detail_title: Detalle de los ítems del gacha
+gacha_view_gacha_detail: "ID: {id}\nNombre: {name}\nHora de obtención: {time}"
+gacha_view_num_since_last: "{pull} tiradas desde el último {rarity} ★"
+gacha_view_filter_dialog_title: Filtros de registros del gacha
+cancel_button_label: Cancelar
+gacha_view_filter_size_field_label: Ítems por página
+gacha_view_page_field_label: Página
+gacha_log_stats_title: Estadísticas de registro del gacha
+gacha_log_personal_stats_title: Estadísticas personales
+gacha_log_personal_stats_lifetime: "Tiradas de por vida: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_banner_total: "Total de tiradas para este banner: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_pity: "Misericordia de {rarity}★: {cur}/{max}"
+gacha_log_personal_stats_rarity_total: "Total de {rarity}★: {total}"
+gacha_log_personal_stats_rarity_average: "Tiradas promedio por {rarity}★: {avg}"
+win_rate_stats: "{title} Tasa de victoria: {win_rate}% ({wins}/{total})"
+gacha_log_global_stats_title: Estadísticas globales
+gacha_log_global_stats_lifetime: "Tiradas de por vida: {lifetime}"
+gacha_log_global_stats_luck: "Suerte de {rarity}★: {luck}"
+win_rate_global_stats: "{title} Tasa de victoria: {win_rate}"
+gacha_log_view_full: Ver registros del gachapón
+gacha_view_command_description: Ver los registros importados del gacha
+gacha_log_view_banner_type_selector_placeholder: Selecciona el tipo de banner...
+no_gacha_log_found_error_title: No se encuentran registros del gacha
+no_gacha_log_found_error_message: "Usa </gacha-log import> o </gacha-log upload> para importar tus registros del gacha."
+gacha_log_manage_embed_title: Administrar registros del gacha
+gacha_log_manage_embed_description: "{count} registros del gacha son de esta cuenta.\nPuedes exportarlos en el formato [UIGF](https://uigf.org)"
+gacha_log_export_button_label: Exportado en formato UIGF
+gacha_log_delete_button_label: Eliminar todos los registros
+gacha_log_delete_confirm_embed_title: Confirmar eliminación
+gacha_log_delete_confirm_embed_description: "¿Estás seguro que quieres **ELIMINAR TODOS** los registros del gacha de esta cuenta? Esta acción no puede deshacerse"
+gacha_log_delete_confirm_button_label: Confirmar
+gacha_log_delete_done_embed_title: Eliminación Completa
+gacha_log_delete_done_embed_description: Todos los registros del gacha de esta cuenta fueron eliminados exitosamente.
+gacha_manage_command_description: "Administrar los registros importados del gacha "
+login_button_label: Iniciar sesión con Discord
+star5_guaranteed: "Estado actual del asegurado: Garantizado"
+star5_no_guaranteed: "Estado actual del asegurado: **NO** garantizado"
+characters_view_show_max_level_only: Mostrar solo personajes con nivel máximo
+characters_embed_max_level_characters: Personajes con nivel máximo
+natlan_reputation: "Reputación Tribal: {tribes}"
+shiyu_overview: Resumen
+shiyu_total_clear_time: "Tiempo total de completado:"
+shiyu_clear_time: Tiempo de limpieza
+shiyu_highest_frontier: "Frente más alto alcanzado:"
+shiyu_relevant_season: "Estadísticas de la temporada:"
+shiyu_1_frontier: Frente N° 1
+shiyu_2_frontier: Frente N° 2
+shiyu_3_frontier: Frente N° 3
+shiyu_4_frontier: Frente N° 4
+shiyu_5_frontier: Frente N° 5
+shiyu_6_frontier: Frente N° 6
+shiyu_7_frontier: Frente N° 7
+shiyu_defense: Defensa shiyu
+show_uid: Mostrar UID
+no_leaderboard_found: Ninguna clasificación encontrada
+akasha_character_param: personaje
+akasha_calculation_param: clasificación
+akasha_weapon_param: arma
+akasha_weapon_param_desc: Ver clasificación de arma de
+akasha_variant_param: variante
+akasha_variant_param_desc: "Ver variante de la clasificación, por defecto se muestra la principal"
+akasha_character_param_desc: Ver clasificación de personaje de
+akasha_calculation_param_desc: Clasificación a ver
+akasha_total_entries: "Total de entradas: {total}"
+leaderboard_akasha_command_description: Ver la clasificación de daño de personajes de Genshin Impact (con base de Akasha System)
+akasha_you: Tu
+achievement_lb_title: Clasificación por cantidad de logros
+planar_fissure_label: Fisura del plano
+planar_fissure_desc: "El evento Fisura del plano empezará en {hour} hora(s), ¡recuerda guardar tu poder trazacaminos!"
+notif_modal.hours_before.label: Notificar X hora(s) antes de que el evento comience
+reminder_settings.reminde.set.type5: "Estado: {status}\nIntervalo de notificación: {notify_interval} minutos\nNotificaciones máximas: {max_notif_count}\nTiempo de notificación: {hours_before} horas) antes de que comience el evento"
+chest_lb_title: Clasificación por cofres abiertos
+abyss_dmg_lb_title: Clasificación de único golpe más fuerte en el Espiral del Abismo
+theater_dmg_lb_title: Clasificación de único golpe más fuerte en el Teatro Imaginario
+max_friendship_lb_title: Clasificación por cantidad de personajes con amistad máxima
+lb_view_command_description: Ver clasificaciones
+leaderboard_not_found: Clasificación no encontrada
+currently_logged_in_as: "Actualmente has iniciado sesión como:"
+not_you_label: "¿No eres tú? Haz clic para iniciar sesión con una cuenta diferente"
+profile_show_substat_rolls: Mostrar mejoras de substats
+profile_show_substat_rolls_desc: Muestra cuántas mejoras contribuyen al valor final de un substat.
+team_card_settings_embed_title: Modificando ajustes de tarjeta de equipo
+team_card_settings_embed_description: "Los ajustes de la tarjeta de equipo se comparte entre diferentes juegos y cuentas. Los cambios realizados en algunos ajustes pueden no reflejarse en la tarjeta cuando no son compatibles con la plantilla de la tarjeta.\nCuando termines, haz clic en el botón verde en el mensaje de arriba para rehacer la tarjeta."
+characters.filter.rarity.placeholder: Filtrar por rareza...
+profile_command_character_param_desc: Generar tarjeta de personaje de
+weapon_type_filter_placeholder: Selecciona filtro por tipo de armas...
+redeem_cmd_available_codes: Códigos disponibles
+redeem_all_available_codes_button_label: Canjear todos los códigos disponibles
+akasha_show_details: Mostrar detalles de clasificación
+card_settings_hl_special_stats_button_label: Resaltar stats especiales
+card_settings_hl_stats_desc: Destaca las estadísticas importantes de un personaje con color.
+challenge_command_abyss_desc: Generar tarjeta de Espiral del Abismo
+challenge_command_theater_desc: Generar tarjeta de Teatro Imaginario
+challenge_command_moc_desc: Generar tarjeta de Evocación Caótica
+challenge_command_pf_desc: Generar tarjeta de Pura Ficción
+challenge_command_apc_shadow_desc: Generar tarjeta de Espejismo Apocalíptico
+challenge_command_shiyu_desc: Generar tarjeta de Defensa Shiyu
+account_select_placeholder: Selecciona una cuenta
+guild_only_command_param_name: solo-para-servidores
+guild_only_command_param_desc: Mostrar solo la clasificación de los miembros del gremio
+yes_choice: "Si"
+no_choice: "No"
+akasha_guild_mode_not_supported: El modo solo para servidores no se puede usar
+akasha_guild_mode_not_supported_desc: "Debes estar en un servidor de Discord, con menos de 100 miembros y un total de menos de 30 cuentas de Genshin entre todos los miembros del servidor."
+time_remaining_str: "Tiempo restante del ciclo: {time}"
+banner_selector_placeholder: Selecciona un banner...
+rarity_str: "{rarity} estrella"
+finished_status_field_name: Estado
+unlocks_in_str: "Se desbloquea en {tiempo}"
+challenge_selector_placeholder: Selecciona un desafío...
+upload_cmd_desc: "Sube una imagen y obtén un enlace a ella, ésta puede ser usada como imagen personalizada en /profile"
+not_an_image_error_title: No es una imagen
+not_an_image_error_message: "El archivo cargado no es una imagen; inténtelo nuevamente con un archivo de imagen válido."
+upload_cmd_image_param_name: imagen
+upload_cmd_image_param_desc: Imagen para subir
+exploration_select_placeholder: " Selecciona una región..."
+exploration_show_card_button_label: Mostrar tarjeta de exploración
+abyss_stats_const_use_rate: Tasa de Uso de Constelacione
+abyss_stats_teammate_use_rate: Tasa de Uso de Equipo
+abyss_stats_weapon_use_rate: Tasa de Uso de Arma
+abyss_stats_artifact_use_rate: Tasa de Uso de Artefactos
+build_cmd_genshin_desc: Ver las builds y guías de un personaje de Genshin Impact
+build_cmd_character_param_desc: Ver las builds de un personaje de
+guide_title: "{name} Builds y Guías"
+no_guide_available: Aún no hay guías disponibles para este personaje
+show_playstyle_button_label: Jugabilidad
+show_synergy_button_label: Sinergias
+characters_per_page_modal_title: Personajes por pagina
+characters_per_page_num_label: Número
+card_settings_hl_substat_select_placeholder: Selecciona las substats a resaltar...
+too_many_requests_error_banner_msg: "Hay demasiadas solicitudes. Inténtalo más tarde. Haz clic en el botón de la derecha para más detalles."
+mimo_task_status_claimable: Reclamable
+mimo_finish_and_claim_button_label: Terminar tareas y reclamar puntos
+mimo_info_embed_title: Acerca de Mimo Viajero
+mimo_info_embed_desc: "Este es un evento permanente de Hoyoverse, donde puedes completar tareas para ganar puntos y usarlos para comprar recompensas en el juego."
+mimo_auto_finish_and_claim_button_label: Finalizar tareas automáticamente y reclamar puntos
+mimo_auto_finish_and_claim_desc: Hoyo Buddy puede finalizar ciertas tareas y reclamar puntos de todas las tareas completadas automáticamente.
+mimo_auto_buy_button_label: Compra automática de recompensas
+mimo_auto_buy_desc: "Hoyo Buddy comprará primogemas/jades estelares/policromos siempre que sea posible, ¡no intentará ahorrar puntos!"
+mimo_cmd_desc: Gestión de eventos de Mimo Viajero
+mimo_view_shop_button_label: Tienda
+mimo_buy_item_select_placeholder: Selecciona un ítem para comprar...
+mimo_tasks_button_label: Tareas
+mimo_buy_item_amount_label: Cantidad
+mimo_item_available_time: "Recargas en {tiempo}"
+mimo_auto_task_embed_footer: Usa /mimo para configurar tareas automáticas y comprar recompensas
+mimo_auto_task_embed_desc: "Hoyo Buddy completó {finish} tareas y reclamó {claim_point} puntos para ti"
+checkin_reward_embed_footer: Usa /check-in para configurar las notificaciones
+mimo_status: "Estado: {status}"
+mimo_auto_buy_embed_desc: "Hoyo Buddy compró {item} ítem(s) para ti con {points} puntos.\nSi ves códigos de regalo abajo, por favor canjéalos manualmente con </redeem>."
+mimo_game_unavailable: "Mimo Viajero no está disponible actualmente para {game}"
+generic_error_title: Error
+on_button_label: "SI"
+off_button_label: "NO"
+mimo_draw_redeem_success: "Revisa tu correo del juego para obtener la recompensa"
+image_settings_use_m3_art: Usar ilustración de M3
+remembrance: Reminiscencia
+dismissible_default_title: ¡Nueva característica!
+dismissible_default_footer: Este mensaje solo se mostrará una vez
+dismissible_m3_art_desc: 'Ahora puedes usar las ilustraciones del Cine Mental 3 en las tarjetas de agentes de ZZZ. Selecciona "Hoyo Buddy plantilla 2" en los ajustes de la tarjeta y luego activa "Usar ilustración de M3" en los ajustes de imagen.'
+dismissible_settings_v2: "¡Dile adiós a las configuraciones confusas y dispersas! Las configuraciones de Hoyo Buddy han sido renovadas para ser más organizadas y fáciles de usar, con algunas nuevas funciones de calidad de vida, pruébalo en </settings>"
+dismissible_card_settings_v2: "Las configuraciones de tarjeta han sido renovadas para ser más organizadas y fáciles de usar. También puedes aplicar plantillas en masa a todos los personajes (¡una característica muy solicitada!) Pruébalo en </card-settings genshin>, </card-settings hsr>, y </card-settings zzz>"
+mimo_lottery_info_hoyolab_decos: " ...y {num} decoraciones de HoYoLAB"
+zzz_deadly_assault: " Incursión arriesgada"
+challenge_command_assault_desc: Generar tarjeta de Incursión arriesgada
+gi_mimo_start_desc: "Por favor, primero configura a Mimo Viajero en [HoYoLAB]({url})"
+mimo_auto_draw_button_label: Sorteo automático
+mimo_auto_draw_desc: "Hoyo Buddy sacará premios para ti siempre que sea posible; si tanto la compra automática como el sorteo automático están habilitados, intentará comprar primero y luego sacar premios si no hay suficientes puntos para comprar."
+mimo_auto_draw_embed_desc: "Hoyo Buddy obtuvo los siguientes ítems con {points} puntos.\nSi ves códigos de regalo abajo, por favor canjéalos manualmente con </redeem>."
+dismissible_hsr_temp2_desc: "Ahora podés usar la nueva plantilla Hoyo Buddy 2 para las tarjetas de personajes de HSR. Seleccionala en la configuración de tarjetas. Se recomienda usar imágenes horizontales para esta plantilla."
+bounty_commission.embed.description: Encargos de cacería aún no completados
+ridu_points.embed.description: Semanario de Ridu aún no completado
+changelog_embed_title: Registro de cambios
+web_events_notify_toggle_label: Notificar sobre nuevos eventos web
+web_events_cmd_desc: Ver eventos web actuales y configurar notificaciones
+web_events_embed_footer: Usa /web-events para configurar notificaciones
+auto_task_error_dm_content: "**{feature}** ha sido **__deshabilitado__** para `{account}` debido a un error. Puedes habilitarlo nuevamente usando {command}.\nSi este error persiste o no sabes cómo solucionarlo, por favor busca ayuda en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)."
+is_support_custom_image_desc: Admite imagen personalizada
+is_not_support_custom_image_desc: No admite imagen personalizada
+missing_permissions_error_title: A Hoyo Buddy le faltan permisos
+missing_permissions_error_message: "Hoyo Buddy requiere los siguientes permisos para funcionar correctamente:\n- Enviar mensajes\n- Insertar enlaces\n- Adjuntar archivos\n- Usar emojis externos"
+blocked_by_auto_mod_error_title: Este mensaje fue bloqueado por AutoMod
+blocked_by_auto_mod_error_message: "Intente ejecutar el comando nuevamente o comuníquese con los administradores del servidor para deshabilitar AutoMod para Hoyo Buddy."
+zzz.core_level.placeholder: Selecciona el nivel de habilidad...
+open_game_label: Abrir juego
+open_game_cloud_label: Abrir juego (cloud gaming)
+open_game_vietnam_label: Abrir juego (versión de Vietnam)
+gift_code_redeemed: El código de regalo ya ha sido reclamado
+show_ui_button_label: Mostrar UI
+hide_ui_button_label: Ocultar UI
+image_file_too_large_error_title: La imagen es muy pesada
+image_file_too_large_error_message: "La imagen subida es muy pesada, el peso máximo es {size}MB."
+api_request_timeout_title: Tiempo para solicitud de API agotado
+dismissible_one_year_anniversary_title: ¡Hoyo Buddy ya tiene 1 Año!
+dismissible_one_year_anniversary_desc: "¡Visita la [página de evento especial] (https://one.hb.seria.moe) para unirte al regalo de aniversario!"
+anniversary_dyk: "¡Hoyo Buddy tiene 1 año!. ¡Visita la [página de evento especial] (<https://one.hb.seria.moe>) para unirte al regalo del aniversario!"
+authkey_timeout_title: La clave de autenticación caducada
+authkey_timeout_message: "Obtén una nueva URL del registro del gacha e intentarlo de nuevo"
+invalid_authkey_title: Clave de autentificación invalida
+hard_challenge_period: "Periodo: {period}"
+hard_challenge_completion_time: "Duración de la batalla"
+hard_challenge_team_composition: "Composición del equipo"
+hard_challenge_combat_statistics: "Estadísticas del combate"
+hard_challenge_strongest_strike: "Ataque más fuerte"
+hard_challenge_damage_dealt: "Mayor daño total"
+hard_challenge_enemy_weakness: "Debilidades y Fortalezas del enemigo"
+hard_challenge_command_desc: Generar tarjeta de Conflagración Estigia
+hard_challenge: "Conflagración Estigia"
+fetching_accounts: Por favor espera mientras obtenemos tus cuentas...
+fetching_accounts_stuck: "Si estás atascado en esta página, por favor intenta ejecutar el comando de nuevo o contáctanos para solucionar el problema."
+aaa_acronym: Acu. Auto. de Adrenalina
+changelog_command_desc: Vé los últimos cambios y actualizaciones
+account_game_mismatch_error_title: La cuenta del juego no coincide
+account_game_mismatch_error_message: "La cuenta que usas no es una cuenta de {game}"
+enka_api_error_title: Error en la API de Enka
+enka_api_error_description: "Se ha producido un error al recuperar datos de Enka Network. Inténtalo de nuevo más tarde."
+cleared: Terminado
+challenge_command_anomaly_desc: Generar tarjeta de Arbitraje atípico
+anomaly_arbitration: Arbitraje atípico
+account_settings_title: "Configuración de cuenta"
+account_settings_desc: "Las configuraciones hehcas son únicas para cada cuenta del juego."
+public_account_desc: "Establecer cuenta como pública\nSi está habilitado, otras personas pueden ver los datos de tu cuenta en algunos comandos, como </profile>."
+daily_checkin_desc: "Inicio de sesión diario automático\nReclama automáticamente recompensas en el evento de inicio de sesión web."
+redeem_code_desc: "Canje automático de códigos\nCanjea automáticamente códigos de transmisión en vivo y otros códigos de regalo. El botón está deshabilitado si no has iniciado sesión con correo electrónico y contraseña, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+user_settings_title: "Configuración de usuario"
+user_settings_desc: "Las configuraciones aquí están vinculadas a tu cuenta de Discord, se aplican a todas las cuentas del juego."
+dark_theme_desc: "Tema oscuro\nHace que los infográficos usen un esquema de color oscuro, no todos los infográficos admiten esta función."
+language_desc: "Idioma\nHoyo Buddy te responderá en este idioma. Algunos textos pueden seguir en inglés, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+language_select_placeholder: Selecciona un idioma
+settings_dyk_desc: "Mensajes de \"¿Sabías que?\"\nMuestra consejos útiles aleatorios cuando uses los comandos del bot."
+layout_view_edited: "Los componentes interactivos se han desactivado para ahorrar recursos del sistema, vuelve a ejecutar el comando si quieres usarlos."
+mimo_title: Configuración de Mimo Viajero
+mimo_minimum_point_label: Puntos mínimos a mantener
+mimo_minimum_point_desc: "Al sortear automáticamente, Hoyo Buddy se asegurará de que tus puntos se mantengan por encima de este valor, establécelo en 0 para sortear cuando sea posible."
+disable_all_button_label: Deshabilitar todas las notificaciones
+apply_template_to_all_chars: Aplicar plantilla actual a todos los personajes
+apply_template_to_all_chars_desc: "Todos los personajes **futuros y actuales** usarán **{template}**."
+apply_dark_theme_to_all_chars: Aplicar el tema oscuro actual a todos los personajes
+apply_dark_theme_to_all_chars_desc: "Todos los personajes **futuros y actuales** tendrán el tema oscuro **{status}**."
+apply_label: Aplicar
+card_settings_genshin_desc: Modifica cómo se ven tus tarjetas de build de personajes de Genshin Impact
+card_settings_hsr_desc: Modifica cómo se ven tus tarjetas de build de personajes de Honkai Star Rail
+card_settings_zzz_desc: Modifica cómo se ven tus tarjetas de build de agentes de Zenless Zone Zero
+card_settings_character_param: Personaje al cual deseas configurar su tarjeta
+disabled_label: Deshabilitado
+none: Ninguno
+fake_settings_button_label: Configuración
+fake_settings_button_title: ¡La configuración se ha movido!
+captcha_not_showing_up: "¿No aparece el CAPTCHA?"
+open_captcha_button_label: Haz clic para iniciar la verificación
+captcha_verifying: Verificando...
+build_cmd_zzz_desc: Ver las builds y guías de un personaje de Zenless Zone Zero
+elation: Exultación

@@ -398,7 +398,10 @@ class Search(commands.Cog):
         except ValueError:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
-        categories = self._search_categories[game]
+        categories = self._search_categories.get(game)
+        if categories is None:
+            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+
         if i.guild is None or i.guild.id not in NO_BETA_CONTENT_GUILDS:
             categories = [BetaItemCategory.UNRELEASED_CONTENT, *categories]
         return self.bot.get_enum_choices(categories, locale, current)

@@ -221,6 +221,7 @@ class NotesView(View):
             file_ = None
 
         if acc_select is not None:
+            acc_select._update_view(self)
             await acc_select.unset_loading_state(
                 i, embed=embed, attachments=[file_] if file_ is not None else []
             )

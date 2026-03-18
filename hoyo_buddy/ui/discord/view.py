@@ -173,21 +173,6 @@ class View(discord.ui.View, ViewMixin):
     async def interaction_check(self, i: Interaction) -> bool:
         return await ViewMixin.interaction_check(self, i)
 
-    def remove_item(self, item: discord.ui.Item[Any]) -> Self:
-        try:
-            self._children.remove(item)
-        except ValueError:
-            pass
-        else:
-            self._add_count(-item._total_count)
-
-        return self
-
-    def clear_items(self) -> Self:
-        self._children.clear()
-        self._total_children = 0
-        return self
-
 
 class URLButtonView(discord.ui.View):
     def __init__(
@@ -258,18 +243,3 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
 
     async def interaction_check(self, i: Interaction) -> bool:
         return await ViewMixin.interaction_check(self, i)
-
-    def remove_item(self, item: discord.ui.Item[Any]) -> Self:
-        try:
-            self._children.remove(item)
-        except ValueError:
-            pass
-        else:
-            self._add_count(-item._total_count)
-
-        return self
-
-    def clear_items(self) -> Self:
-        self._children.clear()
-        self._total_children = 0
-        return self

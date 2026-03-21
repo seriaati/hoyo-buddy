@@ -2,26 +2,26 @@ about_command.contribute: Draag bij
 about_command.developer: Ontwikkelaar
 about_command.discord_server: Discord-server
 about_command.guild_count: Aantal gilden
-about_command.ram_usage: RAM-Gebruik
+about_command.ram_usage: RAM-gebruik
 about_command.support: Doneer
 about_command.translators: Vertalers
 about_command.uptime: Uptime
 about_command.website: Officiële website
 about_command_description: Over de bot
-about_embed.description: "Een veelzijdige, gebruiksvriendelijke en prachtig ontworpen Discord-bot, gemaakt voor Hoyoverse gamers."
+about_embed.description: "Een veelzijdige, gebruiksvriendelijke en prachtig ontworpen Discord-bot, gemaakt voor Hoyoverse-gamers."
 abundance: Overvloed
-abyss.battles_won_fought: "Gevechten Gewonnen/Gestreden: {val1}/{val2}"
-abyss.deepest_descent: "Diepste Afdaaling: {val}"
-abyss.floor: "Vloer {val}"
+abyss.battles_won_fought: "Gevechten Gewonnen/Gespeeld: {val1}/{val2}"
+abyss.deepest_descent: "Diepste Afdaling: {val}"
+abyss.floor: "Verdieping {val}"
 abyss.overview: Spiral Abyss Overzicht
-abyss.damage: DAMAGE INFO
+abyss.damage: SCHADE INFO
 abyss.stats: STATS
 honkai:_star_rail: "Honkai: Star Rail"
 abyss.phase_select.placeholder: Selecteer een fase
-abyss.total_stars: "Aantal Sterren: {val}"
-abyss_chamber.challenge_target.embed.field.name: Uitdaging Doel
-abyss_chamber.embed.title: "Vloer {floor_index} - Kamer {chamber_index}"
-abyss_chamber.enemy_level.embed.field.name: Vijand Niveau
+abyss.total_stars: "Totaal Sterren: {val}"
+abyss_chamber.challenge_target.embed.field.name: Uitdagingsdoel
+abyss_chamber.embed.title: "Verdieping {floor_index} - Kamer {chamber_index}"
+abyss_chamber.enemy_level.embed.field.name: Vijandniveau
 abyss_chamber.ley_line_disorder.embed.field.name: Ley Line Stoornis
 abyss_enemy.item_description: "HP: {HP}"
 acc_no_default_param_desc: Account om dit commando mee uit te voeren
@@ -29,42 +29,42 @@ account_autocomplete_param_description: "Account om dit commando mee uit te voer
 account_autocomplete_param_name: account
 account_deleted_description: "{account} is verwijderd."
 account_deleted_title: Account Verwijderd
-account_manager_footer: Geselecteerde account wordt standaard gebruikt voor alle commando’s
+account_manager_footer: Geselecteerde account wordt standaard gebruikt voor alle commando's
 account_manager_no_accounts_description: Je hebt nog geen accounts.
 account_manager_title: Accountbeheerder
-account_not_found_error_message: "Kan geen account vinden bij de ingevoerde zoekterm. Kies aub een optie uit de autocomplete in plaats van zelf iets te typen."
-account_not_found_error_title: Account niet gevonden
+account_not_found_error_message: "Kan geen account vinden bij de ingevoerde zoekterm. Kies een optie uit de autocomplete in plaats van zelf iets te typen."
+account_not_found_error_title: Account Niet Gevonden
 account_username: Gebruikersnaam
 accounts_command_description: Beheer je accounts
 action_in_cooldown_error_message: "Probeer het opnieuw op {available_time}."
 action_in_cooldown_error_title: Actie in Cooldown
-add_account_button_label: Accounts toegoeven
+add_account_button_label: Account toevoegen
 add_hoyolab_acc.embed.description: "- [Welke methode moet ik gebruiken?](:docs/FAQ#which-login-method-should-i-use:)"
 add_hoyolab_acc.embed.title: Selecteer een Methode om je Accounts toe te Voegen
 adding_accounts_description: "- [Is Hoyo Buddy veilig?](:docs/Account-Security:)\n- [Privacybeleid](https://github.com/seriaati/hoyo-buddy/blob/main/PRIVACY.md)"
 adding_accounts_title: Selecteer Je Accountplatform
 ai_gen_image_error_message: Controleer je prompt en probeer het opnieuw.
-ai_gen_image_error_title: Er is een Fout Opgetreden Tijdens het Genereren van Kunst met AI
+ai_gen_image_error_title: Er is een Fout Opgetreden Tijdens het Genereren van AI-kunst
 already_claimed_description: Kom morgen weer terug!
-already_claimed_title: Beloning Voor Dagelijkse Inchecken al Geclaimd
+already_claimed_title: Dagelijkse Incheckbeloning al Geclaimd
 anemo: Anemo
 artifact_set_four_piece_embed_description: "4-Delig: {bonus_4}"
 artifact_set_two_piece_embed_description: "2-Delig: {bonus_2}"
-artifact_sets: Artefact Sets
+artifact_sets: Artefactsets
 auto_checkin_button_label: Automatisch dagelijks inchecken
-auto_locale_option_label: Volg client taal
+auto_locale_option_label: Volg clienttaal
 auto_redeem_footer: Schakel automatische code-inwisseling uit met /redeem
 auto_redeem_toggle.label: Automatische code-inwisseling
 books: Boeken
 captcha.embed.description: "Klik op de onderstaande knop om de CAPTCHA te voltooien.\n"
 challenge_type_select.placeholder: Selecteer een spelmodus
 challenge_view.buff_used_in: Gebruikt in
-challenge_view.team: "team {team}"
+challenge_view.team: "Team {team}"
 chamber_button_label: "Kamer {value}"
-change_character_level_label: Karakter niveau wijzigen
-change_skill_level_label: Skill niveau wijzigen
-change_talent_level_label: Talent niveau wijzigen
-change_weapon_level_label: Wapen niveau wijzigen
+change_character_level_label: Karakterniveau wijzigen
+change_skill_level_label: Skillniveau wijzigen
+change_talent_level_label: Talentniveau wijzigen
+change_weapon_level_label: Wapenniveau wijzigen
 chara_level.modal.title: Voer het Karakterniveau in
 character_const_page_label: Constellaties
 character_embed_description: "{rarity}★  {element}\nVerjaardag: {birthday}\nConstellatie: {constellation}\nAffiliatie: {affiliation}\n"
@@ -75,17 +75,17 @@ character_stories_page_label: Verhalen
 character_talents_page_label: Talenten
 character_voices_page_label: Stemmen
 characters: Karakters
-characters.embed.element_max_friendship: "Max Vriendschap {element} Karakters "
+characters.embed.element_max_friendship: "Max Vriendschap {element} Karakters"
 characters.embed.element_not_max_friendship: "Niet Max Vriendschap {element} Karakters"
 characters.embed.max_friendship: Max Vriendschap Karakters
 characters.embed.not_max_friendship: Niet Max Vriendschap Karakters
 characters.embed.owned_characters: Eigen Karakters
-characters.embed.title: Karakter Overzicht
-characters.filter.element.placeholder: Kies element filters...
+characters.embed.title: Karakteroverzicht
+characters.filter.element.placeholder: Kies elementfilters...
 characters.filter.max_friendship: Max vriendschap
 characters.filter.none: Geen
 characters.filter.not_max_friendship: Niet max vriendschap
-characters.filter.path.placeholder: Kies path filters...
+characters.filter.path.placeholder: Kies pathfilters...
 characters.filter.placeholder: Selecteer een filter...
 characters.level_order.footer: "Niveauvolgorde: {order}"
 characters.extra_detail.footer: "Gebruik /profile om de details van een karakter te bekijken"
@@ -111,7 +111,7 @@ characters_cmd_hsr_desc: Bekijk en filter je Honkai Star Rail-karakters
 characters_cmd_zzz_desc: Bekijk en filter je Zenless Zone Zero-karakters
 characters_cmd_honkai_desc: Bekijk en filter je Honkai Impact 3rd-karakters
 checkin_button_label: Inchecken
-checkin_command_description: Spel dagelijks inchecken
+checkin_command_description: Dagelijks inchecken in het spel
 complete_captcha_button_label: CAPTCHA invoeren
 complete_geetest_button_description: Klik op de knop hieronder om de geetest-verificatie te voltooien
 complete_geetest_button_label: Voltooi geetest
@@ -119,17 +119,17 @@ const_refine_str: "C{const}R{refine}"
 continue_button_label: Ga verder
 cryo: Cryo
 daily_button.label: Dagelijkse herinnering
-daily_check_in: Dagelijkse incheck
+daily_check_in: Dagelijkse inchecken
 daily_checkin_embed_description: "Ingecheckt op {day} dag(en) deze maand\nInchecken gemist voor {missed} dag(en)\n"
 daily_modal.title: Instellingen Dagelijkse Herinnering
 delete_account_button_label: Verwijder geselecteerde account
 dendro: Dendro
 destruction: Destruction
 devtools_button_label: Met DevTools (alleen desktop)
-devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing\n5. Klik op `Cookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `Waarde` van elk cookie en plak ze in de vakjes"
-dice_cost_embed_field_name: Kosten Dobbelstenen
-download_image_failed_error_message: "Kan afbeelding {url} met status code {status} niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
-download_image_failed_error_title: Afbeelding Downloaden Mislukte
+devtools_instructions_description: "1. Inloggen op [HoYoLAB](https://www.hoyolab.com/home) of [Miyoushe](https://www.miyoushe.com/ys/) (voor CN-spelers)\n2. Open de DevTools door op F12 of Ctrl+Shift+I te drukken\n3. Druk op het >> pictogram op de bovenste navigatiebalk\n4. Klik op het tabblad `Toepassing`\n5. Klik op `Cookies` in de linker zijbalk\n6. Klik op de website waar je bent (bijv. https://www.hoyolab.com)\n7. Typ `v2` in het vak `Filter`\n8. Klik op de knop hieronder\n9. Kopieer de `Waarde` van elk cookie en plak ze in de vakjes"
+dice_cost_embed_field_name: Dobbelsteenkosten
+download_image_failed_error_message: "Kan afbeelding {url} met statuscode {status} niet downloaden.\nProbeer het later nog eens, probeer het met een andere afbeelding of controleer of de URL van de afbeelding geldig is."
+download_image_failed_error_title: Afbeelding Downloaden Mislukt
 edit_nickname_modal_title: Bijnaam bewerken
 eidolon_superimpose_str: "E{eidolon}S{superimpose}"
 electro: Electro
@@ -139,74 +139,74 @@ email_verification_dialog_action: Verifiëren
 email_verification_field_label: Verificatiecode
 email-geetest.embed.title: CAPTCHA-verificatie vereist voor het verzenden van een e-mailverificatiecode
 email_password_button_label: Met e-mail en wachtwoord
-email_password_modal_email_input_label: e-mail of gebruikersnaam
-email_password_modal_password_input_label: wachtwoord
-enter_email_password_instructions_description: "E-mail & wachtwoord verwijzen naar **Hoyoverse account's** e-mail en wachtwoord, niet Google, Apple, enz. accounts.\n- [Hoe werkt dit?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Ik heb geen Hoyoverse account (ik log in met Google, Facebook, enz.)](:docs/Before-Start:)\n- [Ik ben een console-speler](:docs/Before-Start#i-am-a-console-player:)"
-enter_light_cone_level.button.label: Light cone niveau wijzigen
+email_password_modal_email_input_label: E-mail of gebruikersnaam
+email_password_modal_password_input_label: Wachtwoord
+enter_email_password_instructions_description: "E-mail & wachtwoord verwijzen naar **Hoyoverse-account** e-mail en wachtwoord, niet Google, Apple, enz. accounts.\n- [Hoe werkt dit?](:docs/Account-Security#how-does-the-email-and-password-login-method-work:)\n- [Ik heb geen Hoyoverse-account (ik log in met Google, Facebook, enz.)](:docs/Before-Start:)\n- [Ik ben een console-speler](:docs/Before-Start#i-am-a-console-player:)"
+enter_light_cone_level.button.label: Light Cone-niveau wijzigen
 dark_theme: Donker thema
-card_dark_theme_desc: Gebruik een donker kleurenschema voor de build-kaart van dit personage.
+card_dark_theme_desc: Gebruik een donker kleurenschema voor de bouwkaart van dit personage.
 error_footer: "Je kunt hulp vinden in onze Discord-server, link in /about"
 error_title: Er is een Fout Opgetreden
 erudition: Erudition
 days: dagen
-exceptions.card_not_ready_error.message: "Als er nieuwe karakters worden uitgebracht, moet ik de kleuren voor hun build kaarten opgeven.\nAls je dit bericht enkele dagen na een game-update ziet, laat het me dan weten in de [Discord-Server](https://link.seria.moe/hb-dc) want misschien ben ik het vergeten."
-exceptions.card_not_ready_error.title: "Kaart gegevens voor {character_name} zijn nog niet klaar."
+exceptions.card_not_ready_error.message: "Als er nieuwe karakters worden uitgebracht, moet ik de kleuren voor hun bouwkaarten opgeven.\nAls je dit bericht enkele dagen na een game-update ziet, laat het me dan weten in de [Discord-server](https://link.seria.moe/hb-dc) want misschien ben ik het vergeten."
+exceptions.card_not_ready_error.title: "Kaartgegevens voor {character_name} zijn nog niet klaar."
 exped.embed.description: Eén (of meer) expedities zijn voltooid
-exped_button.label: Expeditie herinnering
-exped_modal.title: Instellingen Herinnering Expeditie
+exped_button.label: Expeditieherinnering
+exped_modal.title: Instellingen Expeditieherinnering
 exploration.chests: Kisten Ontgrendeld
-exploration.common_chests: Gewoon
-exploration.exquisite_chests: Uitstekend
+exploration.common_chests: Gewone
+exploration.exquisite_chests: Uitmuntende
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
 exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
 
   - Zhongli'
-exploration.precious_chests: Waardevol
-exploration.progress: "Verkenning Vooruitgang: {progress}%"
-exploration.remarkable_chests: Opmerkelijk
-exploration.title: Wereld Verkenning
+exploration.precious_chests: Waardevolle
+exploration.progress: "Verkenningsvoortgang: {progress}%"
+exploration.remarkable_chests: Opmerkelijke
+exploration.title: Wereldverkenning
 exploration.waypoints: Waypoints Ontgrendeld
-exploration_command_description: Bekijk je verkennings statistieken in Genshin Impact
+exploration_command_description: Bekijk je verkenningsstatistieken in Genshin Impact
 farm_add_command.item_already_in_list: Item al in lijst
-farm_add_command.item_already_in_list_description: Dit item staat al in je te farmen items herinneringen lijst.
+farm_add_command.item_already_in_list_description: Dit item staat al in je farmherinneringslijst.
 farm_add_command_description: Voeg karakter/wapen toe om een melding te krijgen wanneer zijn materialen te farmen zijn
-farm_check.farmable_today: "Materialen Voor {name} zijn Vandaag Te Farmen"
+farm_check.farmable_today: "Materialen voor {name} zijn vandaag te farmen"
 farm_check.use_farm_notify: "Gebruik /farm reminder om de instellingen voor herinneringen te configureren\nGebruik /farm view om alle items te bekijken die vandaag te farmen zijn"
 farm_notify.add_item: Item toevoegen
-farm_notify.add_item.embed.description: "Om items toe te voegen, gebruik je het </farm add>commando"
+farm_notify.add_item.embed.description: "Om items toe te voegen, gebruik je het </farm add>-commando"
 farm_notify.description: Je wordt eraan herinnerd wanneer de materialen van karakters/wapens in deze lijst te farmen zijn.
-farm_notify.empty: Je hebt geen items in je te farmen items herinneringen lijst
-farm_notify.empty_description: Voeg items toe aan je farm-herinneringslijst met het </farm add> commando.
+farm_notify.empty: Je hebt geen items in je farmherinneringslijst
+farm_notify.empty_description: Voeg items toe aan je farmherinneringslijst met het </farm add>-commando.
 farm_notify.remove_item: Item verwijderen
-farm_notify.remove_item.embed.description: "Gebruik het </farm remove> commando om items te verwijderen"
-farm_notify.title: Te Farmen Items Herinneringen Lijst
+farm_notify.remove_item.embed.description: "Gebruik het </farm remove>-commando om items te verwijderen"
+farm_notify.title: Farmherinneringslijst
 farm_reminder_command_description: Melden wanneer materialen van karakters/wapens gefarmd kunnen worden
 farm_remove_command.item_not_found: Item niet gevonden
-farm_remove_command.item_not_found_description: Dit item staat niet in je te farmen items herinneringen lijst.
-farm_remove_command_description: Verwijder karakter/wapen uit de te farmen items herinneringen lijst
-farm_view.happy_farming: 🌾 Veel plezier aan het farmen!
-farm_view.set_reminder: Herrineringen Instellen
-farm_view.set_reminder.embed.description: "Om herinneringen in te stellen, gebruik het </farm reminder> commando"
+farm_remove_command.item_not_found_description: Dit item staat niet in je farmherinneringslijst.
+farm_remove_command_description: Verwijder karakter/wapen uit de farmherinneringslijst
+farm_view.happy_farming: 🌾 Veel plezier met farmen!
+farm_view.set_reminder: Herinneringen Instellen
+farm_view.set_reminder.embed.description: "Om herinneringen in te stellen, gebruik het </farm reminder>-commando"
 farm_view.sundays: Elk Domein is Beschikbaar op Zondag
 farm_view.weekday_select.placeholder: Selecteer een weekdag
 farm_view_command_description: Bekijk te farmen domeinen in Genshin Impact
 fire: Fire
-floor_select_label: "Vloer {value}"
+floor_select_label: "Verdieping {value}"
 fontaine: Fontaine
 food: Voedsel
 friday: Vrijdag
-furnishing_sets: Meubel Sets
+furnishing_sets: Meubelsets
 furnishings: Meubels
-furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Belasting: {load}\nVertrouwen: {trust}\nCreatietijd {hour}h"
+furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Belasting: {load}\nVertrouwen: {trust}\nCreatietijd: {hour}u"
 game_maintenance_description: Probeer het later nog eens
 game_maintenance_title: Spel is Onder Onderhoud
 geeetest_verification_complete: Verificatie voltooid
 geetest.embed.title: CAPTCHA-verificatie vereist voordat je kunt inloggen
 geetest.no_need: Geen geetest nodig
 geetest.no_need.description: "Je hoefde nooit een geetest te doen! Waarom ben je hier?"
-geetest.required: Verificatie Geetest Vereist
-geetest.required.description: "Gebruik het </geetest> commando, kies de account die de geetest heeft getriggerd en kies `{geetest_type}` om de verificatie te voltooien"
+geetest.required: Geetest-verificatie Vereist
+geetest.required.description: "Gebruik het </geetest>-commando, kies de account die de geetest heeft getriggerd en kies `{geetest_type}` om de verificatie te voltooien"
 geetest_command_description: Voltooi Geetest-verificatie
 geetest_cmd_type_param_desc: Type van Geetest-verificatie
 geetest_command_type_param_name: type
@@ -224,7 +224,7 @@ ice: Ice
 imaginary: Imaginary
 inazuma: Inazuma
 instructions_title: Instructies
-interaction_failed_description: "Deze weergave is niet door jou geïnitieerd, daarom kun je hem niet gebruiken."
+interaction_failed_description: "Deze weergave is niet door jou gestart, daarom kun je hem niet gebruiken."
 interaction_failed_title: Interactie Mislukt
 invalid_category_selected: Ongeldige categorie gekozen
 invalid_color_error_message: "Een geldige kleur moet een hexadecimale kleurcode zijn, bijv. #FF0000"
@@ -232,27 +232,27 @@ invalid_color_error_title: Ongeldige Kleur
 invalid_cookies_description: Ververs jouw cookies door jouw accounts opnieuw toe te voegen met </accounts>
 invalid_cookies_title: Ongeldige Cookies
 invalid_email_password_description: "Het opgegeven e-mailadres of wachtwoord is onjuist, controleer dit en probeer het opnieuw."
-invalid_email_password_title: Ongeldige E-mail of Wachtwoord
+invalid_email_password_title: Ongeldig E-mailadres of Wachtwoord
 invalid_game_selected: Ongeldig spel geselecteerd
-invalid_image_url_error_message: "Een geldige URL voor afbeeldingen moet een directe URL zijn naar een afbeeldingsbestand dat een afbeeldingsextensie bevat en publiek toegankelijk is."
-invalid_image_url_error_title: Ongeldige afbeelding URL
+invalid_image_url_error_message: "Een geldige afbeeldings-URL moet een directe URL zijn naar een afbeeldingsbestand dat een afbeeldingsextensie bevat en publiek toegankelijk is."
+invalid_image_url_error_title: Ongeldige Afbeeldings-URL
 invalid_input.input_needs_to_be_int: "Invoer `{input}` moet een geheel getal zijn"
-invalid_input.input_out_of_range.max_value: "Input `{input}` moet kleiner zijn dan of gelijk aan {max_value}"
-invalid_input.input_out_of_range.min_value: "Invoer `{input}` moet groter zijn of gelijk aan {min_value}"
+invalid_input.input_out_of_range.max_value: "Invoer `{input}` moet kleiner zijn dan of gelijk aan {max_value}"
+invalid_input.input_out_of_range.min_value: "Invoer `{input}` moet groter zijn dan of gelijk aan {min_value}"
 invalid_input_error_title: Ongeldige Invoer
-invalid_query_error_message: "Kan niets vinden met de opgegeven query. Selecteer keuzes uit de autoaanvullen in plaats van jouw eigen query te typen."
-invalid_query_error_title: Ongeldige query
+invalid_query_error_message: "Kan niets vinden met de opgegeven zoekopdracht. Selecteer keuzes uit de autocomplete in plaats van je eigen zoekopdracht te typen."
+invalid_query_error_title: Ongeldige Zoekopdracht
 invalid_verification_code_description: Controleer de verificatiecode en probeer het opnieuw.
 invalid_verification_code_title: Ongeldige Verificatiecode
 items: Items
 level_str: "Nv.{level}"
 light_cones: Light Cones
-living_beings: Living Beings
+living_beings: Levende Wezens
 liyue: Liyue
 loading_text: Aan het laden...
-make_up_for_checkin_button_label: Opmaken voor inchecken
+make_up_for_checkin_button_label: Inchecken inhalen
 materials: Materialen
-memory_of_chaos: Memory of chaos
+memory_of_chaos: Memory of Chaos
 miyoushe: Miyoushe
 moc_card_battles_fought: "Gevochten Veldslagen: {battles}"
 moc_card_cycles_used: "Gebruikte cycli: {cycles}"
@@ -264,36 +264,36 @@ nod_krai: Nod-Krai
 namecards: Naamkaartjes
 next_page_option_label: Volgende pagina
 nickname_modal_label: Bijnaam
-nickname_modal_placeholder: "Hoofd account, Azië account..."
+nickname_modal_placeholder: "Hoofdaccount, Azië-account..."
 nihility: Nihility
 no_account_found_for_games_error_message: "Je hebt geen account van een van de volgende games. Voeg er een toe met </accounts>"
 no_account_found_for_games_platform_error_message: "Je hebt geen account van een van de volgende games op {platform}. Voeg er een toe met </accounts>"
 no_account_found_for_games_error_title: Geen Account Gevonden
 no_accounts_autocomplete_choice: Je hebt nog geen accounts. Voeg er een toe met /accounts
 profile_character_param_name: "karakter-{num}"
-no_challenge_data_err_message: "Kan geen {challenge} gegevens vinden voor deze fase. Of je bent nog niet begonnen met {challenge} of de gegevens zijn nog niet klaar. Probeer het later nog eens"
-no_challenge_data_err_title: "Geen {uitdaging} Gegevens"
+no_challenge_data_err_message: "Kan geen {challenge}-gegevens vinden voor deze fase. Of je bent nog niet begonnen met {challenge} of de gegevens zijn nog niet klaar. Probeer het later nog eens"
+no_challenge_data_err_title: "Geen {challenge} Gegevens"
 no_characters_found_error_message: Probeer het opnieuw met een ander filter
 no_characters_found_error_title: Geen karakters gevonden met het geselecteerde filter
-no_game_accounts_error_message: "Dit {platform} account heeft geen gameaccounts."
+no_game_accounts_error_message: "Dit {platform}-account heeft geen gameaccounts."
 notes-card.gi.completed: Afgerond
 notes-card.gi.daily-commissions: Dagelijkse Commissies
 notes-card.gi.expedition-finished: Klaar
-notes-card.gi.expedition-remaining: "{time} Overgebleven"
-notes-card.gi.realm-currency: Realm Valuta
-notes-card.gi.remaining: Overblijvend
+notes-card.gi.expedition-remaining: "{time} Resterend"
+notes-card.gi.realm-currency: Realm-valuta
+notes-card.gi.remaining: Resterend
 notes-card.gi.resin: Resin
-notes-card.gi.resin-discounts: Resin Kortingen
-notes-card.hsr.echo-of-war-discounts: Echo of War Limits
-notes-card.hsr.reserved-power: Gereserveerd Kracht
-notes.item_full_in_time: "{emoji} Full in {in_time}"
-notes.stamina_label: Herinnering stamina
+notes-card.gi.resin-discounts: Resin-kortingen
+notes-card.hsr.echo-of-war-discounts: Echo of War-limieten
+notes-card.hsr.reserved-power: Gereserveerde Kracht
+notes.item_full_in_time: "{emoji} Vol in {in_time}"
+notes.stamina_label: Staminaherinnering
 notes.stamina: "Stamina: {cur}/{max}, vol in {time}"
 notes.train_score: "Dagelijks BP: {cur}/{max}"
 notes.superstring_dimension: Superstring Dimension
 notes.superstring_dimension_value: "Huidige score: {score}"
 notes.memorial_arena: Memorial Arena
-notes.memorial_arena_value: "Uitdaging beloningen: {rewards_cur}/{rewards_max}\nSSS-rank beloningen: {sss_cur}/{sss_max}"
+notes.memorial_arena_value: "Uitdagingsbeloningen: {rewards_cur}/{rewards_max}\nSSS-rangbeloningen: {sss_cur}/{sss_max}"
 notes.elysian_realm: Elysian Realm
 notes.elysian_realm_value: "Huidige score: {cur}/{max}"
 notes_available: "{emoji} Beschikbaar in {in_time}"
@@ -301,20 +301,20 @@ notes_command_description: Bekijk real-time notities
 notif.embed.footer: Gebruik /notes om herinneringen te configureren
 notif_modal.enabled.label: Ingeschakeld
 notif_modal.type_one.description: |
-  Stamina wordt elke minuut van het "meldingsinterval" gecontroleerd en er wordt een melding verzonden wanneer stamina groter is dan of gelijk is aan het "llimiet".
+  Stamina wordt elke minuut van het "meldingsinterval" gecontroleerd en er wordt een melding verzonden wanneer stamina groter is dan of gelijk is aan het "limiet".
 
   Zodra het "max. aantal meldingen" is bereikt, stoppen de meldingen.
 
   Zodra je stamina hebt verbruikt tot een waarde die lager is dan het "limiet", wordt het aantal meldingen opnieuw ingesteld en wordt het verzenden van meldingen hervat.
 notif_modal.max_notif_count.label: Max Aantal Meldingen
 notif_modal.max_notif_count.description: "Maximaal aantal te verzenden meldingen."
-notif_modal.notify_interval.label: Interval melden
+notif_modal.notify_interval.label: Meldingsinterval
 notif_modal.notify_interval.description: "Interval tussen elke melding en controle (in minuten)"
-notif_modal.notify_time.label: "Tijd voor meldeningen"
-notif_modal.notify_time.description: "Meld om X uur voordat de server wordt gereset (04:00 uur in de tijdzone van de gameserver)."
+notif_modal.notify_time.label: "Tijd voor meldingen"
+notif_modal.notify_time.description: "Meld X uur voordat de server wordt gereset (04:00 uur in de tijdzone van de gameserver)."
 notif_modal.notify_weekday.label: De weekdag om te melden
 notif_modal.threshold.label: Drempel
-notif_modal.threshold.description: "Er wordt een melding verzonden nadat het limiet is bereikt."
+notif_modal.threshold.description: "Er wordt een melding verzonden nadat de drempel is bereikt."
 notification_settings_button_label: Meldingsinstellingen
 mimo_notification_settings: Meldingsinstellingen voor Traveling Mimo
 notification_settings_desc: Configureer welke meldingen je wilt ontvangen.
@@ -326,105 +326,105 @@ nsfw_prompt_error_title: NSFW-prompt Gedetecteerd
 page_footer: "Pagina {current_page}/{total_pages}"
 pf_card_total_score: "Totale Score: {score}"
 physical: Physical
-player_not_found_description: Controleer de meegeleverde UID
+player_not_found_description: Controleer de opgegeven UID
 player_not_found_title: Speler Bestaat Niet
 preservation: Preservation
 prev_page_option_label: Vorige pagina
 notify_feature: Deze notitieherinnering
 profile.add_image.button.label: Afbeelding toevoegen
-profile.add_image_modal.image_url.label: Afbeelding URL
+profile.add_image_modal.image_url.label: Afbeeldings-URL
 profile.build.select.placeholder: Selecteer een build...
-profile.card_info.embed.description: "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- De spelgegevens worden geleverd door {provider}.\n"
-profile.card_info.embed.title: Over Karakter Build Kaarten
+profile.card_info.embed.description: "- Alle assets die gebruikt zijn in de kaarten behoren toe aan Hoyoverse, ik bezit ze niet.\n- Alle fanarts die gebruikt zijn in de kaarten zijn gecrediteerd aan hun respectievelijke artiesten.\n- De ontwerpen van de Hoyo Buddy-sjablonen zijn origineel, je mag ze niet aanpassen of beweren dat je ze gemaakt hebt zonder mijn toestemming.\n- De spelgegevens worden geleverd door {provider}.\n"
+profile.card_info.embed.title: Over Karakterbouwkaarten
 profile.card_settings.button.label: Kaartinstellingen
-profile.image_settings.button.label: Beeldinstellingen
+profile.image_settings.button.label: Afbeeldingsinstellingen
 profile.card_template_select.diff_author.description: "Ontworpen door {author1} en geprogrammeerd door {author2}"
-profile.card_template_select.encard.label: "ENCard sjabloon {num}"
-profile.card_template_select.enka_classic.label: Klassiek Enka sjabloon
-profile.card_template_select.enkacard.label: "EnkaCard sjabloon {num}"
-profile.card_template_select.hb.label: "Hoyo Buddy sjabloon {num}"
+profile.card_template_select.encard.label: "ENCard-sjabloon {num}"
+profile.card_template_select.enka_classic.label: Klassiek Enka-sjabloon
+profile.card_template_select.enkacard.label: "EnkaCard-sjabloon {num}"
+profile.card_template_select.hb.label: "Hoyo Buddy-sjabloon {num}"
 profile.card_template_select.placeholder: Selecteer een sjabloon
-profile.card_template_select.src.label: "StarRailCard sjabloon {num}"
+profile.card_template_select.src.label: "StarRailCard-sjabloon {num}"
 profile.character_select.genshin: "C{const}R{refine}"
 profile.character_select.hsr: "E{const}R{refine}"
-profile.character_select.zzz: "Mindscape cinema {const}"
+profile.character_select.zzz: "Mindscape Cinema {const}"
 profile.character_select.in_game: "In-game showcase"
-profile.character_select.enka_network.description: Enka Network build
-profile.generate_ai_art.button.label: Genereer AI kunst
+profile.character_select.enka_network.description: Enka Network-build
+profile.generate_ai_art.button.label: Genereer AI-kunst
 profile.generate_ai_art_modal.negative_prompt.label: Negatieve Prompt
 profile.generate_ai_art_modal.prompt.label: Prompt
 profile.image_select.custom_image.label: "Aangepaste Afbeelding ({num})"
-profile.image_select.default_collection.label: "Hoyo Buddy Collectie ({num})"
+profile.image_select.default_collection.label: "Hoyo Buddy-collectie ({num})"
 profile.image_select.none.label: Officiële kunst
 profile.image_select.placeholder: Selecteer een afbeelding
-profile.player_info.button.label: Speler info
+profile.player_info.button.label: Spelerinfo
 profile_gi_embed_ar: Adventure Rank
-profile_gi_embed_world_level: Wereld Niveau
-profile.player_info.embed.description: "Trailblaze Niveau: {level}\nEquilibrium Niveau: {world_level}\nAantal Vrienden: {friend_count}\nLight Cone: {light_cones}\nKarakters: {characters}\nPrestaties: {achievements}\n"
-profile.player_info.hoyolab.embed.description: "Trailblaze Niveau: {level}\nKarakters: {characters}\nKisten: {chest}\nMemory of Chaos: {moc}\nPrestaties: {achievements}\n"
+profile_gi_embed_world_level: Wereldniveau
+profile.player_info.embed.description: "Trailblaze-niveau: {level}\nEvenwichtsniveau: {world_level}\nAantal vrienden: {friend_count}\nLight Cones: {light_cones}\nKarakters: {characters}\nPrestaties: {achievements}\n"
+profile.player_info.hoyolab.embed.description: "Trailblaze-niveau: {level}\nKarakters: {characters}\nKisten: {chest}\nMemory of Chaos: {moc}\nPrestaties: {achievements}\n"
 profile.primary_color.button.label: Kleur wijzigen
-profile.primary_color_modal.color.label: Kleur (hex code)
-profile.primary_color_modal.title: Kleur Kaart Wijzigen
+profile.primary_color_modal.color.label: Kleur (hexcode)
+profile.primary_color_modal.title: Kaartkleur Wijzigen
 profile.remove_image.button.label: Aangepaste afbeelding verwijderen
-profile_command_gi_description: Genereer Genshin Impact karaktersopbouwkaarten en teamkaarten
-profile_command_hsr_description: Genereer Honkai Star Rail karaktersopbouwkaarten en teamkaarten
-profile_command_zzz_description: Genereer Zenless Zone Zero karaktersopbouwkaarten en teamkaarten
-profile_command_uid_param_description: "UID van de speler, dit overschrijft de account parameter indien opgegeven"
-pt_button.label: Parametric transformer herinnering
-pt_modal.title: Instellingen Parametric Transformer Herinnering
+profile_command_gi_description: Genereer Genshin Impact-karakterbouwkaarten en teamkaarten
+profile_command_hsr_description: Genereer Honkai Star Rail-karakterbouwkaarten en teamkaarten
+profile_command_zzz_description: Genereer Zenless Zone Zero-karakterbouwkaarten en teamkaarten
+profile_command_uid_param_description: "UID van de speler, dit overschrijft de account-parameter indien opgegeven"
+pt_button.label: Parametric Transformer-herinnering
+pt_modal.title: Instellingen Parametric Transformer-herinnering
 pt_notify_embed_desc: "Parametric Transformer is klaar voor gebruik!"
-pure_fiction: Pure fiction
+pure_fiction: Pure Fiction
 pyro: Pyro
 quantum: Quantum
-read_story.button.label: Read Story
+read_story.button.label: Verhaal lezen
 real_time_notes: Real-time notities
-realm_curr_button.label: Realm valuta herinnering
-realm_curr_modal.title: Instellingen Realm Valuta Herinnering
+realm_curr_button.label: Realm-valutaherinnering
+realm_curr_modal.title: Instellingen Realm-valutaherinnering
 redeeem_code.cookie_token_expired_description: "Functies voor het inwisselen van codes zijn alleen beschikbaar voor gebruikers die zijn ingelogd met hun e-mailadres en wachtwoord, je kunt dit doen met </accounts>"
-redeeem_code.cookie_token_expired_title: Cookie Token Verlopen
-redeeem_code.cookie_token_refresh_failed_description: "Voeg uw accounts opnieuw toe met </accounts> de methode e-mail en wachtwoord."
-redeeem_code.cookie_token_refresh_failed_title: Vernieuwen cookietoken mislukt
+redeeem_code.cookie_token_expired_title: Cookietoken Verlopen
+redeeem_code.cookie_token_refresh_failed_description: "Voeg je accounts opnieuw toe met </accounts> via de methode e-mail en wachtwoord."
+redeeem_code.cookie_token_refresh_failed_title: Vernieuwen Cookietoken Mislukt
 redeem_code.success: Succesvol ingewisseld
 redeem_codes_button.label: Codes inwisselen
-redeem_command_description: Codes inwisselen voor beloningen in de game
+redeem_command_description: Codes inwisselen voor beloningen in het spel
 redeem_command_embed.description: "Voer maximaal 5 inwisselcodes in om in te wisselen.\nJe kunt ook automatisch codes inwisselen inschakelen."
-redeem_command_embed.title: Resultaten Code Inwisselen
-redeem_cooldown_embed.description: "Vanwege de inwissel cooldowns kan dit even duren."
+redeem_command_embed.title: Resultaten Code-inwisseling
+redeem_cooldown_embed.description: "Vanwege de inwissel-cooldowns kan dit even duren."
 redeem_cooldown_embed.title: Codes Inwisselen
 refinement_indicator: "Refinement {r}"
 relics: Relics
 reminder_settings.not_set: Niet ingesteld
 reminder_settings.reminde.set.type1: "Status: {status}\nDrempel: {threshold}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}"
 reminder_settings.reminde.set.type2: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}"
-reminder_settings.reminde.set.type3: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMelding Tijd: {notify_time} uren voordat de server wordt gereset\n"
-reminder_settings.reminde.set.type4: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMelding Tijd: {notify_time} uren voordat de server wordt gereset\nMelding Weekdag: {notify_weekday}"
-reminder_settings_title: Real-Time Herinneringen Voor Notities
-reminder_settings_desc: Stuur je een bericht via Direct Message wanneer bepaalde in-game gebeurtenissen plaatsvinden.
+reminder_settings.reminde.set.type3: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMeldingstijd: {notify_time} uur voordat de server wordt gereset\n"
+reminder_settings.reminde.set.type4: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMeldingstijd: {notify_time} uur voordat de server wordt gereset\nMeldingsweekdag: {notify_weekday}"
+reminder_settings_title: Real-Time Notitieherinneringen
+reminder_settings_desc: Stuurt je een bericht via Direct Message wanneer bepaalde in-game gebeurtenissen plaatsvinden.
 reminder_toggle: Herinnering
 resin_discount.embed.description: Wekelijkse kortingen voor bazen zijn nog niet opgebruikt
-resin_reminder_button.label: Resin herinnering
-resin_reminder_modal.title: Instellingen Resin Herinnering
-reward_claimed_title: Dagelijkse Inchecken Beloning Geclaimd
+resin_reminder_button.label: Resin-herinnering
+resin_reminder_modal.title: Instellingen Resin-herinnering
+reward_claimed_title: Dagelijkse Incheckbeloning Geclaimd
 saturday: Zaterdag
-search_autocomplete_not_setup: "Autocomplete zoekkeuzes nog niet ingesteld, probeer het later nog eens."
+search_autocomplete_not_setup: "Autocomplete-zoekkeuzes nog niet ingesteld, probeer het later nog eens."
 search_command_category_param_description: Categorie om in te zoeken
 search_cmd_category_param_name: categorie
 search_command_description: Zoek alles wat gerelateerd is aan het spel
 search_command_game_param_description: Spel om in te zoeken
 search_command_game_param_name: spel
-search_command_query_param_description: Query om naar te zoeken
-search_command_query_param_name: query
+search_command_query_param_description: Zoekopdracht om naar te zoeken
+search_command_query_param_name: zoekopdracht
 select_account.embed.description: Selecteer de accounts die je wilt toevoegen aan Hoyo Buddy
 select_account.embed.title: 🎉 Welkom bij Hoyo Buddy!
 settings_command_description: Je gebruikersinstellingen configureren
-skill_attributes_embed_field_name: "Skill Attributen (Nv.{level})"
-skill_level.modal.title: Voer Skill Niveau in
+skill_attributes_embed_field_name: "Skillattributen (Nv.{level})"
+skill_level.modal.title: Voer Skillniveau in
 spiral_abyss: Spiral Abyss
 stats_embed_field_name: Statistieken
 sumeru: Sumeru
 sunday: Zondag
 superimpose_indicator: "Superimpose {s}"
-talent_level.modal.title: Voer Talent Niveau in
+talent_level.modal.title: Voer Talentniveau in
 tcg: TCG
 the_hunt: The Hunt
 threshold.embed.description: "Drempel ({threshold}) is bereikt"
@@ -432,135 +432,135 @@ thunder: Thunder
 thursday: Donderdag
 tuesday: Dinsdag
 unreleased_content: Onuitgebrachte Inhoud
-user_autocomplete_param_description: "Gebruiker om de accounts mee te doorzoeken, standaard jezelf"
+user_autocomplete_param_description: "Gebruiker om de accounts van te doorzoeken, standaard jezelf"
 user_autocomplete_param_name: gebruiker
 user_no_accounts_autocomplete_choice: Deze gebruiker heeft nog geen accounts
 view_card_button_label: Kaart
 view_dictionary_button_label: Woordenboek
 volume_selector_placeholder: Selecteer een volume om te lezen
 wave_button_label: "Wave {value}"
-weapon_level.modal.title: Wapenniveau Invoeren
+weapon_level.modal.title: Wapenniveau invoeren
 weapons: Wapens
 wednesday: Woensdag
-week_boss_button.label: Wekelijkse baas korting herinnering
-week_boss_modal.title: Instellingen Wekelijkse Baas Korting Herinnering
+week_boss_button.label: Wekelijkse baaskortingherinnering
+week_boss_modal.title: Instellingen Wekelijkse Baaskortingherinnering
 wind: Wind
 yatta_character_detail_page_label: Details
 yatta_character_eidolon_page_label: Eidolons
 yatta_character_embed_description: "{rarity}\nElement: {element}\nPath: {path}\nWereld: {world}\n"
 yatta_character_skill_aoe_weakness_break_field_value: "AoE: {aoe_weakness_break}"
 yatta_character_skill_energy_field_name: Energie
-yatta_character_skill_energy_generation_field_value: "Generation: {energy_generation}"
-yatta_character_skill_energy_need_field_value: "Kost: {energy_need}"
-yatta_character_skill_single_weakness_break_field_value: "Single: {single_weakness_break}"
+yatta_character_skill_energy_generation_field_value: "Generatie: {energy_generation}"
+yatta_character_skill_energy_need_field_value: "Kosten: {energy_need}"
+yatta_character_skill_single_weakness_break_field_value: "Enkelvoudig: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "Verspreid: {spread_weakness_break}"
-yatta_character_skill_weakness_break_field_name: Zwakte Breuk
+yatta_character_skill_weakness_break_field_name: Zwaktebreuk
 yatta_character_trace_page_label: Traces
 yatta_item_sources_field_name: Bronnen
 characters.show_owned_only: Toon alleen bezitte karakters
-redeem_code.ar_too_low: Adventure rank te laag
-data_not_public.title: Gegevens zijn niet Openbaar
-data_not_public.description: "Schakel de optie voor het delen van gegevens in jouw instellingen voor de battle chronicle in"
-not_implemented_error_title: Functie Nog niet Geïmplementeerd
-not_implemented_error_only_game_message: "Deze functie is nog niet geïmplementeerd voor `{game}` accounts."
-not_implemented_error_message: "Deze functie is nog niet geïmplementeerd voor `{game}` accounts op `{platform}`."
-profile.build.current.label: Huidige
+redeem_code.ar_too_low: Adventure Rank te laag
+data_not_public.title: Gegevens zijn Niet Openbaar
+data_not_public.description: "Schakel de optie voor het delen van gegevens in jouw instellingen voor de Battle Chronicle in"
+not_implemented_error_title: Functie Nog Niet Geïmplementeerd
+not_implemented_error_only_game_message: "Deze functie is nog niet geïmplementeerd voor `{game}`-accounts."
+not_implemented_error_message: "Deze functie is nog niet geïmplementeerd voor `{game}`-accounts op `{platform}`."
+profile.build.current.label: Huidig
 abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon
-apocalyptic_shadow: Apocalyptic shadow
+apocalyptic_shadow: Apocalyptic Shadow
 apc_shadow.highest_diff_cleared: "Hoogste moeilijkheidsgraad gehaald: {diff}"
-apc_shadow.times_challenged: "Uitgedaagde tijden: {times}"
+apc_shadow.times_challenged: "Keer uitgedaagd: {times}"
 apc_shadow.boss_defeated: Baas Verslagen
 apc_shadow.boss_defeated_no: Baas Niet Verslagen
-notes.bonus_sync_points: "Bonus Synchronity Punten: {cur}/{max}"
+notes.bonus_sync_points: "Bonus Synchroniteitspunten: {cur}/{max}"
 invalid_uid_format_title: Ongeldig UID-formaat
 invalid_uid_format_description: "UID moet een getal van 9 tot 10 cijfers zijn"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Imaginarium Theater
-img_theater_stats_line_five: "Totale Casttijd: {tijd}"
+img_theater_stats_line_five: "Totale Speeltijd: {tijd}"
 img_theater_legend_block_support_chara: Ondersteunend Karakter
 img_theater_legend_block_trial_chara: Proefkarakter
-img_theater_fastest_team: " (snelste)"
+img_theater_fastest_team: " (snelste)"
 challenge_view.view_buffs: Buffs bekijken
 challenge_view.buff_select.placeholder: Selecteer een buff om te bekijken...
-scratch_card.embed.description: Kraskaart nog niet bekrast
+scratch_card.embed.description: Kraskaart nog niet gekrast
 zzz_engagement_button.label: Betrokkenheid
 zzz_engagement.embed.description: De betrokkenheid van vandaag is nog niet voltooid
 video_store.embed.description: Videowinkelinkomsten nog niet opgeëist
 scratch_card.incomplete: Onvolledig
-reminder_modal.title: "{notify} Herinnering Instellingen"
+reminder_modal.title: "{notify} Herinneringsinstellingen"
 set_cur_temp_as_default.done: Gereed
 third_party_card_temp_error_title: Dit Kaartsjabloon van Derden Bevat Fouten
-third_party_card_temp_error_message: "Het kaartsjabloon voor dit karakter is teruggezet naar het sjabloon van Hoyo Buddy. Als deze fout zich blijft voordoen, zoek dan hulp in onze [Discord server](<https://link.seria.moe/hb-dc>)."
+third_party_card_temp_error_message: "Het kaartsjabloon voor dit karakter is teruggezet naar het Hoyo Buddy-sjabloon. Als deze fout zich blijft voordoen, zoek dan hulp in onze [Discord-server](<https://link.seria.moe/hb-dc>)."
 account_locked_title: Account is geblokkeerd voor 20 minuten
-account_locked_description: "Je hebt te vaak het verkeerde wachtwoord ingevoerd. Wacht 20 minuten en probeer het opnieuw. Als je je account niet kunt instellen, zoek dan hulp in onze [Discord server](<https://link.seria.moe/hb-dc>)."
+account_locked_description: "Je hebt te vaak het verkeerde wachtwoord ingevoerd. Wacht 20 minuten en probeer het opnieuw. Als je je account niet kunt instellen, zoek dan hulp in onze [Discord-server](<https://link.seria.moe/hb-dc>)."
 ether: Ether
 electric: Electric
 profile.no_data.title: Geen spelergegevens beschikbaar
 profile.no_data.description: "Geloof het of niet, er is hier niets om weer te geven."
-characters.filter.specialty.placeholder: Selecteer speciale filters...
-zzz.basic: Basis Aanval
-zzz.dodge: Ontwijk
+characters.filter.specialty.placeholder: Selecteer specialiteitsfilters...
+zzz.basic: Basisaanval
+zzz.dodge: Ontwijken
 zzz.assist: Assist
 zzz.special: Speciale Aanval
-zzz.chain: Ketting Aanval
+zzz.chain: Ketenaanval
 zzz.core: Core Skill
-characters.filter.faction.placeholder: Selecteer factie filters...
+characters.filter.faction.placeholder: Selecteer factiefilters...
 characters.sorter.speciality: Specialiteit
 characters.sorter.faction: Factie
-characters.sorter.mindscape_cinema: Mindscape cinema
+characters.sorter.mindscape_cinema: Mindscape Cinema
 characters.embed.filter_text: "{filter} Karakters"
-stats_command_description: Bekijk gameaccount statistieken
-tears_of_themis: Tear of Themis
+stats_command_description: Bekijk gameaccount-statistieken
+tears_of_themis: Tears of Themis
 honkai_suit_rarity: "Rang {rarity}"
 about_command.designers: Ontwerpers
 card_settings.modifying_for: "Kaartinstellingen Wijzigen voor {name}"
 card_settings_modifying_for_desc: Alle kaartinstellingen zijn uniek voor elk personage. Sommige kaartsjablonen ondersteunen mogelijk bepaalde instellingen niet.
 card_settings.template: Sjabloon
-card_settings_template_desc: "Sommige sjablonen van derden ondersteunen mogelijk geen HoYoLAB/Miyoushe personages. In dat geval zal de bot het sjabloon van Hoyo Buddy gebruiken."
+card_settings_template_desc: "Sommige sjablonen van derden ondersteunen mogelijk geen HoYoLAB/Miyoushe-personages. In dat geval zal de bot het Hoyo Buddy-sjabloon gebruiken."
 card_settings.card_color: Kleur
-card_settings.no_color: Deze kaartsjabloon ondersteunt geen kleurmodificatie
+card_settings.no_color: Dit kaartsjabloon ondersteunt geen kleurwijziging
 card_settings.color_default: Standaard
 card_settings.current_image: Huidige afbeelding
-card_settings.build_card_image: Build kaart afbeelding
-card_settings.team_card_image: Team Kaart afbeelding
-profile.redraw_card_button_label: Kaart hertekenen
+card_settings.build_card_image: Bouwkaartafbeelding
+card_settings.team_card_image: Teamkaartafbeelding
+profile.redraw_card_button_label: Kaart opnieuw tekenen
 card_settings.footer: "Als je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen"
-card_settings.description: "Gebruik dit </upload> om een URL van een afbeelding te krijgen door de afbeelding te uploaden.\nPixiv wordt ondersteund, kopieer gewoon de URL van de afbeelding van het kunstwerk."
+card_settings.description: "Gebruik </upload> om een URL van een afbeelding te krijgen door de afbeelding te uploaden.\nPixiv wordt ondersteund, kopieer gewoon de URL van de afbeelding van het kunstwerk."
 profile.team_dark_mode.button.label: Teamkaart donker thema
 team_card_dark_theme_desc: "Gebruik een donker kleurenschema voor teamkaarten. Dit geldt voor alle teamkaarten, ongeacht welke personages erin zitten."
 profile.character_select.multi.placeholder: Selecteer karakter(s)...
-zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {speciality}\nAanval Type: {atk_type}\nFactie: {faction}\nElement: {element}"
+zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {speciality}\nAanvalstype: {atk_type}\nFactie: {faction}\nElement: {element}"
 cat_zzz_agents: Agenten
 cat_zzz_bangboos: Bangboos
 cat_zzz_w_engines: W-engines
-cat_zzz_drive_discs: Drive discs
-search.agent_page.info: Agent info
+cat_zzz_drive_discs: Drive Discs
+search.agent_page.info: Agentinfo
 search.agent_page.skills: Skills
-search.agent_page.cinemas: Mindscape cinemas
+search.agent_page.cinemas: Mindscape Cinemas
 search.agent_page.placeholder: Selecteer een pagina...
-zzz.skill_type.placeholder: Selecteer een agent skill...
-zzz.cinema.placeholder: Selecteer een mindscapecinema...
-zzz.engine.refinement_select.placeholder: Selecteer een refinement niveau...
-dyk_discord_server_updates: "We posten update notes in onze [Discord server](<https://link.seria.moe/hb-dc>)"
-dyk_discord_server_feedback: "Je kunt lid worden van onze [Discord server](<https://link.seria.moe/hb-dc>) om feedback te geven"
-dyk_contact_me: "Je kunt contact met ons opnemen in onze [Discord server](<https://link.seria.moe/hb-dc>)"
-dyk_need_help_no_title: "Hulp nodig? Word lid van onze [Discord server](<https://link.seria.moe/hb-dc>)"
-dyk_donate_no_title: "Geniet u van het gebruik van Hoyo Buddy? Overweeg [een donatie te doen](<https://link.seria.moe/donate>) om ons te steunen"
+zzz.skill_type.placeholder: Selecteer een agentskill...
+zzz.cinema.placeholder: Selecteer een Mindscape Cinema...
+zzz.engine.refinement_select.placeholder: Selecteer een refinementniveau...
+dyk_discord_server_updates: "We posten update-notities in onze [Discord-server](<https://link.seria.moe/hb-dc>)"
+dyk_discord_server_feedback: "Je kunt lid worden van onze [Discord-server](<https://link.seria.moe/hb-dc>) om feedback te geven"
+dyk_contact_me: "Je kunt contact met ons opnemen in onze [Discord-server](<https://link.seria.moe/hb-dc>)"
+dyk_need_help_no_title: "Hulp nodig? Word lid van onze [Discord-server](<https://link.seria.moe/hb-dc>)"
+dyk_donate_no_title: "Geniet je van het gebruik van Hoyo Buddy? Overweeg [een donatie te doen](<https://link.seria.moe/donate>) om ons te steunen"
 dyk_team: "Hoyo Buddy wordt gemaakt door een klein team van 1 programmeur en 1 ontwerper"
 dyk_disable: Je kunt deze melding uitschakelen met /settings
 dyk_settings_lang: Je kunt de taal van de bot wijzigen met /settings
 dyk_settings_theme: Je kunt schakelen tussen licht en donker thema met /settings
-dyk_security: "We hebben een [article](<:docs/Account-Security:>) over accountbeveiliging"
-dyk_github: "Hoyo Buddy is open-sourced op [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
+dyk_security: "We hebben een [artikel](<:docs/Account-Security:>) over accountbeveiliging"
+dyk_github: "Hoyo Buddy is open-source op [GitHub](<https://github.com/seriaati/hoyo-buddy>)"
 dyk_python: Hoyo Buddy is gecodeerd in pure Python
 dyk_team_card: Je kunt een teamkaart genereren in /profile door meerdere karakters te selecteren
-dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt om alle opdrachten in /accounts uit te voeren
-dyk_status_page: "Je kan de status van de bot [hier controleren](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-status_page_btn_label: Status pagina
+dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt voor alle commando's in /accounts
+dyk_status_page: "Je kunt de status van de bot [hier controleren](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+status_page_btn_label: Statuspagina
 docs_page_btn_label: Documentatie
 invite_page_btn_label: Uitnodiging
-invite_command_desc: Nodig Hoyo Buddy uit tot je server of voeg het toe aan je apps
-help_command_desc: "Hulp nodig? Bekijk de documentatie of join onze Discord Server"
+invite_command_desc: Nodig Hoyo Buddy uit in je server of voeg het toe aan je apps
+help_command_desc: "Hulp nodig? Bekijk de documentatie of sluit je aan bij onze Discord-server"
 title_dyk: "Wist je dat?"
 events_view_start_date_embed_field: Starttijd
 events_view_end_date_embed_field: Eindtijd
@@ -568,50 +568,50 @@ events_view_ann_select_placeholder: Selecteer een evenement...
 events_view_banner_type_label: Banners
 events_command_description: Bekijk lopende spelevenementen
 events_view_ann_type_select_placeholder: Selecteer een evenementtype...
-events_view_content_label: Bekijk volledige content
+events_view_content_label: Bekijk volledige inhoud
 natlan: Natlan
 top_percent: "Top {percent}%"
 profile_view_show_rank_button_label: Toon ranglijst
 profile_view_show_rank_desc: "Toon de ranglijst van dit personage op [akasha.cv](https://akasha.cv)."
-submit_button_label: Stuur
+submit_button_label: Verzenden
 show_tutorial_button_label: Toon handleiding
-close_button_label: Sluit
+close_button_label: Sluiten
 required_field_error_message: Dit veld is verplicht
 accounts_added_snackbar_message: "Accounts zijn succesvol toegevoegd, je wordt teruggestuurd naar Discord..."
-account_add_start_message: "Klik op de onderstaande knop en volg de instructies om je accounts toe te voegen. Als je klaar bent, gebruik de </accounts> opdracht om de accounts die je hebt toegevoegd te bekijken.\nWord lid van onze [Discord server](<https://link.seria.moe/hb-dc>) als je hulp nodig hebt."
+account_add_start_message: "Klik op de onderstaande knop en volg de instructies om je accounts toe te voegen. Als je klaar bent, gebruik het </accounts>-commando om de accounts die je hebt toegevoegd te bekijken.\nSluit je aan bij onze [Discord-server](<https://link.seria.moe/hb-dc>) als je hulp nodig hebt."
 hbls_button_label: Laten we beginnen!
-gacha_import_url_modal_title: Voer gacha log URL in
-gacha_import_embed_description: "Klik op de onderstaande knop voor instructies over hoe je de gacha-log-URL voor het platform van je apparaat kunt krijgen.\n\nVoor de onderstaande services exporteer je gacha-records in het opgegeven bestandsformaat en uploadt je deze via </gacha-log upload> \n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
+gacha_import_url_modal_title: Voer gacha-log-URL in
+gacha_import_embed_description: "Klik op de onderstaande knop voor instructies over hoe je de gacha-log-URL voor het platform van je apparaat kunt krijgen.\n\nVoor de onderstaande services exporteer je gacha-records in het opgegeven bestandsformaat en upload je deze via </gacha-log upload>\n1. Star Rail Station: csv\n2. stardb.gg: json\n3. zzz.rng.moe: json\n4. UIGF: json\n5. SRGF: json"
 extract_authkey_error_message: "Authkey kan niet uit de URL worden gehaald. Probeer het opnieuw met een geldige URL."
-extract_authkey_error_title: Authkey Extractie Mislukt
-gacha_import_loading_embed_title: Gacha Logs importeren
-gacha_import_pc_import_embed_desc: "Zoek en open Powershell met het startmenu en kopieer en plak de volgende code erin.\n Dit script is geschreven door het Hoyo Buddy team en is veilig te gebruiken."
+extract_authkey_error_title: Authkey-extractie Mislukt
+gacha_import_loading_embed_title: Gacha-logs importeren
+gacha_import_pc_import_embed_desc: "Zoek en open PowerShell via het startmenu en kopieer en plak de volgende code erin.\nDit script is geschreven door het Hoyo Buddy-team en is veilig te gebruiken."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
-gacha_import_pc_source_code: Source code
+gacha_import_pc_source_code: Broncode
 gacha_import_loading_embed_description: "{loading_emoji} Dit kan even duren, wees geduldig..."
 gacha_upload_invalid_file_error_title: Ongeldig bestandsformaat
-gacha_upload_invalid_file_error_message: "Alleen **{file_format}** bestanden worden geaccepteerd, probeer het opnieuw met een geldig bestand."
-uid_mismatch_error_title: UID Onjuist
+gacha_upload_invalid_file_error_message: "Alleen **{file_format}**-bestanden worden geaccepteerd, probeer het opnieuw met een geldig bestand."
+uid_mismatch_error_title: UID Komt Niet Overeen
 uid_mismatch_error_message: "De UID van de geselecteerde account komt niet overeen met de UID in de gegevens ({uid})"
-gacha_import_command_description: Gacha Logboeken importeren uit het game
+gacha_import_command_description: Gacha-logs importeren uit het spel
 source_param_name: bron
-source_param_description: Bron van de gacha logboeken
-gacha_upload_command_description: Gacha logbestand uploaden van andere bronnen om te importeren naar Hoyo Buddy
+source_param_description: Bron van de gacha-logs
+gacha_upload_command_description: Gacha-logbestand uploaden van andere bronnen om te importeren naar Hoyo Buddy
 file_param_name: bestand
-file_param_description: Gacha logbestand te uploaden
-gacha_import_success_title: Gacha Logs Geïmporteerd
-gacha_import_success_message: "{count} gacha records zijn succesvol geïmporteerd. Gebruik de </gacha-log view> opdracht om ze te bekijken."
+file_param_description: Gacha-logbestand om te uploaden
+gacha_import_success_title: Gacha-logs Geïmporteerd
+gacha_import_success_message: "{count} gacha-records zijn succesvol geïmporteerd. Gebruik het </gacha-log view>-commando om ze te bekijken."
 gacha_view_filter_button_label: Filters
-gacha_view_search_field_label: Zoek
-gacha_view_gacha_detail_title: Gacha Item Details
-gacha_view_gacha_detail: "ID: {id}\nNaam: {name}\nPull tijd: {time}"
-gacha_view_num_since_last: "{pull} pulls sinds laatste {rarity} ★"
-gacha_view_filter_dialog_title: Gacha Logs Filters
+gacha_view_search_field_label: Zoeken
+gacha_view_gacha_detail_title: Gacha-itemdetails
+gacha_view_gacha_detail: "ID: {id}\nNaam: {name}\nPulltijd: {time}"
+gacha_view_num_since_last: "{pull} pulls sinds laatste {rarity}★"
+gacha_view_filter_dialog_title: Gacha-logfilters
 cancel_button_label: Annuleren
 gacha_view_filter_size_field_label: Items per pagina
 gacha_view_page_field_label: Pagina
-gacha_log_stats_title: Gacha Log Statistieken
+gacha_log_stats_title: Gacha-logstatistieken
 gacha_log_personal_stats_title: Persoonlijke Statistieken
 gacha_log_personal_stats_lifetime: "Levenslange pulls: {pulls} ({currency} {emoji})"
 gacha_log_personal_stats_banner_total: "Totale pulls voor deze banner: {pulls} ({currency} {emoji})"
@@ -619,36 +619,36 @@ gacha_log_personal_stats_pity: "{rarity}★ pity: {cur}/{max}"
 gacha_log_personal_stats_rarity_total: "Totaal {rarity}★: {total}"
 gacha_log_personal_stats_rarity_average: "Gemiddelde pulls per {rarity}★: {avg}"
 win_rate_stats: "{title} Winstpercentage: {win_rate}% ({wins}/{total})"
-gacha_log_global_stats_title: Wereldwijd statistieken
+gacha_log_global_stats_title: Wereldwijde Statistieken
 gacha_log_global_stats_lifetime: "Levenslange pulls: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★ geluk: {luck}"
 win_rate_global_stats: "{title} Winstpercentage: {win_rate}"
-gacha_log_view_full: Bekijk gacha logs
-gacha_view_command_description: Bekijk geïmporteerde gacha logs
+gacha_log_view_full: Bekijk gacha-logs
+gacha_view_command_description: Bekijk geïmporteerde gacha-logs
 gacha_log_view_banner_type_selector_placeholder: Selecteer een bannertype...
-no_gacha_log_found_error_title: Geen Gacha Logs Gevonden
-no_gacha_log_found_error_message: "Gebruik </gacha-log import> of </gacha-log upload> om je gacha logs te importeren."
-gacha_log_manage_embed_title: Beheer Gacha Logs
-gacha_log_manage_embed_description: "{count} gacha logs horen bij deze account.\nJe kunt ze exporteren in het [UIGF](https://uigf.org) formaat."
-gacha_log_export_button_label: Exporteer in UIGF-formaat
+no_gacha_log_found_error_title: Geen Gacha-logs Gevonden
+no_gacha_log_found_error_message: "Gebruik </gacha-log import> of </gacha-log upload> om je gacha-logs te importeren."
+gacha_log_manage_embed_title: Gacha-logs Beheren
+gacha_log_manage_embed_description: "{count} gacha-logs horen bij dit account.\nJe kunt ze exporteren in het [UIGF](https://uigf.org)-formaat."
+gacha_log_export_button_label: Exporteren in UIGF-formaat
 gacha_log_delete_button_label: Alle logs verwijderen
 gacha_log_delete_confirm_embed_title: Bevestig Verwijdering
-gacha_log_delete_confirm_embed_description: "Weet je zeker dat je **ALLE** gacha logs voor deze account wilt **VERWIJDEREN**? Deze actie kan niet ongedaan worden gemaakt."
+gacha_log_delete_confirm_embed_description: "Weet je zeker dat je **ALLE** gacha-logs voor dit account wilt **VERWIJDEREN**? Deze actie kan niet ongedaan worden gemaakt."
 gacha_log_delete_confirm_button_label: Bevestigen
-gacha_log_delete_done_embed_title: Verwijdering voltooid
-gacha_log_delete_done_embed_description: Alle gacha logs van deze account zijn succesvol verwijderd.
-gacha_manage_command_description: Beheer geïmporteerde gacha logs
-login_button_label: Log in met Discord
-star5_guaranteed: "Huidige banner garantie status: Banner item gegarandeerd"
-star5_no_guaranteed: "Huidige banner garantie status: Banner item **NIET** gegarandeerd"
-characters_view_show_max_level_only: Toon alleen maximale niveau karakters
-characters_embed_max_level_characters: Maximaal Niveau Karakters
+gacha_log_delete_done_embed_title: Verwijdering Voltooid
+gacha_log_delete_done_embed_description: Alle gacha-logs van dit account zijn succesvol verwijderd.
+gacha_manage_command_description: Beheer geïmporteerde gacha-logs
+login_button_label: Inloggen met Discord
+star5_guaranteed: "Huidige bannergaarantie: Banneritem gegarandeerd"
+star5_no_guaranteed: "Huidige bannergarantie: Banneritem **NIET** gegarandeerd"
+characters_view_show_max_level_only: Toon alleen karakters op maximaal niveau
+characters_embed_max_level_characters: Karakters op Maximaal Niveau
 natlan_reputation: "Reputatieniveau: {reputation}, Stammen: {tribes}"
 shiyu_overview: Overzicht
-shiyu_total_clear_time: "Totale Clear-Tijd:"
-shiyu_clear_time: Clear-Tijd
-shiyu_highest_frontier: "Hoogste Frontier Voltooid:"
-shiyu_relevant_season: "Relevant Seizoen:"
+shiyu_total_clear_time: "Totale cleartijd:"
+shiyu_clear_time: Cleartijd
+shiyu_highest_frontier: "Hoogste voltooide frontier:"
+shiyu_relevant_season: "Relevant seizoen:"
 shiyu_1_frontier: Eerste Frontier
 shiyu_2_frontier: Tweede Frontier
 shiyu_3_frontier: Derde Frontier
@@ -664,69 +664,69 @@ akasha_calculation_param: leaderboard
 akasha_weapon_param: wapen
 akasha_weapon_param_desc: Wapen om het leaderboard voor te bekijken
 akasha_variant_param: variant
-akasha_variant_param_desc: "Variant van het leaderboard die u wilt bekijken, standaard de main-leaderboard"
+akasha_variant_param_desc: "Variant van het leaderboard dat je wilt bekijken, standaard het hoofd-leaderboard"
 akasha_character_param_desc: Karakter om het leaderboard voor te bekijken
-akasha_calculation_param_desc: Leaderboard die u wilt bekijken
+akasha_calculation_param_desc: Leaderboard dat je wilt bekijken
 akasha_total_entries: "Totaal aantal inschrijvingen: {total}"
-leaderboard_akasha_command_description: Bekijk het Genshin Impact leaderboard voor karakterschade (mogelijk gemaakt door Akasha System)
+leaderboard_akasha_command_description: Bekijk het Genshin Impact-leaderboard voor karakterschade (mogelijk gemaakt door Akasha System)
 akasha_you: Jij
-achievement_lb_title: Achievement Aantal Leaderboard
+achievement_lb_title: Prestatienaantal Leaderboard
 planar_fissure_label: Planar Fissure
-planar_fissure_desc: "Het Planar Fissure evenement vindt plaats over {hour} uur, vergeet niet je trailblaze power te sparen!"
+planar_fissure_desc: "Het Planar Fissure-evenement vindt plaats over {hour} uur, vergeet niet je Trailblaze Power te sparen!"
 notif_modal.hours_before.label: Waarschuw X uur voordat het evenement begint
-reminder_settings.reminde.set.type5: "Status: {status}\nMeldings Interval: {notify_interval} minutes\nMaximale Meldings Aantal: {max_notif_count}\nMelding Tijd: {hours_before} hours before the event starts"
+reminder_settings.reminde.set.type5: "Status: {status}\nMeldingsinterval: {notify_interval} minuten\nMax Aantal Meldingen: {max_notif_count}\nMeldingstijd: {hours_before} uur voordat het evenement begint"
 chest_lb_title: Geopende Kisten Leaderboard
-abyss_dmg_lb_title: Spiral Abyss Sterkste Enkele Slag Leaderboard
-theater_dmg_lb_title: Imaginarium Theater Sterkste Enkele Slag Leaderboard
-max_friendship_lb_title: Aantal Karakters bij Maximale Vriendschap Leaderboard
+abyss_dmg_lb_title: Spiral Abyss Sterkste Enkele Aanval Leaderboard
+theater_dmg_lb_title: Imaginarium Theater Sterkste Enkele Aanval Leaderboard
+max_friendship_lb_title: Aantal Karakters op Maximale Vriendschap Leaderboard
 lb_view_command_description: Bekijk leaderboards
 leaderboard_not_found: Leaderboard niet gevonden
 currently_logged_in_as: "Je bent momenteel ingelogd als:"
 not_you_label: "Ben jij dat niet? Klik om in te loggen met een ander account"
-profile_show_substat_rolls: Toon substat rolls
+profile_show_substat_rolls: Toon substatsrolls
 profile_show_substat_rolls_desc: Geef weer hoeveel rolls bijdragen aan de uiteindelijke waarde van een substat.
-team_card_settings_embed_title: Team Kaart Instellingen Wijzigen
-team_card_settings_embed_description: "De team kaarten instellingen worden gedeeld door verschillende games en accounts. Als je wijzigingen aanbrengt in sommige instellingen, worden deze mogelijk niet weergegeven op de kaart als ze niet worden ondersteund door de kaartsjabloon.\nAls je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen."
+team_card_settings_embed_title: Teamkaartinstellingen Wijzigen
+team_card_settings_embed_description: "De teamkaartinstellingen worden gedeeld door verschillende games en accounts. Als je wijzigingen aanbrengt in sommige instellingen, worden deze mogelijk niet weergegeven op de kaart als ze niet worden ondersteund door het kaartsjabloon.\nAls je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen."
 characters.filter.rarity.placeholder: Filter op zeldzaamheid...
 profile_command_character_param_desc: Karakter om de kaart voor te genereren
-weapon_type_filter_placeholder: Selecteer wapen type filters...
+weapon_type_filter_placeholder: Selecteer wapentype-filters...
 redeem_cmd_available_codes: Beschikbare codes
 redeem_all_available_codes_button_label: Wissel alle beschikbare codes in
-akasha_show_details: Toon leaderboard details
+akasha_show_details: Toon leaderboarddetails
 card_settings_hl_special_stats_button_label: Markeer speciale statistieken
 card_settings_hl_stats_desc: Benadruk de belangrijke statistieken van een personage met kleur.
-challenge_command_abyss_desc: Genereer Spiral Abyss kaart
-challenge_command_theater_desc: Genereer Imaginarium Theater kaart
-challenge_command_moc_desc: Genereer Memory of Chaos kaart
-challenge_command_pf_desc: Genereer Pure Fiction kaart
-challenge_command_apc_shadow_desc: Genereer Apocalyptic Shadow kaart
-challenge_command_shiyu_desc: Genereer Shiyu Defense kaart
+challenge_command_abyss_desc: Genereer Spiral Abyss-kaart
+challenge_command_theater_desc: Genereer Imaginarium Theater-kaart
+challenge_command_moc_desc: Genereer Memory of Chaos-kaart
+challenge_command_pf_desc: Genereer Pure Fiction-kaart
+challenge_command_apc_shadow_desc: Genereer Apocalyptic Shadow-kaart
+challenge_command_shiyu_desc: Genereer Shiyu Defense-kaart
 account_select_placeholder: Selecteer een account
 guild_only_command_param_name: gilde-only
 guild_only_command_param_desc: Toon alleen de ranglijsten van gildeleden in het leaderboard
 yes_choice: "Ja"
 no_choice: "Nee"
 akasha_guild_mode_not_supported: Gilde-Only Modus Kan Niet Worden Gebruikt
-akasha_guild_mode_not_supported_desc: "Je moet lid zijn van een gilde, het aantal gildeleden is minder dan 100 en het totale aantal Genshin accounts van je gildeleden is minder dan 30."
+akasha_guild_mode_not_supported_desc: "Je moet lid zijn van een gilde, het aantal gildeleden moet meer dan 100 zijn en het totale aantal Genshin-accounts van je gildeleden moet meer dan 30 zijn."
 time_remaining_str: "Resterende Tijd: {tijd}"
 banner_selector_placeholder: Selecteer een banner...
 rarity_str: "{rarity} ster"
 finished_status_field_name: Status
 unlocks_in_str: "Ontgrendelt over {time}"
 challenge_selector_placeholder: Selecteer een uitdaging...
-upload_cmd_desc: "Upload een foto en plak de link ervan als aangepaste afbeelding in /profile"
-not_an_image_error_title: Niet een Afbeelding
+upload_cmd_desc: "Upload een afbeelding en plak de link ervan als aangepaste afbeelding in /profile"
+not_an_image_error_title: Geen Afbeelding
 not_an_image_error_message: "Het geüploade bestand is geen afbeelding, probeer het opnieuw met een geldig afbeeldingsbestand."
 upload_cmd_image_param_name: afbeelding
-upload_cmd_image_param_desc: Afbeelding te uploaden
+upload_cmd_image_param_desc: Afbeelding om te uploaden
 exploration_select_placeholder: Selecteer een regio...
-exploration_show_card_button_label: Toon onderzoekskaart
-abyss_stats_const_use_rate: Constellatie Verbruiksratio
-abyss_stats_teammate_use_rate: Teamgenoot Verbruiksratio
-abyss_stats_weapon_use_rate: Wapen Verbruiksratio
-abyss_stats_artifact_use_rate: Artefact Verbruiksratio
-build_cmd_genshin_desc: Bekijk de builds en gidsen van een Genshin Impact karakter
-build_cmd_character_param_desc: Karakter om de builds te bekijken voor
+exploration_show_card_button_label: Toon verkenningskaart
+abyss_stats_const_use_rate: Constellatieverbruiksratio
+abyss_stats_teammate_use_rate: Teamgenootverbruiksratio
+abyss_stats_weapon_use_rate: Wapenverbruiksratio
+abyss_stats_artifact_use_rate: Artefactverbruiksratio
+build_cmd_genshin_desc: Bekijk de builds en gidsen van een Genshin Impact-karakter
+build_cmd_character_param_desc: Karakter om de builds voor te bekijken
 guide_title: "{name} Builds en Gidsen"
 no_guide_available: Nog geen gidsen beschikbaar voor dit karakter
 show_playstyle_button_label: Speelstijl
@@ -742,8 +742,8 @@ mimo_info_embed_desc: "Dit is een permanent evenement van Hoyoverse, waar je tak
 mimo_auto_finish_and_claim_button_label: Taken automatisch afronden en punten claimen
 mimo_auto_finish_and_claim_desc: Hoyo Buddy kan bepaalde taken automatisch voltooien en voor alle voltooide taken punten claimen.
 mimo_auto_buy_button_label: Beloningen automatisch kopen
-mimo_auto_buy_desc: "Hoyo Buddy koopt Primogems/Sterrenjades/Polychromen wanneer mogelijk, het zal niet proberen punten te sparen!"
-mimo_cmd_desc: Traveling Mimo evenementen management
+mimo_auto_buy_desc: "Hoyo Buddy koopt Primogems/Sterrenjades/Polychromen wanneer mogelijk. Het zal niet proberen punten te sparen!"
+mimo_cmd_desc: Traveling Mimo-evenementenbeheer
 mimo_view_shop_button_label: Winkel
 mimo_buy_item_select_placeholder: Selecteer een item om te kopen...
 mimo_tasks_button_label: Taken
@@ -753,100 +753,100 @@ mimo_auto_task_embed_footer: Gebruik /mimo om automatische taken te configureren
 mimo_auto_task_embed_desc: "Hoyo Buddy heeft {claim_point} punten voor je geclaimd en {finish} taken voltooid."
 checkin_reward_embed_footer: Gebruik /check-in om meldingen te configureren
 mimo_status: "Status: {status}"
-mimo_auto_buy_embed_desc: "Hoyo Buddy heeft {item} item(s) voor je gekocht met {points} punten.\nAls je hieronder cadeaucodes ziet, kun je deze handmatig inwisselen met </redeem>. "
+mimo_auto_buy_embed_desc: "Hoyo Buddy heeft {item} item(s) voor je gekocht met {points} punten.\nAls je hieronder cadeaucodes ziet, kun je deze handmatig inwisselen met </redeem>."
 mimo_game_unavailable: "Traveling Mimo is momenteel niet beschikbaar voor {game}"
 generic_error_title: Fout
 on_button_label: "AAN"
 off_button_label: "UIT"
 mimo_draw_redeem_success: "Controleer je in-game mail voor de beloning"
-image_settings_use_m3_art: Gebruik M3 kunst
+image_settings_use_m3_art: Gebruik M3-kunst
 remembrance: Remembrance
 dismissible_default_title: Nieuwe Functie!
 dismissible_default_footer: Dit bericht wordt slechts één keer weergegeven
-dismissible_m3_art_desc: 'Je kunt nu Mindscape 3 kunst gebruiken in je ZZZ-agentkaarten. Selecteer "Hoyo Buddy template 2" in de kaartinstellingen en schakel vervolgens ''Gebruik M3 kunst'' in bij de afbeeldingsinstellingen.'
-dismissible_settings_v2: "Zeg vaarwel tegen verwarrende en verspreide instellingen! Hoyo Buddy's instellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn, met enkele nieuwe kwaliteit van leven functies, probeer het uit in </settings>"
-dismissible_card_settings_v2: "Kaartinstellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn. Je kunt nu ook sjablonen in bulk toepassen op alle personages (een lang aangevraagde functie!) Probeer het uit in </card-settings genshin>, </card-settings hsr>, en </card-settings zzz>"
-mimo_lottery_info_hoyolab_decos: "...en {num} HoYoLAB decoraties"
+dismissible_m3_art_desc: 'Je kunt nu Mindscape 3-kunst gebruiken in je ZZZ-agentkaarten. Selecteer "Hoyo Buddy-sjabloon 2" in de kaartinstellingen en schakel vervolgens ''Gebruik M3-kunst'' in bij de afbeeldingsinstellingen.'
+dismissible_settings_v2: "Zeg vaarwel tegen verwarrende en verspreide instellingen! Hoyo Buddy's instellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn, met enkele nieuwe kwaliteit-van-leven-functies. Probeer het uit in </settings>"
+dismissible_card_settings_v2: "Kaartinstellingen zijn vernieuwd om beter georganiseerd en gebruiksvriendelijker te zijn. Je kunt nu ook sjablonen in bulk toepassen op alle personages (een lang gevraagde functie!) Probeer het uit in </card-settings genshin>, </card-settings hsr> en </card-settings zzz>"
+mimo_lottery_info_hoyolab_decos: "...en {num} HoYoLAB-decoraties"
 zzz_deadly_assault: Deadly Assault
-challenge_command_assault_desc: Genereer Deadly Assault kaart
-gi_mimo_start_desc: "Stel eerst het Traveling Mimo evenement in op [HoYoLAB]({url})"
+challenge_command_assault_desc: Genereer Deadly Assault-kaart
+gi_mimo_start_desc: "Stel eerst het Traveling Mimo-evenement in op [HoYoLAB]({url})"
 mimo_auto_draw_button_label: Automatische prijstrekking
-mimo_auto_draw_desc: "Hoyo Buddy zal prijzen voor je trekken wanneer dat mogelijk is; als zowel automatisch kopen als automatisch prijzen trekken zijn ingeschakeld, zal hij eerst proberen te kopen en alleen prijzen trekken als er niet genoeg punten zijn om iets te kopen."
+mimo_auto_draw_desc: "Hoyo Buddy zal prijzen voor je trekken wanneer dat mogelijk is. Als zowel automatisch kopen als automatisch prijzen trekken zijn ingeschakeld, zal hij eerst proberen te kopen en alleen prijzen trekken als er niet genoeg punten zijn om iets te kopen."
 mimo_auto_draw_embed_desc: "Hoyo Buddy heeft de volgende items met {points} punten verloot.\nAls je hieronder cadeaucodes ziet, kun je deze handmatig inwisselen met </redeem>."
-dismissible_hsr_temp2_desc: "Je kunt nu de nieuwe Hoyo Buddy sjabloon 2 gebruiken voor HSR karakterkaarten, selecteer deze in de kaartinstellingen. Het wordt aangeraden om horizontale afbeeldingen te gebruiken voor deze sjabloon."
-bounty_commission.embed.description: Bounty commissies nog niet voltooid
-ridu_points.embed.description: Ridu wekelijkse taken nog niet voltooid
+dismissible_hsr_temp2_desc: "Je kunt nu het nieuwe Hoyo Buddy-sjabloon 2 gebruiken voor HSR-karakterkaarten. Selecteer deze in de kaartinstellingen. Het wordt aangeraden om horizontale afbeeldingen te gebruiken voor dit sjabloon."
+bounty_commission.embed.description: Premiecommissies nog niet voltooid
+ridu_points.embed.description: Ridu-weektaken nog niet voltooid
 changelog_embed_title: Changelog
-web_events_notify_toggle_label: Meld nieuwe web evenementen
-web_events_cmd_desc: Bekijk lopende web evenementen en stel een melder in
+web_events_notify_toggle_label: Meld nieuwe web-evenementen
+web_events_cmd_desc: Bekijk lopende web-evenementen en stel een melder in
 web_events_embed_footer: Gebruik /web-events om meldingen te configureren
-auto_task_error_dm_content: "**{feature}** is **__uitgeschakeld__** voor `{account}` vanwege een fout. Je kunt deze weer inschakelen met {command}.\nAls deze fout aanhoudt of je weet niet hoe je dit kunt oplossen, kun je hulp vinden op onze [Discord server](<https://link.seria.moe/hb-dc>)."
+auto_task_error_dm_content: "**{feature}** is **__uitgeschakeld__** voor `{account}` vanwege een fout. Je kunt deze weer inschakelen met {command}.\nAls deze fout aanhoudt of je weet niet hoe je dit kunt oplossen, kun je hulp vinden op onze [Discord-server](<https://link.seria.moe/hb-dc>)."
 is_support_custom_image_desc: Ondersteunt aangepaste afbeeldingen
-is_not_support_custom_image_desc: Ondersteunt geen aangepaste afbeelding
+is_not_support_custom_image_desc: Ondersteunt geen aangepaste afbeeldingen
 missing_permissions_error_title: Hoyo Buddy Mist Machtigingen
-missing_permissions_error_message: "Hoyo Buddy heeft de volgende rechten nodig om goed te functioneren:\n- Berichten Verzenden\n- Links Insluiten\n- Bestanden Bijvoegen\n- Externe Emoji's Gebruiken"
+missing_permissions_error_message: "Hoyo Buddy heeft de volgende rechten nodig om goed te functioneren:\n- Berichten verzenden\n- Links insluiten\n- Bestanden bijvoegen\n- Externe emoji's gebruiken"
 blocked_by_auto_mod_error_title: Dit Bericht is Geblokkeerd door AutoMod
 blocked_by_auto_mod_error_message: "Probeer het commando opnieuw uit te voeren, of neem contact op met de serverbeheerders om AutoMod voor Hoyo Buddy uit te schakelen."
 zzz.core_level.placeholder: Selecteer het niveau van de core skill...
 open_game_label: Open spel
 open_game_cloud_label: Open spel (cloudgaming)
-open_game_vietnam_label: Open spel (Vietnam versie)
-gift_code_redeemed: Cadeaucode is al geclaimd
+open_game_vietnam_label: Open spel (Vietnamversie)
+gift_code_redeemed: Cadeaucode al geclaimd
 show_ui_button_label: Toon UI
 hide_ui_button_label: Verberg UI
 image_file_too_large_error_title: Afbeeldingsbestand Te Groot
 image_file_too_large_error_message: "Het geüploade afbeeldingsbestand is te groot, de maximale bestandsgrootte is {size}MB."
-api_request_timeout_title: API Verzoek Uitgetimed
+api_request_timeout_title: API-verzoek Verlopen
 dismissible_one_year_anniversary_title: Hoyo Buddy is 1 Jaar Oud!
-dismissible_one_year_anniversary_desc: "Bezoek de [speciale webpagina](<https://one.hb.seria.moe>) om mee te doen aan de jubileum giveaway!"
-anniversary_dyk: "Hoyo Buddy is 1 jaar oud! Bezoek de [speciale webpagina](<https://one.hb.seria.moe>) om mee te doen aan de jubileum giveaway!"
-authkey_timeout_title: Authkey Timeout
-authkey_timeout_message: "Verkrijg een nieuwe gacha log URL en probeer het opnieuw"
+dismissible_one_year_anniversary_desc: "Bezoek de [speciale webpagina](<https://one.hb.seria.moe>) om mee te doen aan de jubileum-giveaway!"
+anniversary_dyk: "Hoyo Buddy is 1 jaar oud! Bezoek de [speciale webpagina](<https://one.hb.seria.moe>) om mee te doen aan de jubileum-giveaway!"
+authkey_timeout_title: Authkey Verlopen
+authkey_timeout_message: "Verkrijg een nieuwe gacha-log-URL en probeer het opnieuw"
 invalid_authkey_title: Ongeldige Authkey
 hard_challenge_period: "Periode: {period}"
-hard_challenge_completion_time: "Voltooiing Tijd"
-hard_challenge_team_composition: "Team Samenstelling"
-hard_challenge_combat_statistics: "Gevecht Statistieken"
+hard_challenge_completion_time: "Voltooiingstijd"
+hard_challenge_team_composition: "Teamsamenstelling"
+hard_challenge_combat_statistics: "Gevechtsstatistieken"
 hard_challenge_strongest_strike: "Sterkste Aanval"
-hard_challenge_damage_dealt: "Hoogste Totale DMG"
+hard_challenge_damage_dealt: "Hoogste Totale Schade"
 hard_challenge_enemy_weakness: "Vijandelijke Zwakte & Kracht"
-hard_challenge_command_desc: Genereer Stygian Onslaught kaart
+hard_challenge_command_desc: Genereer Stygian Onslaught-kaart
 hard_challenge: "Stygian Onslaught"
 fetching_accounts: Wacht even terwijl we je accounts ophalen...
-fetching_accounts_stuck: "Als je vastloopt op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
+fetching_accounts_stuck: "Als je vastzit op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
 aaa_acronym: AAA
 changelog_command_desc: Bekijk de laatste wijzigingen en updates
-account_game_mismatch_error_title: Account Game Conflict
-account_game_mismatch_error_message: "Het account dat je gebruikt is geen {game} account"
-enka_api_error_title: Enka API fout
+account_game_mismatch_error_title: Account-game Conflict
+account_game_mismatch_error_message: "Het account dat je gebruikt is geen {game}-account"
+enka_api_error_title: Enka API-fout
 enka_api_error_description: "Er is een fout opgetreden bij het ophalen van gegevens van Enka Network. Probeer het later opnieuw."
 cleared: Voltooid
-challenge_command_anomaly_desc: Genereer Anomaly Arbitration kaart
+challenge_command_anomaly_desc: Genereer Anomaly Arbitration-kaart
 anomaly_arbitration: Anomaly Arbitration
 account_settings_title: "Accountinstellingen"
 account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
 public_account_desc: "Account instellen als openbaar\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
-daily_checkin_desc: "Automatische dagelijkse check-in\nClaims automatisch beloningen bij het web check-in evenement."
-redeem_code_desc: "Automatisch inwisselen van codes\nWissel automatisch livestream codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor waarom."
+daily_checkin_desc: "Automatische dagelijkse inchecken\nClaimt automatisch beloningen bij het web-incheckenevenement."
+redeem_code_desc: "Automatisch inwisselen van codes\nWisselt automatisch livestream-codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor meer informatie."
 user_settings_title: "Gebruikersinstellingen"
 user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze gelden voor alle gameaccounts."
-dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken, niet alle infographics ondersteunen deze functie."
-language_desc: "Taal\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor waarom."
+dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken. Niet alle infographics ondersteunen deze functie."
+language_desc: "Taal\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor meer informatie."
 language_select_placeholder: Selecteer een taal
-settings_dyk_desc: "\"Wist je dat?\" berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
+settings_dyk_desc: "\"Wist je dat?\"-berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
 layout_view_edited: "Interactieve componenten zijn uitgeschakeld om systeembronnen te besparen, voer het commando opnieuw uit als je ze wilt gebruiken."
-mimo_title: Traveling Mimo Instellingen
+mimo_title: Traveling Mimo-instellingen
 mimo_minimum_point_label: Minimale punten om te behouden
-mimo_minimum_point_desc: "Bij automatisch trekken zorgt Hoyo Buddy ervoor dat je punten boven deze waarde blijven, stel in op 0 om te trekken wanneer mogelijk."
+mimo_minimum_point_desc: "Bij automatisch trekken zorgt Hoyo Buddy ervoor dat je punten boven deze waarde blijven. Stel in op 0 om te trekken wanneer mogelijk."
 disable_all_button_label: Schakel alle meldingen uit
 apply_template_to_all_chars: Pas huidig sjabloon toe op alle personages
 apply_template_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen **{template}** gebruiken."
-apply_dark_theme_to_all_chars: Pas huidige donkere thema optie toe op alle personages
+apply_dark_theme_to_all_chars: Pas huidige donkere thema-optie toe op alle personages
 apply_dark_theme_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen donker thema **{status}** hebben."
 apply_label: Toepassen
-card_settings_genshin_desc: Pas aan hoe je Genshin Impact personage build-kaarten eruitzien
-card_settings_hsr_desc: Pas aan hoe je Honkai Star Rail personage build-kaarten eruitzien
-card_settings_zzz_desc: Pas aan hoe je Zenless Zone Zero agent build-kaarten eruitzien
+card_settings_genshin_desc: Pas aan hoe je Genshin Impact-personage bouwkaarten eruitzien
+card_settings_hsr_desc: Pas aan hoe je Honkai Star Rail-personage bouwkaarten eruitzien
+card_settings_zzz_desc: Pas aan hoe je Zenless Zone Zero-agent bouwkaarten eruitzien
 card_settings_character_param: Personage om de kaartinstellingen voor aan te passen
 disabled_label: Uitgeschakeld
 none: Geen
@@ -855,5 +855,5 @@ fake_settings_button_title: Instellingen zijn verplaatst!
 captcha_not_showing_up: "CAPTCHA wordt niet weergegeven?"
 open_captcha_button_label: Klik om verificatie te starten
 captcha_verifying: Verifiëren...
-build_cmd_zzz_desc: Bekijk de builds en gidsen van een Zenless Zone Zero karakter
+build_cmd_zzz_desc: Bekijk de builds en gidsen van een Zenless Zone Zero-karakter
 elation: Elation

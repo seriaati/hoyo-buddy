@@ -473,9 +473,15 @@ GEETEST_SERVERS = {
 }
 
 WEB_APP_URLS = {
+    "prod": "https://hb-api.seria.moe",
+    "test": "https://hb-api.seria.moe",
+    "dev": "http://localhost:8000",
+}
+
+FRONTEND_URLS = {
     "prod": "https://hb-app.seria.moe",
     "test": "https://hb-app.seria.moe",
-    "dev": "http://localhost:8645",
+    "dev": "http://localhost:5173",
 }
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))

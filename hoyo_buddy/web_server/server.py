@@ -12,7 +12,7 @@ from loguru import logger
 from tortoise import Tortoise
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import WEB_APP_URLS, get_docs_url
+from hoyo_buddy.constants import FRONTEND_URLS, get_docs_url
 from hoyo_buddy.db import User
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr, translator
@@ -155,7 +155,7 @@ class GeetestWebServer:
                 user_id = request.query["user_id"]
                 # Generate a random token to prevent caching issues
                 random_token = "".join(random.choices(string.ascii_letters + string.digits, k=16))
-                url = WEB_APP_URLS[CONFIG.env] + f"/geetest?user_id={user_id}&token={random_token}"
+                url = FRONTEND_URLS[CONFIG.env] + f"/geetest?user_id={user_id}&token={random_token}"
             else:
                 # command
                 channel_id = int(request.query["channel_id"])

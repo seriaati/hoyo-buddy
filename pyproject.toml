@@ -19,7 +19,6 @@ dependencies = [
   "seria-library[files]>=1.5.4",
   "aerich>=0.7.2",
   "uvloop>=0.20.0; platform_system == 'Linux'",
-  "flet[web]==0.28.3",
   "cryptography>=43.0.0",
   "pandas>=2.2.2",
   "fonttools>=4.53.1",
@@ -39,6 +38,11 @@ dependencies = [
   "szgf>=0.1.1",
   "aiosqlite==0.22.0",
   "hb-data",
+  "fastapi>=0.115.0",
+  "python-multipart>=0.0.9",
+  "itsdangerous>=2.2.0",
+  "starlette>=0.41.0",
+  "qrcode>=8.0",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

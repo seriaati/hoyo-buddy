@@ -313,7 +313,7 @@ class FilterDialog(ft.AlertDialog):
     async def on_banner_type_dropdown_change(self, e: ft.ControlEvent) -> None:
         banner_type_name_to_value = {
             translator.get_banner_type_name(self.game, k, self.locale): k
-            for k, v in BANNER_TYPE_NAMES[self.game].items()
+            for k in BANNER_TYPE_NAMES[self.game]
         }
         self.params.banner_type = banner_type_name_to_value[e.control.value]
 

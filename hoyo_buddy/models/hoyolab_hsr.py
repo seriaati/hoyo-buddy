@@ -21,7 +21,7 @@ class LightConeIcon:
 
     @property
     def item(self) -> str:
-        return f"https://api.yatta.top/hsr/assets/UI/equipment/medium/{self._id}.png"
+        return f"https://sr.yatta.moe/hsr/assets/UI/equipment/medium/{self._id}.png"
 
 
 @dataclass(kw_only=True)

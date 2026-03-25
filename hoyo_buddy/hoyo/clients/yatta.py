@@ -302,7 +302,7 @@ class YattaAPIClient(yatta.YattaAPI):
         description = f"{voice.text}"
         if voice.audio is not None:
             voice_str = " ".join(
-                f"[{lang}](https://api.yatta.top/hsr/assets/Audio/{lang}/{character_id}/{voice.audio}.ogg)"
+                f"[{lang}](https://sr.yatta.moe/hsr/assets/Audio/{lang}/{character_id}/{voice.audio}.ogg)"
                 for lang in AUDIO_LANGUAGES
             )
             description += f"\n\n{voice_str}"

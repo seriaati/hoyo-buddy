@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel
 
 # Re-export existing schemas from schema.py (they are Flet-free)
@@ -93,10 +95,10 @@ class DeviceInfoRequest(BaseModel):
 
 
 class LoginFlowResponse(BaseModel):
-    status: str
-    next_step: str | None = None
+    next_step: Literal["geetest", "email_verify", "verify_otp", "finish", "redirect"]
     gt_version: int | None = None
     message: str | None = None
+    mmt: dict | None = None
 
 
 class QRCodeResponse(BaseModel):

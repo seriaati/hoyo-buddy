@@ -1,21 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator
-from typing import Any
+from typing import Annotated, Any
 
-import asyncpg
-from fastapi import Depends, HTTPException, Request
-
-from hoyo_buddy.config import CONFIG
-
-
-async def get_db() -> AsyncGenerator[asyncpg.Connection, None]:
-    """Provide an asyncpg connection for the duration of a request."""
-    conn = await asyncpg.connect(CONFIG.db_url)
-    try:
-        yield conn
-    finally:
-        await conn.close()
+from fastapi import Depends, HTTPException, Request  # noqa: TC002
 
 
 def get_session(request: Request) -> dict[str, Any]:
@@ -23,7 +10,7 @@ def get_session(request: Request) -> dict[str, Any]:
     return request.state.session
 
 
-def require_auth(session: dict[str, Any] = Depends(get_session)) -> int:
+def require_auth(session: Annotated[dict[str, Any], Depends(get_session)]) -> int:
     """Require the user to be authenticated; return the Discord user_id."""
     user_id = session.get("user_id")
     if user_id is None:

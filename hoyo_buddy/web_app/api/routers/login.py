@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import io
 import uuid
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any
 
 import genshin
 import orjson
@@ -18,7 +18,7 @@ from hoyo_buddy.utils import dict_cookie_to_str
 from hoyo_buddy.utils.misc import get_project_version
 from hoyo_buddy.web_app.utils import decrypt_string, encrypt_string
 
-from ..deps import get_db, get_session, require_auth
+from ..deps import get_session, require_auth
 from ..schemas import (
     DeviceInfoRequest,
     DevToolsCookiesRequest,
@@ -33,33 +33,19 @@ from ..schemas import (
     RawCookiesRequest,
 )
 
-import asyncpg
-
 router = APIRouter()
 
 
 def _get_login_flow(session: dict[str, Any]) -> dict[str, Any]:
-    """Return (and lazily create) the login_flow sub-dict in the session."""
-    if "login_flow" not in session:
-        session["login_flow"] = {}
-    return session["login_flow"]
+    """Return (and lazily create) the login_flow sub-dict in the session.
 
-
-async def _save_mmt_to_db(conn: asyncpg.Connection, user_id: int, mmt: genshin.models.SessionMMT) -> None:
-    """Persist the SessionMMT data to the user's temp_data column."""
-    await conn.execute(
-        'UPDATE "user" SET temp_data = $1 WHERE id = $2',
-        orjson.dumps(mmt.model_dump()).decode(),
-        user_id,
-    )
-
-
-async def _get_mmt_from_db(conn: asyncpg.Connection, user_id: int) -> dict[str, Any]:
-    """Read the SessionMMT data from the user's temp_data column."""
-    raw: Any = await conn.fetchval('SELECT temp_data FROM "user" WHERE id = $1', user_id)
-    if raw is None:
-        raise HTTPException(status_code=400, detail="No MMT data found for user")
-    return orjson.loads(raw)
+    Always re-assigns ``session["login_flow"]`` so that the session middleware
+    detects the mutation and persists the updated cookie, even when the key
+    already existed and only nested values were changed.
+    """
+    login_flow: dict[str, Any] = session.get("login_flow") or {}
+    session["login_flow"] = login_flow  # always triggers _SessionDict.__setitem__ → modified=True
+    return login_flow
 
 
 # ── Email / Password ──────────────────────────────────────────────────────────
@@ -69,9 +55,8 @@ async def _get_mmt_from_db(conn: asyncpg.Connection, user_id: int) -> dict[str, 
 async def email_password_login(
     body: EmailPasswordRequest,
     platform: Annotated[str, Query()],
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
-    conn: asyncpg.Connection = Depends(get_db),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Attempt email/password login for the given platform."""
     try:
@@ -90,17 +75,18 @@ async def email_password_login(
     # Retrieve or generate device_id
     device_id: str | None = login_flow.get("device_id")
     if device_id is None:
+        logger.debug(f"[{user_id}] No device_id in session, generating new one")
         device_id = genshin.Client.generate_app_device_id()
         login_flow["device_id"] = device_id
+    logger.debug(f"[{user_id}] Using device_id for login: {device_id}")
 
     region = (
-        genshin.Region.CHINESE
-        if platform_enum is Platform.MIYOUSHE
-        else genshin.Region.OVERSEAS
+        genshin.Region.CHINESE if platform_enum is Platform.MIYOUSHE else genshin.Region.OVERSEAS
     )
     client = ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(locale))
 
     try:
+        logger.debug(f"[{user_id}] Attempting email/password login for platform {platform_enum}")
         if platform_enum is Platform.HOYOLAB:
             result = await client._app_login(
                 body.email,
@@ -112,6 +98,7 @@ async def email_password_login(
         else:
             result = await client._cn_web_login(body.email, body.password)
     except genshin.GenshinException as exc:
+        logger.debug(f"[{user_id}] Email/password login failed: {exc}")
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception(f"[{user_id}] Email/password login error: {exc}")
@@ -119,18 +106,15 @@ async def email_password_login(
 
     if isinstance(result, genshin.models.SessionMMT):
         # Geetest required for login
-        await _save_mmt_to_db(conn, user_id, result)
+        logger.debug(f"[{user_id}] Login requires geetest")
         login_flow["gt_type"] = "on_login"
         login_flow["encrypted_email"] = encrypt_string(body.email)
         login_flow["encrypted_password"] = encrypt_string(body.password)
-        return LoginFlowResponse(
-            status="geetest_required",
-            next_step="geetest",
-            gt_version=3,
-        )
+        return LoginFlowResponse(next_step="geetest", gt_version=3, mmt=result.model_dump())
 
     if isinstance(result, genshin.models.ActionTicket):
         # Email verification required — try to send the verification email
+        logger.debug(f"[{user_id}] Login requires email verification")
         login_flow["encrypted_email"] = encrypt_string(body.email)
         login_flow["encrypted_password"] = encrypt_string(body.password)
         try:
@@ -140,23 +124,23 @@ async def email_password_login(
 
         if isinstance(email_result, genshin.models.SessionMMT):
             # Geetest required before sending email
-            await _save_mmt_to_db(conn, user_id, email_result)
+            logger.debug(f"[{user_id}] Geetest required before sending verification email")
             login_flow["gt_type"] = "on_email_send"
             login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
             return LoginFlowResponse(
-                status="geetest_required",
-                next_step="geetest",
-                gt_version=3,
+                next_step="geetest", gt_version=3, mmt=email_result.model_dump()
             )
 
         # Email sent — need verification code
+        logger.debug(f"[{user_id}] Verification email sent successfully")
         login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
-        return LoginFlowResponse(status="email_verify_required", next_step="email_verify")
+        return LoginFlowResponse(next_step="email_verify")
 
     # Successful login — store encrypted cookies
+    logger.debug(f"[{user_id}] Login successful, storing cookies in session")
     cookies = result.to_str()
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── Geetest callback ──────────────────────────────────────────────────────────
@@ -164,18 +148,18 @@ async def email_password_login(
 
 @router.post("/geetest-callback", response_model=LoginFlowResponse)
 async def geetest_callback(
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
-    conn: asyncpg.Connection = Depends(get_db),
+    mmt_result: genshin.models.SessionMMTResult,
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Called after the user completes the geetest captcha. Retries the blocked operation."""
+    logger.debug(f"[{user_id}] Geetest callback received")
+
     login_flow = _get_login_flow(session)
     gt_type: str | None = login_flow.get("gt_type")
     if gt_type is None:
         raise HTTPException(status_code=400, detail="No geetest type in session")
-
-    mmt_data = await _get_mmt_from_db(conn, user_id)
-    mmt_result = genshin.models.SessionMMTResult(**mmt_data)
+    logger.debug(f"[{user_id}] Geetest type from session: {gt_type}")
 
     locale_str: str = session.get("locale", "en-US")
     try:
@@ -193,11 +177,13 @@ async def geetest_callback(
         password = decrypt_string(encrypted_password)
         device_id: str | None = login_flow.get("device_id")
         if device_id is None:
+            logger.debug(f"[{user_id}] No device_id in session, generating new one")
             device_id = genshin.Client.generate_app_device_id()
             login_flow["device_id"] = device_id
 
         client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale))
         try:
+            logger.debug(f"[{user_id}] Retrying login after geetest with device_id: {device_id}")
             result = await client._app_login(
                 email,
                 password,
@@ -207,28 +193,30 @@ async def geetest_callback(
                 device_name=get_project_version(),
             )
         except Exception as exc:
+            logger.debug(f"[{user_id}] Login retry after geetest failed: {exc}")
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         if isinstance(result, genshin.models.ActionTicket):
             # Email verification required after geetest
             login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
             try:
+                logger.debug(f"[{user_id}] Sending verification email after geetest")
                 email_result = await client._send_verification_email(result)
             except Exception as exc:
+                logger.debug(f"[{user_id}] Failed to send verification email: {exc}")
                 raise HTTPException(status_code=500, detail=str(exc)) from exc
 
             if isinstance(email_result, genshin.models.SessionMMT):
-                await _save_mmt_to_db(conn, user_id, email_result)
                 login_flow["gt_type"] = "on_email_send"
                 return LoginFlowResponse(
-                    status="geetest_required", next_step="geetest", gt_version=3
+                    next_step="geetest", gt_version=3, mmt=email_result.model_dump()
                 )
 
-            return LoginFlowResponse(status="email_verify_required", next_step="email_verify")
+            return LoginFlowResponse(next_step="email_verify")
 
         cookies = result.to_str()
         login_flow["encrypted_cookies"] = encrypt_string(cookies)
-        return LoginFlowResponse(status="success", next_step="finish")
+        return LoginFlowResponse(next_step="finish")
 
     if gt_type == "on_email_send":
         encrypted_email = login_flow.get("encrypted_email")
@@ -245,17 +233,20 @@ async def geetest_callback(
 
         client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale))
         try:
-            email_result = await client._send_verification_email(action_ticket, mmt_result=mmt_result)
+            logger.debug(f"[{user_id}] Retrying to send verification email after geetest")
+            email_result = await client._send_verification_email(
+                action_ticket, mmt_result=mmt_result
+            )
         except Exception as exc:
+            logger.debug(f"[{user_id}] Failed to send verification email after geetest: {exc}")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
         if isinstance(email_result, genshin.models.SessionMMT):
-            await _save_mmt_to_db(conn, user_id, email_result)
             return LoginFlowResponse(
-                status="geetest_required", next_step="geetest", gt_version=3
+                next_step="geetest", gt_version=3, mmt=email_result.model_dump()
             )
 
-        return LoginFlowResponse(status="email_verify_required", next_step="email_verify")
+        return LoginFlowResponse(next_step="email_verify")
 
     if gt_type == "on_otp_send":
         encrypted_mobile = login_flow.get("encrypted_mobile")
@@ -269,7 +260,7 @@ async def geetest_callback(
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-        return LoginFlowResponse(status="otp_sent", next_step="verify_otp")
+        return LoginFlowResponse(next_step="verify_otp")
 
     raise HTTPException(status_code=400, detail=f"Unknown geetest type: {gt_type}")
 
@@ -280,8 +271,8 @@ async def geetest_callback(
 @router.post("/email-verify", response_model=LoginFlowResponse)
 async def email_verify(
     body: EmailVerifyRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Verify the email verification code and complete the login."""
     login_flow = _get_login_flow(session)
@@ -322,7 +313,7 @@ async def email_verify(
 
     cookies = result.to_str()
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── Mobile OTP ────────────────────────────────────────────────────────────────
@@ -331,9 +322,8 @@ async def email_verify(
 @router.post("/mobile-send-otp", response_model=LoginFlowResponse)
 async def mobile_send_otp(
     body: MobileRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
-    conn: asyncpg.Connection = Depends(get_db),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Send an OTP to the given mobile number."""
     login_flow = _get_login_flow(session)
@@ -344,25 +334,20 @@ async def mobile_send_otp(
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    if isinstance(result, genshin.models.SessionMMT):
-        await _save_mmt_to_db(conn, user_id, result)
+    if isinstance(result, genshin.models.SessionMMTv4):
         login_flow["gt_type"] = "on_otp_send"
         login_flow["encrypted_mobile"] = encrypt_string(body.mobile)
-        return LoginFlowResponse(
-            status="geetest_required",
-            next_step="geetest",
-            gt_version=4,
-        )
+        return LoginFlowResponse(next_step="geetest", gt_version=4, mmt=result.model_dump())
 
     login_flow["encrypted_mobile"] = encrypt_string(body.mobile)
-    return LoginFlowResponse(status="otp_sent", next_step="verify_otp")
+    return LoginFlowResponse(next_step="verify_otp")
 
 
 @router.post("/mobile-verify", response_model=LoginFlowResponse)
 async def mobile_verify(
     body: OTPVerifyRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Verify the mobile OTP and complete the login."""
     login_flow = _get_login_flow(session)
@@ -380,7 +365,7 @@ async def mobile_verify(
 
     cookies = result.to_str()
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── Dev Tools (cookie fields) ─────────────────────────────────────────────────
@@ -389,8 +374,8 @@ async def mobile_verify(
 @router.post("/dev-tools", response_model=LoginFlowResponse)
 async def dev_tools_login(
     body: DevToolsCookiesRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Accept individual cookie fields and store them encrypted in the session."""
     cookies = (
@@ -402,7 +387,7 @@ async def dev_tools_login(
     )
     login_flow = _get_login_flow(session)
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── Raw cookies ───────────────────────────────────────────────────────────────
@@ -411,13 +396,13 @@ async def dev_tools_login(
 @router.post("/raw-cookies", response_model=LoginFlowResponse)
 async def raw_cookies_login(
     body: RawCookiesRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Accept a raw cookie string and store it encrypted in the session."""
     login_flow = _get_login_flow(session)
     login_flow["encrypted_cookies"] = encrypt_string(body.cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── Mod App ───────────────────────────────────────────────────────────────────
@@ -426,8 +411,8 @@ async def raw_cookies_login(
 @router.post("/mod-app", response_model=LoginFlowResponse)
 async def mod_app_login(
     body: ModAppRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Parse mod-app login details, extract device info, and store cookies in session."""
     login_flow = _get_login_flow(session)
@@ -443,7 +428,7 @@ async def mod_app_login(
 
     cookies = dict_cookie_to_str(dict_cookies)
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")
 
 
 # ── QR Code ───────────────────────────────────────────────────────────────────
@@ -451,8 +436,8 @@ async def mod_app_login(
 
 @router.post("/qrcode/create", response_model=QRCodeResponse)
 async def create_qrcode(
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> QRCodeResponse:
     """Generate a QR code for Miyoushe login."""
     client = ProxyGenshinClient(region=genshin.Region.CHINESE)
@@ -473,8 +458,8 @@ async def create_qrcode(
 
 @router.post("/qrcode/check", response_model=QRCodeStatusResponse)
 async def check_qrcode(
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> QRCodeStatusResponse:
     """Check the status of the QR code login."""
     login_flow = _get_login_flow(session)
@@ -510,12 +495,12 @@ async def check_qrcode(
 @router.post("/device-info", response_model=LoginFlowResponse)
 async def submit_device_info(
     body: DeviceInfoRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    _user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Parse device info JSON, generate device_fp if needed, and store in session."""
     try:
-        device_info_dict: dict[str, Any] = orjson.loads(body.device_info)
+        device_info_dict = orjson.loads(body.device_info)
     except orjson.JSONDecodeError as exc:
         raise HTTPException(status_code=422, detail="Invalid JSON in device_info") from exc
 
@@ -544,4 +529,4 @@ async def submit_device_info(
     login_flow = _get_login_flow(session)
     login_flow["device_id"] = device_id
     login_flow["device_fp"] = device_fp
-    return LoginFlowResponse(status="success", next_step="finish")
+    return LoginFlowResponse(next_step="finish")

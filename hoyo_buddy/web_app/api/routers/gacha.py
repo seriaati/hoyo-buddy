@@ -1,32 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Any
+from typing import Annotated
 
-import ambr
-import asyncpg
 import hb_data
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
 
 from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
-from hoyo_buddy.db import GachaHistory
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.web_app.schema import GachaParams
 from hoyo_buddy.web_app.utils import fetch_gacha_icons, fetch_json_file
 
-from ..deps import get_db
 from ..schemas import GachaIconsResponse, GachaItem, GachaLogResponse, GachaNamesResponse
-
-if TYPE_CHECKING:
-    pass
 
 router = APIRouter()
 
 
-async def _fetch_gacha_names(
-    *, item_ids: list[int], locale: Locale, game: Game
-) -> dict[int, str]:
+async def _fetch_gacha_names(*, item_ids: list[int], locale: Locale, game: Game) -> dict[int, str]:
     """Fetch item names for the given item IDs, locale, and game."""
     result: dict[int, str] = {}
 
@@ -67,13 +59,12 @@ async def get_gacha_logs(
     size: Annotated[int, Query(ge=1, le=500)] = 100,
     page: Annotated[int, Query(ge=1)] = 1,
     name_contains: Annotated[str | None, Query()] = None,
-    conn: asyncpg.Connection = Depends(get_db),
 ) -> GachaLogResponse:
     """Return paginated gacha history for an account. No auth required."""
-    # Parse rarities string into list before validation
-    parsed_rarities: list[int] = [int(r) for r in rarities.split(",") if r.strip()] if rarities else []
+    parsed_rarities: list[int] = (
+        [int(r) for r in rarities.split(",") if r.strip()] if rarities else []
+    )
 
-    # Validate params using the existing GachaParams model
     try:
         params = GachaParams(
             locale=locale,
@@ -87,49 +78,27 @@ async def get_gacha_logs(
     except (ValidationError, ValueError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    # Check account exists
-    account_exists: Any = await conn.fetchval(
-        'SELECT EXISTS(SELECT 1 FROM "hoyoaccount" WHERE id = $1)', params.account_id
-    )
-    if not account_exists:
+    # Check account exists and get its game
+    account = await HoyoAccount.get_or_none(id=params.account_id)
+    if account is None:
         raise HTTPException(status_code=404, detail="Account not found")
 
-    # Get game for this account
-    game_value: Any = await conn.fetchval(
-        'SELECT game FROM "hoyoaccount" WHERE id = $1', params.account_id
-    )
-    if game_value is None:
-        raise HTTPException(status_code=404, detail="Account not found")
-    game = Game(game_value)
+    game = account.game
 
-    # Get total row count (without name filter)
-    total_row_raw: Any = await conn.fetchval(
-        'SELECT COUNT(*) FROM "gachahistory" WHERE account_id = $1 AND banner_type = $2 AND rarity = ANY($3)',
-        params.account_id,
-        params.banner_type,
-        params.rarities,
+    # Base queryset filtered by account, banner_type, and rarities
+    qs = GachaHistory.filter(
+        account_id=params.account_id, banner_type=params.banner_type, rarity__in=params.rarities
     )
-    total_row: int = int(total_row_raw or 0)
 
-    # Fetch gacha logs
+    total_row = await qs.count()
+
+    # Fetch gacha logs — fetch all when name filter is active, paginate otherwise
     if params.name_contains:
-        rows = await conn.fetch(
-            'SELECT * FROM "gachahistory" WHERE account_id = $1 AND banner_type = $2 AND rarity = ANY($3) ORDER BY wish_id DESC',
-            params.account_id,
-            params.banner_type,
-            params.rarities,
-        )
+        gacha_logs = await qs.order_by("-wish_id")
     else:
-        rows = await conn.fetch(
-            'SELECT * FROM "gachahistory" WHERE account_id = $1 AND banner_type = $2 AND rarity = ANY($3) ORDER BY wish_id DESC LIMIT $4 OFFSET $5',
-            params.account_id,
-            params.banner_type,
-            params.rarities,
-            params.size,
-            (params.page - 1) * params.size,
+        gacha_logs = (
+            await qs.order_by("-wish_id").offset((params.page - 1) * params.size).limit(params.size)
         )
-
-    gacha_logs = [GachaHistory(**dict(row)) for row in rows]
 
     # Apply name filter if requested
     if params.name_contains:
@@ -163,12 +132,7 @@ async def get_gacha_logs(
         for g in gacha_logs
     ]
 
-    return GachaLogResponse(
-        items=items,
-        total=total_row,
-        page=params.page,
-        max_page=max_page,
-    )
+    return GachaLogResponse(items=items, total=total_row, page=params.page, max_page=max_page)
 
 
 @router.get("/icons", response_model=GachaIconsResponse)

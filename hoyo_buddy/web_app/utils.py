@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import ambr
-import asyncpg
 import hb_data
-import orjson
 from cryptography.fernet import Fernet
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
+from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 
@@ -34,12 +33,7 @@ def encrypt_string(string: str) -> str:
 
 async def fetch_json_file(filename: str) -> Any:
     """Fetch a JSON file stored in the database jsonfile table."""
-    conn = await asyncpg.connect(CONFIG.db_url)
-    try:
-        json_string = await conn.fetchval('SELECT data FROM "jsonfile" WHERE name = $1', filename)
-        return orjson.loads(json_string)
-    finally:
-        await conn.close()
+    return await JSONFile.read(filename)
 
 
 async def fetch_gacha_names(

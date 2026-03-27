@@ -1,17 +1,20 @@
 from __future__ import annotations
 
-from typing import Any
+from collections import UserDict
+from typing import TYPE_CHECKING, Any
 
 import itsdangerous
 from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.types import ASGIApp
+
+if TYPE_CHECKING:
+    from starlette.requests import Request
+    from starlette.responses import Response
+    from starlette.types import ASGIApp
 
 
-class _SessionDict(dict):
-    """A dict subclass that tracks mutations."""
+class _SessionDict(UserDict):
+    """A UserDict subclass that tracks mutations."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)

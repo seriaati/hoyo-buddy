@@ -20,13 +20,6 @@
             "interpreter": "./.venv/bin/python",
             "interpreter_args": "-OO",
             "args": "--sentry"
-        },
-        {
-            "name": "hb-web-server",
-            "script": "./run_web_server.py",
-            "interpreter": "./.venv/bin/python",
-            "interpreter_args": "-OO",
-            "args": "--sentry"
         }
     ]
 }

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import secrets
-from typing import Any
+from typing import Annotated, Any
 
 import aiohttp
 from fastapi import APIRouter, Depends, HTTPException
@@ -37,8 +37,7 @@ async def _fetch_discord_user(access_token: str) -> dict[str, Any] | None:
     async with (
         aiohttp.ClientSession() as http_session,
         http_session.get(
-            f"{DISCORD_API_BASE}/users/@me",
-            headers={"Authorization": f"Bearer {access_token}"},
+            f"{DISCORD_API_BASE}/users/@me", headers={"Authorization": f"Bearer {access_token}"}
         ) as resp,
     ):
         if resp.status == 200:
@@ -80,7 +79,7 @@ def _user_data_to_response(user_data: dict[str, Any]) -> UserResponse:
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(session: dict = Depends(get_session)) -> UserResponse:
+async def get_me(session: Annotated[dict, Depends(get_session)]) -> UserResponse:
     """Return the currently authenticated Discord user."""
     access_token: str | None = session.get("oauth_access_token")
     if access_token is None:
@@ -115,7 +114,7 @@ async def get_me(session: dict = Depends(get_session)) -> UserResponse:
 
 
 @router.get("/discord/url", response_model=AuthURLResponse)
-async def get_discord_auth_url(session: dict = Depends(get_session)) -> AuthURLResponse:
+async def get_discord_auth_url(session: Annotated[dict, Depends(get_session)]) -> AuthURLResponse:
     """Generate a Discord OAuth2 authorization URL and store the state in the session."""
     state = secrets.token_urlsafe(32)
     session["oauth_state"] = state
@@ -125,8 +124,7 @@ async def get_discord_auth_url(session: dict = Depends(get_session)) -> AuthURLR
 
 @router.post("/discord/callback", response_model=UserResponse)
 async def discord_callback(
-    body: AuthCallbackRequest,
-    session: dict = Depends(get_session),
+    body: AuthCallbackRequest, session: Annotated[dict, Depends(get_session)]
 ) -> UserResponse:
     """Exchange the Discord OAuth2 code for tokens and authenticate the user."""
     # Validate state to prevent CSRF

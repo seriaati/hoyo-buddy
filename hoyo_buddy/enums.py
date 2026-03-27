@@ -1,4 +1,16 @@
-from enum import IntEnum, StrEnum
+import enum
+from enum import IntEnum
+from typing import Self
+
+
+class StrEnum(enum.StrEnum):
+    @classmethod
+    def _missing_(cls, value: object) -> Self | None:
+        if isinstance(value, str):
+            for member in cls:
+                if member.value.lower() == value.lower():
+                    return member
+        return None
 
 
 class Game(StrEnum):

@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated, Any
 
-import asyncpg
 import genshin
 from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import FRONTEND_URLS, GPY_GAME_TO_HB_GAME, locale_to_gpy_lang
+from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, Settings, User
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str, get_discord_protocol_url
 from hoyo_buddy.web_app.utils import decrypt_string
 
-from ..deps import get_db, get_session, require_auth
+from ..deps import get_session, require_auth
 from ..schemas import AccountInfo, AccountSubmitRequest, FinishAccountsResponse, LoginFlowResponse
 
 router = APIRouter()
@@ -27,9 +27,8 @@ def _get_login_flow(session: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/available", response_model=FinishAccountsResponse)
 async def get_available_accounts(
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
-    conn: asyncpg.Connection = Depends(get_db),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    user_id: Annotated[int, Depends(require_auth)],
 ) -> FinishAccountsResponse:
     """Fetch the list of game accounts available for the current login cookies."""
     login_flow = _get_login_flow(session)
@@ -55,16 +54,12 @@ async def get_available_accounts(
     cookies = decrypt_string(encrypted_cookies)
 
     # Optionally fetch cookie with stoken for HoYoLAB
-    fetch_cookie = (
-        platform is Platform.HOYOLAB and "stoken" in cookies and "ltmid_v2" in cookies
-    )
+    fetch_cookie = platform is Platform.HOYOLAB and "stoken" in cookies and "ltmid_v2" in cookies
     logger.debug(f"[{user_id}] Fetch cookie with stoken: {fetch_cookie}")
 
     if fetch_cookie:
         try:
-            new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(
-                cookies, token_types=[2, 4]
-            )
+            new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
         except Exception as exc:
             logger.exception(f"[{user_id}] Fetch cookie with stoken error: {exc}")
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -114,9 +109,8 @@ async def get_available_accounts(
 @router.post("/submit", response_model=LoginFlowResponse)
 async def submit_accounts(
     body: AccountSubmitRequest,
-    session: dict[str, Any] = Depends(get_session),
-    user_id: int = Depends(require_auth),
-    conn: asyncpg.Connection = Depends(get_db),
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
     """Save the selected accounts to the database and return a Discord redirect URL."""
     if not body.selected_accounts:
@@ -138,11 +132,7 @@ async def submit_accounts(
     except ValueError:
         platform = Platform.HOYOLAB
 
-    region = (
-        genshin.Region.CHINESE
-        if platform is Platform.MIYOUSHE
-        else genshin.Region.OVERSEAS
-    )
+    region = genshin.Region.CHINESE if platform is Platform.MIYOUSHE else genshin.Region.OVERSEAS
 
     locale_str: str = session.get("locale", "en-US")
     try:
@@ -175,53 +165,33 @@ async def submit_accounts(
     if not accounts_to_save:
         raise HTTPException(status_code=400, detail="None of the selected accounts were found")
 
-    # Insert/update DB rows
-    await conn.execute(
-        'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING',
-        user_id,
-        "{}",
-    )
-    await conn.execute(
-        'INSERT INTO "settings" (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING',
-        user_id,
-    )
+    # Ensure the User and Settings rows exist
+    await User.get_or_create(id=user_id, defaults={"temp_data": {}})
+    await Settings.get_or_create(user_id=user_id)
 
-    account_id: int | None = None
+    last_account: HoyoAccount | None = None
     for account in accounts_to_save:
-        await conn.execute(
-            "INSERT INTO hoyoaccount (uid, username, game, cookies, user_id, server, device_id, device_fp, region, redeemed_codes) "
-            "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "
-            "ON CONFLICT (uid, game, user_id) DO UPDATE SET cookies = $4, username = $2, device_id = $7, device_fp = $8, region = $9",
-            account.uid,
-            account.nickname,
-            GPY_GAME_TO_HB_GAME[account.game],
-            cookies,
-            user_id,
-            account.server_name,
-            device_id,
-            device_fp,
-            region,
-            "[]",
+        hb_game = GPY_GAME_TO_HB_GAME[account.game]
+        hoyo_account, _ = await HoyoAccount.update_or_create(
+            uid=account.uid,
+            game=hb_game,
+            user_id=user_id,
+            defaults={
+                "username": account.nickname,
+                "cookies": cookies,
+                "server": account.server_name,
+                "device_id": device_id,
+                "device_fp": device_fp,
+                "region": region,
+            },
         )
-        account_id = await conn.fetchval(
-            "SELECT id FROM hoyoaccount WHERE uid = $1 AND game = $2 AND user_id = $3",
-            account.uid,
-            GPY_GAME_TO_HB_GAME[account.game],
-            user_id,
-        )
-        await conn.execute(
-            "INSERT INTO accountnotifsettings (account_id) VALUES ($1) ON CONFLICT DO NOTHING",
-            account_id,
-        )
+        await AccountNotifSettings.get_or_create(account_id=hoyo_account.id)
+        last_account = hoyo_account
 
     # Set the last saved account as current
-    if account_id is not None:
-        await conn.execute(
-            'UPDATE "hoyoaccount" SET current = false WHERE user_id = $1', user_id
-        )
-        await conn.execute(
-            'UPDATE "hoyoaccount" SET current = true WHERE id = $1', account_id
-        )
+    if last_account is not None:
+        await HoyoAccount.filter(user_id=user_id).update(current=False)
+        await HoyoAccount.filter(id=last_account.id).update(current=True)
 
     # Clear login flow from session
     session.pop("login_flow", None)
@@ -235,8 +205,4 @@ async def submit_accounts(
     else:
         redirect_url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id)
 
-    return LoginFlowResponse(
-        status="success",
-        next_step="redirect",
-        message=redirect_url,
-    )
+    return LoginFlowResponse(next_step="redirect", message=redirect_url)

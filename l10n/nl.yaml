@@ -556,7 +556,7 @@ dyk_python: Hoyo Buddy is gecodeerd in pure Python
 dyk_team_card: Je kunt een teamkaart genereren in /profile door meerdere karakters te selecteren
 dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt voor alle commando's in /accounts
 dyk_status_page: "Je kunt de status van de bot [hier controleren](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-dyk_discord_server_giveaways: "We houden regelmatig giveaways in onze [Discord-server](<https://hoyo.link/PycvcNs9E>)"
+dyk_discord_server_giveaways: "We organiseren af en toe winacties op onze [Discord-server](<https://hoyo.link/PycvcNs9E>)"
 status_page_btn_label: Statuspagina
 docs_page_btn_label: Documentatie
 invite_page_btn_label: Uitnodiging

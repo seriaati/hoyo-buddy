@@ -556,6 +556,7 @@ dyk_python: Hoyo Buddy 使用純 Python 編寫而成
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 dyk_status_page: "你可以在[這裡](<https://status.seria.moe/?category=Hoyo%20Buddy>)查看機器人的運作狀況"
+dyk_discord_server_giveaways: "我們有時會在 [Discord 伺服器](<https://hoyo.link/PycvcNs9E>) 中舉辦贈品活動"
 status_page_btn_label: 運行狀態頁面
 docs_page_btn_label: 文檔
 invite_page_btn_label: 邀請

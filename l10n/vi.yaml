@@ -556,6 +556,7 @@ dyk_python: Hoyo Buddy được lập trình hoàn toàn bằng Python
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 dyk_status_page: "Bạn có thể kiểm tra trạng thái của bot ở [đây](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
+dyk_discord_server_giveaways: "Chúng tôi thường xuyên tổ chức các sự kiện giveaway trong [máy chủ Discord](<https://hoyo.link/PycvcNs9E>) của chúng tôi."
 status_page_btn_label: Trang trạng thái
 docs_page_btn_label: Tài liệu Wiki
 invite_page_btn_label: Mời

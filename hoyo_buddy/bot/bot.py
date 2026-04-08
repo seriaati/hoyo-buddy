@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import atexit
-import contextlib
 import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
@@ -43,8 +42,7 @@ from hoyo_buddy.db import get_locale, models
 from hoyo_buddy.db.models import CardSettings, Settings
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
-from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale
+from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
@@ -68,7 +66,7 @@ if TYPE_CHECKING:
     from aiohttp_client_cache.session import CachedSession
 
     from hoyo_buddy.config import Config
-    from hoyo_buddy.enums import Platform
+    from hoyo_buddy.enums import Locale, Platform
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)

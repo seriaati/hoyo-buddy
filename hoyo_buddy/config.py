@@ -23,7 +23,7 @@ class Config(BaseSettings):
 
     # Sentry DSNs
     bot_sentry_dsn: str | None = None
-    web_app_sentry_dsn: str | None = None
+    api_sentry_dsn: str | None = None
     scheduler_sentry_dsn: str | None = None
 
     # Misc
@@ -39,7 +39,7 @@ class Config(BaseSettings):
     heartbeat_url: str | None = None
 
     # Ports
-    web_app_port: int | None = None
+    api_port: int | None = None
     prometheus_port: int | None = None
 
     # Command-line arguments

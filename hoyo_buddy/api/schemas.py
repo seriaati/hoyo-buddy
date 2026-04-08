@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
-# Re-export existing schemas from schema.py (they are Flet-free)
-from hoyo_buddy.web_app.schema import GachaParams, Params
+from hoyo_buddy.enums import Platform
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES
 
 __all__ = [
     "AccountInfo",
@@ -23,6 +23,7 @@ __all__ = [
     "GachaLogResponse",
     "GachaNamesResponse",
     "GachaParams",
+    "GeetestCommandRequest",
     "LoginFlowResponse",
     "MobileRequest",
     "ModAppRequest",
@@ -95,7 +96,7 @@ class DeviceInfoRequest(BaseModel):
 
 
 class LoginFlowResponse(BaseModel):
-    next_step: Literal["geetest", "email_verify", "verify_otp", "finish", "redirect"]
+    next_step: Literal["geetest", "email_verify", "verify_otp", "finish", "done"]
     gt_version: int | None = None
     api_server: str | None = None
     message: str | None = None
@@ -169,8 +170,79 @@ class I18nResponse(BaseModel):
     translations: dict[str, str]
 
 
+# ── Geetest ───────────────────────────────────────────────────────────────────
+
+
+class GeetestCommandRequest(BaseModel):
+    account_id: int
+    gt_type: str
+    mmt_result: dict
+
+
 # ── Errors ────────────────────────────────────────────────────────────────────
 
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+class Params(BaseModel):
+    locale: str = "en-US"
+    user_id: int
+    platform: Platform | None = None
+    channel_id: int | None = None
+    guild_id: int | None = None
+
+    def to_query_string(self) -> str:
+        return "&".join(
+            f"{k}={v}" for k, v in self.model_dump().items() if v is not None and k != "user_id"
+        )
+
+
+class GachaParams(BaseModel):
+    locale: str
+    account_id: int
+    banner_type: int
+    rarities: list[int] = Field(default_factory=list)
+    size: int = Field(default=100, ge=1, le=500)
+    page: int = Field(default=1, ge=1)
+    name_contains: str | None = None
+
+    @field_validator("rarities", mode="before")
+    @classmethod
+    def __parse_rarities(cls, value: str | list[int]) -> list[int]:
+        if isinstance(value, list):
+            return value
+        if not value:
+            return []
+        return [int(rarity) for rarity in value.split(",")]
+
+    @field_validator("rarities", mode="after")
+    @classmethod
+    def __validate_rarities(cls, rarities: list[int]) -> list[int]:
+        if not rarities:
+            msg = "At least one rarity must be selected"
+            raise ValueError(msg)
+
+        if any(rarity not in {2, 3, 4, 5} for rarity in rarities):
+            msg = "Invalid rarity"
+            raise ValueError(msg)
+
+        return rarities
+
+    @field_validator("banner_type", mode="after")
+    @classmethod
+    def __validate_banner_type(cls, banner_type: int) -> int:
+        banner_types = {key for game_dict in BANNER_TYPE_NAMES.values() for key in game_dict}
+        if banner_type not in banner_types:
+            msg = f"Invalid banner type {banner_type}"
+            raise ValueError(msg)
+        return banner_type
+
+    def to_query_string(self) -> str:
+        dict_model = self.model_dump()
+        for key, value in dict_model.items():
+            if isinstance(value, list):
+                dict_model[key] = "" if not value else ",".join(str(v) for v in value)
+
+        return "&".join(f"{k}={v}" for k, v in dict_model.items() if v is not None)

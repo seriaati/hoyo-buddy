@@ -49,6 +49,5 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(login.router, prefix="/api/login", tags=["login"])
 app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
 app.include_router(gacha.router, prefix="/api/gacha", tags=["gacha"])
+app.include_router(geetest.router, prefix="/api/geetest", tags=["geetest"])
 app.include_router(i18n.router, prefix="/api/i18n", tags=["i18n"])
-# Geetest router is mounted at root to keep relative URLs in HTML pages working
-app.include_router(geetest.router, prefix="", tags=["geetest"])

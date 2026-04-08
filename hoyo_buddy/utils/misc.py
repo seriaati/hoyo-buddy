@@ -348,21 +348,6 @@ def format_float(num: float, *, decimals: int = 2) -> str:
     return f"{num:.{decimal_places}f}"
 
 
-def get_discord_protocol_url(
-    *, channel_id: int, guild_id: int | None, message_id: int | None = None
-) -> str:
-    """Generate a Discord app protocol URL."""
-    protocol = (
-        f"discord://-/channels/@me/{channel_id}"
-        if guild_id is None
-        else f"discord://-/channels/{guild_id}/{channel_id}"
-    )
-    if message_id is not None:
-        protocol += f"/{message_id}"
-
-    return protocol
-
-
 def get_discord_url(*, channel_id: int, guild_id: int | None, message_id: int | None = None) -> str:
     """Generate a Discord URL for a given channel and guild."""
     url = (

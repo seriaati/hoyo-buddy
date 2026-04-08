@@ -6,13 +6,12 @@ import genshin
 from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 
-from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import FRONTEND_URLS, GPY_GAME_TO_HB_GAME, locale_to_gpy_lang
+from hoyo_buddy.api.utils import decrypt_string
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, locale_to_gpy_lang
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, Settings, User
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
-from hoyo_buddy.utils import dict_cookie_to_str, get_discord_protocol_url
-from hoyo_buddy.web_app.utils import decrypt_string
+from hoyo_buddy.utils import dict_cookie_to_str
 
 from ..deps import get_session, require_auth
 from ..schemas import AccountInfo, AccountSubmitRequest, FinishAccountsResponse, LoginFlowResponse
@@ -195,14 +194,4 @@ async def submit_accounts(
 
     # Clear login flow from session
     session.pop("login_flow", None)
-
-    # Build redirect URL back to Discord
-    channel_id: int | None = session.get("channel_id")
-    guild_id: int | None = session.get("guild_id")
-
-    if channel_id is None:
-        redirect_url = FRONTEND_URLS[CONFIG.env]
-    else:
-        redirect_url = get_discord_protocol_url(channel_id=channel_id, guild_id=guild_id)
-
-    return LoginFlowResponse(next_step="redirect", message=redirect_url)
+    return LoginFlowResponse(next_step="done")

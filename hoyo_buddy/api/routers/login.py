@@ -11,12 +11,12 @@ import qrcode
 from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
+from hoyo_buddy.api.utils import decrypt_string, encrypt_string
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str
 from hoyo_buddy.utils.misc import get_project_version
-from hoyo_buddy.web_app.utils import decrypt_string, encrypt_string
 
 from ..deps import get_session, require_auth
 from ..schemas import (
@@ -247,7 +247,9 @@ async def geetest_callback(
         mobile = decrypt_string(encrypted_mobile)
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         try:
-            await client._send_mobile_otp(mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result))
+            await client._send_mobile_otp(
+                mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+            )
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 

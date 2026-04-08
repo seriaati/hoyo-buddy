@@ -472,12 +472,6 @@ GEETEST_SERVERS = {
     "dev": "http://localhost:5000",
 }
 
-WEB_APP_URLS = {
-    "prod": "https://hb-api.seria.moe",
-    "test": "https://hb-api.seria.moe",
-    "dev": "http://localhost:8000",
-}
-
 FRONTEND_URLS = {
     "prod": "https://hb-app.seria.moe",
     "test": "https://hb-app.seria.moe",

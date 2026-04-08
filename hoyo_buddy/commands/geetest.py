@@ -3,9 +3,9 @@ from __future__ import annotations
 import urllib.parse
 from typing import TYPE_CHECKING
 
-from hoyo_buddy.db import User, get_locale
+from hoyo_buddy.db import get_locale
 
-from ..constants import GEETEST_SERVERS
+from ..constants import FRONTEND_URLS
 from ..embeds import DefaultEmbed
 from ..l10n import LocaleStr
 from ..models import GeetestCommandPayload
@@ -33,9 +33,6 @@ class GeetestCommand:
         client.set_lang(locale)
         mmt = await client.create_mmt()
 
-        # Save mmt to db
-        await User.filter(id=i.user.id).update(temp_data=mmt.dict())
-
         payload = GeetestCommandPayload(
             user_id=i.user.id,
             guild_id=i.guild.id if i.guild is not None else None,
@@ -46,8 +43,9 @@ class GeetestCommand:
             account_id=self._account.id,
             gt_type=self._type,
             locale=locale.value,
+            mmt=mmt.model_dump(),
         )
-        url = f"{GEETEST_SERVERS[i.client.env]}/captcha?{payload.to_query_string()}"
+        url = f"{FRONTEND_URLS[i.client.env]}/geetest?{payload.to_query_string()}"
         url = urllib.parse.quote(url, safe=":/?&=")
 
         view = URLButtonView(locale, url=url, label=LocaleStr(key="complete_geetest_button_label"))

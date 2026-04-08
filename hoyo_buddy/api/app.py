@@ -35,7 +35,7 @@ app.add_middleware(
 )
 
 # CORS — allow the React frontend origin
-allowed_origins = [FRONTEND_URLS["prod"], FRONTEND_URLS["dev"]]
+allowed_origins = list(FRONTEND_URLS.values())
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

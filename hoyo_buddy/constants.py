@@ -467,8 +467,8 @@ GPY_GAME_TO_HB_GAME = {v: k for k, v in HB_GAME_TO_GPY_GAME.items()}
 """Genshin.py game enum to Hoyo Buddy game enum."""
 
 FRONTEND_URLS = {
-    "prod": "https://hb-app.seria.moe",
-    "test": "https://hb-app.seria.moe",
+    "prod": "https://app.hb.seria.moe",
+    "test": "https://app.hb.seria.moe",
     "dev": "http://localhost:5173",
 }
 

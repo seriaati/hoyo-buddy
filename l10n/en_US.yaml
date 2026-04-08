@@ -201,10 +201,7 @@ furnishings: Furnishings
 furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Load: {load}\nTrust: {trust}\nCreation Time: {hour}h"
 game_maintenance_description: Please try again later
 game_maintenance_title: Game is Under Maintenance
-geeetest_verification_complete: Verification complete
 geetest.embed.title: CAPTCHA verification required before logging in
-geetest.no_need: No need for geetest
-geetest.no_need.description: "You never needed to do a geetest! What are you here for?!"
 geetest.required: Geetest Verification Required
 geetest.required.description: "Use the </geetest> command, choose the account that triggered the geetest, and choose `{geetest_type}` to complete the verification"
 geetest_command_description: Complete geetest verification

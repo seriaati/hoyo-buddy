@@ -45,7 +45,7 @@ class GeetestCommand:
             locale=locale.value,
             mmt=mmt.model_dump(),
         )
-        url = f"{FRONTEND_URLS[i.client.env]}/geetest?{payload.to_query_string()}"
+        url = f"{FRONTEND_URLS[i.client.env]}/geetest_command?{payload.to_query_string()}"
         url = urllib.parse.quote(url, safe=":/?&=")
 
         view = URLButtonView(locale, url=url, label=LocaleStr(key="complete_geetest_button_label"))

@@ -369,18 +369,6 @@ wheels = [
 ]
 
 [[package]]
-name = "asyncpg-listen"
-version = "0.0.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "asyncpg" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/31/d7/0491b438a8d97128e52441d5dc09c4a975b662da8e05da53974146fce939/asyncpg-listen-0.0.9.tar.gz", hash = "sha256:f94c4752f7ca1077eaaad0fa2c08fcef4990eaae81a61c423683a722ca3f3a33", size = 7980, upload-time = "2025-07-16T11:03:29.069Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/21/5fe6b94db1f34d84590c7e997d76d11d11af87c6f4048dfd6f4c97325e4f/asyncpg_listen-0.0.9-py3-none-any.whl", hash = "sha256:44a4fe25a589de71bb8822aa3db6dde6e32d7f95c8e6b674be037473ca1f2775", size = 5882, upload-time = "2025-07-16T11:03:28.299Z" },
-]
-
-[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -992,7 +980,6 @@ dependencies = [
     { name = "anyio" },
     { name = "apscheduler" },
     { name = "asyncpg" },
-    { name = "asyncpg-listen" },
     { name = "chompjs" },
     { name = "cryptography" },
     { name = "discord-py", extra = ["speed"] },
@@ -1045,7 +1032,6 @@ requires-dist = [
     { name = "anyio", specifier = ">=4.11.0" },
     { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "asyncpg", specifier = ">=0.29.0" },
-    { name = "asyncpg-listen", specifier = ">=0.0.6" },
     { name = "chompjs", specifier = ">=1.4.0" },
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "discord-py", extras = ["speed"], specifier = ">=2.5.0" },

@@ -5,7 +5,6 @@ dependencies = [
   "aiofiles>=24.1.0",
   "aiohttp==3.13.3",
   "asyncpg>=0.29.0",
-  "asyncpg-listen>=0.0.6",
   "discord-py[speed]>=2.5.0",
   "jishaku>=2.5.2",
   "loguru>=0.7.2",

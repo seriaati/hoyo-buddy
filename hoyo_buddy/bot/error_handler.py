@@ -72,10 +72,6 @@ GPY_ERRORS: dict[
         "image": "https://raw.githubusercontent.com/seriaati/hoyo-buddy/assets/DataNotPublicTutorial.gif",
     },
     ge.RedeemGameLevelTooLow: {"title": LocaleStr(key="redeem_code.ar_too_low")},
-    ge.NoNeedGeetest: {
-        "title": LocaleStr(key="geetest.no_need"),
-        "description": LocaleStr(key="geetest.no_need.description"),
-    },
     ge.GeetestError: {
         "title": LocaleStr(key="geetest.required"),
         "description": LocaleStr(

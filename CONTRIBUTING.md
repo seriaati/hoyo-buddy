@@ -154,5 +154,5 @@ Hoyo Buddy is made up of several components:
 
 - Bot: The Discord bot, run with `uv run run.py`.
 - Scheduler: A background task scheduler for tasks like auto check-in and auto mimo, run with `uv run run_scheduler.py`.
-- Web app: Web application for login and gacha-log viewing, run with `uv run run_web_app.py`.
-- Web server: Web server for displaying Geetests, run with `uv run run_web_server.py`.
+- API: API for login and gacha-log viewing, run with `uv run run_api.py`.
+- Web app: <https://github.com/seriaati/hb-app>

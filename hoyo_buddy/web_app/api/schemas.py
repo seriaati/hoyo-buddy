@@ -97,6 +97,7 @@ class DeviceInfoRequest(BaseModel):
 class LoginFlowResponse(BaseModel):
     next_step: Literal["geetest", "email_verify", "verify_otp", "finish", "redirect"]
     gt_version: int | None = None
+    api_server: str | None = None
     message: str | None = None
     mmt: dict | None = None
 

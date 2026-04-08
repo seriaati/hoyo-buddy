@@ -105,15 +105,27 @@ async def email_password_login(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     if isinstance(result, genshin.models.SessionMMT):
-        # Geetest required for login
-        logger.debug(f"[{user_id}] Login requires geetest")
+        logger.debug(f"[{user_id}] Login requires geetest v3")
         login_flow["gt_type"] = "on_login"
+        login_flow["gt_version"] = 3
         login_flow["encrypted_email"] = encrypt_string(body.email)
         login_flow["encrypted_password"] = encrypt_string(body.password)
         return LoginFlowResponse(next_step="geetest", gt_version=3, mmt=result.model_dump())
 
+    if isinstance(result, genshin.models.SessionMMTv4):
+        logger.debug(f"[{user_id}] Login requires geetest v4")
+        login_flow["gt_type"] = "on_login"
+        login_flow["gt_version"] = 4
+        login_flow["encrypted_email"] = encrypt_string(body.email)
+        login_flow["encrypted_password"] = encrypt_string(body.password)
+        return LoginFlowResponse(
+            next_step="geetest",
+            gt_version=4,
+            api_server="gcaptcha4.captchami.com",
+            mmt=result.model_dump(),
+        )
+
     if isinstance(result, genshin.models.ActionTicket):
-        # Email verification required — try to send the verification email
         logger.debug(f"[{user_id}] Login requires email verification")
         login_flow["encrypted_email"] = encrypt_string(body.email)
         login_flow["encrypted_password"] = encrypt_string(body.password)
@@ -123,15 +135,14 @@ async def email_password_login(
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
         if isinstance(email_result, genshin.models.SessionMMT):
-            # Geetest required before sending email
-            logger.debug(f"[{user_id}] Geetest required before sending verification email")
+            logger.debug(f"[{user_id}] Geetest v3 required before sending verification email")
             login_flow["gt_type"] = "on_email_send"
+            login_flow["gt_version"] = 3
             login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
             return LoginFlowResponse(
                 next_step="geetest", gt_version=3, mmt=email_result.model_dump()
             )
 
-        # Email sent — need verification code
         logger.debug(f"[{user_id}] Verification email sent successfully")
         login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
         return LoginFlowResponse(next_step="email_verify")
@@ -148,7 +159,7 @@ async def email_password_login(
 
 @router.post("/geetest-callback", response_model=LoginFlowResponse)
 async def geetest_callback(
-    mmt_result: genshin.models.SessionMMTResult,
+    mmt_result: dict,
     session: Annotated[dict[str, Any], Depends(get_session)],
     user_id: Annotated[int, Depends(require_auth)],
 ) -> LoginFlowResponse:
@@ -160,6 +171,13 @@ async def geetest_callback(
     if gt_type is None:
         raise HTTPException(status_code=400, detail="No geetest type in session")
     logger.debug(f"[{user_id}] Geetest type from session: {gt_type}")
+
+    gt_version: int = login_flow.get("gt_version", 3)
+    parsed_mmt_result: genshin.models.SessionMMTResult | genshin.models.SessionMMTv4Result
+    if gt_version == 4:
+        parsed_mmt_result = genshin.models.SessionMMTv4Result(**mmt_result)
+    else:
+        parsed_mmt_result = genshin.models.SessionMMTResult(**mmt_result)
 
     locale_str: str = session.get("locale", "en-US")
     try:
@@ -187,7 +205,7 @@ async def geetest_callback(
             result = await client._app_login(
                 email,
                 password,
-                mmt_result=mmt_result,
+                mmt_result=parsed_mmt_result,
                 device_id=device_id,
                 device_model="Hoyo Buddy",
                 device_name=get_project_version(),
@@ -197,7 +215,6 @@ async def geetest_callback(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         if isinstance(result, genshin.models.ActionTicket):
-            # Email verification required after geetest
             login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
             try:
                 logger.debug(f"[{user_id}] Sending verification email after geetest")
@@ -208,6 +225,7 @@ async def geetest_callback(
 
             if isinstance(email_result, genshin.models.SessionMMT):
                 login_flow["gt_type"] = "on_email_send"
+                login_flow["gt_version"] = 3
                 return LoginFlowResponse(
                     next_step="geetest", gt_version=3, mmt=email_result.model_dump()
                 )
@@ -219,33 +237,6 @@ async def geetest_callback(
         return LoginFlowResponse(next_step="finish")
 
     if gt_type == "on_email_send":
-        encrypted_email = login_flow.get("encrypted_email")
-        encrypted_password = login_flow.get("encrypted_password")
-        str_action_ticket = login_flow.get("action_ticket")
-        device_id = login_flow.get("device_id")
-
-        if not encrypted_email or not encrypted_password or not str_action_ticket:
-            raise HTTPException(status_code=400, detail="Missing login data in session")
-
-        email = decrypt_string(encrypted_email)
-        password = decrypt_string(encrypted_password)
-        action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
-
-        client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale))
-        try:
-            logger.debug(f"[{user_id}] Retrying to send verification email after geetest")
-            email_result = await client._send_verification_email(
-                action_ticket, mmt_result=mmt_result
-            )
-        except Exception as exc:
-            logger.debug(f"[{user_id}] Failed to send verification email after geetest: {exc}")
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-        if isinstance(email_result, genshin.models.SessionMMT):
-            return LoginFlowResponse(
-                next_step="geetest", gt_version=3, mmt=email_result.model_dump()
-            )
-
         return LoginFlowResponse(next_step="email_verify")
 
     if gt_type == "on_otp_send":
@@ -256,7 +247,7 @@ async def geetest_callback(
         mobile = decrypt_string(encrypted_mobile)
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         try:
-            await client._send_mobile_otp(mobile, mmt_result=mmt_result)
+            await client._send_mobile_otp(mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result))
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 

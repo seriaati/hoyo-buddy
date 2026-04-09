@@ -12,17 +12,18 @@ __all__ = [
     "AccountSubmitRequest",
     "AuthCallbackRequest",
     "AuthURLResponse",
+    "BannerTypeInfo",
+    "BannerTypesResponse",
     "DevToolsCookiesRequest",
     "DeviceInfoRequest",
     "EmailPasswordRequest",
     "EmailVerifyRequest",
     "ErrorResponse",
     "FinishAccountsResponse",
-    "GachaIconsResponse",
     "GachaItem",
     "GachaLogResponse",
-    "GachaNamesResponse",
     "GachaParams",
+    "GachaStatsResponse",
     "GeetestCommandRequest",
     "LoginFlowResponse",
     "MobileRequest",
@@ -145,21 +146,36 @@ class GachaItem(BaseModel):
     wish_id: str
     time: str
     banner_type: int
+    name: str
+    icon: str
 
 
 class GachaLogResponse(BaseModel):
     items: list[GachaItem]
     total: int
-    page: int
-    max_page: int
+    next_cursor: str | None
 
 
-class GachaIconsResponse(BaseModel):
-    icons: dict[str, str]
+class BannerTypeInfo(BaseModel):
+    id: int
+    name: str
 
 
-class GachaNamesResponse(BaseModel):
-    names: dict[str, str]
+class BannerTypesResponse(BaseModel):
+    banner_types: list[BannerTypeInfo]
+
+
+class GachaStatsResponse(BaseModel):
+    total_pulls: int
+    five_star_pity: int
+    four_star_pity: int
+    total_five_stars: int
+    total_four_stars: int
+    avg_pulls_per_five_star: float
+    avg_pulls_per_four_star: float
+    fifty_fifty_wins: int
+    fifty_fifty_total: int
+    fifty_fifty_win_rate: float
 
 
 # ── i18n ──────────────────────────────────────────────────────────────────────
@@ -205,7 +221,7 @@ class GachaParams(BaseModel):
     banner_type: int
     rarities: list[int] = Field(default_factory=list)
     size: int = Field(default=100, ge=1, le=500)
-    page: int = Field(default=1, ge=1)
+    cursor: str | None = None
     name_contains: str | None = None
 
     @field_validator("rarities", mode="before")

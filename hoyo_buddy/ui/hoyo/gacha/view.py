@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Final, Literal, TypeAlias
 
 import genshin
-from loguru import logger
 
 from hoyo_buddy import emojis
 from hoyo_buddy.api.schemas import GachaParams
@@ -21,25 +20,16 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import CURRENCY_EMOJIS
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
-from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.gacha import (
-    check_gi_item_is_standard,
-    check_hsr_item_is_standard,
-    check_zzz_item_is_standard,
-    fetch_gi_banners,
-    fetch_hsr_banners,
-)
+from hoyo_buddy.utils.gacha import calculate_gacha_stats
 
 if TYPE_CHECKING:
-    import aiohttp
     import asyncpg
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.models.gacha import GIBanner, HSRBanner
     from hoyo_buddy.types import Interaction, User
 
 
@@ -118,58 +108,6 @@ class ViewGachaLogView(View):
 
         return await GachaHistory.filter(**filter_kwargs).count()
 
-    async def calc_50_50_stats(self, session: aiohttp.ClientSession) -> tuple[int, int]:
-        """Calculate the 50/50 stats for the current banner.
-        See this image for more information: https://img.seria.moe/JPRHdRVOMVzYGYvR.png
-
-        Returns:
-            The number of 50/50 wins and the total number of 50/50 tries.
-        """
-        five_stars = (
-            await GachaHistory.filter(account=self.account, rarity=5, banner_type=self.banner_type)
-            .order_by("wish_id")
-            .only("item_id", "time", "banner_id")
-        )
-        if not five_stars:
-            return 0, 0
-
-        gi_banners: list[GIBanner] = []
-        item_names: dict[int, str] = {}
-        if self.account.game is Game.GENSHIN:
-            gi_banners = await fetch_gi_banners(session)
-            async with AmbrAPIClient() as ambr:
-                item_names = await ambr.fetch_item_id_to_name_map()
-
-        hsr_banners: list[HSRBanner] = []
-        if self.account.game is Game.STARRAIL:
-            hsr_banners = await fetch_hsr_banners(session)
-
-        is_standards: list[bool] = []
-        for item in five_stars:
-            if self.account.game is Game.GENSHIN:
-                is_standard = check_gi_item_is_standard(item, gi_banners, item_names)
-            elif self.account.game is Game.STARRAIL:
-                is_standard = check_hsr_item_is_standard(item, hsr_banners)
-            elif self.account.game is Game.ZZZ:
-                is_standard = check_zzz_item_is_standard(item)
-            else:
-                logger.error(f"Unknown game for checking is_standard: {self.account.game}")
-                continue
-
-            is_standards.append(is_standard)
-
-        status: list[Literal[50, 100]] = [50]  # First pull is always 50% guaranteed
-        wins = 0
-
-        for i, is_standard in enumerate(is_standards):
-            status.append(100 if is_standard else 50)  # Add guarantee status of next pull
-            if status[i] == 50 and not is_standard:
-                # If this pull's guarantee status is 50% and it's not a standard item, it's a win
-                wins += 1
-        del status[-1]  # Remove the last status as there isn't a next pull
-
-        return wins, status.count(50)
-
     async def guaranteed(self) -> bool:
         gacha = (
             await GachaHistory.filter(account=self.account, banner_type=self.banner_type, rarity=5)
@@ -198,9 +136,7 @@ class ViewGachaLogView(View):
         )
         return f"{top_percent} ({rank}/{total})"
 
-    async def get_stats_embed(
-        self, pool: asyncpg.Pool, session: aiohttp.ClientSession
-    ) -> DefaultEmbed:
+    async def get_stats_embed(self, pool: asyncpg.Pool) -> DefaultEmbed:
         lifetime_pulls = await self.get_pulls_count()
         if lifetime_pulls == 0:
             raise NoGachaLogFoundError
@@ -217,7 +153,7 @@ class ViewGachaLogView(View):
         last_gacha_num = await get_last_gacha_num(self.account, banner=self.banner_type)
 
         # Five star pity
-        if not is_standard_ode:  # Standard Ode only pulls 4 and 3 star items
+        if not is_standard_ode:
             last_five_star_num = await get_last_gacha_num(
                 self.account, banner=self.banner_type, rarity=5
             )
@@ -235,13 +171,12 @@ class ViewGachaLogView(View):
             self.account, banner=self.banner_type, rarity=4
         )
         current_four_star_pity = last_gacha_num - last_four_star_num
-        # Standard Ode has a 70 pull pity for 4 stars
         max_four_star_pity = 70 if is_standard_ode else 10
         if not is_standard_ode and current_four_star_pity > max_four_star_pity:
             current_four_star_pity = last_gacha_num - last_five_star_num
 
         # Three star pity
-        if is_standard_ode:  # Standard Ode can pull 3 star items
+        if is_standard_ode:
             last_three_star_num = await get_last_gacha_num(
                 self.account, banner=self.banner_type, rarity=3
             )
@@ -254,27 +189,28 @@ class ViewGachaLogView(View):
             current_three_star_pity = 0
             max_three_star_pity = 0
 
-        # 50/50 win rate
-        banner_wins, banner_5stars = await self.calc_50_50_stats(session)
-
-        # Average pulls per 5-star and 4-star
-        total_five_stars = await self.get_pulls_count(rarity=5, banner_type=self.banner_type)
-        total_four_stars = await self.get_pulls_count(rarity=4, banner_type=self.banner_type)
+        gacha_stats = await calculate_gacha_stats(
+            account_id=self.account.id,
+            game=self.account.game,
+            banner_type=self.banner_type,
+        )
+        banner_wins = gacha_stats.fifty_fifty_wins
+        banner_5stars = gacha_stats.fifty_fifty_total
+        total_five_stars = gacha_stats.total_five_stars
+        total_four_stars = gacha_stats.total_four_stars
         total_three_stars = await self.get_pulls_count(rarity=3, banner_type=self.banner_type)
-        banner_total_pulls = await self.get_pulls_count(banner_type=self.banner_type)
+        banner_total_pulls = gacha_stats.total_pulls
+        five_star_avg_pulls = gacha_stats.avg_pulls_per_five_star
+        four_star_avg_pulls = gacha_stats.avg_pulls_per_four_star
+        three_star_avg_pulls = banner_total_pulls / total_three_stars if total_three_stars else 0
 
-        # Bangboo channel pulls are free
         is_bangboo_channel = self.banner_type == 5 and self.account.game == Game.ZZZ
         banner_total_currency = 0 if is_bangboo_channel else banner_total_pulls * 160
-
-        five_star_avg_pulls = banner_total_pulls / total_five_stars if total_five_stars else 0
-        four_star_avg_pulls = banner_total_pulls / total_four_stars if total_four_stars else 0
-        three_star_avg_pulls = banner_total_pulls / total_three_stars if total_three_stars else 0
 
         await GachaStats.create_or_update(
             account=self.account,
             lifetime_pulls=lifetime_pulls,
-            win_rate=banner_wins / banner_5stars if banner_5stars else 0,
+            win_rate=gacha_stats.fifty_fifty_win_rate,
             avg_5star_pulls=five_star_avg_pulls,
             avg_4star_pulls=four_star_avg_pulls,
             avg_3star_pulls=three_star_avg_pulls,
@@ -437,7 +373,7 @@ class ViewGachaLogView(View):
 
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
-        embed = await self.get_stats_embed(i.client.pool, i.client.session)
+        embed = await self.get_stats_embed(i.client.pool)
         await i.followup.send(embed=embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
@@ -455,7 +391,7 @@ class BannerTypeSelector(Select[ViewGachaLogView]):
     async def callback(self, i: Interaction) -> Any:
         self.view.banner_type = int(self.values[0])
         await i.response.defer(ephemeral=ephemeral(i))
-        embed = await self.view.get_stats_embed(i.client.pool, i.client.session)
+        embed = await self.view.get_stats_embed(i.client.pool)
         self.update_options_defaults()
 
         button: GoToWebAppButton | None = next(

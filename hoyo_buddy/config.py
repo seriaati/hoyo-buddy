@@ -31,6 +31,7 @@ class Config(BaseSettings):
     db_url: str
     fernet_key: str
     proxy: str | None = None
+    residential_proxy: str | None = None
     redis_url: str | None = None
     user_agent: str | None = "HoyoBuddy/1.0"
 

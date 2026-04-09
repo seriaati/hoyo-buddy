@@ -40,7 +40,7 @@ async def get_available_accounts(
     device_fp: str | None = login_flow.get("device_fp")
 
     # Determine platform from session params
-    platform_str: str | None = session.get("platform")
+    platform_str: str | None = login_flow.get("platform") or session.get("platform")
     try:
         platform = Platform(platform_str) if platform_str else Platform.HOYOLAB
     except ValueError:
@@ -125,7 +125,7 @@ async def submit_accounts(
     device_id: str | None = login_flow.get("device_id")
     device_fp: str | None = login_flow.get("device_fp")
 
-    platform_str: str | None = session.get("platform")
+    platform_str: str | None = login_flow.get("platform") or session.get("platform")
     try:
         platform = Platform(platform_str) if platform_str else Platform.HOYOLAB
     except ValueError:
@@ -149,8 +149,8 @@ async def submit_accounts(
             device_fp=device_fp,
         )
         all_accounts = await client.get_game_accounts()
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
     # Filter to only selected accounts
     selected_set = set(body.selected_accounts)
@@ -163,6 +163,19 @@ async def submit_accounts(
 
     if not accounts_to_save:
         raise HTTPException(status_code=400, detail="None of the selected accounts were found")
+
+    fetch_cookie = platform is Platform.HOYOLAB and "stoken" in cookies and "ltmid_v2" in cookies
+    if fetch_cookie:
+        # Get ltoken_v2 and cookie_token_v2
+        try:
+            new_dict_cookie = await genshin.fetch_cookie_with_stoken_v2(cookies, token_types=[2, 4])
+        except Exception as e:
+            logger.exception(f"[{user_id}] Fetch cookie with stoken error: {e}")
+            raise HTTPException(status_code=500, detail=str(e)) from e
+
+        dict_cookie = genshin.parse_cookie(cookies)
+        dict_cookie.update(new_dict_cookie)
+        cookies = dict_cookie_to_str(dict_cookie)
 
     # Ensure the User and Settings rows exist
     await User.get_or_create(id=user_id, defaults={"temp_data": {}})

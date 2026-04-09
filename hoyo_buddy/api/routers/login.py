@@ -12,13 +12,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
 from hoyo_buddy.api.utils import decrypt_string, encrypt_string
+from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import locale_to_gpy_lang
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str
 from hoyo_buddy.utils.misc import get_project_version
 
-from ..deps import get_session, require_auth
+from ..deps import get_or_create_device_id, get_session, require_auth
 from ..schemas import (
     DeviceInfoRequest,
     DevToolsCookiesRequest,
@@ -57,6 +58,7 @@ async def email_password_login(
     platform: Annotated[str, Query()],
     session: Annotated[dict[str, Any], Depends(get_session)],
     user_id: Annotated[int, Depends(require_auth)],
+    device_id: Annotated[str, Depends(get_or_create_device_id)],
 ) -> LoginFlowResponse:
     """Attempt email/password login for the given platform."""
     try:
@@ -71,19 +73,14 @@ async def email_password_login(
         locale = Locale.american_english
 
     login_flow = _get_login_flow(session)
-
-    # Retrieve or generate device_id
-    device_id: str | None = login_flow.get("device_id")
-    if device_id is None:
-        logger.debug(f"[{user_id}] No device_id in session, generating new one")
-        device_id = genshin.Client.generate_app_device_id()
-        login_flow["device_id"] = device_id
+    login_flow["platform"] = platform_enum.value
+    login_flow["device_id"] = device_id
     logger.debug(f"[{user_id}] Using device_id for login: {device_id}")
 
     region = (
         genshin.Region.CHINESE if platform_enum is Platform.MIYOUSHE else genshin.Region.OVERSEAS
     )
-    client = ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(locale))
+    client = ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
 
     try:
         logger.debug(f"[{user_id}] Attempting email/password login for platform {platform_enum}")
@@ -92,8 +89,8 @@ async def email_password_login(
                 body.email,
                 body.password,
                 device_id=device_id,
-                device_model="Hoyo Buddy",
-                device_name=get_project_version(),
+                device_name="Hoyo Buddy",
+                device_model=get_project_version(),
             )
         else:
             result = await client._cn_web_login(body.email, body.password)
@@ -162,6 +159,7 @@ async def geetest_callback(
     mmt_result: dict,
     session: Annotated[dict[str, Any], Depends(get_session)],
     user_id: Annotated[int, Depends(require_auth)],
+    device_id: Annotated[str, Depends(get_or_create_device_id)],
 ) -> LoginFlowResponse:
     """Called after the user completes the geetest captcha. Retries the blocked operation."""
     logger.debug(f"[{user_id}] Geetest callback received")
@@ -193,13 +191,9 @@ async def geetest_callback(
 
         email = decrypt_string(encrypted_email)
         password = decrypt_string(encrypted_password)
-        device_id: str | None = login_flow.get("device_id")
-        if device_id is None:
-            logger.debug(f"[{user_id}] No device_id in session, generating new one")
-            device_id = genshin.Client.generate_app_device_id()
-            login_flow["device_id"] = device_id
+        login_flow["device_id"] = device_id
 
-        client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale))
+        client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
         try:
             logger.debug(f"[{user_id}] Retrying login after geetest with device_id: {device_id}")
             result = await client._app_login(
@@ -207,8 +201,8 @@ async def geetest_callback(
                 password,
                 mmt_result=parsed_mmt_result,
                 device_id=device_id,
-                device_model="Hoyo Buddy",
-                device_name=get_project_version(),
+                device_name="Hoyo Buddy",
+                device_model=get_project_version(),
             )
         except Exception as exc:
             logger.debug(f"[{user_id}] Login retry after geetest failed: {exc}")
@@ -266,6 +260,7 @@ async def email_verify(
     body: EmailVerifyRequest,
     session: Annotated[dict[str, Any], Depends(get_session)],
     _user_id: Annotated[int, Depends(require_auth)],
+    device_id: Annotated[str, Depends(get_or_create_device_id)],
 ) -> LoginFlowResponse:
     """Verify the email verification code and complete the login."""
     login_flow = _get_login_flow(session)
@@ -273,7 +268,6 @@ async def email_verify(
     str_action_ticket = login_flow.get("action_ticket")
     encrypted_email = login_flow.get("encrypted_email")
     encrypted_password = login_flow.get("encrypted_password")
-    device_id: str | None = login_flow.get("device_id")
 
     if not str_action_ticket or not encrypted_email or not encrypted_password:
         raise HTTPException(status_code=400, detail="Missing login data in session")
@@ -281,16 +275,13 @@ async def email_verify(
     action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
     email = decrypt_string(encrypted_email)
     password = decrypt_string(encrypted_password)
+    login_flow["device_id"] = device_id
 
-    client = ProxyGenshinClient()
+    client = ProxyGenshinClient(proxy_url=CONFIG.residential_proxy)
     try:
         await client._verify_email(body.code, action_ticket)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    if device_id is None:
-        device_id = genshin.Client.generate_app_device_id()
-        login_flow["device_id"] = device_id
 
     try:
         result = await client._app_login(
@@ -298,8 +289,8 @@ async def email_verify(
             password,
             ticket=action_ticket,
             device_id=device_id,
-            device_model="Hoyo Buddy",
-            device_name=get_project_version(),
+            device_name="Hoyo Buddy",
+            device_model=get_project_version(),
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

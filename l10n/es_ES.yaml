@@ -556,7 +556,7 @@ dyk_python: Hoyo Buddy está codificado puramente en Python
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
 dyk_status_page: "Puedes ver el estado del bot [aquí](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-dyk_discord_server_giveaways: "Realizamos sorteos ocasionales en nuestro [servidor de Discord](<https://hoyo.link/PycvcNs9E>)"
+dyk_discord_server_giveaways: "Realizamos sorteos ocasionales en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
 status_page_btn_label: Estado de la pagina
 docs_page_btn_label: Documentación
 invite_page_btn_label: Invitar

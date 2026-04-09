@@ -554,7 +554,7 @@ dyk_python: Hoyo Buddyは純粋なPythonで書かれています
 dyk_team_card: /profile で複数のキャラクターを選択することでチームカードを生成できます
 dyk_set_default_acc: /accounts ですべてのコマンドを実行するために使用されるデフォルトアカウントを設定できます
 dyk_status_page: "ボットのステータスを[こちら](<https://status.seria.moe/?category=Hoyo%20Buddy>)で確認できます"
-dyk_discord_server_giveaways: "私たちは時々、[Discordサーバー](<https://hoyo.link/PycvcNs9E>)でプレゼント企画を開催しています。"
+dyk_discord_server_giveaways: "私たちは時々、[Discordサーバー](<https://link.seria.moe/hb-dc>)でプレゼント企画を開催しています。"
 status_page_btn_label: ステータスページ
 docs_page_btn_label: ドキュメント
 invite_page_btn_label: 招待

@@ -201,10 +201,7 @@ furnishings: Meubels
 furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Belasting: {load}\nVertrouwen: {trust}\nCreatietijd: {hour}u"
 game_maintenance_description: Probeer het later nog eens
 game_maintenance_title: Spel is Onder Onderhoud
-geeetest_verification_complete: Verificatie voltooid
 geetest.embed.title: CAPTCHA-verificatie vereist voordat je kunt inloggen
-geetest.no_need: Geen geetest nodig
-geetest.no_need.description: "Je hoefde nooit een geetest te doen! Waarom ben je hier?"
 geetest.required: Geetest-verificatie Vereist
 geetest.required.description: "Gebruik het </geetest>-commando, kies de account die de geetest heeft getriggerd en kies `{geetest_type}` om de verificatie te voltooien"
 geetest_command_description: Voltooi Geetest-verificatie

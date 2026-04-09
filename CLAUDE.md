@@ -35,7 +35,7 @@ aerich upgrade            # Apply migrations
 
 ```bash
 python run.py             # Main Discord bot
-python run_web_app.py     # Web authentication app
+python run_api.py         # API server
 pm2 start pm2.json        # Production deployment (both apps)
 ```
 
@@ -50,7 +50,7 @@ pm2 start pm2.json        # Production deployment (both apps)
 - **hoyo_buddy/hoyo/** - Game-specific logic and API clients
 - **hoyo_buddy/ui/** - Discord UI components (views, modals, buttons)
 - **hoyo_buddy/draw/** - Image generation system using Pillow
-- **hoyo_buddy/web_app/** - Flet-based web application for authentication
+- **hoyo_buddy/api/** - API server with FastAPI for authentication and gacha log retrieval
 - **l10n/** - Internationalization files (YAML format, 13+ languages)
 
 ### Key Design Patterns

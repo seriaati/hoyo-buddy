@@ -466,16 +466,10 @@ HB_GAME_TO_GPY_GAME: dict[Game, genshin.Game] = {
 GPY_GAME_TO_HB_GAME = {v: k for k, v in HB_GAME_TO_GPY_GAME.items()}
 """Genshin.py game enum to Hoyo Buddy game enum."""
 
-GEETEST_SERVERS = {
-    "prod": "http://geetest-server-test.seria.moe",
-    "test": "http://geetest-server-test.seria.moe",
-    "dev": "http://localhost:5000",
-}
-
-WEB_APP_URLS = {
-    "prod": "https://hb-app.seria.moe",
-    "test": "https://hb-app.seria.moe",
-    "dev": "http://localhost:8645",
+FRONTEND_URLS = {
+    "prod": "https://app.hb.seria.moe",
+    "test": "https://app.hb.seria.moe",
+    "dev": "http://localhost:5173",
 }
 
 UTC_8 = datetime.timezone(datetime.timedelta(hours=8))

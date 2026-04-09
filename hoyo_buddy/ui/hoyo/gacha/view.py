@@ -6,14 +6,15 @@ import genshin
 from loguru import logger
 
 from hoyo_buddy import emojis
+from hoyo_buddy.api.schemas import GachaParams
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     BANNER_FIVE_STAR_GUARANTEE_NUMS,
     BANNER_WIN_RATE_TITLES,
+    FRONTEND_URLS,
     MW_BANNER_TYPES,
     MW_EVENT_BANNER_TYPES,
     STANDARD_ITEMS,
-    WEB_APP_URLS,
 )
 from hoyo_buddy.db import GachaHistory, GachaStats, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
@@ -31,7 +32,6 @@ from hoyo_buddy.utils.gacha import (
     fetch_gi_banners,
     fetch_hsr_banners,
 )
-from hoyo_buddy.web_app.schema import GachaParams
 
 if TYPE_CHECKING:
     import aiohttp
@@ -105,7 +105,7 @@ class ViewGachaLogView(View):
             banner_type=self.banner_type,
             rarities=[2, 3, 4, 5],
         )
-        return f"{WEB_APP_URLS[CONFIG.env]}/gacha_log?{params.to_query_string()}"
+        return f"{FRONTEND_URLS[CONFIG.env]}/gacha_log?{params.to_query_string()}"
 
     async def get_pulls_count(
         self, *, banner_type: int | None = None, rarity: int | None = None

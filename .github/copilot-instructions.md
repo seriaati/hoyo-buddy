@@ -27,7 +27,7 @@ aerich upgrade      # Apply migration
 **4. Run locally**:
 ```bash
 python run.py              # Bot (needs .env: discord_token, discord_client_id, discord_client_secret, db_url, fernet_key)
-python run_web_app.py      # Auth web app
+python run_api.py          # API server
 pm2 start pm2.json         # Production (5 processes)
 ```
 

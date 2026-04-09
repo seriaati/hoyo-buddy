@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import atexit
-import contextlib
 import os
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
@@ -10,7 +9,6 @@ from typing import TYPE_CHECKING, Any
 import aiocache
 import aiosqlite
 import anyio
-import asyncpg_listen
 import discord
 import enka
 import genshin
@@ -44,8 +42,7 @@ from hoyo_buddy.db import get_locale, models
 from hoyo_buddy.db.models import CardSettings, Settings
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
-from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, GeetestType, LeaderboardType, Locale
+from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.hoyo.clients.novel_ai import NAIClient
 from hoyo_buddy.l10n import BOT_DATA_PATH, AppCommandTranslator, EnumStr, LocaleStr, translator
@@ -69,7 +66,7 @@ if TYPE_CHECKING:
     from aiohttp_client_cache.session import CachedSession
 
     from hoyo_buddy.config import Config
-    from hoyo_buddy.enums import Platform
+    from hoyo_buddy.enums import Locale, Platform
     from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
@@ -245,13 +242,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         users = await models.User.all().only("id")
         for user in users:
             self.user_ids.add(user.id)
-
-        listener = asyncpg_listen.NotificationListener(
-            asyncpg_listen.connect_func(self.config.db_url)
-        )
-        self.geetest_command_task = asyncio.create_task(
-            listener.run({"geetest_command": self.handle_geetest_notify}, notification_timeout=2)
-        )
 
         await CARD_DATA.load()
         self.loop.set_exception_handler(self.asyncio_erorr_handler)
@@ -625,46 +615,6 @@ class HoyoBuddy(commands.AutoShardedBot):
 
         await context.send(f"An error occurred: {e}")
         self.capture_exception(e)
-
-    async def handle_geetest_notify(self, notif: asyncpg_listen.NotificationOrTimeout) -> None:
-        if isinstance(notif, asyncpg_listen.Timeout) or notif.payload is None:
-            return
-
-        user_id, message_id, gt_type, account_id, locale, channel_id = notif.payload.split(";")
-        gt_type = GeetestType(gt_type)
-        locale = Locale(locale)
-
-        message = self.get_partial_messageable(int(channel_id)).get_partial_message(int(message_id))
-
-        user = await models.User.get(id=user_id)
-        account = await models.HoyoAccount.get(id=account_id)
-        client = account.client
-
-        try:
-            if gt_type is GeetestType.DAILY_CHECKIN:
-                reward = await client.claim_daily_reward(
-                    challenge={
-                        "challenge": user.temp_data["geetest_challenge"],
-                        "seccode": user.temp_data["geetest_seccode"],
-                        "validate": user.temp_data["geetest_validate"],
-                    }
-                )
-                embed = client.get_daily_reward_embed(reward, locale, blur=True)
-            else:
-                await client.verify_mmt(genshin.models.MMTResult(**user.temp_data))
-                embed = DefaultEmbed(locale, title=LocaleStr(key="geeetest_verification_complete"))
-
-            await message.edit(embed=embed, view=None)
-        except Exception as e:
-            if isinstance(e, discord.HTTPException):
-                return
-
-            embed, recognized = get_error_embed(e, locale)
-            if not recognized:
-                self.capture_exception(e)
-
-            with contextlib.suppress(discord.HTTPException):
-                await message.edit(embed=embed, view=None)
 
     def asyncio_erorr_handler(self, _: asyncio.AbstractEventLoop, context: dict[str, Any]) -> None:
         exception = context.get("exception")

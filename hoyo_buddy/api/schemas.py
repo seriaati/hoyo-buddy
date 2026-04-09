@@ -154,6 +154,7 @@ class GachaLogResponse(BaseModel):
     items: list[GachaItem]
     total: int
     next_cursor: str | None
+    game: str
 
 
 class BannerTypeInfo(BaseModel):

@@ -134,7 +134,7 @@ async def get_gacha_logs(
             if params.name_contains.lower() in name.lower()
         }
         if not matching_ids:
-            return GachaLogResponse(items=[], total=0, next_cursor=None)
+            return GachaLogResponse(items=[], total=0, next_cursor=None, game=game.value)
         base_qs = base_qs.filter(item_id__in=matching_ids)
 
     total = await base_qs.count()
@@ -169,7 +169,7 @@ async def get_gacha_logs(
         for g in gacha_logs
     ]
 
-    return GachaLogResponse(items=items, total=total, next_cursor=next_cursor)
+    return GachaLogResponse(items=items, total=total, next_cursor=next_cursor, game=game.value)
 
 
 @router.get("/banner-types", response_model=BannerTypesResponse)

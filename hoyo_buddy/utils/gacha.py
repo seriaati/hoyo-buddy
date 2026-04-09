@@ -116,11 +116,7 @@ class GachaStatsResult:
     fifty_fifty_win_rate: float
 
 
-async def calc_50_50_stats(
-    *,
-    account: HoyoAccount,
-    banner_type: int,
-) -> tuple[int, int]:
+async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[int, int]:
     five_stars = (
         await GachaHistory.filter(account=account, rarity=5, banner_type=banner_type)
         .order_by("wish_id")

@@ -80,7 +80,9 @@ async def email_password_login(
     region = (
         genshin.Region.CHINESE if platform_enum is Platform.MIYOUSHE else genshin.Region.OVERSEAS
     )
-    client = ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
+    client = ProxyGenshinClient(
+        region=region, lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy
+    )
 
     try:
         logger.debug(f"[{user_id}] Attempting email/password login for platform {platform_enum}")
@@ -193,7 +195,9 @@ async def geetest_callback(
         password = decrypt_string(encrypted_password)
         login_flow["device_id"] = device_id
 
-        client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
+        client = ProxyGenshinClient(
+            lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy
+        )
         try:
             logger.debug(f"[{user_id}] Retrying login after geetest with device_id: {device_id}")
             result = await client._app_login(

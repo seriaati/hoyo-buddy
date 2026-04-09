@@ -190,9 +190,7 @@ class ViewGachaLogView(View):
             max_three_star_pity = 0
 
         gacha_stats = await calculate_gacha_stats(
-            account_id=self.account.id,
-            game=self.account.game,
-            banner_type=self.banner_type,
+            account_id=self.account.id, game=self.account.game, banner_type=self.banner_type
         )
         banner_wins = gacha_stats.fifty_fifty_wins
         banner_5stars = gacha_stats.fifty_fifty_total

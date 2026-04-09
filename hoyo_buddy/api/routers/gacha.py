@@ -174,8 +174,7 @@ async def get_gacha_logs(
 
 @router.get("/banner-types", response_model=BannerTypesResponse)
 async def get_banner_types(
-    game: Annotated[str, Query()],
-    locale: Annotated[str, Query()] = "en-US",
+    game: Annotated[str, Query()], locale: Annotated[str, Query()] = "en-US"
 ) -> BannerTypesResponse:
     try:
         game_enum = Game(game)
@@ -189,10 +188,7 @@ async def get_banner_types(
 
     banner_type_map = BANNER_TYPE_NAMES.get(game_enum, {})
     banner_types = [
-        BannerTypeInfo(
-            id=banner_type,
-            name=translator.translate(name, locale_enum),
-        )
+        BannerTypeInfo(id=banner_type, name=translator.translate(name, locale_enum))
         for banner_type, name in banner_type_map.items()
     ]
 
@@ -201,8 +197,7 @@ async def get_banner_types(
 
 @router.get("/stats", response_model=GachaStatsResponse)
 async def get_gacha_stats(
-    account_id: Annotated[int, Query()],
-    banner_type: Annotated[int, Query()],
+    account_id: Annotated[int, Query()], banner_type: Annotated[int, Query()]
 ) -> GachaStatsResponse:
     account = await HoyoAccount.get_or_none(id=account_id)
     if account is None:

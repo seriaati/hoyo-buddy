@@ -80,7 +80,9 @@ class ProxyGenshinClient(genshin.Client):
         effective_proxy: str | None = None
         if region is genshin.Region.OVERSEAS and use_proxy:
             effective_proxy = proxy_url if proxy_url is not None else CONFIG.proxy
-        logger.debug(f"ProxyGenshinClient initialized with proxy: {effective_proxy!r} (region={region})")
+        logger.debug(
+            f"ProxyGenshinClient initialized with proxy: {effective_proxy!r} (region={region})"
+        )
         super().__init__(
             *args,
             debug=True,

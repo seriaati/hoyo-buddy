@@ -11,7 +11,7 @@ from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import FRONTEND_URLS
 from hoyo_buddy.db.config import DB_CONFIG
 
-from .routers import accounts, auth, gacha, geetest, i18n, login
+from .routers import accounts, auth, gacha, geetest, login
 from .session import SignedCookieSessionMiddleware
 
 if TYPE_CHECKING:
@@ -50,4 +50,3 @@ app.include_router(login.router, prefix="/api/login", tags=["login"])
 app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
 app.include_router(gacha.router, prefix="/api/gacha", tags=["gacha"])
 app.include_router(geetest.router, prefix="/api/geetest", tags=["geetest"])
-app.include_router(i18n.router, prefix="/api/i18n", tags=["i18n"])

@@ -288,7 +288,13 @@ class CardTemplateSelect(ui.Select["CardSettingsView"]):
 
 class CardSettingsContainer(ui.Container):
     def __init__(
-        self, *, card_settings: CardSettings, settings: Settings, character_name: str, game: Game
+        self,
+        *,
+        card_settings: CardSettings,
+        settings: Settings,
+        character_name: str,
+        game: Game,
+        gacha_data: dict[str, dict[str, str]],
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
@@ -296,7 +302,9 @@ class CardSettingsContainer(ui.Container):
         self.game = game
         self.character_id = card_settings.character_id
         self.character_name = character_name
-        self.icon_url = get_gacha_icon(game=self.game, item_id=int(self.card_settings.character_id))
+        self.icon_url = get_gacha_icon(
+            item_id=int(self.card_settings.character_id), gacha_data=gacha_data
+        )
 
         default_color = get_default_color(
             card_settings.character_id,

@@ -20,7 +20,7 @@ from hoyo_buddy.constants import (
     ELEMENT_TO_BONUS_PROP_ID,
     GPY_PATH_TO_EKNA_PATH,
     HB_GAME_TO_GPY_GAME,
-    LOCALE_TO_GPY_LANG,
+    LOCALE_TO_HOYO_LANG,
     MANIKEN_BOY_GACHA_ART,
     MANIKEN_GIRL_GACHA_ART,
     PLAYER_BOY_GACHA_ART,
@@ -80,7 +80,9 @@ class ProxyGenshinClient(genshin.Client):
         effective_proxy: str | None = None
         if region is genshin.Region.OVERSEAS and use_proxy:
             effective_proxy = proxy_url if proxy_url is not None else CONFIG.proxy
-        logger.debug(f"ProxyGenshinClient initialized with proxy: {effective_proxy!r} (region={region})")
+        logger.debug(
+            f"ProxyGenshinClient initialized with proxy: {effective_proxy!r} (region={region})"
+        )
         super().__init__(
             *args,
             debug=True,
@@ -152,7 +154,7 @@ class GenshinClient(ProxyGenshinClient):
         self.lang = (
             "zh-cn"
             if self.region is genshin.Region.CHINESE
-            else LOCALE_TO_GPY_LANG.get(locale, "en-us")
+            else LOCALE_TO_HOYO_LANG.get(locale, "en-us")
         )
 
     def get_daily_reward_embed(

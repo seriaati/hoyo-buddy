@@ -9,9 +9,8 @@ import chompjs
 from loguru import logger
 
 from hoyo_buddy.constants import STANDARD_ITEMS
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
 from hoyo_buddy.enums import Game
-from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.models.gacha import GIBanner, HSRBanner, ZZZBanner
 
 HSR_BANNER_URL = "https://starrailstation.com/api/v1/warp_config"
@@ -85,21 +84,8 @@ def check_gi_item_is_standard(
     return is_standard
 
 
-def get_gacha_icon(*, game: Game, item_id: int) -> str:
-    if game is Game.ZZZ:
-        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
-
-    if game is Game.GENSHIN:
-        return f"https://stardb.gg/api/static/genshin/{item_id}.png"
-
-    if game is Game.STARRAIL:
-        if len(str(item_id)) == 5:
-            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
-
-        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
-
-    msg = f"Unsupported game: {game}"
-    raise ValueError(msg)
+def get_gacha_icon(*, item_id: int, gacha_data: dict[str, dict[str, str]]) -> str:
+    return gacha_data.get(str(item_id), {}).get("icon", "")
 
 
 @dataclass
@@ -116,11 +102,7 @@ class GachaStatsResult:
     fifty_fifty_win_rate: float
 
 
-async def calc_50_50_stats(
-    *,
-    account: HoyoAccount,
-    banner_type: int,
-) -> tuple[int, int]:
+async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[int, int]:
     five_stars = (
         await GachaHistory.filter(account=account, rarity=5, banner_type=banner_type)
         .order_by("wish_id")
@@ -136,8 +118,10 @@ async def calc_50_50_stats(
     async with aiohttp.ClientSession() as session:
         if account.game is Game.GENSHIN:
             gi_banners = await fetch_gi_banners(session)
-            async with AmbrAPIClient() as ambr:
-                item_names = await ambr.fetch_item_id_to_name_map()
+            gi_data: dict[str, dict[str, str]] = await JSONFile.read(
+                "gi_gacha_data_en-us.json", default={}
+            )
+            item_names = {int(k): v["name"] for k, v in gi_data.items()}
         elif account.game is Game.STARRAIL:
             hsr_banners = await fetch_hsr_banners(session)
 

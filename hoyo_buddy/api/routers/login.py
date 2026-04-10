@@ -13,7 +13,7 @@ from loguru import logger
 
 from hoyo_buddy.api.utils import decrypt_string, encrypt_string
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import locale_to_gpy_lang
+from hoyo_buddy.constants import locale_to_hoyo_lang
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str
@@ -80,7 +80,9 @@ async def email_password_login(
     region = (
         genshin.Region.CHINESE if platform_enum is Platform.MIYOUSHE else genshin.Region.OVERSEAS
     )
-    client = ProxyGenshinClient(region=region, lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
+    client = ProxyGenshinClient(
+        region=region, lang=locale_to_hoyo_lang(locale), proxy_url=CONFIG.residential_proxy
+    )
 
     try:
         logger.debug(f"[{user_id}] Attempting email/password login for platform {platform_enum}")
@@ -193,7 +195,9 @@ async def geetest_callback(
         password = decrypt_string(encrypted_password)
         login_flow["device_id"] = device_id
 
-        client = ProxyGenshinClient(lang=locale_to_gpy_lang(locale), proxy_url=CONFIG.residential_proxy)
+        client = ProxyGenshinClient(
+            lang=locale_to_hoyo_lang(locale), proxy_url=CONFIG.residential_proxy
+        )
         try:
             logger.debug(f"[{user_id}] Retrying login after geetest with device_id: {device_id}")
             result = await client._app_login(

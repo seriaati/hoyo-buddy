@@ -25,12 +25,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.leaderboard import LeaderboardCommand
 from hoyo_buddy.constants import (
     GUILD_ID,
-    HSR_AVATAR_CONFIG_LD_URL,
-    HSR_AVATAR_CONFIG_URL,
-    HSR_EQUIPMENT_CONFIG_URL,
-    HSR_TEXT_MAP_URL,
     POOL_MAX_WORKERS,
-    STARRAIL_DATA_LANGS,
     ZENLESS_DATA_LANGS,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
     ZZZ_AVATAR_BATTLE_TEMP_URL,
@@ -53,6 +48,7 @@ from hoyo_buddy.utils import (
     get_project_version,
     should_ignore_error,
 )
+from hoyo_buddy.utils.gacha_data import update_gacha_data
 
 from .command_tree import CommandTree
 
@@ -491,9 +487,10 @@ class HoyoBuddy(commands.AutoShardedBot):
                 enka_zzz.update_assets(),
                 # Update genshin.py assets
                 genshin.utility.update_characters_ambr(),
-                # Update item ID -> name mappings and some other stuff
+                # Update ZZZ agent specialized prop mapping
                 self.update_zzz_assets(),
-                self.update_hsr_assets(),
+                # Fetch gacha data from official APIs
+                update_gacha_data(self.session),
                 # Fetch mi18n files
                 translator.fetch_mi18n_files(),
                 # hb-data
@@ -502,8 +499,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             )
 
     async def update_zzz_assets(self) -> None:
-        result: dict[str, dict[str, str]] = {}
-
         async with asyncio.TaskGroup() as tg:
             item_temp_task = tg.create_task(fetch_json(self.session, ZZZ_ITEM_TEMPLATE_URL))
             avatar_temp_task = tg.create_task(fetch_json(self.session, ZZZ_AVATAR_TEMPLATE_URL))
@@ -520,94 +515,26 @@ class HoyoBuddy(commands.AutoShardedBot):
         avatar_battle_temp = avatar_battle_temp_task.result()
         text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
 
-        # Item ID -> name mappings
-        # Save text maps
         for lang, text_map in text_maps.items():
             await write_json(f"{BOT_DATA_PATH}/zzz_text_map_{lang}.json", text_map)
-
-        item_id_mapping: dict[int, str] = {}  # item ID -> text map key
 
         first_key = next(iter(item_template.keys()), None)
         if first_key is None:
             logger.error("Cannot find first key in ZZZ item template")
             return
 
-        # Find item keys
         id_key = next((k for k, v in avatar_template[first_key][0].items() if v == 1011), None)
         prop_key = next((k for k, v in avatar_battle_temp[first_key][0].items() if v == [4]), None)
-        name_key = next(
-            (k for k, v in item_template[first_key][0].items() if v == "Item_Coin"), None
-        )
 
-        if not all((id_key, prop_key, name_key)):
-            logger.error(
-                f"Cannot find required keys in ZZZ game data. {id_key=}, {prop_key=}, {name_key=}"
-            )
+        if not all((id_key, prop_key)):
+            logger.error(f"Cannot find required keys in ZZZ game data. {id_key=}, {prop_key=}")
             return
 
-        for item in item_template[first_key]:
-            if any(keyword in item[name_key] for keyword in ("Bangboo_Name", "Item_Weapon")):
-                item_id_mapping[item[id_key]] = item[name_key]
-
-        for avatar in avatar_template[first_key]:
-            item_id_mapping[avatar[id_key]] = avatar[name_key]
-
-        for lang, text_map in text_maps.items():
-            result[lang] = {
-                str(item_id): text_map.get(text_map_key, "")
-                for item_id, text_map_key in item_id_mapping.items()
-            }
-
-        for lang, text_map in result.items():
-            await models.JSONFile.write(f"zzz_item_names_{lang}.json", text_map)
-
-        # Agent specialized prop mapping
-        prop_mapping: dict[str, list[int]] = {}  # avatar ID -> prop IDs
+        prop_mapping: dict[str, list[int]] = {}
         for avatar in avatar_battle_temp[first_key]:
             prop_mapping[str(avatar[id_key])] = avatar[prop_key]
 
         await models.JSONFile.write(ZZZ_AVATAR_BATTLE_TEMP_JSON, prop_mapping)
-
-    async def update_hsr_assets(self) -> None:
-        result: dict[str, dict[str, str]] = {}
-
-        async with asyncio.TaskGroup() as tg:
-            avatar_config_task = tg.create_task(fetch_json(self.session, HSR_AVATAR_CONFIG_URL))
-            avatar_config_ld_task = tg.create_task(
-                fetch_json(self.session, HSR_AVATAR_CONFIG_LD_URL)
-            )
-            equipment_config_task = tg.create_task(
-                fetch_json(self.session, HSR_EQUIPMENT_CONFIG_URL)
-            )
-            text_map_tasks = {
-                lang: tg.create_task(fetch_json(self.session, HSR_TEXT_MAP_URL.format(lang=lang)))
-                for lang in STARRAIL_DATA_LANGS
-            }
-
-        avatar_config = avatar_config_task.result()
-        avatar_config_ld = avatar_config_ld_task.result()
-        equipment_config = equipment_config_task.result()
-        text_maps = {lang: task.result() for lang, task in text_map_tasks.items()}
-
-        item_id_mapping: dict[int, int] = {}  # item ID -> text map key
-
-        for avatar in avatar_config:
-            item_id_mapping[avatar["AvatarID"]] = avatar["AvatarName"]["Hash"]
-
-        for avatar in avatar_config_ld:
-            item_id_mapping[avatar["AvatarID"]] = avatar["AvatarName"]["Hash"]
-
-        for equipment in equipment_config:
-            item_id_mapping[equipment["EquipmentID"]] = equipment["EquipmentName"]["Hash"]
-
-        for lang, text_map in text_maps.items():
-            result[lang] = {
-                str(item_id): text_map.get(str(text_map_key), "")
-                for item_id, text_map_key in item_id_mapping.items()
-            }
-
-        for lang, text_map in result.items():
-            await models.JSONFile.write(f"hsr_item_names_{lang}.json", text_map)
 
     async def on_command_error(self, context: commands.Context, e: commands.CommandError) -> None:
         if should_ignore_error(e):

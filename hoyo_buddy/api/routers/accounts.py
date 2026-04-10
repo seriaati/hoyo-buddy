@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 
 from hoyo_buddy.api.utils import decrypt_string
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, locale_to_gpy_lang
+from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, locale_to_hoyo_lang
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, Settings, User
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -76,7 +76,7 @@ async def get_available_accounts(
     try:
         client = ProxyGenshinClient(
             cookies,
-            lang=locale_to_gpy_lang(locale),
+            lang=locale_to_hoyo_lang(locale),
             region=genshin.Region.OVERSEAS
             if platform is Platform.HOYOLAB
             else genshin.Region.CHINESE,
@@ -143,7 +143,7 @@ async def submit_accounts(
     try:
         client = ProxyGenshinClient(
             cookies,
-            lang=locale_to_gpy_lang(locale),
+            lang=locale_to_hoyo_lang(locale),
             region=region,
             device_id=device_id,
             device_fp=device_fp,

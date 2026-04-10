@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import ui
-from hoyo_buddy.constants import MIMO_SUPPORT_GAMES
-from hoyo_buddy.db.models import Settings
+from hoyo_buddy.constants import MIMO_SUPPORT_GAMES, locale_to_hoyo_lang
+from hoyo_buddy.db.models import JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.enums import Game
@@ -227,11 +227,21 @@ class CardSettingsView(ui.LayoutView):
         if not i.response.is_done():
             await i.response.defer(ephemeral=True)
 
+        lang = locale_to_hoyo_lang(self.locale)
+        if self.game is Game.GENSHIN:
+            gacha_data_filename = f"gi_gacha_data_{lang}.json"
+        elif self.game is Game.STARRAIL:
+            gacha_data_filename = f"hsr_gacha_data_{lang}.json"
+        else:
+            gacha_data_filename = f"zzz_gacha_data_{lang}.json"
+        gacha_data: dict[str, dict[str, str]] = await JSONFile.read(gacha_data_filename, default={})
+
         container = CardSettingsContainer(
             card_settings=self.card_settings,
             settings=self.settings,
             character_name=self.character_name,
             game=self.game,
+            gacha_data=gacha_data,
         )
         self.clear_items()
         self.add_item(container)

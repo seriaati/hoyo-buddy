@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Project
         run: |
-          uv sync --frozen
+          uv sync --frozen --no-dev --group type-check
           uv pip uninstall uvloop
           echo "$PWD/.venv/bin" >> $GITHUB_PATH
 

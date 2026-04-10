@@ -159,8 +159,7 @@ exploration.common_chests: Thường
 exploration.exquisite_chests: Cao Cấp
 exploration.luxurious_chests: Hiếm
 exploration.placeholder: Chưa được phát hành
-exploration.placeholder_quote:
-  '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
+exploration.placeholder_quote: '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
 
   - Zhongli'
 exploration.precious_chests: Siêu Cấp

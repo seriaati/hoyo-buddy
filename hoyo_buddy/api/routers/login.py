@@ -174,7 +174,7 @@ async def geetest_callback(
 
     gt_version: int = login_flow.get("gt_version", 3)
     parsed_mmt_result: genshin.models.SessionMMTResult | genshin.models.SessionMMTv4Result
-    if gt_version == 4:
+    if gt_version == 4 or "session_id" in mmt_result:
         parsed_mmt_result = genshin.models.SessionMMTv4Result(**mmt_result)
     else:
         parsed_mmt_result = genshin.models.SessionMMTResult(**mmt_result)

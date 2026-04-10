@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2세트 효과: {bonus_2}"
 artifact_sets: 성유물 세트
 auto_checkin_button_label: 자동 일일 출석체크
 auto_locale_option_label: 클라이언트 언어 설정을 따릅니다.
-auto_redeem_footer: /redeem 명령어를 사용하여 자동 코드 교환을 해제하세요.
+auto_redeem_footer: /settings 명령어를 사용하여 자동 코드 교환을 해제하세요.
 auto_redeem_toggle.label: 자동 리딤코드 사용
 books: 책
 captcha.embed.description: "아래 버튼을 눌러 CAPTCHA 인증을 완료하세요.\n"
@@ -159,9 +159,10 @@ exploration.common_chests: 평범한
 exploration.exquisite_chests: 정교한
 exploration.luxurious_chests: 화려한
 exploration.placeholder: 출시 예정
-exploration.placeholder_quote: '모든 여정에는 끝이 있는 법이지. 조급해하지 말게나.
+exploration.placeholder_quote:
+  "모든 여정에는 끝이 있는 법이지. 조급해하지 말게나.
 
-  - 종려'
+  - 종려"
 exploration.precious_chests: 귀중한
 exploration.progress: "탐험 진행도: {progress}%"
 exploration.remarkable_chests: 신묘한
@@ -747,7 +748,7 @@ mimo_buy_item_select_placeholder: 구매할 아이템을 선택하세요...
 mimo_tasks_button_label: 임무
 mimo_buy_item_amount_label: 갯수
 mimo_item_available_time: "{time} 후 재충전"
-mimo_auto_task_embed_footer: /mimo를 사용하여 파견 보상을 설정하고 상점에서 전리품을 수령하세요.
+mimo_auto_task_embed_footer: /settings를 사용하여 파견 보상을 설정하고 상점에서 전리품을 수령하세요.
 mimo_auto_task_embed_desc: "호요 버디가 {finish}건의 의뢰를 완료하여 {claim_point} 포인트를 수령했습니다."
 checkin_reward_embed_footer: /check-in을 사용하여 전송 알림 수신 여부를 설정하세요.
 mimo_status: "상태: {status}"
@@ -761,7 +762,7 @@ image_settings_use_m3_art: M3 렌더링 스타일을 사용 중입니다.
 remembrance: 기억(Remembrance)
 dismissible_default_title: 신규 기능 개방!
 dismissible_default_footer: 해당 안내는 최초 1회에 한해 표시됩니다.
-dismissible_m3_art_desc: '이제 에이전트 기록 카드에 [시네마 3단계] 아트를 적용할 수 있습니다. 카드 설정에서 [호요 버디 템플릿 2]를 선택한 후, 이미지 설정에서 [M3 아트 사용]을 활성화해 주세요.'
+dismissible_m3_art_desc: "이제 에이전트 기록 카드에 [시네마 3단계] 아트를 적용할 수 있습니다. 카드 설정에서 [호요 버디 템플릿 2]를 선택한 후, 이미지 설정에서 [M3 아트 사용]을 활성화해 주세요."
 dismissible_settings_v2: "복잡하게 얽혀있던 설정 시스템이 전면 개편되었습니다! 더욱 직관적으로 변화한 호요 버디의 설정 인터페이스와 새롭게 추가된 [편의 기능]들을 지금 바로 </settings>에서 체험해 보세요."
 dismissible_card_settings_v2: "기록 카드 설정 인터페이스가 더욱 직관적으로 개편되었습니다. 또한, 많은 개척자님께서 요청하셨던 [템플릿 일괄 적용] 기능이 드디어 도입되었습니다! 지금 바로 </card-settings genshin>, </card-settings hsr>, 그리고 </card-settings zzz>에서 새로운 편의 기능을 체험해 보세요."
 mimo_lottery_info_hoyolab_decos: "...및 {num}종의 HoYoLAB 전용 장식 아이템"

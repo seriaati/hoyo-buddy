@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2-Delig: {bonus_2}"
 artifact_sets: Artefactsets
 auto_checkin_button_label: Automatisch dagelijks inchecken
 auto_locale_option_label: Volg clienttaal
-auto_redeem_footer: Schakel automatische code-inwisseling uit met /redeem
+auto_redeem_footer: Schakel automatische code-inwisseling uit met/settings
 auto_redeem_toggle.label: Automatische code-inwisseling
 books: Boeken
 captcha.embed.description: "Klik op de onderstaande knop om de CAPTCHA te voltooien.\n"
@@ -159,7 +159,8 @@ exploration.common_chests: Gewone
 exploration.exquisite_chests: Uitmuntende
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
-exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
+exploration.placeholder_quote:
+  '"Elke reis heeft zijn laatste dag. Haast je niet."
 
   - Zhongli'
 exploration.precious_chests: Waardevolle
@@ -747,7 +748,7 @@ mimo_buy_item_select_placeholder: Selecteer een item om te kopen...
 mimo_tasks_button_label: Taken
 mimo_buy_item_amount_label: Aantal
 mimo_item_available_time: "Navullingen in {time}"
-mimo_auto_task_embed_footer: Gebruik /mimo om automatische taken te configureren en beloningen te kopen
+mimo_auto_task_embed_footer: Gebruik /settings om automatische taken te configureren en beloningen te kopen
 mimo_auto_task_embed_desc: "Hoyo Buddy heeft {claim_point} punten voor je geclaimd en {finish} taken voltooid."
 checkin_reward_embed_footer: Gebruik /check-in om meldingen te configureren
 mimo_status: "Status: {status}"

@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2 Peças: {bonus_2}"
 artifact_sets: Conjuntos de Artefatos
 auto_checkin_button_label: Check-in diário automático
 auto_locale_option_label: Seguir idioma do cliente
-auto_redeem_footer: Desative o resgate automático de códigos com /redeem
+auto_redeem_footer: Desative o resgate automático de códigos com/settings
 auto_redeem_toggle.label: Resgate automático de códigos
 books: Livros
 captcha.embed.description: "Clique no botão abaixo para completar o CAPTCHA.\n"
@@ -745,7 +745,7 @@ mimo_buy_item_select_placeholder: Selecione um item para comprar...
 mimo_tasks_button_label: Tarefas
 mimo_buy_item_amount_label: Quantidade
 mimo_item_available_time: "Reabastece em {time}"
-mimo_auto_task_embed_footer: Use /mimo para configurar tarefas automáticas e comprar recompensas
+mimo_auto_task_embed_footer: Use /settings para configurar tarefas automáticas e comprar recompensas
 mimo_auto_task_embed_desc: "O Hoyo Buddy concluiu {finish} tarefas e resgatou {claim_point} pontos para você"
 checkin_reward_embed_footer: Use /check-in para configurar notificações
 mimo_status: "Status: {status}"

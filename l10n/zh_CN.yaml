@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "二件套：{bonus_2}"
 artifact_sets: 圣遗物套装
 auto_checkin_button_label: 自动每日签到
 auto_locale_option_label: 遵循Discord客户端语言
-auto_redeem_footer: 使用 /redeem 关闭自动兑换功能。
+auto_redeem_footer: 使用/settings 关闭自动兑换功能。
 auto_redeem_toggle.label: 自动兑换
 books: 书籍
 captcha.embed.description: "点击下方按钮来完成 CAPTCHA。\n"
@@ -159,9 +159,9 @@ exploration.common_chests: 普通宝箱数
 exploration.exquisite_chests: 精致宝箱数
 exploration.luxurious_chests: 华丽宝箱数
 exploration.placeholder: 待公开内容
-exploration.placeholder_quote: '“旅程总有一天会迎来终点，不必匆忙。”
+exploration.placeholder_quote: "“旅程总有一天会迎来终点，不必匆忙。”
 
-  ————钟离'
+  ————钟离"
 exploration.precious_chests: 珍贵宝箱数
 exploration.progress: "探索度：{progress}%"
 exploration.remarkable_chests: 奇馈宝箱数
@@ -747,7 +747,7 @@ mimo_buy_item_select_placeholder: 选择一个要购买的商品…
 mimo_tasks_button_label: 任务
 mimo_buy_item_amount_label: 数量
 mimo_item_available_time: "在 {time} 后补货"
-mimo_auto_task_embed_footer: 使用 /mimo 调整自动任务设置及购买奖励
+mimo_auto_task_embed_footer: 使用 /settings 调整自动任务设置及购买奖励
 mimo_auto_task_embed_desc: "Hoyo Buddy 为你完成了 {finish} 项任务并领取了 {claim_point} 积分"
 checkin_reward_embed_footer: 使用 /check-in 来管理通知
 mimo_status: "状态: {status}"
@@ -761,7 +761,7 @@ image_settings_use_m3_art: 使用意象影画 3 图像
 remembrance: 记忆
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此消息只会显示一次
-dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。'
+dismissible_m3_art_desc: "你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。"
 dismissible_settings_v2: "告别混乱零散的设置吧！Hoyo Buddy 的设置已经进行了重新设计，更加有条理且易于使用，还增加了一些新的便利功能，快在 </settings> 试试吧"
 dismissible_card_settings_v2: "卡片设置已经进行了重新设计，变得更有条理且更易于使用。你还可以批量将模板应用到所有角色（这是长期热门功能！）在</card-settings genshin>、</card-settings hsr>和</card-settings zzz>中试试吧"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"

@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2セット：{bonus_2}"
 artifact_sets: 聖遺物セット
 auto_checkin_button_label: 自動デイリーチェックイン
 auto_locale_option_label: クライアントの言語に従う
-auto_redeem_footer: 自動コード交換をオフにするには /redeem を使用してください
+auto_redeem_footer: 自動コード交換をオフにするには/settings を使用してください
 auto_redeem_toggle.label: 自動コード交換
 books: 書籍
 captcha.embed.description: "下のボタンをクリックしてCAPTCHA認証を完了してください。\n"
@@ -745,7 +745,7 @@ mimo_buy_item_select_placeholder: 購入するアイテムを選択...
 mimo_tasks_button_label: タスク
 mimo_buy_item_amount_label: 量
 mimo_item_available_time: "{time} 後に補充"
-mimo_auto_task_embed_footer: /mimo を使用して自動タスクと報酬購入を設定します
+mimo_auto_task_embed_footer: /settings を使用して自動タスクと報酬購入を設定します
 mimo_auto_task_embed_desc: "Hoyo Buddyは {finish} 個のタスクを完了し、{claim_point} ポイントを受け取りました"
 checkin_reward_embed_footer: /check-in を使用して通知を設定します
 mimo_status: "ステータス：{status}"
@@ -759,7 +759,7 @@ image_settings_use_m3_art: M3アートを使用
 remembrance: 記憶
 dismissible_default_title: 新機能！
 dismissible_default_footer: このメッセージは一度だけ表示されます
-dismissible_m3_art_desc: 'ZZZエージェントカードで意識映写3のアートを使用できるようになりました。カード設定で「Hoyo Buddy テンプレート 2」を選択し、画像設定で「M3アートを使用」を切り替えてください。'
+dismissible_m3_art_desc: "ZZZエージェントカードで意識映写3のアートを使用できるようになりました。カード設定で「Hoyo Buddy テンプレート 2」を選択し、画像設定で「M3アートを使用」を切り替えてください。"
 dismissible_settings_v2: "わかりにくく散在していた設定とはおさらばです!Hoyo Buddyの設定が整理され、使いやすくなり、いくつかの新しい生活の質の機能が追加されました。</settings>で試してみてください"
 dismissible_card_settings_v2: "カード設定が整理され、使いやすくなりました。すべてのキャラクターにテンプレートを一括適用することもできます(長らく要望されていた機能です!)。</card-settings genshin>、</card-settings hsr>、</card-settings zzz>で試してみてください"
 mimo_lottery_info_hoyolab_decos: "...と {num} 個のHoYoLABデコレーション"

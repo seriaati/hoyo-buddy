@@ -531,7 +531,7 @@ class NotesChecker:
         content = LocaleStr(
             key="auto_task_error_dm_content",
             feature=LocaleStr(key="notify_feature"),
-            command="</notes>",
+            command="</settings>",
             account=notify.account,
         )
         locale = await cls._get_locale(notify)

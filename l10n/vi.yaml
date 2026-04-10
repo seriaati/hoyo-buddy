@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "Bộ 2 món: {bonus_2}"
 artifact_sets: Bộ Thánh Di Vật
 auto_checkin_button_label: Tự động điểm danh hằng ngày
 auto_locale_option_label: Theo ngôn ngữ ứng dụng
-auto_redeem_footer: Tắt tự động đỏi mã quà bằng /redeem
+auto_redeem_footer: Tắt tự động đỏi mã quà bằng/settings
 auto_redeem_toggle.label: Tự động đổi mã quà
 books: Sách
 captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
@@ -159,7 +159,8 @@ exploration.common_chests: Thường
 exploration.exquisite_chests: Cao Cấp
 exploration.luxurious_chests: Hiếm
 exploration.placeholder: Chưa được phát hành
-exploration.placeholder_quote: '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
+exploration.placeholder_quote:
+  '"Cuộc hành trình rồi sẽ kết thúc, không cần phải vội vàng."
 
   - Zhongli'
 exploration.precious_chests: Siêu Cấp
@@ -747,7 +748,7 @@ mimo_buy_item_select_placeholder: Chọn một món để mua
 mimo_tasks_button_label: Nhiệm vụ
 mimo_buy_item_amount_label: Số lượng
 mimo_item_available_time: "Mở bán lại sau {time}"
-mimo_auto_task_embed_footer: Dùng lệnh /mimo để điều chỉnh tự động làm nhiệm vụ và đổi thưởng
+mimo_auto_task_embed_footer: Dùng lệnh /settings để điều chỉnh tự động làm nhiệm vụ và đổi thưởng
 mimo_auto_task_embed_desc: "Hoyo Buddy đã hoàn thành {finish} nhiệm vụ và nhận {claim_point} điểm cho bạn."
 checkin_reward_embed_footer: Sử dụng /check-in để điều chỉnh thông báo
 mimo_status: "Tình trạng: {status}"

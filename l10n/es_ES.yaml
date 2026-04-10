@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2 Piezas: {bonus_2}"
 artifact_sets: Set de Artefactos
 auto_checkin_button_label: Reclamo de login diario automático
 auto_locale_option_label: Seguir el idioma del cliente
-auto_redeem_footer: Desactiva el canje automático de códigos con /redeem
+auto_redeem_footer: Desactiva el canje automático de códigos con/settings
 auto_redeem_toggle.label: Canjear códigos automáticamente
 books: Libros
 captcha.embed.description: "Haz clic en el botón de abajo para completar el CAPTCHA.\n"
@@ -747,7 +747,7 @@ mimo_buy_item_select_placeholder: Selecciona un ítem para comprar...
 mimo_tasks_button_label: Tareas
 mimo_buy_item_amount_label: Cantidad
 mimo_item_available_time: "Recargas en {tiempo}"
-mimo_auto_task_embed_footer: Usa /mimo para configurar tareas automáticas y comprar recompensas
+mimo_auto_task_embed_footer: Usa /settings para configurar tareas automáticas y comprar recompensas
 mimo_auto_task_embed_desc: "Hoyo Buddy completó {finish} tareas y reclamó {claim_point} puntos para ti"
 checkin_reward_embed_footer: Usa /check-in para configurar las notificaciones
 mimo_status: "Estado: {status}"

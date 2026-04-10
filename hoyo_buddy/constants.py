@@ -1254,13 +1254,6 @@ AUTO_TASK_FEATURE_KEYS: dict[AutoTaskType, str] = {
     "mimo_draw": "mimo_auto_draw_button_label",
     "checkin": "auto_checkin_button_label",
 }
-AUTO_TASK_COMMANDS: dict[AutoTaskType, str] = {
-    "redeem": "</redeem>",
-    "mimo_task": "</mimo>",
-    "mimo_buy": "</mimo>",
-    "mimo_draw": "</mimo>",
-    "checkin": "</check-in>",
-}
 
 GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910
 SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 1117992633827082251

@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Artifact Sets
 auto_checkin_button_label: Auto daily check-in
 auto_locale_option_label: Follow client language
-auto_redeem_footer: Turn off auto code redemption with /redeem
+auto_redeem_footer: Turn off auto code redemption with /settings
 auto_redeem_toggle.label: Auto code redemption
 books: Books
 captcha.embed.description: "Click on the button below to complete CAPTCHA.\n"
@@ -747,9 +747,9 @@ mimo_buy_item_select_placeholder: Select an item to buy...
 mimo_tasks_button_label: Tasks
 mimo_buy_item_amount_label: Amount
 mimo_item_available_time: "Refills in {time}"
-mimo_auto_task_embed_footer: Use /mimo to configure auto tasks and buy rewards
+mimo_auto_task_embed_footer: Use /settings to configure auto tasks and buy rewards
 mimo_auto_task_embed_desc: "Hoyo Buddy completed {finish} tasks and claimed {claim_point} points for you"
-checkin_reward_embed_footer: Use /check-in to configure notifications
+checkin_reward_embed_footer: Use /settings to configure notifications
 mimo_status: "Status: {status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddy bought {item} item(s) for you with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
 mimo_game_unavailable: "Traveling Mimo is currently unavailable for {game}"

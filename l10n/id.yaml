@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2-Pieces: {bonus_2}"
 artifact_sets: Set Artefak
 auto_checkin_button_label: Absen harian otomatis
 auto_locale_option_label: Ikuti bahasa klien
-auto_redeem_footer: Matikan penukaran kode otomatis dengan /redeem
+auto_redeem_footer: Matikan penukaran kode otomatis dengan/settings
 auto_redeem_toggle.label: Penukaran kode otomatis
 books: Buku
 captcha.embed.description: "Klik tombol di bawah untuk menyelesaikan CAPTCHA.\n"
@@ -159,7 +159,8 @@ exploration.common_chests: Common
 exploration.exquisite_chests: Exquisite
 exploration.luxurious_chests: Luxurious
 exploration.placeholder: Belum rilis
-exploration.placeholder_quote: '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
+exploration.placeholder_quote:
+  '"Setiap perjalanan pasti ada akhirnya, tidak perlu terburu-buru."
 
   -Zhongli'
 exploration.precious_chests: Precious
@@ -759,7 +760,7 @@ image_settings_use_m3_art: ""
 remembrance: ""
 dismissible_default_title: ""
 dismissible_default_footer: ""
-dismissible_m3_art_desc: ''
+dismissible_m3_art_desc: ""
 dismissible_settings_v2: ""
 dismissible_card_settings_v2: ""
 mimo_lottery_info_hoyolab_decos: ""

@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "2-Части: {bonus_2}."
 artifact_sets: Наборы Артефактов
 auto_checkin_button_label: Автоматическая ежедневная отметка
 auto_locale_option_label: Следите за языком клиента
-auto_redeem_footer: Отключить автоматическое использование кодов с помощью команды /redeem.
+auto_redeem_footer: Отключить автоматическое использование кодов с помощью команды/settings.
 auto_redeem_toggle.label: Автоматическое использование кодов
 books: Книги
 captcha.embed.description: "Нажмите на кнопку ниже, чтобы пройти CAPTCHA.\n"
@@ -159,7 +159,7 @@ exploration.common_chests: ""
 exploration.exquisite_chests: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
-exploration.placeholder_quote: ''
+exploration.placeholder_quote: ""
 exploration.precious_chests: ""
 exploration.progress: ""
 exploration.remarkable_chests: ""
@@ -754,7 +754,7 @@ image_settings_use_m3_art: ""
 remembrance: ""
 dismissible_default_title: ""
 dismissible_default_footer: ""
-dismissible_m3_art_desc: ''
+dismissible_m3_art_desc: ""
 dismissible_settings_v2: ""
 dismissible_card_settings_v2: ""
 mimo_lottery_info_hoyolab_decos: ""

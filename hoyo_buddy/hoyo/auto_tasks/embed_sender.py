@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, ClassVar
 import discord
 from loguru import logger
 
-from hoyo_buddy.constants import AUTO_TASK_COMMANDS, AUTO_TASK_FEATURE_KEYS
+from hoyo_buddy.constants import AUTO_TASK_FEATURE_KEYS
 from hoyo_buddy.db.models import DiscordEmbed, Settings
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
@@ -31,10 +31,6 @@ class EmbedSender:
         if feature_key is None:
             return None
 
-        command = AUTO_TASK_COMMANDS.get(task_type)
-        if command is None:
-            return None
-
         if "mimo" in task_type:
             return LocaleStr(
                 key="auto_task_error_dm_content",
@@ -43,13 +39,13 @@ class EmbedSender:
                     mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
                     label=LocaleStr(key=feature_key),
                 ),
-                command=command,
+                command="</settings>",
                 account=account,
             ).translate(locale or Locale.american_english)
         return LocaleStr(
             key="auto_task_error_dm_content",
             feature=LocaleStr(key=feature_key),
-            command=command,
+            command="</settings>",
             account=account,
         ).translate(locale or Locale.american_english)
 

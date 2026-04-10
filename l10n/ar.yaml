@@ -53,7 +53,7 @@ artifact_set_two_piece_embed_description: "قطعتان: {bonus_2}"
 artifact_sets: ارتيفاكت سيت
 auto_checkin_button_label: تحقق الدخول اليومي تلقائيا
 auto_locale_option_label: إتباع لغة البرنامج
-auto_redeem_footer: قم بإيقاف تشغيل الاسترداد التلقائي للكود باستخدام /redeem
+auto_redeem_footer: قم بإيقاف تشغيل الاسترداد التلقائي للكود باستخدام/settings
 auto_redeem_toggle.label: استرداد تلقائي للكود
 books: كتب
 captcha.embed.description: "اضعط على الزر ادناه لاكمال تحقق CAPTCHA"
@@ -159,7 +159,7 @@ exploration.common_chests: ""
 exploration.exquisite_chests: ""
 exploration.luxurious_chests: ""
 exploration.placeholder: ""
-exploration.placeholder_quote: ''
+exploration.placeholder_quote: ""
 exploration.precious_chests: ""
 exploration.progress: ""
 exploration.remarkable_chests: ""
@@ -757,7 +757,7 @@ image_settings_use_m3_art: ""
 remembrance: ""
 dismissible_default_title: ""
 dismissible_default_footer: ""
-dismissible_m3_art_desc: ''
+dismissible_m3_art_desc: ""
 dismissible_settings_v2: ""
 dismissible_card_settings_v2: ""
 mimo_lottery_info_hoyolab_decos: ""

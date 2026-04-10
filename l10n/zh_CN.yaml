@@ -159,9 +159,9 @@ exploration.common_chests: 普通宝箱数
 exploration.exquisite_chests: 精致宝箱数
 exploration.luxurious_chests: 华丽宝箱数
 exploration.placeholder: 待公开内容
-exploration.placeholder_quote: "“旅程总有一天会迎来终点，不必匆忙。”
+exploration.placeholder_quote: '“旅程总有一天会迎来终点，不必匆忙。”
 
-  ————钟离"
+  ————钟离'
 exploration.precious_chests: 珍贵宝箱数
 exploration.progress: "探索度：{progress}%"
 exploration.remarkable_chests: 奇馈宝箱数
@@ -761,7 +761,7 @@ image_settings_use_m3_art: 使用意象影画 3 图像
 remembrance: 记忆
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此消息只会显示一次
-dismissible_m3_art_desc: "你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。"
+dismissible_m3_art_desc: '你现在可以在 ZZZ 代理人卡片中使用意象影画 3 的图像了，在卡片设置中选择「Hoyo Buddy 卡片样式2」，接着在图像设置中打开「使用意象影画 3 图像」。'
 dismissible_settings_v2: "告别混乱零散的设置吧！Hoyo Buddy 的设置已经进行了重新设计，更加有条理且易于使用，还增加了一些新的便利功能，快在 </settings> 试试吧"
 dismissible_card_settings_v2: "卡片设置已经进行了重新设计，变得更有条理且更易于使用。你还可以批量将模板应用到所有角色（这是长期热门功能！）在</card-settings genshin>、</card-settings hsr>和</card-settings zzz>中试试吧"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 个 HoYoLAB 装饰"

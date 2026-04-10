@@ -201,10 +201,7 @@ furnishings: Muebles
 furniture_embed_description: "{comfort_icon} Comodidad: {comfort}\n{load_icon} Carga: {load}\nConfianza: {trust}\nTiempo de creación: {hour}h"
 game_maintenance_description: Por favor inténtalo de nuevo más tarde
 game_maintenance_title: El juego está en mantenimiento
-geeetest_verification_complete: Verificación completa
 geetest.embed.title: Se requiere verificación CAPTCHA antes de iniciar sesión
-geetest.no_need: No es necesario el Geetest
-geetest.no_need.description: "¡Nunca necesitaste hacer un geetest!. ¡¿Por qué estás aquí?!"
 geetest.required: Se requiere verificación de Geetest
 geetest.required.description: "Usa el comando </geetest>, elige la cuenta que activó el geetest y selecciona `{geetest_type}` para completar la verificación"
 geetest_command_description: Verificación Geetest completa
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy está codificado puramente en Python
 dyk_team_card: Puedes generar una tarjeta de equipo en /profile seleccionando varios personajes
 dyk_set_default_acc: Puede configurar una cuenta predeterminada que se utiliza para ejecutar todos los comandos en /accounts
 dyk_status_page: "Puedes ver el estado del bot [aquí](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-dyk_discord_server_giveaways: "Realizamos sorteos ocasionales en nuestro [servidor de Discord](<https://hoyo.link/PycvcNs9E>)"
+dyk_discord_server_giveaways: "Realizamos sorteos ocasionales en nuestro [servidor de Discord](<https://link.seria.moe/hb-dc>)"
 status_page_btn_label: Estado de la pagina
 docs_page_btn_label: Documentación
 invite_page_btn_label: Invitar

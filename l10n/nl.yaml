@@ -201,10 +201,7 @@ furnishings: Meubels
 furniture_embed_description: "{comfort_icon} Comfort: {comfort}\n{load_icon} Belasting: {load}\nVertrouwen: {trust}\nCreatietijd: {hour}u"
 game_maintenance_description: Probeer het later nog eens
 game_maintenance_title: Spel is Onder Onderhoud
-geeetest_verification_complete: Verificatie voltooid
 geetest.embed.title: CAPTCHA-verificatie vereist voordat je kunt inloggen
-geetest.no_need: Geen geetest nodig
-geetest.no_need.description: "Je hoefde nooit een geetest te doen! Waarom ben je hier?"
 geetest.required: Geetest-verificatie Vereist
 geetest.required.description: "Gebruik het </geetest>-commando, kies de account die de geetest heeft getriggerd en kies `{geetest_type}` om de verificatie te voltooien"
 geetest_command_description: Voltooi Geetest-verificatie
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy is gecodeerd in pure Python
 dyk_team_card: Je kunt een teamkaart genereren in /profile door meerdere karakters te selecteren
 dyk_set_default_acc: Je kunt een standaardaccount instellen die wordt gebruikt voor alle commando's in /accounts
 dyk_status_page: "Je kunt de status van de bot [hier controleren](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-dyk_discord_server_giveaways: "We organiseren af en toe winacties op onze [Discord-server](<https://hoyo.link/PycvcNs9E>)"
+dyk_discord_server_giveaways: "We organiseren af en toe winacties op onze [Discord-server](<https://link.seria.moe/hb-dc>)"
 status_page_btn_label: Statuspagina
 docs_page_btn_label: Documentatie
 invite_page_btn_label: Uitnodiging

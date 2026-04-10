@@ -159,8 +159,7 @@ exploration.common_chests: Gewone
 exploration.exquisite_chests: Uitmuntende
 exploration.luxurious_chests: Luxe
 exploration.placeholder: Wordt nog vrijgegeven
-exploration.placeholder_quote:
-  '"Elke reis heeft zijn laatste dag. Haast je niet."
+exploration.placeholder_quote: '"Elke reis heeft zijn laatste dag. Haast je niet."
 
   - Zhongli'
 exploration.precious_chests: Waardevolle

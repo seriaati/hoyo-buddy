@@ -25,4 +25,4 @@ jobs:
 
       - name: Run Pyright
         run: |
-          uv run basedpyright
+          uv run pyright

@@ -6,53 +6,52 @@ import hb_data
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
 
-from hoyo_buddy.api.utils import fetch_gacha_icons, fetch_json_file
-from hoyo_buddy.constants import locale_to_starrail_data_lang, locale_to_zenless_data_lang
-from hoyo_buddy.db.models import GachaHistory, HoyoAccount
+from hoyo_buddy.constants import locale_to_hoyo_lang
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
 from hoyo_buddy.enums import Game, Locale
-from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
+from hoyo_buddy.l10n import BANNER_TYPE_NAMES, translator
+from hoyo_buddy.utils.gacha import calculate_gacha_stats, get_gacha_icon
 
 from ..schemas import (
-    GachaIconsResponse,
+    BannerTypeInfo,
+    BannerTypesResponse,
     GachaItem,
     GachaLogResponse,
-    GachaNamesResponse,
     GachaParams,
+    GachaStatsResponse,
 )
 
 router = APIRouter()
 
+GachaData = dict[str, dict[str, str]]
 
-async def _fetch_gacha_names(*, item_ids: list[int], locale: Locale, game: Game) -> dict[int, str]:
-    """Fetch item names for the given item IDs, locale, and game."""
-    result: dict[int, str] = {}
 
+def _get_gacha_data_filename(game: Game, lang: str) -> str:
+    if game is Game.GENSHIN:
+        return f"gi_gacha_data_{lang}.json"
+    if game is Game.STARRAIL:
+        return f"hsr_gacha_data_{lang}.json"
     if game is Game.ZZZ:
-        zzz_map: dict[str, str] = await fetch_json_file(
-            f"zzz_item_names_{locale_to_zenless_data_lang(locale)}.json"
-        )
-        item_names = {int(k): v for k, v in zzz_map.items()}
-    elif game is Game.STARRAIL:
-        hsr_map: dict[str, str] = await fetch_json_file(
-            f"hsr_item_names_{locale_to_starrail_data_lang(locale)}.json"
-        )
-        item_names = {int(k): v for k, v in hsr_map.items()}
-    elif game is Game.GENSHIN:
-        async with AmbrAPIClient(locale) as client:
-            item_names = await client.fetch_item_id_to_name_map()
+        return f"zzz_gacha_data_{lang}.json"
+    msg = f"Unsupported game: {game}"
+    raise ValueError(msg)
+
+
+async def _load_gacha_data(game: Game, locale: Locale) -> GachaData:
+    lang = locale_to_hoyo_lang(locale)
+    filename = _get_gacha_data_filename(game, lang)
+    data: GachaData = await JSONFile.read(filename, default={})
+
+    if game is Game.GENSHIN:
         async with hb_data.GIClient() as client:
             mw_costumes = client.get_mw_costumes()
             mw_items = client.get_mw_items()
-            item_names.update({costume.id: costume.name for costume in mw_costumes})
-            item_names.update({item.id: item.name for item in mw_items})
-    else:
-        msg = f"Unsupported game: {game} for fetching gacha names"
-        raise ValueError(msg)
+            for costume in mw_costumes:
+                data[str(costume.id)] = {"name": costume.name, "icon": ""}
+            for item in mw_items:
+                data[str(item.id)] = {"name": item.name, "icon": ""}
 
-    for item_id in item_ids:
-        result[item_id] = item_names.get(item_id, "???")
-
-    return result
+    return data
 
 
 @router.get("/logs", response_model=GachaLogResponse)
@@ -62,10 +61,9 @@ async def get_gacha_logs(
     locale: Annotated[str, Query()] = "en-US",
     rarities: Annotated[str, Query()] = "",
     size: Annotated[int, Query(ge=1, le=500)] = 100,
-    page: Annotated[int, Query(ge=1)] = 1,
+    cursor: Annotated[str | None, Query()] = None,
     name_contains: Annotated[str | None, Query()] = None,
 ) -> GachaLogResponse:
-    """Return paginated gacha history for an account. No auth required."""
     parsed_rarities: list[int] = (
         [int(r) for r in rarities.split(",") if r.strip()] if rarities else []
     )
@@ -77,51 +75,51 @@ async def get_gacha_logs(
             banner_type=banner_type,
             rarities=parsed_rarities,
             size=size,
-            page=page,
+            cursor=cursor,
             name_contains=name_contains,
         )
     except (ValidationError, ValueError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    # Check account exists and get its game
     account = await HoyoAccount.get_or_none(id=params.account_id)
     if account is None:
         raise HTTPException(status_code=404, detail="Account not found")
 
     game = account.game
 
-    # Base queryset filtered by account, banner_type, and rarities
-    qs = GachaHistory.filter(
+    try:
+        locale_enum = Locale(params.locale)
+    except ValueError:
+        locale_enum = Locale.american_english
+
+    gacha_data = await _load_gacha_data(game, locale_enum)
+
+    base_qs = GachaHistory.filter(
         account_id=params.account_id, banner_type=params.banner_type, rarity__in=params.rarities
     )
 
-    total_row = await qs.count()
-
-    # Fetch gacha logs — fetch all when name filter is active, paginate otherwise
     if params.name_contains:
-        gacha_logs = await qs.order_by("-wish_id")
-    else:
-        gacha_logs = (
-            await qs.order_by("-wish_id").offset((params.page - 1) * params.size).limit(params.size)
-        )
+        matching_ids = {
+            int(item_id)
+            for item_id, item in gacha_data.items()
+            if params.name_contains.lower() in item.get("name", "").lower()
+        }
+        if not matching_ids:
+            return GachaLogResponse(items=[], total=0, next_cursor=None, game=game.value)
+        base_qs = base_qs.filter(item_id__in=matching_ids)
 
-    # Apply name filter if requested
-    if params.name_contains:
-        try:
-            locale_enum = Locale(params.locale)
-        except ValueError:
-            locale_enum = Locale.american_english
+    total = await base_qs.count()
 
-        item_ids = list({g.item_id for g in gacha_logs})
-        gacha_names = await _fetch_gacha_names(item_ids=item_ids, locale=locale_enum, game=game)
-        gacha_logs = [
-            g
-            for g in gacha_logs
-            if params.name_contains.lower() in gacha_names.get(g.item_id, "").lower()
-        ][(params.page - 1) * params.size : params.page * params.size]
-        total_row = len(gacha_logs)
+    qs = base_qs.order_by("-wish_id")
+    if params.cursor is not None:
+        qs = qs.filter(wish_id__lt=params.cursor)
 
-    max_page = max(1, (total_row + params.size - 1) // params.size)
+    gacha_logs = await qs.limit(params.size + 1)
+
+    next_cursor: str | None = None
+    if len(gacha_logs) > params.size:
+        next_cursor = str(gacha_logs[params.size - 1].wish_id)
+        gacha_logs = gacha_logs[: params.size]
 
     items = [
         GachaItem(
@@ -133,39 +131,59 @@ async def get_gacha_logs(
             wish_id=str(g.wish_id),
             time=str(g.time),
             banner_type=g.banner_type,
+            name=gacha_data.get(str(g.item_id), {}).get("name", "???"),
+            icon=get_gacha_icon(item_id=g.item_id, gacha_data=gacha_data),
         )
         for g in gacha_logs
     ]
 
-    return GachaLogResponse(items=items, total=total_row, page=params.page, max_page=max_page)
+    return GachaLogResponse(items=items, total=total, next_cursor=next_cursor, game=game.value)
 
 
-@router.get("/icons", response_model=GachaIconsResponse)
-async def get_gacha_icons() -> GachaIconsResponse:
-    """Fetch Genshin character/weapon icons from ambr API. No auth required."""
-    icons = await fetch_gacha_icons()
-    return GachaIconsResponse(icons=icons)
-
-
-@router.get("/names", response_model=GachaNamesResponse)
-async def get_gacha_names(
-    locale: Annotated[str, Query()],
-    game: Annotated[str, Query()],
-    item_ids: Annotated[str, Query()] = "",
-) -> GachaNamesResponse:
-    """Fetch item names for the given locale, game, and item IDs. No auth required."""
+@router.get("/banner-types", response_model=BannerTypesResponse)
+async def get_banner_types(
+    game: Annotated[str, Query()], locale: Annotated[str, Query()] = "en-US"
+) -> BannerTypesResponse:
     try:
-        locale_enum = Locale(locale)
         game_enum = Game(game)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    if not item_ids:
-        return GachaNamesResponse(names={})
+    try:
+        locale_enum = Locale(locale)
+    except ValueError:
+        locale_enum = Locale.american_english
 
-    parsed_ids = [int(i) for i in item_ids.split(",") if i.strip()]
-    if not parsed_ids:
-        return GachaNamesResponse(names={})
+    banner_type_map = BANNER_TYPE_NAMES.get(game_enum, {})
+    banner_types = [
+        BannerTypeInfo(id=banner_type, name=translator.translate(name, locale_enum))
+        for banner_type, name in banner_type_map.items()
+    ]
 
-    names = await _fetch_gacha_names(item_ids=parsed_ids, locale=locale_enum, game=game_enum)
-    return GachaNamesResponse(names={str(k): v for k, v in names.items()})
+    return BannerTypesResponse(banner_types=banner_types)
+
+
+@router.get("/stats", response_model=GachaStatsResponse)
+async def get_gacha_stats(
+    account_id: Annotated[int, Query()], banner_type: Annotated[int, Query()]
+) -> GachaStatsResponse:
+    account = await HoyoAccount.get_or_none(id=account_id)
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+
+    result = await calculate_gacha_stats(
+        account_id=account_id, game=account.game, banner_type=banner_type
+    )
+
+    return GachaStatsResponse(
+        total_pulls=result.total_pulls,
+        five_star_pity=result.five_star_pity,
+        four_star_pity=result.four_star_pity,
+        total_five_stars=result.total_five_stars,
+        total_four_stars=result.total_four_stars,
+        avg_pulls_per_five_star=result.avg_pulls_per_five_star,
+        avg_pulls_per_four_star=result.avg_pulls_per_four_star,
+        fifty_fifty_wins=result.fifty_fifty_wins,
+        fifty_fifty_total=result.fifty_fifty_total,
+        fifty_fifty_win_rate=result.fifty_fifty_win_rate,
+    )

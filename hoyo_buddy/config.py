@@ -31,6 +31,7 @@ class Config(BaseSettings):
     db_url: str
     fernet_key: str
     proxy: str | None = None
+    residential_proxy: str | None = None
     redis_url: str | None = None
     user_agent: str | None = "HoyoBuddy/1.0"
 
@@ -54,6 +55,7 @@ class Config(BaseSettings):
     log_retention_count: int = 10
     log_compression: str = "gz"
     log_level: str = "DEBUG"
+    log_tortoise_queries: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",

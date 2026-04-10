@@ -20,7 +20,7 @@ from hoyo_buddy.constants import (
     ELEMENT_TO_BONUS_PROP_ID,
     GPY_PATH_TO_EKNA_PATH,
     HB_GAME_TO_GPY_GAME,
-    LOCALE_TO_GPY_LANG,
+    LOCALE_TO_HOYO_LANG,
     MANIKEN_BOY_GACHA_ART,
     MANIKEN_GIRL_GACHA_ART,
     PLAYER_BOY_GACHA_ART,
@@ -74,17 +74,25 @@ class ProxyGenshinClient(genshin.Client):
         *args,
         region: genshin.Region = genshin.Region.OVERSEAS,
         use_proxy: bool = True,
+        proxy_url: str | None = None,
         **kwargs,
     ) -> None:
+        effective_proxy: str | None = None
+        if region is genshin.Region.OVERSEAS and use_proxy:
+            effective_proxy = proxy_url if proxy_url is not None else CONFIG.proxy
+        logger.debug(
+            f"ProxyGenshinClient initialized with proxy: {effective_proxy!r} (region={region})"
+        )
         super().__init__(
             *args,
             debug=True,
             cache=_create_gpy_cache(),
             region=region,
-            proxy=CONFIG.proxy if region is genshin.Region.OVERSEAS and use_proxy else None,
+            proxy=effective_proxy,
             **kwargs,
         )
         self._use_proxy = use_proxy
+        self._proxy_url = proxy_url
 
     @property
     def use_proxy(self) -> bool:
@@ -92,11 +100,12 @@ class ProxyGenshinClient(genshin.Client):
 
     @use_proxy.setter
     def use_proxy(self, value: bool) -> None:
-        if CONFIG.proxy is None:
+        effective_proxy = self._proxy_url if self._proxy_url is not None else CONFIG.proxy
+        if effective_proxy is None:
             logger.warning("Proxy is not set in the config, setting use_proxy will have no effect.")
 
         if value and self.region is genshin.Region.OVERSEAS:
-            self.proxy = CONFIG.proxy
+            self.proxy = effective_proxy
         else:
             self.proxy = None
         self._use_proxy = value
@@ -145,7 +154,7 @@ class GenshinClient(ProxyGenshinClient):
         self.lang = (
             "zh-cn"
             if self.region is genshin.Region.CHINESE
-            else LOCALE_TO_GPY_LANG.get(locale, "en-us")
+            else LOCALE_TO_HOYO_LANG.get(locale, "en-us")
         )
 
     def get_daily_reward_embed(

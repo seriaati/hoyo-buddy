@@ -201,10 +201,7 @@ furnishings: 가구
 furniture_embed_description: "{comfort_icon} 쾌적도: {comfort}\n{load_icon} 부하: {load}\n신뢰도: {trust}\n제작 시간: {hour}시간"
 game_maintenance_description: 나중에 다시 시도해주세요
 game_maintenance_title: 게임이 점검 중입니다.
-geeetest_verification_complete: 인증이 완료되었습니다.
 geetest.embed.title: 로그인 전에 CAPTCHA 인증을 완료해 주세요.
-geetest.no_need: Geetest 인증은 필요하지 않습니다.
-geetest.no_need.description: "Geetest 인증은 필요 없잖아! 도대체 왜 나온 거야?!"
 geetest.required: Geetest 인증이 필요합니다.
 geetest.required.description: " </geetest>명령어를 사용해 Geetest가 발생한 계정을 선택하고 `{geetest_type}`을 선택해 인증을 완료해 주세요."
 geetest_command_description: Geetest 인증을 완료해 주세요.
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy는 순수 Python으로 제작되었어요.
 dyk_team_card: 여러 캐릭터를 선택해 /profile에서 팀 카드를 생성할 수 있습니다.
 dyk_set_default_acc: " /accounts에서 모든 명령어에 기본으로 사용할 계정을 설정할 수 있습니다."
 dyk_status_page: "봇의 현재 상태는 [여기](<https://status.seria.moe/?category=Hoyo%20Buddy>)에서 확인할 수 있습니다."
-dyk_discord_server_giveaways: "저희 [디스코드 서버](<https://hoyo.link/PycvcNs9E>)에서 가끔 경품 이벤트를 진행합니다."
+dyk_discord_server_giveaways: "저희 [디스코드 서버](<https://link.seria.moe/hb-dc>)에서 가끔 경품 이벤트를 진행합니다."
 status_page_btn_label: 상태 페이지
 docs_page_btn_label: 문서
 invite_page_btn_label: 초대하기

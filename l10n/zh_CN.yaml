@@ -201,10 +201,7 @@ furnishings: 家具
 furniture_embed_description: "{comfort_icon} 舒适度: {comfort}\n{load_icon} 负荷: {load}\n提供信任度: {trust}制作时间: {hour} 小时"
 game_maintenance_description: 请稍后再试
 game_maintenance_title: 游戏处于维护中。
-geeetest_verification_complete: 验证完成
 geetest.embed.title: 在登录前须进行 CAPTCHA 验证
-geetest.no_need: 无需进行 Geetest 验证
-geetest.no_need.description: "本来就不需要进行 geetest 验证啊！你怎么还在这里？！"
 geetest.required: 需要Geetest验证
 geetest.required.description: "使用</geetest>命令，选择触发此验证的账户，并选择 `{geetest_type}` 来完成验证"
 geetest_command_description: 完成 Geetest 验证
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy 是用纯Python编写而成的。
 dyk_team_card: 你可以通过选择多个角色的方式在 /profile 生成队伍卡片
 dyk_set_default_acc: 你可以用 /accounts 设置一个预设账户，用于运行所有命令
 dyk_status_page: "你可以在[这里](<https://status.seria.moe/?category=Hoyo%20Buddy>)查看机器人状态"
-dyk_discord_server_giveaways: "我们有时会在 [Discord 服务器](<https://hoyo.link/PycvcNs9E>) 中举办赠品活动"
+dyk_discord_server_giveaways: "我们有时会在 [Discord 服务器](<https://link.seria.moe/hb-dc>) 中举办赠品活动"
 status_page_btn_label: 状态页
 docs_page_btn_label: 文档
 invite_page_btn_label: 邀请

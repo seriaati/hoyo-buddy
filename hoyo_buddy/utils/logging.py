@@ -71,7 +71,7 @@ def setup_logging(log_dir: str) -> None:
         logging_logger.handlers = []
         logging_logger.propagate = True
 
-    if CONFIG.is_dev:
+    if CONFIG.log_tortoise_queries:
         logging.getLogger("tortoise").setLevel(logging.DEBUG)
     else:
         logger.disable("hoyo_buddy.db.models.base")

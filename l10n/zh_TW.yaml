@@ -159,9 +159,9 @@ exploration.common_chests: 普通
 exploration.exquisite_chests: 精緻
 exploration.luxurious_chests: 華麗
 exploration.placeholder: 尚未釋出
-exploration.placeholder_quote: "「旅程總有一天會迎來終點，不必匆忙。」
+exploration.placeholder_quote: '「旅程總有一天會迎來終點，不必匆忙。」
 
-  - 鍾離"
+  - 鍾離'
 exploration.precious_chests: 珍貴
 exploration.progress: "探索進度: {progress}%"
 exploration.remarkable_chests: 奇饋
@@ -201,10 +201,7 @@ furnishings: 家具
 furniture_embed_description: "{comfort_icon} 舒適度: {comfort}\n{load_icon} 負荷: {load}\n提供信任度: {trust}\n製作時間: {hour} 小時"
 game_maintenance_description: 請稍後再試
 game_maintenance_title: 遊戲正在維護
-geeetest_verification_complete: 驗證完成
 geetest.embed.title: 在登入前需要進行 CAPTCHA 驗證
-geetest.no_need: 無需進行 Geetest 驗證
-geetest.no_need.description: "你從來不需要做 geetest 驗證！你為什麼在這裡？！"
 geetest.required: 需要進行 Geetest 驗證
 geetest.required.description: "使用</geetest>指令，選擇觸發此驗證的帳戶，並選擇 `{geetest_type}` 來完成驗證"
 geetest_command_description: 完成 Geetest 驗證
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy 使用純 Python 編寫而成
 dyk_team_card: 你可以透過選擇多個角色的方式在 /profile 產生隊伍卡片
 dyk_set_default_acc: 你可以用 /accounts 設置一個預設帳戶，用於運行所有指令
 dyk_status_page: "你可以在[這裡](<https://status.seria.moe/?category=Hoyo%20Buddy>)查看機器人的運作狀況"
-dyk_discord_server_giveaways: "我們有時會在 [Discord 伺服器](<https://hoyo.link/PycvcNs9E>) 中舉辦贈品活動"
+dyk_discord_server_giveaways: "我們有時會在 [Discord 伺服器](<https://link.seria.moe/hb-dc>) 中舉辦贈品活動"
 status_page_btn_label: 運行狀態頁面
 docs_page_btn_label: 文檔
 invite_page_btn_label: 邀請
@@ -764,7 +761,7 @@ image_settings_use_m3_art: 使用意象影畫 3 繪圖
 remembrance: 記憶
 dismissible_default_title: 新功能！
 dismissible_default_footer: 此訊息只會顯示一次
-dismissible_m3_art_desc: "你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。"
+dismissible_m3_art_desc: '你現在可以在 ZZZ 代理人卡片中使用意象影畫 3 的繪圖了，在卡片設置中選擇「Hoyo Buddy 卡片樣式 2」，接著在圖片設定中打開「使用意象影畫 3 繪圖」。'
 dismissible_settings_v2: "告別混亂分散的設定！Hoyo Buddy 的設定已經過改版，更有條理且更易於使用，並新增了一些新的便利功能，在 </settings>試試看吧"
 dismissible_card_settings_v2: "卡片設定已經過改版，更有條理且更易於使用。你也可以批次套用樣式至所有角色（這是一個長期以來被要求的功能！）在 </card-settings genshin>, </card-settings hsr>, 和</card-settings zzz>試試看吧"
 mimo_lottery_info_hoyolab_decos: "…以及 {num} 個 HoYoLAB 裝飾"

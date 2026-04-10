@@ -176,7 +176,7 @@ LOCALE_TO_HSR_CARD_API_LANG: dict[Locale, str] = {
     Locale.ukrainian: "ru",
 }
 
-LOCALE_TO_GPY_LANG = {
+LOCALE_TO_HOYO_LANG = {
     Locale.american_english: "en-us",
     Locale.taiwan_chinese: "zh-tw",
     Locale.chinese: "zh-cn",
@@ -194,11 +194,11 @@ LOCALE_TO_GPY_LANG = {
     Locale.russian: "ru-ru",
     Locale.ukrainian: "ru-ru",
 }
-GPY_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_GPY_LANG.items()}
+HOYO_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_HOYO_LANG.items()}
 
 
-def locale_to_gpy_lang(locale: Locale) -> str:
-    return LOCALE_TO_GPY_LANG.get(locale, "en-us")
+def locale_to_hoyo_lang(locale: Locale) -> str:
+    return LOCALE_TO_HOYO_LANG.get(locale, "en-us")
 
 
 HOYO_BUDDY_LOCALES: dict[Locale, dict[str, str]] = {
@@ -533,28 +533,6 @@ ZENLESS_DATA_LANG_TO_LOCALE = {v: k for k, v in LOCALE_TO_ZENLESS_DATA_LANG.item
 def locale_to_zenless_data_lang(locale: Locale) -> str:
     return LOCALE_TO_ZENLESS_DATA_LANG.get(locale, "EN")
 
-
-STARRAIL_DATA_URL = "https://gitlab.com/Dimbreath/turnbasedgamedata/-/raw/main"
-HSR_AVATAR_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfig.json"
-HSR_AVATAR_CONFIG_LD_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/AvatarConfigLD.json"
-HSR_EQUIPMENT_CONFIG_URL = f"{STARRAIL_DATA_URL}/ExcelOutput/EquipmentConfig.json"
-HSR_TEXT_MAP_URL = f"{STARRAIL_DATA_URL}/TextMap/TextMap{{lang}}.json"
-
-STARRAIL_DATA_LANGS = (
-    "CHS",
-    "CHT",
-    "DE",
-    "EN",
-    "ES",
-    "FR",
-    "ID",
-    "JP",
-    "KR",
-    "PT",
-    "RU",
-    "TH",
-    "VI",
-)
 
 LOCALE_TO_STARRAIL_DATA_LANG: dict[Locale, str] = {
     Locale.chinese: "CHS",

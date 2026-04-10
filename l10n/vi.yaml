@@ -201,10 +201,7 @@ furnishings: Đồ Trang Trí
 furniture_embed_description: "{comfort_icon} Tiên Lực: {comfort}\n{load_icon} Khối Lượng: {load}\nĐộ Tín Nhiệm: {trust}\nThời gian chế tạo: {hour}h"
 game_maintenance_description: Vui lòng thử lại sau
 game_maintenance_title: Trò chơi hiện đang bảo trì
-geeetest_verification_complete: Xác minh thành công
 geetest.embed.title: Yêu cầu Xác minh CAPTCHA trước khi đăng nhập
-geetest.no_need: Không cần thực hiện geetest
-geetest.no_need.description: "Bạn có phải làm geetest đâu! Sao lại ở đây làm gì?!"
 geetest.required: Yêu câu Xác minh Geetest
 geetest.required.description: "Dùng lệnh </geetest>, chọn tài khoản yêu cầu geetest, và chọn loại `{geetest_type}` để hoàn thành bước xác minh"
 geetest_command_description: Hoàn thành xác minh geetest
@@ -556,7 +553,7 @@ dyk_python: Hoyo Buddy được lập trình hoàn toàn bằng Python
 dyk_team_card: Bạn có thể tạo một thẻ dội trong /profile bằng cách chọn nhiều nhân vật
 dyk_set_default_acc: Bạn có thể đặt một tài khoản mặc định dùng để chạy hết tất cả lệnh trong /accounts
 dyk_status_page: "Bạn có thể kiểm tra trạng thái của bot ở [đây](<https://status.seria.moe/?category=Hoyo%20Buddy>)"
-dyk_discord_server_giveaways: "Chúng tôi thường xuyên tổ chức các sự kiện giveaway trong [máy chủ Discord](<https://hoyo.link/PycvcNs9E>) của chúng tôi."
+dyk_discord_server_giveaways: "Chúng tôi thường xuyên tổ chức các sự kiện giveaway trong [máy chủ Discord](<https://link.seria.moe/hb-dc>) của chúng tôi."
 status_page_btn_label: Trang trạng thái
 docs_page_btn_label: Tài liệu Wiki
 invite_page_btn_label: Mời

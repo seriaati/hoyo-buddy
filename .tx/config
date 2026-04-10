@@ -1,0 +1,11 @@
+[main]
+host = https://app.transifex.com
+
+[o:seria:p:hoyo-buddy:r:3bef2799e06a52263fdafefbf5e64c9a]
+file_filter            = l10n/<lang>.yaml
+source_file            = l10n/en_US.yaml
+type                   = YAML_GENERIC
+minimum_perc           = 0
+resource_name          = Discord Bot
+replace_edited_strings = false
+keep_translations      = false

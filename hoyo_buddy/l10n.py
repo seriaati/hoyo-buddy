@@ -20,7 +20,7 @@ from hoyo_buddy.enums import Game
 
 from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
-    GPY_LANG_TO_LOCALE,
+    HOYO_LANG_TO_LOCALE,
     WEEKDAYS,
     YATTA_COMBAT_TYPE_TO_ELEMENT,
     ZENLESS_DATA_LANG_TO_LOCALE,
@@ -221,7 +221,7 @@ class Translator:
     async def _fetch_mi18n_task(
         self, client: genshin.Client, *, lang: str, filename: str, url: str
     ) -> None:
-        locale = GPY_LANG_TO_LOCALE.get(lang)
+        locale = HOYO_LANG_TO_LOCALE.get(lang)
         if locale is None:
             logger.warning(f"Failed to convert gpy lang {lang!r} to locale")
             return
@@ -258,7 +258,7 @@ class Translator:
 
             filename, lang = file_path.stem.split("_")[1:]
             game = FILENAME_TO_GAME[filename]
-            self._mi18n[GPY_LANG_TO_LOCALE[lang].value.replace("-", "_"), game] = await read_json(
+            self._mi18n[HOYO_LANG_TO_LOCALE[lang].value.replace("-", "_"), game] = await read_json(
                 file_path.as_posix()
             )
 

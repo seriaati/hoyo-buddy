@@ -33,7 +33,7 @@ class GachaHistory(BaseModel):
     account_id: fields.Field[int]
 
     class Meta:
-        unique_together = ("wish_id", "game", "account")
+        unique_together = ("wish_id", "game", "account", "banner_type")
         ordering = ("-wish_id",)
 
     @classmethod

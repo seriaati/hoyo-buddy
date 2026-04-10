@@ -199,10 +199,7 @@ furnishings: 調度品
 furniture_embed_description: "{comfort_icon} 快適度：{comfort}\n{load_icon} 負荷：{load}\n信頼ランク：{trust}\n製作時間：{hour}時間"
 game_maintenance_description: しばらくしてからもう一度お試しください
 game_maintenance_title: ゲームはメンテナンス中です
-geeetest_verification_complete: 認証完了
 geetest.embed.title: ログイン前にCAPTCHA認証が必要です
-geetest.no_need: GeeTestは不要です
-geetest.no_need.description: "GeeTest認証は必要ありませんでした！なぜここに？"
 geetest.required: GeeTest認証が必要です
 geetest.required.description: "</geetest> コマンドを使用し、GeeTestを引き起こしたアカウントを選択し、`{geetest_type}` を選択して認証を完了してください"
 geetest_command_description: GeeTest認証を完了します
@@ -554,7 +551,7 @@ dyk_python: Hoyo Buddyは純粋なPythonで書かれています
 dyk_team_card: /profile で複数のキャラクターを選択することでチームカードを生成できます
 dyk_set_default_acc: /accounts ですべてのコマンドを実行するために使用されるデフォルトアカウントを設定できます
 dyk_status_page: "ボットのステータスを[こちら](<https://status.seria.moe/?category=Hoyo%20Buddy>)で確認できます"
-dyk_discord_server_giveaways: "私たちは時々、[Discordサーバー](<https://hoyo.link/PycvcNs9E>)でプレゼント企画を開催しています。"
+dyk_discord_server_giveaways: "私たちは時々、[Discordサーバー](<https://link.seria.moe/hb-dc>)でプレゼント企画を開催しています。"
 status_page_btn_label: ステータスページ
 docs_page_btn_label: ドキュメント
 invite_page_btn_label: 招待

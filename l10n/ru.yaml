@@ -104,7 +104,7 @@ characters.sorter.friendship: Friendship
 characters.sorter.level: Уровень
 characters.sorter.path: Путь
 characters.sorter.placeholder: ""
-characters.sorter.rarity: ""
+characters.sorter.rarity: Редкость
 characters.sorter.hsr_type: ""
 characters_cmd_genshin_desc: Просмотр и фильтрация персонажей Genshin Impact
 characters_cmd_hsr_desc: Просмотр и фильтрация персонажей Honkai Star Rail
@@ -199,10 +199,7 @@ furnishings: ""
 furniture_embed_description: ""
 game_maintenance_description: ""
 game_maintenance_title: ""
-geeetest_verification_complete: ""
 geetest.embed.title: ""
-geetest.no_need: ""
-geetest.no_need.description: ""
 geetest.required: ""
 geetest.required.description: ""
 geetest_command_description: ""

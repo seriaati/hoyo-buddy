@@ -5,6 +5,7 @@ from typing import Annotated, Any
 
 import aiohttp
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import FRONTEND_URLS
@@ -76,6 +77,14 @@ def _user_data_to_response(user_data: dict[str, Any]) -> UserResponse:
         default_avatar_index = discriminator % 5
         avatar_url = f"https://cdn.discordapp.com/embed/avatars/{default_avatar_index}.png"
     return UserResponse(id=user_id, username=username, avatar_url=avatar_url)
+
+
+@router.post("/logout")
+async def logout(session: Annotated[dict, Depends(get_session)]) -> JSONResponse:
+    session.clear()
+    response = JSONResponse({"status": "ok"})
+    response.delete_cookie("hb_session")
+    return response
 
 
 @router.get("/me", response_model=UserResponse)

@@ -23,7 +23,7 @@ from genshin.models import (
 from loguru import logger
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, GPY_LANG_TO_LOCALE, TRAVELER_IDS
+from hoyo_buddy.constants import GAME_CHALLENGE_TYPES, HOYO_LANG_TO_LOCALE, TRAVELER_IDS
 from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
 from hoyo_buddy.draw import main_funcs as draw_funcs
 from hoyo_buddy.embeds import DefaultEmbed
@@ -439,7 +439,7 @@ class ChallengeView(View):
         loop: asyncio.AbstractEventLoop,
     ) -> File:
         assert self.challenge is not None
-        locale = draw_locale(GPY_LANG_TO_LOCALE[self.challenge.lang], self.account)
+        locale = draw_locale(HOYO_LANG_TO_LOCALE[self.challenge.lang], self.account)
         draw_input = DrawInput(
             dark_mode=self.dark_mode,
             locale=locale,

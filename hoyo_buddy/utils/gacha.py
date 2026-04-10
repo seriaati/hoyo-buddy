@@ -1,20 +1,17 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
+from dataclasses import dataclass
+from typing import Literal
 
+import aiohttp
 import chompjs
 from loguru import logger
 
 from hoyo_buddy.constants import STANDARD_ITEMS
+from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
 from hoyo_buddy.enums import Game
 from hoyo_buddy.models.gacha import GIBanner, HSRBanner, ZZZBanner
-
-if TYPE_CHECKING:
-    import aiohttp
-
-    from hoyo_buddy.db.models.gacha_history import GachaHistory
-
 
 HSR_BANNER_URL = "https://starrailstation.com/api/v1/warp_config"
 ZZZ_BANNER_URL = "https://zzz.rng.moe/api/v1/gacha/config?game=zzz"
@@ -87,20 +84,128 @@ def check_gi_item_is_standard(
     return is_standard
 
 
-def get_gacha_icon(*, game: Game, item_id: int) -> str:
-    """Get the icon URL for a gacha item."""
-    if game is Game.ZZZ:
-        return f"https://stardb.gg/api/static/zzz/{item_id}.png"
+def get_gacha_icon(*, item_id: int, gacha_data: dict[str, dict[str, str]]) -> str:
+    return gacha_data.get(str(item_id), {}).get("icon", "")
 
-    if game is Game.GENSHIN:
-        return f"https://stardb.gg/api/static/genshin/{item_id}.png"
 
-    if game is Game.STARRAIL:
-        if len(str(item_id)) == 5:  # light cone
-            return f"https://stardb.gg/api/static/StarRailResWebp/icon/light_cone/{item_id}.webp"
+@dataclass
+class GachaStatsResult:
+    total_pulls: int
+    five_star_pity: int
+    four_star_pity: int
+    total_five_stars: int
+    total_four_stars: int
+    avg_pulls_per_five_star: float
+    avg_pulls_per_four_star: float
+    fifty_fifty_wins: int
+    fifty_fifty_total: int
+    fifty_fifty_win_rate: float
 
-        # character
-        return f"https://stardb.gg/api/static/StarRailResWebp/icon/character/{item_id}.webp"
 
-    msg = f"Unsupported game: {game}"
-    raise ValueError(msg)
+async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[int, int]:
+    five_stars = (
+        await GachaHistory.filter(account=account, rarity=5, banner_type=banner_type)
+        .order_by("wish_id")
+        .only("item_id", "time", "banner_id")
+    )
+    if not five_stars:
+        return 0, 0
+
+    gi_banners: list[GIBanner] = []
+    item_names: dict[int, str] = {}
+    hsr_banners: list[HSRBanner] = []
+
+    async with aiohttp.ClientSession() as session:
+        if account.game is Game.GENSHIN:
+            gi_banners = await fetch_gi_banners(session)
+            gi_data: dict[str, dict[str, str]] = await JSONFile.read(
+                "gi_gacha_data_en-us.json", default={}
+            )
+            item_names = {int(k): v["name"] for k, v in gi_data.items()}
+        elif account.game is Game.STARRAIL:
+            hsr_banners = await fetch_hsr_banners(session)
+
+    is_standards: list[bool] = []
+    for item in five_stars:
+        if account.game is Game.GENSHIN:
+            is_standard = check_gi_item_is_standard(item, gi_banners, item_names)
+        elif account.game is Game.STARRAIL:
+            is_standard = check_hsr_item_is_standard(item, hsr_banners)
+        elif account.game is Game.ZZZ:
+            is_standard = check_zzz_item_is_standard(item)
+        else:
+            logger.error(f"Unknown game for checking is_standard: {account.game}")
+            continue
+
+        is_standards.append(is_standard)
+
+    status: list[Literal[50, 100]] = [50]
+    wins = 0
+
+    for i, is_standard in enumerate(is_standards):
+        status.append(100 if is_standard else 50)
+        if status[i] == 50 and not is_standard:
+            wins += 1
+    del status[-1]
+
+    return wins, status.count(50)
+
+
+async def calculate_gacha_stats(
+    *,
+    account_id: int,
+    game: Game,  # noqa: ARG001
+    banner_type: int,
+) -> GachaStatsResult:
+    account = await HoyoAccount.get(id=account_id)
+
+    last_gacha = (
+        await GachaHistory.filter(account=account, banner_type=banner_type).first().only("num")
+    )
+    last_gacha_num = last_gacha.num if last_gacha else 0
+
+    last_five_star = (
+        await GachaHistory.filter(account=account, banner_type=banner_type, rarity=5)
+        .first()
+        .only("num")
+    )
+    last_five_star_num = last_five_star.num if last_five_star else 0
+
+    last_four_star = (
+        await GachaHistory.filter(account=account, banner_type=banner_type, rarity=4)
+        .first()
+        .only("num")
+    )
+    last_four_star_num = last_four_star.num if last_four_star else 0
+
+    five_star_pity = last_gacha_num - last_five_star_num
+    four_star_pity = last_gacha_num - last_four_star_num
+
+    total_pulls = await GachaHistory.filter(account=account, banner_type=banner_type).count()
+    total_five_stars = await GachaHistory.filter(
+        account=account, banner_type=banner_type, rarity=5
+    ).count()
+    total_four_stars = await GachaHistory.filter(
+        account=account, banner_type=banner_type, rarity=4
+    ).count()
+
+    avg_pulls_per_five_star = total_pulls / total_five_stars if total_five_stars else 0.0
+    avg_pulls_per_four_star = total_pulls / total_four_stars if total_four_stars else 0.0
+
+    fifty_fifty_wins, fifty_fifty_total = await calc_50_50_stats(
+        account=account, banner_type=banner_type
+    )
+    fifty_fifty_win_rate = fifty_fifty_wins / fifty_fifty_total if fifty_fifty_total else 0.0
+
+    return GachaStatsResult(
+        total_pulls=total_pulls,
+        five_star_pity=five_star_pity,
+        four_star_pity=four_star_pity,
+        total_five_stars=total_five_stars,
+        total_four_stars=total_four_stars,
+        avg_pulls_per_five_star=avg_pulls_per_five_star,
+        avg_pulls_per_four_star=avg_pulls_per_four_star,
+        fifty_fifty_wins=fifty_fifty_wins,
+        fifty_fifty_total=fifty_fifty_total,
+        fifty_fifty_win_rate=fifty_fifty_win_rate,
+    )

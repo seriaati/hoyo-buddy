@@ -48,9 +48,20 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import CardSettings, Settings
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.types import Interaction
+    from hoyo_buddy.types import Character, Interaction
 
-    from .view import Character
+
+ZZZ_TEAM_IMAGE_OVERRIDES: dict[int, str] = {
+    1211: "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png",  # Rina
+    1501: "https://r2.img.seria.moe/jSgphDDloguDGVFe.png",  # Aria
+}
+
+GI_CHARACTER_ART_OVERRIDES: dict[str, str] = {
+    "10000005": PLAYER_BOY_GACHA_ART,  # PlayerBoy
+    "10000007": PLAYER_GIRL_GACHA_ART,  # PlayerGirl
+    "10000117": MANIKEN_BOY_GACHA_ART,  # Maniken Boy
+    "10000118": MANIKEN_GIRL_GACHA_ART,  # Maniken Girl
+}
 
 
 async def get_team_image(user_id: int, character_id: str, *, game: Game) -> str | None:
@@ -63,10 +74,8 @@ def get_default_art(
 ) -> str:
     if isinstance(character, ZZZPartialAgent | ZZZFullAgent | ZZZEnkaCharacter):
         if is_team:
-            if character.id == 1211:  # Rina
-                return "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png"
-            if character.id == 1501:  # Aria
-                return "https://r2.img.seria.moe/jSgphDDloguDGVFe.png"
+            if character.id in ZZZ_TEAM_IMAGE_OVERRIDES:
+                return ZZZ_TEAM_IMAGE_OVERRIDES[character.id]
             return character.banner_icon
         if use_m3_art:
             return ZZZ_M3_ART_URL.format(char_id=character.id)
@@ -75,14 +84,10 @@ def get_default_art(
     if isinstance(character, enka.gi.Character | HoyolabGICharacter):
         if character.costume is not None:
             return character.costume.icon.gacha
-        if "10000005" in str(character.id):  # PlayerBoy
-            return PLAYER_BOY_GACHA_ART
-        if "10000007" in str(character.id):  # PlayerGirl
-            return PLAYER_GIRL_GACHA_ART
-        if "10000117" in str(character.id):  # Maniken Boy
-            return MANIKEN_BOY_GACHA_ART
-        if "10000118" in str(character.id):  # Maniken Girl
-            return MANIKEN_GIRL_GACHA_ART
+        char_id_str = str(character.id)
+        for key, art in GI_CHARACTER_ART_OVERRIDES.items():
+            if key in char_id_str:
+                return art
         return character.icon.gacha
 
     if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):  # pyright: ignore[reportUnnecessaryIsInstance]

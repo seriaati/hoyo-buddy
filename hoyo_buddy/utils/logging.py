@@ -77,6 +77,7 @@ def setup_logging(log_dir: str) -> None:
         logger.disable("hoyo_buddy.db.models.base")
         logger.disable("aiohttp.web_log")
 
+    logger.enable("enka")
     logging.getLogger("discord.app_commands.tree").addFilter(
         lambda record: "Ignoring exception in autocomplete for" not in record.getMessage()
     )

@@ -653,6 +653,12 @@ HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/Texture2D/{{char_i
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/Texture2D/{{char_id}}.png"
 ZZZ_M3_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_2.webp"
 ZZZ_M6_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
+ZZZ_TEAM_IMAGE_OVERRIDES: dict[str, str] = {
+    "1211": "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png",  # Rina
+    "1501": "https://r2.img.seria.moe/jSgphDDloguDGVFe.png",  # Aria
+    "1501_3115011": "https://r2.img.seria.moe/ipkNnYARmIzegHHO.png",  # Aria skin
+    "1511": "https://r2.img.seria.moe/mTogIlZFGfIbfZaj.png",  # Nangong
+}
 
 UIGF_GAME_KEYS: Final[dict[Game, str]] = {
     Game.GENSHIN: "hk4e",

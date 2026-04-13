@@ -7,7 +7,7 @@ import ambr
 import hb_data
 from discord import File
 
-from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS
+from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS, ZZZ_TEAM_IMAGE_OVERRIDES
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.enums import Game
@@ -445,7 +445,13 @@ async def fetch_zzz_draw_data(
         agent_images_path = _get_images_path(template, use_m3_art=use_m3_art)
         agent_images = await JSONFile.read(agent_images_path, int_key=True)
     else:  # 3, 4
-        agent_images = {agent.id: agent.banner_icon for agent in agents}
+        agent_images = {
+            agent.id: ZZZ_TEAM_IMAGE_OVERRIDES.get(
+                f"{agent.id}_{agent.outfit_id}" if agent.outfit_id is not None else str(agent.id),
+                ZZZ_TEAM_IMAGE_OVERRIDES.get(str(agent.id), agent.banner_icon),
+            )
+            for agent in agents
+        }
 
     fetch_name_data = False
     fetch_disc_icons = False

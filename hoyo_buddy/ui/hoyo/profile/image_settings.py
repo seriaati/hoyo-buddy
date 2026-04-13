@@ -16,6 +16,7 @@ from hoyo_buddy.constants import (
     PLAYER_GIRL_GACHA_ART,
     ZZZ_M3_ART_URL,
     ZZZ_M6_ART_URL,
+    ZZZ_TEAM_IMAGE_OVERRIDES,
 )
 from hoyo_buddy.db import CustomImage
 from hoyo_buddy.db.utils import get_card_settings
@@ -51,11 +52,6 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Character, Interaction
 
 
-ZZZ_TEAM_IMAGE_OVERRIDES: dict[int, str] = {
-    1211: "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png",  # Rina
-    1501: "https://r2.img.seria.moe/jSgphDDloguDGVFe.png",  # Aria
-}
-
 GI_CHARACTER_ART_OVERRIDES: dict[str, str] = {
     "10000005": PLAYER_BOY_GACHA_ART,  # PlayerBoy
     "10000007": PLAYER_GIRL_GACHA_ART,  # PlayerGirl
@@ -74,9 +70,11 @@ def get_default_art(
 ) -> str:
     if isinstance(character, ZZZPartialAgent | ZZZFullAgent | ZZZEnkaCharacter):
         if is_team:
-            if character.id in ZZZ_TEAM_IMAGE_OVERRIDES:
-                return ZZZ_TEAM_IMAGE_OVERRIDES[character.id]
-            return character.banner_icon
+            outfit_id = getattr(character, "outfit_id", None)
+            key = f"{character.id}_{outfit_id}" if outfit_id is not None else str(character.id)
+            return ZZZ_TEAM_IMAGE_OVERRIDES.get(
+                key, ZZZ_TEAM_IMAGE_OVERRIDES.get(str(character.id), character.banner_icon)
+            )
         if use_m3_art:
             return ZZZ_M3_ART_URL.format(char_id=character.id)
         return ZZZ_M6_ART_URL.format(char_id=character.id)

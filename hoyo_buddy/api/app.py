@@ -29,13 +29,11 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 
 app = FastAPI(title="Hoyo Buddy Web API", lifespan=lifespan)
 
-# Session middleware — must be added BEFORE CORS so it wraps the entire request
 app.add_middleware(
     SignedCookieSessionMiddleware, secret_key=CONFIG.fernet_key, https_only=CONFIG.env == "prod"
 )
 
-# CORS — allow the React frontend origin
-allowed_origins = list(FRONTEND_URLS.values())
+allowed_origins = FRONTEND_URLS[CONFIG.env]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -44,7 +42,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register routers
+
+@app.get("/api/health", tags=["health"])
+async def health_check() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(login.router, prefix="/api/login", tags=["login"])
 app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])

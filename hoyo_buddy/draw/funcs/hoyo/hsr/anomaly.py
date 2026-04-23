@@ -280,7 +280,13 @@ class AnomalyArbitrationCard:
                 )
 
                 if char is None:
-                    char_bg.alpha_composite(empty, (28, 28))
+                    char_bg.alpha_composite(
+                        empty,
+                        (
+                            char_bg.width // 2 - empty.width // 2,
+                            char_bg.height // 2 - empty.height // 2,
+                        ),
+                    )
                 else:
                     icon = drawer.open_static(char.icon)
                     icon = drawer.resize_crop(icon, (104, 104))

@@ -87,6 +87,7 @@ ignore = [
 "restart.py" = ["T201", "S602", "S404", "S603", "S607", "TRY300"]
 "rolling_restart.py" = ["T201", "S602", "S404", "S603", "S607", "TRY300"]
 "tools/*.py" = ["T201"]
+"scripts/*.py" = ["ALL"]
 
 [lint.flake8-type-checking]
 runtime-evaluated-base-classes = [

@@ -66,19 +66,20 @@ class ShiyuV2Card:
             score = 0
             rank_percent = "0.00%"
 
-        tbox = self.drawer.write(
-            LocaleStr(key="shiyu_total_clear_time"),
-            size=44,
-            position=(110, 905),
-            style="medium",
-            locale=self.locale,
-        )
-        self.drawer.write(
-            format_time(total_clear_time),
-            size=55,
-            position=(110, 905 + tbox.height + 25),
-            style="bold",
-        )
+        if total_clear_time:
+            tbox = self.drawer.write(
+                LocaleStr(key="shiyu_total_clear_time"),
+                size=44,
+                position=(110, 905),
+                style="medium",
+                locale=self.locale,
+            )
+            self.drawer.write(
+                format_time(total_clear_time),
+                size=55,
+                position=(110, 905 + tbox.height + 25),
+                style="bold",
+            )
 
         self.drawer.write(
             rank_percent, size=48, position=(213.5, 1138.5), style="bold_italic", anchor="mm"
@@ -125,38 +126,37 @@ class ShiyuV2Card:
             self.drawer.write(f"{layer.score}", size=75, style="bold_italic", position=start_pos)
 
             clear_time_pos = (start_pos[0] + 479, start_pos[1] + 10)
-            title_tbox = self.drawer.write(
-                LocaleStr(key="shiyu_clear_time"),
-                size=28,
-                style="bold",
-                position=clear_time_pos,
-                locale=self.locale,
-                anchor="rt",
-            )
-            value_tbox = self.drawer.write(
-                format_time(layer.clear_time),
-                size=40,
-                position=(clear_time_pos[0], clear_time_pos[1] + title_tbox.height + 15),
-                style="bold",
-                anchor="rt",
-            )
-            total_height = title_tbox.height + value_tbox.height
 
-            self.im.alpha_composite(
-                short_line,
-                (
-                    clear_time_pos[0] + 15,
-                    clear_time_pos[1] + total_height // 2 - short_line.height // 2 + 10,
-                ),
-            )
+            if layer.clear_time:
+                title_tbox = self.drawer.write(
+                    LocaleStr(key="shiyu_clear_time"),
+                    size=28,
+                    style="bold",
+                    position=clear_time_pos,
+                    locale=self.locale,
+                    anchor="rt",
+                )
+                value_tbox = self.drawer.write(
+                    format_time(layer.clear_time),
+                    size=40,
+                    position=(clear_time_pos[0], clear_time_pos[1] + title_tbox.height + 15),
+                    style="bold",
+                    anchor="rt",
+                )
+                total_height = title_tbox.height + value_tbox.height
+
+                self.im.alpha_composite(
+                    short_line,
+                    (
+                        clear_time_pos[0] + 15,
+                        clear_time_pos[1] + total_height // 2 - short_line.height // 2 + 10,
+                    ),
+                )
 
             self.drawer.write(
                 f"{layer.rating}",
                 size=110,
-                position=(
-                    clear_time_pos[0] + 15 + short_line.width + 15,
-                    clear_time_pos[1] + total_height // 2 + 10,
-                ),
+                position=(clear_time_pos[0] + 15 + short_line.width + 15, 730),
                 style="black_italic",
                 anchor="lm",
             )

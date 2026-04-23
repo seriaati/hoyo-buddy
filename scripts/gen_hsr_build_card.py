@@ -80,10 +80,7 @@ async def main() -> None:
         image_url = args.image_url or HSR_DEFAULT_ART_URL.format(char_id=character.id)
         primary_hex = args.color or "#888888"
     else:
-        arts: list[str] = char_card_data.get("arts", [])
-        image_url = args.image_url or (
-            arts[0] if arts else HSR_DEFAULT_ART_URL.format(char_id=lookup_id)
-        )
+        image_url = args.image_url or HSR_DEFAULT_ART_URL.format(char_id=lookup_id)
         primary_hex = args.color or char_card_data.get("primary", "#888888")
 
     print(f"Image URL : {image_url}")

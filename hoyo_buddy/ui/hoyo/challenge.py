@@ -260,6 +260,15 @@ class ChallengeView(View):
                 continue
             await self._validate_and_save_challenge_data(data, previous=False, lang=client.lang)
 
+    async def _fetch_anomaly_arbitration_raw_data(self, client: genshin.Client) -> None:
+        raw = await client.get_anomaly_arbitration(self.account.uid, previous=False, raw=True)
+        records = raw.get("challenge_peak_records", [])
+        if not records:
+            raise NoChallengeDataError(ChallengeType.ANOMALY)
+
+        for record in records:
+            await self._validate_and_save_challenge_data(record, previous=False, lang=client.lang)
+
     async def _fetch_data(self) -> None:
         if self.challenge is not None:
             return
@@ -277,6 +286,10 @@ class ChallengeView(View):
 
         if self.challenge_type is ChallengeType.HARD_CHALLENGE:
             await self._fetch_hard_challenge_raw_data(client)
+            return
+
+        if self.challenge_type is ChallengeType.ANOMALY:
+            await self._fetch_anomaly_arbitration_raw_data(client)
             return
 
         for previous in (False, True):
@@ -378,14 +391,6 @@ class ChallengeView(View):
 
         if self.challenge_type is ChallengeType.ASSAULT:
             return await client.get_deadly_assault(self.account.uid, previous=previous, raw=True)
-
-        if self.challenge_type is ChallengeType.ANOMALY:
-            records = (
-                await client.get_anomaly_arbitration(self.account.uid, previous=previous, raw=True)
-            ).get("challenge_peak_records", [])
-            if not records:
-                return None
-            return records[0]
 
         msg = f"Data fetching for {self.challenge_type!r} is not implemented"
         raise NotImplementedError(msg)

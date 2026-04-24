@@ -55,14 +55,16 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
 MANIKEN_IDS = {10000117, 10000118}
 
 TRAILBLAZER_IDS = {
-    8001,  # Physics male
-    8002,  # Physics female
-    8003,  # Fire male
-    8004,  # Fire female
-    8005,  # Imaginary male
-    8006,  # Imaginary female
-    8007,  # Ice male
-    8008,  # Ice female
+    8001,  # Destruction male
+    8002,  # Destruction female
+    8003,  # Preservation male
+    8004,  # Preservation female
+    8005,  # Harmony male
+    8006,  # Harmony female
+    8007,  # Remembrance male
+    8008,  # Remembrance female
+    8009,  # Elation male
+    8010,  # Elation female
     1001,  # March 7th ice
     1224,  # March 7th imaginary
 }

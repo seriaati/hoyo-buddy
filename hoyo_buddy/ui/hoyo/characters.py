@@ -65,6 +65,7 @@ from hoyo_buddy.ui import (
 from hoyo_buddy.utils import get_now
 
 if TYPE_CHECKING:
+    from collections import defaultdict
     from collections.abc import Iterable, Sequence
 
     from discord import File, Member, User
@@ -129,8 +130,8 @@ class CharactersView(PaginatorView):
     def __init__(
         self,
         account: HoyoAccount,
-        element_char_counts: dict[str, int],
-        path_char_counts: dict[str, int],
+        element_char_counts: defaultdict[str, int],
+        path_char_counts: defaultdict[str, int],
         *,
         draw_input: DrawInput,
         author: User | Member | None,

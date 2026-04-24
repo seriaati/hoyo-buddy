@@ -22,18 +22,18 @@ class CharactersCommand:
         self.account = account
         self.settings = settings
 
-        self.element_char_counts = {}
-        self.path_char_counts = {}
+        self.element_char_counts: defaultdict[str, int] = defaultdict(int)
+        self.path_char_counts: defaultdict[str, int] = defaultdict(int)
 
     async def run_gi(self) -> None:
         async with AmbrAPIClient() as client:
-            self.element_char_counts = await client.fetch_element_char_counts()
+            self.element_char_counts = defaultdict(int, await client.fetch_element_char_counts())
             self.element_char_counts["none"] = 1
 
     async def run_hsr(self) -> None:
         async with YattaAPIClient() as client:
-            self.element_char_counts = await client.fetch_element_char_counts()
-            self.path_char_counts = await client.fetch_path_char_counts()
+            self.element_char_counts = defaultdict(int, await client.fetch_element_char_counts())
+            self.path_char_counts = defaultdict(int, await client.fetch_path_char_counts())
 
     async def run_zzz(self) -> None:
         element_char_counts: defaultdict[str, int] = defaultdict(int)
@@ -43,7 +43,7 @@ class CharactersCommand:
             for agent in agents:
                 element_char_counts[agent.element.name.lower()] += 1
 
-        self.element_char_counts = dict(element_char_counts)
+        self.element_char_counts = defaultdict(int, element_char_counts)
 
     async def run(self, i: Interaction) -> None:
         account, settings = self.account, self.settings

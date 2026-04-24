@@ -39,6 +39,7 @@ class HoyoAccount(BaseModel):
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="accounts"
     )
+    user_id: int
 
     # Configurable
     nickname: fields.Field[str | None] = fields.CharField(max_length=32, null=True)

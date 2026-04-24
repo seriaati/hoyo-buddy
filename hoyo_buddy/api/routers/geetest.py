@@ -13,7 +13,9 @@ router = APIRouter()
 
 
 @router.post("/notify")
-async def handle_geetest_notify(body: GeetestCommandRequest, auth=Depends(require_auth)) -> dict[str, str]:
+async def handle_geetest_notify(
+    body: GeetestCommandRequest, auth=Depends(require_auth)
+) -> dict[str, str]:
     """Perform the geetest-gated action (daily check-in or MMT verification) for an account."""
     try:
         gt_type = GeetestType(body.gt_type)

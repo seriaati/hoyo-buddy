@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 
@@ -25,10 +25,19 @@ class GeetestCommandPayload(BaseModel):
     gt_type: GeetestType
     account_id: int
     locale: str
-    mmt: dict[str, Any]
+
+    mmt_gt: str
+    mmt_challenge: str
+    mmt_new_captcha: int
+    mmt_success: int
+    mmt_session_id: str | None = None
+    mmt_check_id: str | None = None
+    mmt_risk_type: str | None = None
 
     def to_query_string(self) -> str:
-        return "&".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
+        return "&".join(
+            f"{k}={v}" for k, v in self.model_dump(mode="json").items() if v is not None
+        )
 
 
 class GeetestLoginPayload(BaseModel):
@@ -47,4 +56,4 @@ class GeetestLoginPayload(BaseModel):
         )
 
     def to_query_string(self) -> str:
-        return "&".join(f"{k}={v}" for k, v in self.model_dump().items())
+        return "&".join(f"{k}={v}" for k, v in self.model_dump(mode="json").items())

@@ -33,6 +33,7 @@ class GeetestCommand:
         client.set_lang(locale)
         mmt = await client.create_mmt()
 
+        mmt_data = mmt.model_dump()
         payload = GeetestCommandPayload(
             user_id=i.user.id,
             guild_id=i.guild.id if i.guild is not None else None,
@@ -43,7 +44,13 @@ class GeetestCommand:
             account_id=self._account.id,
             gt_type=self._type,
             locale=locale.value,
-            mmt=mmt.model_dump(),
+            mmt_gt=mmt_data["gt"],
+            mmt_challenge=mmt_data["challenge"],
+            mmt_new_captcha=mmt_data["new_captcha"],
+            mmt_success=mmt_data["success"],
+            mmt_session_id=mmt_data.get("session_id"),
+            mmt_check_id=mmt_data.get("check_id"),
+            mmt_risk_type=mmt_data.get("risk_type"),
         )
         url = f"{FRONTEND_URLS[i.client.env]}/geetest_command?{payload.to_query_string()}"
         url = urllib.parse.quote(url, safe=":/?&=")

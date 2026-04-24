@@ -22,7 +22,7 @@ from .constants import (
     AMBR_ELEMENT_TO_ELEMENT,
     HOYO_LANG_TO_LOCALE,
     WEEKDAYS,
-    YATTA_COMBAT_TYPE_TO_ELEMENT,
+    YATTA_PATH_TO_HSR_PATH,
     ZENLESS_DATA_LANG_TO_LOCALE,
     ZENLESS_DATA_LANGS,
     get_docs_url,
@@ -412,14 +412,14 @@ class Translator:
         self, character: yatta.Character, locale: Locale, *, gender_symbol: bool = True
     ) -> str:
         element_str = self.translate(
-            EnumStr(YATTA_COMBAT_TYPE_TO_ELEMENT[character.types.combat_type]), locale
+            EnumStr(YATTA_PATH_TO_HSR_PATH[character.types.path_type]), locale
         )
 
         # Only gender_str if is trailblazer
         # constants.TRAILBAZER_IDS may contain characters that are not trailblazers (like March 7th)
         gender_str = (
             ("♂" if character.id % 2 != 0 else "♀")
-            if gender_symbol and str(character.id).startswith("800")
+            if gender_symbol and str(character.id).startswith("80")
             else ""
         )
 

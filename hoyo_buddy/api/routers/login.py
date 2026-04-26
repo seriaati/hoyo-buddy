@@ -364,8 +364,13 @@ async def dev_tools_login(
     body: DevToolsCookiesRequest,
     session: Annotated[dict[str, Any], Depends(get_session)],
     _user_id: Annotated[int, Depends(require_auth)],
+    platform: Annotated[str, Query()] = "hoyolab",
 ) -> LoginFlowResponse:
     """Accept individual cookie fields and store them encrypted in the session."""
+    try:
+        platform_enum = Platform(platform)
+    except ValueError:
+        raise HTTPException(status_code=422, detail=f"Invalid platform: {platform}") from None
     cookies = (
         f"ltuid_v2={body.ltuid_v2}; "
         f"account_id_v2={body.account_id_v2}; "
@@ -374,6 +379,7 @@ async def dev_tools_login(
         f"account_mid_v2={body.account_mid_v2}"
     )
     login_flow = _get_login_flow(session)
+    login_flow["platform"] = platform_enum.value
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
     return LoginFlowResponse(next_step="finish")
 
@@ -386,9 +392,15 @@ async def raw_cookies_login(
     body: RawCookiesRequest,
     session: Annotated[dict[str, Any], Depends(get_session)],
     _user_id: Annotated[int, Depends(require_auth)],
+    platform: Annotated[str, Query()] = "hoyolab",
 ) -> LoginFlowResponse:
     """Accept a raw cookie string and store it encrypted in the session."""
+    try:
+        platform_enum = Platform(platform)
+    except ValueError:
+        raise HTTPException(status_code=422, detail=f"Invalid platform: {platform}") from None
     login_flow = _get_login_flow(session)
+    login_flow["platform"] = platform_enum.value
     login_flow["encrypted_cookies"] = encrypt_string(body.cookies)
     return LoginFlowResponse(next_step="finish")
 
@@ -401,9 +413,15 @@ async def mod_app_login(
     body: ModAppRequest,
     session: Annotated[dict[str, Any], Depends(get_session)],
     _user_id: Annotated[int, Depends(require_auth)],
+    platform: Annotated[str, Query()] = "hoyolab",
 ) -> LoginFlowResponse:
     """Parse mod-app login details, extract device info, and store cookies in session."""
+    try:
+        platform_enum = Platform(platform)
+    except ValueError:
+        raise HTTPException(status_code=422, detail=f"Invalid platform: {platform}") from None
     login_flow = _get_login_flow(session)
+    login_flow["platform"] = platform_enum.value
 
     dict_cookies = genshin.parse_cookie(body.login_details)
     device_id = dict_cookies.pop("x-rpc-device_id", None)

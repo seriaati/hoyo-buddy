@@ -1,13 +1,6 @@
 {
     "apps": [
         {
-            "name": "hb-main",
-            "script": "./run.py",
-            "interpreter": "./.venv/bin/python",
-            "interpreter_args": "-OO",
-            "args": "--sentry --schedule --search --prometheus --novelai"
-        },
-        {
             "name": "hb-api",
             "script": "./run_api.py",
             "interpreter": "./.venv/bin/python",

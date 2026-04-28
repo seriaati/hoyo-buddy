@@ -40,6 +40,9 @@ def _production_log_filter(record: dict[str, Any]) -> bool:
     """
     message = record["message"]
 
+    if "/api/health" in message:
+        return False
+
     if record["level"].name == "DEBUG":
         # Filter cache operations
         if "Cache hit" in message or "Cache miss" in message:

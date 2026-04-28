@@ -6,8 +6,7 @@
   "packageRules": [
     {
       "matchPackageNames": [
-        "pyright",
-        "flet"
+        "pyright"
       ],
       "enabled": false
     }

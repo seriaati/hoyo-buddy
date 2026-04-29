@@ -1178,14 +1178,8 @@ AVAILABLE_OPEN_GAMES: dict[
         ),
     },
     Platform.MIYOUSHE: {
-        Game.GENSHIN: (
-            (OpenGameLabel.DEFAULT, "cn", "ys"),
-            (OpenGameLabel.CLOUD, "cn", "cg_ys"),
-        ),
-        Game.STARRAIL: (
-            (OpenGameLabel.DEFAULT, "cn", "sr"),
-            (OpenGameLabel.CLOUD, "cn", "cg_sr"),
-        ),
+        Game.GENSHIN: ((OpenGameLabel.DEFAULT, "cn", "ys"), (OpenGameLabel.CLOUD, "cn", "cg_ys")),
+        Game.STARRAIL: ((OpenGameLabel.DEFAULT, "cn", "sr"), (OpenGameLabel.CLOUD, "cn", "cg_sr")),
         Game.ZZZ: ((OpenGameLabel.DEFAULT, "cn", "zzz"), (OpenGameLabel.CLOUD, "cn", "cg_nap")),
     },
 }

@@ -1141,6 +1141,7 @@ OPEN_GAME_URLS: dict[OpenGameRegion, dict[OpenGameGame, URL]] = {
         "gi_cloud": OPEN_GAME_BASE_URL / "genshin_cloud",
         "hsr": OPEN_GAME_BASE_URL / "hsr",
         "zzz": OPEN_GAME_BASE_URL / "zzz",
+        "zzz_cloud": OPEN_GAME_BASE_URL / "zzz_cloud",
     },
     "cn": {
         "gi": OPEN_GAME_BASE_URL / "yuanshen",
@@ -1172,6 +1173,7 @@ AVAILABLE_OPEN_GAMES: dict[
         ),
         Game.ZZZ: (
             (OpenGameLabel.DEFAULT, "global", "zzz"),
+            (OpenGameLabel.CLOUD, "global", "zzz_cloud"),
             (OpenGameLabel.VIETNAM, "vietnam", "zzz"),
         ),
     },

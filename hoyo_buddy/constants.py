@@ -1137,23 +1137,24 @@ NO_MASKED_LINK_GUILDS = {998109815521947678}
 OPEN_GAME_BASE_URL = URL("https://launch.seria.moe/event")
 OPEN_GAME_URLS: dict[OpenGameRegion, dict[OpenGameGame, URL]] = {
     "global": {
-        "gi": OPEN_GAME_BASE_URL / "genshin",
-        "gi_cloud": OPEN_GAME_BASE_URL / "genshin_cloud",
-        "hsr": OPEN_GAME_BASE_URL / "hsr",
-        "zzz": OPEN_GAME_BASE_URL / "zzz",
+        "ys": OPEN_GAME_BASE_URL.update_query(game="ys", region="global"),
+        "cg_ys": OPEN_GAME_BASE_URL.update_query(game="cg_ys", region="global"),
+        "sr": OPEN_GAME_BASE_URL.update_query(game="sr", region="global"),
+        "zzz": OPEN_GAME_BASE_URL.update_query(game="zzz", region="global"),
+        "cg_nap": OPEN_GAME_BASE_URL.update_query(game="cg_nap", region="global"),
     },
     "cn": {
-        "gi": OPEN_GAME_BASE_URL / "yuanshen",
-        "gi_cloud": OPEN_GAME_BASE_URL / "ys_cg",
-        "hsr": OPEN_GAME_BASE_URL / "sr",
-        "hsr_cloud": OPEN_GAME_BASE_URL / "sr_cg",
-        "zzz": OPEN_GAME_BASE_URL / "nap",
-        "zzz_cloud": OPEN_GAME_BASE_URL / "nap_cg",
+        "ys": OPEN_GAME_BASE_URL.update_query(game="ys", region="cn"),
+        "cg_ys": OPEN_GAME_BASE_URL.update_query(game="cg_ys", region="cn"),
+        "sr": OPEN_GAME_BASE_URL.update_query(game="sr", region="cn"),
+        "cg_sr": OPEN_GAME_BASE_URL.update_query(game="cg_sr", region="cn"),
+        "zzz": OPEN_GAME_BASE_URL.update_query(game="zzz", region="cn"),
+        "cg_nap": OPEN_GAME_BASE_URL.update_query(game="cg_nap", region="cn"),
     },
-    "vietnam": {
-        "gi": OPEN_GAME_BASE_URL / "ysvn",
-        "hsr": OPEN_GAME_BASE_URL / "hsrvn",
-        "zzz": OPEN_GAME_BASE_URL / "zzzvn",
+    "vn": {
+        "ys": OPEN_GAME_BASE_URL.update_query(game="ys", region="vn"),
+        "sr": OPEN_GAME_BASE_URL.update_query(game="sr", region="vn"),
+        "zzz": OPEN_GAME_BASE_URL.update_query(game="zzz", region="vn"),
     },
 }
 
@@ -1162,29 +1163,24 @@ AVAILABLE_OPEN_GAMES: dict[
 ] = {
     Platform.HOYOLAB: {
         Game.GENSHIN: (
-            (OpenGameLabel.DEFAULT, "global", "gi"),
-            (OpenGameLabel.CLOUD, "global", "gi_cloud"),
-            (OpenGameLabel.VIETNAM, "vietnam", "gi"),
+            (OpenGameLabel.DEFAULT, "global", "ys"),
+            (OpenGameLabel.CLOUD, "global", "cg_ys"),
+            (OpenGameLabel.VIETNAM, "vn", "ys"),
         ),
         Game.STARRAIL: (
-            (OpenGameLabel.DEFAULT, "global", "hsr"),
-            (OpenGameLabel.VIETNAM, "vietnam", "hsr"),
+            (OpenGameLabel.DEFAULT, "global", "sr"),
+            (OpenGameLabel.VIETNAM, "vn", "sr"),
         ),
         Game.ZZZ: (
             (OpenGameLabel.DEFAULT, "global", "zzz"),
-            (OpenGameLabel.VIETNAM, "vietnam", "zzz"),
+            (OpenGameLabel.CLOUD, "global", "cg_nap"),
+            (OpenGameLabel.VIETNAM, "vn", "zzz"),
         ),
     },
     Platform.MIYOUSHE: {
-        Game.GENSHIN: (
-            (OpenGameLabel.DEFAULT, "cn", "gi"),
-            (OpenGameLabel.CLOUD, "cn", "gi_cloud"),
-        ),
-        Game.STARRAIL: (
-            (OpenGameLabel.DEFAULT, "cn", "hsr"),
-            (OpenGameLabel.CLOUD, "cn", "hsr_cloud"),
-        ),
-        Game.ZZZ: ((OpenGameLabel.DEFAULT, "cn", "zzz"), (OpenGameLabel.CLOUD, "cn", "zzz_cloud")),
+        Game.GENSHIN: ((OpenGameLabel.DEFAULT, "cn", "ys"), (OpenGameLabel.CLOUD, "cn", "cg_ys")),
+        Game.STARRAIL: ((OpenGameLabel.DEFAULT, "cn", "sr"), (OpenGameLabel.CLOUD, "cn", "cg_sr")),
+        Game.ZZZ: ((OpenGameLabel.DEFAULT, "cn", "zzz"), (OpenGameLabel.CLOUD, "cn", "cg_nap")),
     },
 }
 

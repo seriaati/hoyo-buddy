@@ -37,7 +37,7 @@ __all__ = [
 ]
 
 
-# ── Auth ──────────────────────────────────────────────────────────────────────
+#  Auth
 
 
 class AuthURLResponse(BaseModel):
@@ -55,7 +55,7 @@ class AuthCallbackRequest(BaseModel):
     state: str
 
 
-# ── Login flow ────────────────────────────────────────────────────────────────
+# Login flow
 
 
 class EmailPasswordRequest(BaseModel):
@@ -114,7 +114,7 @@ class QRCodeStatusResponse(BaseModel):
     cookies_saved: bool = False
 
 
-# ── Accounts ──────────────────────────────────────────────────────────────────
+# Accounts
 
 
 class AccountInfo(BaseModel):
@@ -134,7 +134,7 @@ class AccountSubmitRequest(BaseModel):
     selected_accounts: list[str]  # list of "game_uid" strings e.g. "genshin_12345678"
 
 
-# ── Gacha ─────────────────────────────────────────────────────────────────────
+# Gacha
 
 
 class GachaItem(BaseModel):
@@ -179,15 +179,7 @@ class GachaStatsResponse(BaseModel):
     fifty_fifty_win_rate: float
 
 
-# ── i18n ──────────────────────────────────────────────────────────────────────
-
-
-class I18nResponse(BaseModel):
-    locale: str
-    translations: dict[str, str]
-
-
-# ── Geetest ───────────────────────────────────────────────────────────────────
+# Geetest
 
 
 class GeetestCommandRequest(BaseModel):
@@ -196,7 +188,7 @@ class GeetestCommandRequest(BaseModel):
     mmt_result: dict
 
 
-# ── Errors ────────────────────────────────────────────────────────────────────
+# Errors
 
 
 class ErrorResponse(BaseModel):

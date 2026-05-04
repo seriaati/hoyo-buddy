@@ -452,7 +452,7 @@ yatta_character_skill_energy_need_field_value: "소모: {energy_need}"
 yatta_character_skill_single_weakness_break_field_value: "단일: {single_weakness_break}"
 yatta_character_skill_spread_weakness_break_field_value: "확산: {spread_weakness_break}"
 yatta_character_skill_weakness_break_field_name: 약점 격파
-yatta_character_trace_page_label: Traces
+yatta_character_trace_page_label: 행적
 yatta_item_sources_field_name: 획득처
 characters.show_owned_only: 보유 캐릭터만 표시
 redeem_code.ar_too_low: 모험 등급이 너무 낮습니다
@@ -461,7 +461,7 @@ data_not_public.description: "전투 기록 설정에서 데이터 공유 옵션
 not_implemented_error_title: 해당 기능은 아직 지원되지 않습니다
 not_implemented_error_only_game_message: "이 기능은 `{game}` 계정에서 아직 지원되지 않습니다."
 not_implemented_error_message: "이 기능은 `{platform}`의 `{game}` 계정에서 아직 지원되지 않습니다."
-profile.build.current.label: Current
+profile.build.current.label: 현재
 abyss_chamber.blessing.embed.field.name: 심연의 달 축복
 apocalyptic_shadow: 종말의 그림자
 apc_shadow.highest_diff_cleared: "최고 난이도 클리어: {diff}"
@@ -825,7 +825,7 @@ account_settings_title: "계정 설정"
 account_settings_desc: "이 설정은 각 게임 계정마다 개별적으로 적용됩니다."
 public_account_desc: "계정을 공개로 설정\n활성화하면 다른 사람들이 </profile>에서 계정 데이터를 볼 수 있습니다."
 daily_checkin_desc: "자동 일일 출석\n웹 출석 이벤트 보상을 자동으로 획득합니다"
-redeem_code_desc: "자동 코드 교환\n방송 쿠폰 코드 및 기타 교환 코드를 자동으로 사용합니다. 이메일과 비밀번호로 로그인하지 않은 경우 버튼이 비활성화됩니다. 자세한 내용은 [FAQ](:docs/FAQ:)를 참고해 주세요."
+redeem_code_desc: "자동 리딤 코드 교환\n특별방송 리딤코드 및 기타 리딤코드를 자동으로 사용합니다. 이메일과 비밀번호로 로그인하지 않은 경우 버튼이 비활성화됩니다. 자세한 내용은 [FAQ](:docs/FAQ:)를 참고해 주세요."
 user_settings_title: "유저 설정"
 user_settings_desc: "이 설정은 Discord 계정과 연동되며, 모든 게임 계정에 적용됩니다."
 dark_theme_desc: "다크 테마\n인포그래픽에 다크 색상 테마를 적용합니다. 일부 인포그래픽은 이 기능을 지원하지 않을 수 있습니다."

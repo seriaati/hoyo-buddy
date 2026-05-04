@@ -250,7 +250,7 @@ loading_text: 로딩중....
 make_up_for_checkin_button_label: 출석 보상 보충
 materials: 재료
 memory_of_chaos: 혼돈의 기억
-miyoushe: 미요우셰
+miyoushe: 미요우셰(중국본토 호요랩)
 moc_card_battles_fought: "전투 횟수: {battles}"
 moc_card_cycles_used: "사용한 사이클: {cycles}"
 moc_card_farthest_stage: "최대 도달 단계: {stage}"
@@ -263,7 +263,7 @@ next_page_option_label: 다음 페이지
 nickname_modal_label: 닉네임
 nickname_modal_placeholder: "메인 계정, 아시아 서버 계정…"
 nihility: 공허
-no_account_found_for_games_error_message: "아래 게임 중 하나의 계정이 없어요. 다음 명령어로 계정을 추가해 주세요:</accounts>"
+no_account_found_for_games_error_message: "해당하는 게임의 계정 정보가 없습니다.</accounts>명령어를 사용해 새로운 여정의 기록을 연동해 주세요!"
 no_account_found_for_games_platform_error_message: "{platform}에 아래 게임 중 하나의 계정이 없어요. 다음 명령어로 계정을 추가해 주세요:</accounts>"
 no_account_found_for_games_error_title: 계정을 찾을수 없습니다.
 no_accounts_autocomplete_choice: 아직 등록된 계정이 없어요. /accounts로 계정을 추가해 주세요.

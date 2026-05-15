@@ -559,16 +559,20 @@ def get_character_stats(
         else:
             max_dmg_add = None
 
-    # Remove stats with value 0 until we have at most 12 stats
-    while len(stats) > 12:
-        zero_stat_key = next((k for k, v in stats.items() if v in {"0", "0.0%", "0.0"}), None)
-        if zero_stat_key is None:
-            break
-        stats.pop(zero_stat_key, None)
+    zero_values = {"0", "0.0%", "0.0"}
+    zero_stats = {k: v for k, v in stats.items() if v in zero_values}
+    nonzero_stats = {k: v for k, v in stats.items() if v not in zero_values}
 
-    # If there are still more than 12, keep the first 12
-    if len(stats) > 12:
-        stats = dict(list(stats.items())[:12])
+    if len(nonzero_stats) >= 12:
+        stats = dict(list(nonzero_stats.items())[:12])
+    else:
+        stats = dict(nonzero_stats)
+        all_keys = list(stats.keys()) + list(zero_stats.keys())
+        for k in all_keys:
+            if len(stats) >= 12:
+                break
+            if k not in stats and k in zero_stats:
+                stats[k] = zero_stats[k]
 
     return stats, max_dmg_add
 

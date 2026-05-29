@@ -85,7 +85,9 @@ def check_gi_item_is_standard(
 
 
 def get_gacha_icon(*, item_id: int, gacha_data: dict[str, dict[str, str]]) -> str:
-    return gacha_data.get(str(item_id), {}).get("icon", "")
+    return gacha_data.get(str(item_id), {}).get(
+        "icon", "https://r2.img.seria.moe/laJPgbmDjIxGStCf.png"
+    )
 
 
 @dataclass

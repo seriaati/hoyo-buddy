@@ -53,7 +53,7 @@ class ProfileCommand:
         self._uid = uid
         self._game = game
         self._account = account
-        self._character_ids = list({id_ for id_ in character_ids if id_ is not None})
+        self._character_ids = [id_ for id_ in character_ids if id_ is not None]
         self._locale = locale
         self._user = user
 

@@ -81,7 +81,10 @@ async def main() -> None:
         primary_hex = args.color or "#888888"
     else:
         image_url = args.image_url or HSR_DEFAULT_ART_URL.format(char_id=lookup_id)
-        primary_hex = args.color or char_card_data.get("primary", "#888888")
+        primary_hex = char_card_data.get("primary", "#888888")
+        if args.dark:
+            primary_hex = char_card_data.get("primary-dark") or primary_hex
+        primary_hex = args.color or primary_hex
 
     print(f"Image URL : {image_url}")
     print(f"Primary   : {primary_hex}")

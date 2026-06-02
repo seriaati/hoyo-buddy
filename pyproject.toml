@@ -75,6 +75,8 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
 
 [tool.aerich]
 location = "./migrations"

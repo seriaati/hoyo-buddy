@@ -5,9 +5,13 @@ from typing import Any
 
 import orjson
 import redis
+import sentry_sdk
 from aiocache.serializers import BaseSerializer
 from loguru import logger
 from PIL import Image
+from redis.backoff import ExponentialBackoff
+from redis.exceptions import RedisError
+from redis.retry import Retry
 
 from hoyo_buddy.config import CONFIG
 
@@ -51,6 +55,16 @@ class RedisImageCache:
             raise RuntimeError(msg)
         return self._bg_executor
 
+    def _handle_error(self, op: str, key: str, e: RedisError) -> None:
+        # A cache failure is non-critical: degrade like a cache miss instead of raising
+        # to Sentry as an error. The scope fingerprint is a safety net so that, should
+        # these ever be captured, they collapse into a single issue instead of one per key.
+        with sentry_sdk.new_scope() as scope:
+            scope.fingerprint = ["redis-cache-error"]
+            scope.set_tag("cache_op", op)
+            scope.set_extra("image_path", key)
+            logger.debug(f"Redis cache error during {op}: {e}")
+
     def set(self, key: str, image: Image.Image) -> None:
         try:
             self._ensure_connected()
@@ -59,8 +73,8 @@ class RedisImageCache:
                 r.setex(key, IMAGE_CACHE_TTL, output.getvalue())
         except redis.BusyLoadingError:
             pass
-        except redis.RedisError as e:
-            logger.error(f"Redis error while setting image {key}: {e}")
+        except RedisError as e:
+            self._handle_error("set", key, e)
 
     def set_background(self, key: str, image: Image.Image) -> None:
         self._ensure_connected()
@@ -75,8 +89,8 @@ class RedisImageCache:
                     return None
         except redis.BusyLoadingError:
             return None
-        except redis.RedisError as e:
-            logger.error(f"Redis error while getting image {key}: {e}")
+        except RedisError as e:
+            self._handle_error("get", key, e)
             return None
         else:
             return Image.open(io.BytesIO(image_data))  # pyright: ignore[reportArgumentType]
@@ -85,7 +99,13 @@ class RedisImageCache:
         if self._redis is not None and self._bg_executor is not None:
             return
         logger.info(f"Image cache in {os.getpid()} connected to Redis")
-        self._redis = redis.ConnectionPool.from_url(self._redis_url)
+        self._redis = redis.ConnectionPool.from_url(
+            self._redis_url,
+            health_check_interval=30,
+            socket_keepalive=True,
+            retry_on_error=[redis.ConnectionError, redis.TimeoutError],
+            retry=Retry(ExponentialBackoff(), 3),
+        )
         self._bg_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="RedisCacheWorker")
 
     def disconnect(self) -> None:

@@ -74,6 +74,7 @@ ignore = [
   "PLR0915", # Too many statements
   "PLR0912", # Too many branches
   "PLR0911", # Too many return statements
+  "PLW0717", # Try clause contains too many statements
 ]
 
 [lint.per-file-ignores]

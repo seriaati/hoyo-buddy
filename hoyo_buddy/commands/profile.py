@@ -226,4 +226,5 @@ class ProfileCommand:
             author=self._user,
             locale=self._locale,
             builds=builds,
+            owner=enka_data.owner if enka_data is not None else None,
         )

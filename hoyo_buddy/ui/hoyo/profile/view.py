@@ -14,6 +14,7 @@ from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
+    LOCALE_TO_ENKA_CARDS_LANG,
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
@@ -77,6 +78,8 @@ CARD_API_ENDPOINTS = {
     "enkacard": "http://localhost:7652/enka-card",
     "src": "http://localhost:7652/star-rail-card",
 }
+
+ENKA_CARDS_URL = "https://cards.enka.network"
 
 TOP_PERCENT_RANK_DECIMALS = 4
 
@@ -399,6 +402,32 @@ class ProfileView(View, PlayerEmbedMixin):
 
         return await self._request_draw_card_api(template, payload=payload, session=session)
 
+    async def _draw_enka_cards_card(
+        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
+    ) -> BytesIO:
+        """Draw HSR/ZZZ character card using the enka.cards service (enka.network style)."""
+        params = {
+            "lang": LOCALE_TO_ENKA_CARDS_LANG.get(await self.get_character_locale(character), "en"),
+            "substats": str(card_settings.show_substat_rolls).lower(),
+        }
+
+        if (
+            all((self._owner_username, self._owner_hash, self._build_id))
+            and self._build_id != "current"
+        ):
+            # Saved build on enka.network (game-agnostic /u/ route)
+            url = (
+                f"{ENKA_CARDS_URL}/u/{self._owner_username}/{self._owner_hash}"
+                f"/{character.id}/{self._build_id}/image"
+            )
+        else:
+            game_path = "hsr" if self.game is Game.STARRAIL else "zzz"
+            url = f"{ENKA_CARDS_URL}/{game_path}/{self.uid}/{character.id}/image"
+
+        async with session.get(url, params=params) as resp:
+            resp.raise_for_status()
+            return BytesIO(await resp.read())
+
     async def _draw_hb_hsr_character_card(
         self, character: Character, card_settings: CardSettings, draw_input: DrawInput
     ) -> BytesIO:
@@ -546,7 +575,11 @@ class ProfileView(View, PlayerEmbedMixin):
         character_id = self.character_ids[0]
         character = character or self.characters[character_id]
 
-        force_hb_temp = isinstance(character, HoyolabGICharacter)
+        # enka.cards renders only from enka.network showcase data, so HoYoLAB-sourced
+        # characters can't use it; fall back to the Hoyo Buddy template like GI does.
+        force_hb_temp = isinstance(character, HoyolabGICharacter) or (
+            card_settings.template == "enka1" and isinstance(character, HoyolabCharacter)
+        )
         if force_hb_temp and "hb" not in card_settings.template:
             card_settings.template = "hb1"
             await card_settings.save(update_fields=("template",))
@@ -564,6 +597,8 @@ class ProfileView(View, PlayerEmbedMixin):
         )
 
         if self.game is Game.STARRAIL:
+            if template == "enka1":
+                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(character, card_settings, draw_input)
             return await self._draw_src_character_card(i.client.session, character, card_settings)
@@ -574,6 +609,8 @@ class ProfileView(View, PlayerEmbedMixin):
             return await self._draw_enka_card(i.client.session, character, card_settings)
 
         if self.game is Game.ZZZ:
+            if template == "enka1":
+                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             return await self._draw_hb_zzz_character_card(character, card_settings, draw_input)
 
         msg = f"draw_card not implemented for game {self.game} template {template}"

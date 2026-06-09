@@ -301,6 +301,27 @@ LOCALE_TO_GI_CARD_API_LANG: dict[Locale, str] = {
     Locale.turkish: "tr",
 }
 
+LOCALE_TO_ENKA_CARDS_LANG: dict[Locale, str] = {
+    Locale.taiwan_chinese: "zh-tw",
+    Locale.chinese: "zh-cn",
+    Locale.german: "de",
+    Locale.american_english: "en",
+    Locale.spain_spanish: "es",
+    Locale.french: "fr",
+    Locale.indonesian: "id",
+    Locale.italian: "it",
+    Locale.japanese: "ja",
+    Locale.korean: "ko",
+    Locale.brazil_portuguese: "pt",
+    Locale.russian: "ru",
+    Locale.thai: "th",
+    Locale.turkish: "tr",
+    Locale.vietnamese: "vi",
+    Locale.ukrainian: "uk",
+    Locale.dutch: "nl",
+    Locale.arabic: "ar",
+}
+
 HSR_ELEMENT_DMG_PROPS = {
     12,  # Physical
     22,  # Quantum

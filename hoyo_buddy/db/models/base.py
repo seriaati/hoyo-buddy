@@ -187,12 +187,14 @@ class CachedModel(BaseModel):
             return instance
 
     @classmethod
-    async def get_or_create(cls, **kwargs) -> tuple[Self, bool]:
+    async def get_or_create(
+        cls, *, defaults: dict[str, Any] | None = None, **kwargs
+    ) -> tuple[Self, bool]:
         try:
             instance = await cls.get(**kwargs)
         except DoesNotExist:
             logger.debug(f"Cache miss for {cls.__name__} with {kwargs}")
-            instance = await cls.create(**kwargs)
+            instance = await cls.create(**kwargs, **(defaults or {}))
             asyncio.create_task(instance._cache_set())
             return instance, True
         else:

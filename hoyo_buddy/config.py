@@ -20,6 +20,7 @@ class Config(BaseSettings):
     # API keys
     hoyo_codes_api_key: str | None = None
     img_upload_api_key: str | None = None
+    sponsors_api_key: str | None = None
 
     # Sentry DSNs
     bot_sentry_dsn: str | None = None

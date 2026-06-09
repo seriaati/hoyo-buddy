@@ -15,13 +15,8 @@ from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, Auto
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.auto_tasks.web_events_notify import WebEventsNotify
 
-from ..constants import (
-    CODE_CHANNEL_IDS,
-    GI_UID_PREFIXES,
-    HB_GAME_TO_GPY_GAME,
-    SUPPORTER_ROLE_ID,
-    UTC_8,
-)
+from ..config import CONFIG
+from ..constants import CODE_CHANNEL_IDS, GI_UID_PREFIXES, HB_GAME_TO_GPY_GAME, UTC_8
 from ..hoyo.auto_tasks.auto_redeem import AutoRedeem
 from ..hoyo.auto_tasks.daily_checkin import DailyCheckin
 from ..hoyo.auto_tasks.farm_check import FarmChecker
@@ -183,20 +178,18 @@ class Schedule(commands.Cog):
 
     @tasks.loop(hours=1)
     async def update_supporter_ids(self) -> None:
-        guild = await self.bot.get_or_fetch_guild()
-        if guild is None:
+        api_key = CONFIG.sponsors_api_key
+        if api_key is None:
+            logger.warning("Sponsors API key is not set, skipping supporter ID update.")
             return
 
-        if not guild.chunked:
-            await guild.chunk()
+        async with self.bot.session.get(
+            "https://api.seria.moe/sponsors", headers={"x-api-key": api_key}
+        ) as resp:
+            resp.raise_for_status()
+            sponsors: list[dict[str, Any]] = await resp.json()
 
-        role_id = SUPPORTER_ROLE_ID
-        supporter_role = discord.utils.get(guild.roles, id=role_id)
-        if supporter_role is None:
-            logger.error(f"Failed to find supporter role with ID {role_id}")
-            return
-
-        supporter_ids = [member.id for member in supporter_role.members]
+        supporter_ids = [int(sponsor["id"]) for sponsor in sponsors]
         await JSONFile.write("supporter_ids.json", supporter_ids)
 
     @commands.command(name="update-supporter-ids", aliases=["usi"])

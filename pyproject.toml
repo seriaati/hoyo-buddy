@@ -3,7 +3,7 @@ authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
 dependencies = [
   "aiocache>=0.12.2",
   "aiofiles>=24.1.0",
-  "aiohttp==3.14.0",
+  "aiohttp==3.14.1",
   "asyncpg>=0.29.0",
   "discord-py[speed]>=2.5.0",
   "jishaku>=2.5.2",

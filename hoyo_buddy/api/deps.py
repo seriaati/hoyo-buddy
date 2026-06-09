@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated, Any
 
 import genshin
-from fastapi import Depends, HTTPException, Request, Response  # noqa: TC002
+from fastapi import Depends, HTTPException, Request, Response
 from loguru import logger
 
 DEVICE_ID_COOKIE = "hb_device_id"

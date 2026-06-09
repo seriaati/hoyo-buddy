@@ -48,7 +48,6 @@ if TYPE_CHECKING:
     from discord import Member, User
 
     from hoyo_buddy.db import CardSettings, Settings
-    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Character, Interaction
 
 

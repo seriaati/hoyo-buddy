@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any
 import yatta
 from discord import ButtonStyle
 
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import (

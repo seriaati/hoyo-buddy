@@ -22,7 +22,6 @@ if TYPE_CHECKING:
     import genshin
 
     from hoyo_buddy.db import HoyoAccount
-    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
 
 

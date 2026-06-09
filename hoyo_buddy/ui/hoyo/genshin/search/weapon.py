@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
 
-from hoyo_buddy.enums import Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr

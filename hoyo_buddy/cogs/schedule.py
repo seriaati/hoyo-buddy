@@ -183,18 +183,23 @@ class Schedule(commands.Cog):
             logger.warning("Sponsors API key is not set, skipping supporter ID update.")
             return
 
-        async with self.bot.session.get(
-            "https://api.seria.moe/sponsors", headers={"x-api-key": api_key}
-        ) as resp:
-            resp.raise_for_status()
-            sponsors: list[dict[str, Any]] = await resp.json()
+        try:
+            async with self.bot.session.get(
+                "https://api.seria.moe/sponsors", headers={"x-api-key": api_key}
+            ) as resp:
+                resp.raise_for_status()
+                sponsors: list[dict[str, Any]] = await resp.json()
+            supporter_ids = [int(sponsor["id"]) for sponsor in sponsors]
+        except Exception as e:
+            logger.error(f"Failed to update supporter IDs from sponsors API: {e}")
+            self.bot.capture_exception(e)
+            return
 
-        supporter_ids = [int(sponsor["id"]) for sponsor in sponsors]
         await JSONFile.write("supporter_ids.json", supporter_ids)
 
     @commands.command(name="update-supporter-ids", aliases=["usi"])
     async def update_supporter_ids_command(self, ctx: commands.Context) -> None:
-        """Update the supporter IDs from the configured guild."""
+        """Update the supporter IDs from the sponsors API."""
         message = await ctx.send("Updating supporter IDs...")
         await self.update_supporter_ids()
         await message.edit(content="Supporter IDs updated.")

@@ -68,7 +68,7 @@ if TYPE_CHECKING:
     from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats, ZZZFullAgent
 
     from hoyo_buddy.db import CardSettings, HoyoAccount
-    from hoyo_buddy.types import Builds, Character, Interaction
+    from hoyo_buddy.types import Character, Interaction
     from hoyo_buddy.ui import Button, Select
 
 

@@ -9,6 +9,7 @@ from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
+from hoyo_buddy.hoyo.auto_tasks.accompany_checkin import AccompanyCheckin
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
@@ -46,6 +47,9 @@ class Scheduler:
 
         # Check-in
         asyncio.create_task(DailyCheckin.execute())
+
+        # Character accompany
+        asyncio.create_task(AccompanyCheckin.execute())
 
     async def send_heartbeat(self) -> None:
         if CONFIG.scheduler_heartbeat_url is None:

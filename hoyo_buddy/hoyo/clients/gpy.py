@@ -171,6 +171,19 @@ class GenshinClient(ProxyGenshinClient):
             .set_footer(text=LocaleStr(key="checkin_reward_embed_footer"))
         )
 
+    def get_accompany_embed(
+        self, result: genshin.models.AccompanyResult, character_name: str, locale: Locale
+    ) -> DefaultEmbed:
+        return DefaultEmbed(
+            locale,
+            title=LocaleStr(key="accompany_success_title", character=character_name),
+            description=LocaleStr(
+                key="accompany_success_desc",
+                days=result.accompany_days,
+                points=result.points_increased,
+            ),
+        ).add_acc_info(self._account, blur=False)
+
     @staticmethod
     def _convert_character_id_to_enka_format(character_id: str) -> str:
         """Convert character ID to the format used by EnkaAPI."""

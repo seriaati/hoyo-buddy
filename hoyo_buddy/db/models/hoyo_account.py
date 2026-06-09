@@ -55,8 +55,14 @@ class HoyoAccount(BaseModel):
     mimo_auto_task = fields.BooleanField(default=True)
     mimo_auto_buy = fields.BooleanField(default=False)
     mimo_auto_draw = fields.BooleanField(default=False)
+    accompany_checkin = fields.BooleanField(default=False)
     notifs: fields.ReverseRelation[NotesNotify]
     farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
+
+    # Character accompany (HoYoLAB only): the character chosen for the auto accompany task
+    accompany_role_id: fields.Field[int | None] = fields.IntField(null=True)
+    accompany_topic_id: fields.Field[int | None] = fields.IntField(null=True)
+    accompany_character_name: fields.Field[str | None] = fields.CharField(max_length=64, null=True)
 
     # Last completed time for each auto task
     # Future me: Make sure to change AUTO_TASK_LAST_TIME_FIELDS in constants.py if you modify this section
@@ -65,6 +71,7 @@ class HoyoAccount(BaseModel):
     last_mimo_buy_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     last_mimo_draw_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     last_redeem_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_accompany_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
 
     # Misc
     current = fields.BooleanField(default=False)

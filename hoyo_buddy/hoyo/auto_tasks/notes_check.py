@@ -254,8 +254,13 @@ class NotesChecker:
             buttons = NotesView.get_open_game_buttons(account)
             view.add_items(buttons)
 
+            # Move the embed description into the message content so mobile
+            # notifications show the actual reminder text instead of "sent an image".
+            content = embed.description
+            embed.description = None
+
             message, errored = await cls._bot.dm_user(
-                account.user.id, embed=embed, file=file_, view=view
+                account.user.id, content=content, embed=embed, file=file_, view=view
             )
             view.message = message
 

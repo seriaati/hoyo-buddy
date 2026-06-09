@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.types import Buff, Challenge, ChallengeWithLang, HardChallengeMode, Interaction
+    from hoyo_buddy.types import Buff, ChallengeWithLang, HardChallengeMode, Interaction
 
 ShowUIDChallenge: TypeAlias = (
     ShiyuDefense

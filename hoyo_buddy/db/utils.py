@@ -45,11 +45,13 @@ __all__ = (
 
 async def get_locale(i: Interaction) -> Locale:
     settings = await models.Settings.get_or_none(user_id=i.user.id)
-    return (
-        settings.locale or Locale.american_english
-        if settings is not None
-        else Locale.american_english
-    )
+    if settings is not None and settings.locale:
+        return settings.locale
+    try:
+        locale = Locale(i.locale.value)
+    except ValueError:
+        return Locale.american_english
+    return locale
 
 
 async def get_enable_dyk(i: Interaction) -> bool:

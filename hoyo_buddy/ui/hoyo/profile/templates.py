@@ -95,10 +95,10 @@ TEMPLATE_PREVIEWS = {
     (Game.STARRAIL, "src1"): "https://iili.io/24hL2ig.png",
     (Game.STARRAIL, "src2"): "https://iili.io/24hLR0G.png",
     (Game.STARRAIL, "src3"): "https://iili.io/24hLw5Q.png",
-    (Game.STARRAIL, "enka1"): "https://img.seria.moe/REPLACE_HSR_ENKA_PREVIEW.png",
+    (Game.STARRAIL, "enka1"): "https://img.seria.moe/xrmRTweZsHNYXIIR.png",
     (Game.ZZZ, "hb1"): "https://img.seria.moe/xagKUlBObeSlQFuR.png",
     (Game.ZZZ, "hb2"): "https://img.seria.moe/aLcDReesAnNiAUzU.png",
     (Game.ZZZ, "hb3"): "https://img.seria.moe/chpFFHnUVEQTwqPC.png",
     (Game.ZZZ, "hb4"): "https://img.seria.moe/ODajRXtZUlCmTCks.png",
-    (Game.ZZZ, "enka1"): "https://img.seria.moe/REPLACE_ZZZ_ENKA_PREVIEW.png",
+    (Game.ZZZ, "enka1"): "https://img.seria.moe/drkKMmVfuasAlufI.png",
 }

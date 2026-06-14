@@ -4,9 +4,10 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 import discord
+import genshin
 
 from hoyo_buddy import ui
-from hoyo_buddy.constants import MIMO_SUPPORT_GAMES, locale_to_hoyo_lang
+from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, MIMO_SUPPORT_GAMES, locale_to_hoyo_lang
 from hoyo_buddy.db.models import JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
@@ -14,6 +15,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.settings import reminder
+from hoyo_buddy.ui.settings.accompany import AccompanySettingsContainer
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
 from hoyo_buddy.ui.settings.card import CardSettingsContainer
 from hoyo_buddy.ui.settings.notification import (
@@ -37,6 +39,7 @@ class SettingsCategory(StrEnum):
     USER_SETTINGS = "user_settings_title"
     ACCOUNT_SETTINGS = "account_settings_title"
     MIMO_SETTINGS = "mimo_title"
+    ACCOMPANY_SETTINGS = "accompany_settings_title"
     NOTIFICATION_SETTINGS = "notification_settings_button_label"
     MIMO_NOTIFICATION_SETTINGS = "mimo_notification_settings"
     REMINDER_SETTINGS = "reminder_settings_title"
@@ -45,10 +48,15 @@ class SettingsCategory(StrEnum):
 ACCOUNT_SELECT_CATEGORIES: set[SettingsCategory] = {
     SettingsCategory.ACCOUNT_SETTINGS,
     SettingsCategory.MIMO_SETTINGS,
+    SettingsCategory.ACCOMPANY_SETTINGS,
     SettingsCategory.NOTIFICATION_SETTINGS,
     SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
     SettingsCategory.REMINDER_SETTINGS,
 }
+
+
+def _is_accompany_account(account: HoyoAccount) -> bool:
+    return account.game in ACCOMPANY_SUPPORT_GAMES and account.region is genshin.Region.OVERSEAS
 
 
 class CategorySelect(ui.Select["SettingsView"]):
@@ -74,6 +82,7 @@ class SettingsView(ui.LayoutView):
         super().__init__(author=author, locale=locale)
 
         self.category = SettingsCategory.USER_SETTINGS
+        self.accompany_page_index = 0
 
         # Attributes needed by containers
         self.settings: Settings
@@ -93,6 +102,11 @@ class SettingsView(ui.LayoutView):
 
         if self.category is SettingsCategory.MIMO_SETTINGS:
             return MimoSettingsContainer(account=account)
+
+        if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
+            return await AccompanySettingsContainer.create(
+                account=account, locale=self.locale, page_index=self.accompany_page_index
+            )
 
         if self.category is SettingsCategory.NOTIFICATION_SETTINGS:
             return NotificationSettingsContainer(account=account)
@@ -138,6 +152,14 @@ class SettingsView(ui.LayoutView):
                         raise NoAccountFoundError(MIMO_SUPPORT_GAMES)
 
                     account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
+
+                if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
+                    accompany_accounts = [acc for acc in accounts if _is_accompany_account(acc)]
+                    if not accompany_accounts:
+                        raise NoAccountFoundError(list(ACCOMPANY_SUPPORT_GAMES))
+                    account = next(
+                        (acc for acc in accompany_accounts if acc.current), accompany_accounts[0]
+                    )
 
                 if self.category is SettingsCategory.REMINDER_SETTINGS:
                     limit_games = reminder.SUPPORT_GAMES
@@ -190,6 +212,8 @@ class SettingsView(ui.LayoutView):
 
             if self.category is SettingsCategory.MIMO_SETTINGS:
                 accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
+            if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
+                accounts = [acc for acc in accounts if _is_accompany_account(acc)]
             if self.category is SettingsCategory.REMINDER_SETTINGS:
                 accounts = [acc for acc in accounts if acc.game in reminder.SUPPORT_GAMES]
 

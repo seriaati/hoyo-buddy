@@ -38,8 +38,11 @@ class AutoTaskMixin:
         games = games or list(Game)
         query = build_account_query(games=games, region=region)
 
+        # Tasks that reset once per day (UTC+8) instead of running on a fixed interval
+        daily_task = task_type in {"checkin", "accompany"}
+
         # Auto task exclusions
-        if task_type != "checkin":
+        if not daily_task:
             # Interval based auto tasks
             interval = AUTO_TASK_INTERVALS.get(task_type)
             if interval is None:
@@ -73,6 +76,10 @@ class AutoTaskMixin:
                 Q(cookies__contains="ltmid_v2") & Q(cookies__contains="stoken")
             )
 
+        # Accompany-specific: Only process accounts that have a character selected
+        if task_type == "accompany":
+            query &= Q(accompany_role_id__isnull=False)
+
         # Supporters have priority
         supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
         logger.debug(f"Supporter IDs: {supporter_ids}")
@@ -82,19 +89,19 @@ class AutoTaskMixin:
             .order_by("-is_supporter", "id")
         )
 
+        last_time_field = AUTO_TASK_LAST_TIME_FIELDS.get(task_type)
+
         queue: asyncio.Queue[models.HoyoAccount] = asyncio.Queue()
         cookie_game_pairs: set[tuple[str, Game]] = set()
         async for account in query_set:
-            # Don't check-in for accounts with same cookies and game
-            # Don't check-in on the same day
-            if task_type == "checkin" and (
-                (account.cookies, account.game) in cookie_game_pairs
-                or (
-                    account.last_checkin_time is not None
-                    and account.last_checkin_time.astimezone(UTC_8).date() == get_now().date()
-                )
-            ):
-                continue
+            # For daily tasks: skip accounts with the same cookies and game (duplicates),
+            # and skip accounts that already ran today (UTC+8)
+            if daily_task:
+                last_time = getattr(account, last_time_field) if last_time_field else None
+                if (account.cookies, account.game) in cookie_game_pairs or (
+                    last_time is not None and last_time.astimezone(UTC_8).date() == get_now().date()
+                ):
+                    continue
 
             cookie_game_pairs.add((account.cookies, account.game))
             await queue.put(account)

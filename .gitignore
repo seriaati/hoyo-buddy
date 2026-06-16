@@ -166,6 +166,6 @@ hoyo_buddy/bot/data/*.json
 test.py
 test_*.py
 .hb_data/
-scripts/output/hsr_build_card.png
+scripts/output/
 .serena/
 .claude/worktrees/

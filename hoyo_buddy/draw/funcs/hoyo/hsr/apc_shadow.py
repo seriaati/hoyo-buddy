@@ -119,6 +119,9 @@ class APCShadowCard(HSRChallengeUIDMixin):
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
         drawer = Drawer(ImageDraw.Draw(im), folder="apc-shadow", dark_mode=True)
 
+        node_1_score = stage.node_1.score if stage.node_1 is not None else 0
+        node_2_score = stage.node_2.score if stage.node_2 is not None else 0
+
         stage_name = get_floor_difficulty(stage.name, self._season.name)
         name_tbox = drawer.write(
             stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
@@ -126,7 +129,7 @@ class APCShadowCard(HSRChallengeUIDMixin):
         score_tbox = drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
-                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
+                score=f"{node_1_score}+{node_2_score}={stage.score}"
                 if not stage.is_quick_clear
                 else 8000,
             ),
@@ -152,11 +155,14 @@ class APCShadowCard(HSRChallengeUIDMixin):
         not_defeated_text = LocaleStr(key="apc_shadow.boss_defeated_no").translate(self._locale)
         quick_clear_text = LocaleStr(key="moc_quick_clear").translate(self._locale)
 
+        node_1_defeated = stage.node_1.boss_defeated if stage.node_1 is not None else False
+        node_2_defeated = stage.node_2.boss_defeated if stage.node_2 is not None else False
+
         if stage.is_quick_clear:
             text = quick_clear_text
-        elif stage.node_1.boss_defeated and stage.node_2.boss_defeated:
+        elif node_1_defeated and node_2_defeated:
             text = defeated_text
-        elif not stage.node_1.boss_defeated and not stage.node_2.boss_defeated:
+        elif not node_1_defeated and not node_2_defeated:
             text = not_defeated_text
         else:
             text = f"{defeated_text} / {not_defeated_text}"
@@ -165,7 +171,9 @@ class APCShadowCard(HSRChallengeUIDMixin):
             text, size=25, position=(rightmost + padding + 37, 60), color=WHITE, locale=self._locale
         )
 
-        characters = stage.node_1.avatars + stage.node_2.avatars
+        node_1_avatars = stage.node_1.avatars if stage.node_1 is not None else []
+        node_2_avatars = stage.node_2.avatars if stage.node_2 is not None else []
+        characters = node_1_avatars + node_2_avatars
 
         pos = (0, 135)
         for i in range(8):

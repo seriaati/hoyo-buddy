@@ -594,6 +594,8 @@ ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY = {
     enka.zzz.StatType.ICE_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ICE_DMG_BONUS,
     enka.zzz.StatType.ELECTRIC_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ELECTRIC_DMG_BONUS,
     enka.zzz.StatType.ETHER_DMG_BONUS_FLAT: genshin.models.ZZZPropertyType.DISC_ETHER_DMG_BONUS,
+    # TODO: Add enka.zzz.StatType.WIND_DMG_BONUS_FLAT -> ZZZPropertyType.DISC_WIND_DMG_BONUS
+    # once the enka and genshin.py packages support the Wind element
 }
 
 ZZZ_ENKA_SKILLTYPE_TO_GPY_SKILLTYPE = {
@@ -614,6 +616,8 @@ ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE = {
     enka.zzz.Element.FIRE_FROST: genshin.models.ZZZElementType.ICE,  # Miyabi element
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
     enka.zzz.Element.ZHEN_ASSAULT: genshin.models.ZZZElementType.PHYSICAL,  # YSG element
+    # TODO: Add enka.zzz.Element.WIND -> genshin.models.ZZZElementType.WIND
+    # once the enka package supports the Wind element
 }
 
 ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
@@ -636,6 +640,8 @@ ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {
     enka.zzz.AgentStatType.ELECTRIC_DMG_BONUS: genshin.models.ZZZPropertyType.ELECTRIC_DMG_BONUS,
     enka.zzz.AgentStatType.ETHER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,
     enka.zzz.AgentStatType.SHEER_DMG_BONUS: genshin.models.ZZZPropertyType.ETHER_DMG_BONUS,  # for yi xuan?
+    # TODO: Add enka.zzz.AgentStatType.WIND_DMG_BONUS -> ZZZPropertyType.WIND_DMG_BONUS
+    # once the enka package supports the Wind element
 }
 
 ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[
@@ -1287,7 +1293,6 @@ AUTO_TASK_FEATURE_KEYS: dict[AutoTaskType, str] = {
 }
 
 GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910
-SUPPORTER_ROLE_ID = 1376358430947676184 if CONFIG.is_dev else 1117992633827082251
 
 HB_BIRTHDAY = datetime.date(2024, 6, 7)
 

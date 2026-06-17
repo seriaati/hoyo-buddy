@@ -34,6 +34,7 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.DISC_ICE_DMG_BONUS: "ICE.png",
     ZZZPropertyType.DISC_ELECTRIC_DMG_BONUS: "ELECTRIC.png",
     ZZZPropertyType.DISC_ETHER_DMG_BONUS: "ETHER.png",
+    # TODO: Add ZZZPropertyType.DISC_WIND_DMG_BONUS: "WIND.png" once genshin.py supports it
     ZZZPropertyType.CRIT_DMG: "CRIT_DMG.png",
     ZZZPropertyType.CRIT_RATE: "CRIT_RATE.png",
     ZZZPropertyType.ANOMALY_PROFICIENCY: "ANOMALY_PRO.png",
@@ -60,6 +61,7 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.ICE_DMG_BONUS: "ICE.png",
     ZZZPropertyType.ELECTRIC_DMG_BONUS: "ELECTRIC.png",
     ZZZPropertyType.ETHER_DMG_BONUS: "ETHER.png",
+    ZZZPropertyType.WIND_DMG_BONUS: "WIND.png",
 }
 
 
@@ -162,6 +164,10 @@ def get_props(
         case ZZZElementType.ETHER:
             props.insert(
                 dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.ETHER_DMG_BONUS)
+            )
+        case ZZZElementType.WIND:
+            props.insert(
+                dmg_index, dutils.get(agent.properties, type=ZZZPropertyType.WIND_DMG_BONUS)
             )
 
     return [p for p in props if p is not None and isinstance(p.type, ZZZPropertyType)]

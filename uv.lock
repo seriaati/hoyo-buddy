@@ -872,7 +872,7 @@ wheels = [
 [[package]]
 name = "genshin"
 version = "1.7.27"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#39e58f3b3506e059457854d95ccae38ca859e63d" }
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#0aec301508c5f8ef14046c0f3d08dbd21e3955ad" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -903,7 +903,7 @@ wheels = [
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#f7c4a45ba29e8f0a44dfc0563b223b8dc06e0a90" }
+source = { git = "https://github.com/seriaati/hb-data#bf22e6c3e6d28c03825ff356cfb817d9c8494295" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

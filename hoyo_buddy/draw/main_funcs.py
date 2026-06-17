@@ -360,7 +360,9 @@ async def draw_apc_shadow_card(
     draw_input: DrawInput, data: StarRailAPCShadow, season: StarRailChallengeSeason, uid: int | None
 ) -> File:
     for floor in data.floors:
-        icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
+        node_1_avatars = floor.node_1.avatars if floor.node_1 is not None else []
+        node_2_avatars = floor.node_2.avatars if floor.node_2 is not None else []
+        icons = [chara.icon for chara in node_1_avatars + node_2_avatars]
         await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(

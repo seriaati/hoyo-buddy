@@ -34,7 +34,7 @@ from hoyo_buddy.constants import (
     ZZZ_TEXT_MAP_URL,
 )
 from hoyo_buddy.db import get_locale, models
-from hoyo_buddy.db.models import CardSettings, Settings
+from hoyo_buddy.db.models import Settings
 from hoyo_buddy.db.utils import build_account_query
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, LeaderboardType
@@ -559,7 +559,6 @@ class HoyoBuddy(commands.AutoShardedBot):
             self.geetest_command_task.cancel()
 
         await Settings.close_redis_pool()
-        await CardSettings.close_redis_pool()
 
         await super().close()
 

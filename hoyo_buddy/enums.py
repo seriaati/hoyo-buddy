@@ -150,6 +150,7 @@ class ZZZElement(StrEnum):
     ICE = "Ice"
     PHYSICAL = "Physical"
     ELECTRIC = "Electric"
+    WIND = "Wind"
 
 
 class BetaItemCategory(StrEnum):

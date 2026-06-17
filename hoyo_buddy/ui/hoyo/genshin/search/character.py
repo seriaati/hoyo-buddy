@@ -39,6 +39,22 @@ class CharacterUI(View):
         self.story_index = 0
         self.quote_index = 0
         self.selected_page = 0
+        self._available_pages: list[int] | None = None
+
+    async def _get_available_pages(self) -> list[int]:
+        if self._available_pages is not None:
+            return self._available_pages
+
+        async with AmbrAPIClient(self.locale) as api:
+            character_fetter = await api.fetch_character_fetter(self.character_id)
+
+        pages = [0, 1, 2]
+        if character_fetter.stories:
+            pages.append(3)
+        if character_fetter.quotes:
+            pages.append(4)
+        self._available_pages = pages
+        return pages
 
     async def fetch_character_embed(self) -> DefaultEmbed:
         async with AmbrAPIClient(self.locale) as api:
@@ -86,7 +102,7 @@ class CharacterUI(View):
             await i.response.defer(ephemeral=ephemeral(i))
 
         self.clear_items()
-        self.add_item(PageSelector(self.selected_page))
+        self.add_item(PageSelector(self.selected_page, await self._get_available_pages()))
 
         match self.selected_page:
             case 0:
@@ -209,23 +225,19 @@ class EnterCharacterLevel(Button[CharacterUI]):
 
 
 class PageSelector(Select[CharacterUI]):
-    def __init__(self, current: int) -> None:
+    def __init__(self, current: int, available_pages: list[int]) -> None:
+        page_labels = {
+            0: "character_profile_page_label",
+            1: "character_talents_page_label",
+            2: "character_const_page_label",
+            3: "character_stories_page_label",
+            4: "character_quotes_page_label",
+        }
         options = [
             SelectOption(
-                label=LocaleStr(key="character_profile_page_label"), value="0", default=current == 0
-            ),
-            SelectOption(
-                label=LocaleStr(key="character_talents_page_label"), value="1", default=current == 1
-            ),
-            SelectOption(
-                label=LocaleStr(key="character_const_page_label"), value="2", default=current == 2
-            ),
-            SelectOption(
-                label=LocaleStr(key="character_stories_page_label"), value="3", default=current == 3
-            ),
-            SelectOption(
-                label=LocaleStr(key="character_quotes_page_label"), value="4", default=current == 4
-            ),
+                label=LocaleStr(key=page_labels[page]), value=str(page), default=current == page
+            )
+            for page in available_pages
         ]
         super().__init__(options=options, row=4)
 

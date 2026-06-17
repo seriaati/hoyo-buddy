@@ -7,16 +7,13 @@ from tortoise import fields
 
 from hoyo_buddy.enums import Game
 
-from .base import CachedModel
+from .base import BaseModel
 
 if TYPE_CHECKING:
     from .user import User
 
 
-class CardSettings(CachedModel):
-    _cache_ttl = 60 * 60 * 24
-    _pks = ("character_id", "user_id", "game")
-
+class CardSettings(BaseModel):
     character_id = fields.CharField(max_length=8)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
         "models.User", related_name="card_settings"

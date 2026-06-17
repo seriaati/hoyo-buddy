@@ -650,7 +650,7 @@ class GenshinClient(ProxyGenshinClient):
             await sleep("redeem")
             return await self.redeem_code(code, locale=locale)
         except Exception as e:
-            if isinstance(e, genshin.RedemptionClaimed | genshin.RedemptionInvalid):
+            if isinstance(e, genshin.RedemptionException):
                 await self._add_to_redeemed_codes(code)
 
             msg = self._handle_redeem_error(e, locale)

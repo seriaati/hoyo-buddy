@@ -97,7 +97,7 @@ class BuffView(View):
             assert self._season is not None
 
             for floor in reversed(self._challenge.floors):
-                n1_buff = floor.node_1.buff
+                n1_buff = floor.node_1.buff if floor.node_1 is not None else None
                 if n1_buff is not None:
                     team_str = LocaleStr(key="challenge_view.team", team=1).translate(self.locale)
 
@@ -106,7 +106,7 @@ class BuffView(View):
                     if n1_buff.name not in buffs:
                         buffs[n1_buff.name] = n1_buff
 
-                n2_buff = floor.node_2.buff
+                n2_buff = floor.node_2.buff if floor.node_2 is not None else None
                 if n2_buff is not None:
                     team_str = LocaleStr(key="challenge_view.team", team=2).translate(self.locale)
 

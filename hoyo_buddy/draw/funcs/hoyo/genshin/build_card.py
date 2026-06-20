@@ -65,7 +65,10 @@ def draw_genshin_card(
 
     draw = ImageDraw.Draw(im)
     for index, fight_prop_type in enumerate(fight_props_to_draw):
-        fight_prop = character.stats[fight_prop_type]
+        fight_prop = character.stats.get(fight_prop_type)
+        if fight_prop is None:
+            continue
+
         offset = (
             157
             if fight_prop.type

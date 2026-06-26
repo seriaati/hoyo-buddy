@@ -705,7 +705,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.19"
-source = { git = "https://github.com/seriaati/enka-py#6a7ebbddf0d0ce84276c2c94a89e2110209a7bef" }
+source = { git = "https://github.com/seriaati/enka-py#7c4dbf1a4fc716319b43b273802b764c8a5fac1b" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

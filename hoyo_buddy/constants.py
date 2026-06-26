@@ -475,6 +475,7 @@ ELEMENT_TO_BONUS_PROP_ID: Final[dict[GenshinElement, int]] = {
     GenshinElement.ANEMO: 44,
     GenshinElement.CRYO: 46,
     GenshinElement.GEO: 45,
+    GenshinElement.NONE: 30,  # Physical
 }
 
 HB_GAME_TO_GPY_GAME: dict[Game, genshin.Game] = {

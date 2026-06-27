@@ -265,12 +265,13 @@ class GenshinClient(ProxyGenshinClient):
                     str(character.id)
                 ].get("Costumes")
                 if costumes:
-                    chara_costume = character.costumes[0]
-                    costume_data = costumes.get(str(chara_costume.id))
+                    char_costume = character.costumes[0]
+                    costume_data = costumes.get(str(char_costume.id))
                     if costume_data:
+                        ui_path = costume_data["Art"].removeprefix("/ui/").removesuffix(".png")
                         costume = models.HoyolabGICostume(
                             icon=models.HoyolabGICharacterIcon(
-                                gacha=AMBR_UI_URL.format(filename=costume_data["Art"])
+                                gacha=AMBR_UI_URL.format(filename=ui_path)
                             )
                         )
 

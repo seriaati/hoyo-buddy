@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -536,6 +537,37 @@ class GenshinClient(ProxyGenshinClient):
         self, uid: int | None = None
     ) -> Sequence[genshin.models.ZZZPartialAgent]:
         return await super().get_zzz_agents(uid)
+
+    async def get_zzz_agent_upgrade_guides(
+        self, agent_ids: Sequence[int], uid: int | None = None
+    ) -> dict[int, genshin.models.ZZZAgentUpgradeGuide]:
+        """Fetch detailed build data for the given agents, batched 10 per request."""
+        batches = [agent_ids[i : i + 10] for i in range(0, len(agent_ids), 10)]
+        if not batches:
+            return {}
+
+        try:
+            return await self._batch_zzz_agent_upgrade_guides(batches, uid)
+        except genshin.InvalidCookies:
+            # The upgrade guide tool's login requires a valid cookie_token; genshin.py's own
+            # retry only refreshes e_nap_token, so refresh cookie_token from stoken and retry
+            # once, mirroring how redeem_code recovers from an expired cookie_token.
+            cookies = self._account.dict_cookies
+            if "stoken" not in cookies or "ltmid_v2" not in cookies:
+                raise
+            await self.update_cookie_token()
+            return await self._batch_zzz_agent_upgrade_guides(batches, uid)
+
+    async def _batch_zzz_agent_upgrade_guides(
+        self, batches: list[Sequence[int]], uid: int | None
+    ) -> dict[int, genshin.models.ZZZAgentUpgradeGuide]:
+        # Establish the e_nap_token login with the first batch before fanning out, so the
+        # remaining batches reuse the token instead of racing to log in concurrently.
+        first = await self.get_zzz_agent_upgrade_guide(batches[0], uid=uid)
+        rest = await asyncio.gather(
+            *(self.get_zzz_agent_upgrade_guide(batch, uid=uid) for batch in batches[1:])
+        )
+        return {guide.avatar.id: guide for batch in (first, *rest) for guide in batch}
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

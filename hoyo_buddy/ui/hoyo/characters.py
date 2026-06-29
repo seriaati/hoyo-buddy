@@ -14,6 +14,7 @@ from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZPartialAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
+from loguru import logger
 
 from hoyo_buddy.constants import (
     AMBR_WEAPON_TYPES,
@@ -149,6 +150,7 @@ class CharactersView(PaginatorView):
         self.gi_characters: list[GICharacter | UnownedGICharacter] = []
         self.hsr_characters: list[HSRCharacter | UnownedHSRCharacter] = []
         self.zzz_characters: list[ZZZCharacter | UnownedZZZCharacter] = []
+        self.zzz_agent_guides: dict[int, genshin.models.ZZZAgentUpgradeGuide] = {}
         self.honkai_characters: list[HonkaiCharacter] = []
 
         self.filter: GIFilter = GIFilter.NONE
@@ -397,6 +399,7 @@ class CharactersView(PaginatorView):
             file_ = await draw_zzz_characters_card(
                 self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
+                self.zzz_agent_guides,
             )
         elif self.game is Game.HONKAI:
             file_ = await draw_honkai_suits_card(
@@ -604,6 +607,12 @@ class CharactersView(PaginatorView):
         elif self.game is Game.ZZZ:
             agents = await client.get_zzz_agents()
             self.zzz_characters = agents  # pyright: ignore[reportAttributeAccessIssue]
+            try:
+                self.zzz_agent_guides = await client.get_zzz_agent_upgrade_guides(
+                    [agent.id for agent in agents]
+                )
+            except Exception:
+                logger.exception("Failed to fetch ZZZ agent upgrade guides")
 
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))

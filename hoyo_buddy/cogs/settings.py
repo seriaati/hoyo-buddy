@@ -8,7 +8,11 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON, locale_to_zenless_data_lang
+from hoyo_buddy.constants import (
+    ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    contains_traveler_id,
+    locale_to_zenless_data_lang,
+)
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
@@ -29,6 +33,30 @@ class Settings(commands.Cog):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
+    @staticmethod
+    def _collapse_traveler_choices(
+        choices: list[app_commands.Choice[str]],
+    ) -> list[app_commands.Choice[str]]:
+        """Collapse per-element Traveler choices into one entry per base ID.
+
+        Card settings are stored per base Traveler ID (e.g. "10000007"), so the element variants
+        offered by AmbrAPI (e.g. "10000007-anemo") would map to the same settings.
+        """
+        result: list[app_commands.Choice[str]] = []
+        seen: set[str] = set()
+        for choice in choices:
+            if not contains_traveler_id(choice.value):
+                result.append(choice)
+                continue
+            base_id = choice.value.split("-", maxsplit=1)[0]
+            if base_id in seen:
+                continue
+            seen.add(base_id)
+            base_name = choice.name.split(" (")[0]
+            gender = "♂" if "5" in base_id else "♀"
+            result.append(app_commands.Choice(name=f"{base_name} ({gender})", value=base_id))
+        return result
+
     async def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
         """Get character autocomplete choices."""
         if game is Game.GENSHIN:
@@ -48,7 +76,10 @@ class Settings(commands.Cog):
         if not characters:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
-        return characters.get(locale, characters[Locale.american_english])
+        choices = characters.get(locale, characters[Locale.american_english])
+        if game is Game.GENSHIN:
+            choices = self._collapse_traveler_choices(choices)
+        return choices
 
     async def _get_character_name(
         self, game: Game, character_id: str, locale: Locale

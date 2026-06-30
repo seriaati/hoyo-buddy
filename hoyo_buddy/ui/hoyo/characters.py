@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import io
 import itertools
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final, TypeAlias
@@ -8,7 +9,7 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 import enka
 import genshin
 import hb_data
-from discord import ButtonStyle
+from discord import ButtonStyle, File
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
@@ -69,7 +70,7 @@ if TYPE_CHECKING:
     from collections import defaultdict
     from collections.abc import Iterable, Sequence
 
-    from discord import File, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.models import DrawInput
@@ -177,6 +178,8 @@ class CharactersView(PaginatorView):
         self.show_owned_only = True
         self.show_max_level_only = False
         self.characters_per_page = 32
+
+        self._page_files: dict[int, bytes] = {}
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
@@ -567,10 +570,18 @@ class CharactersView(PaginatorView):
         self.pages = [Page(content=self.dyk, embed=embed) for _ in range(page_num)]
 
     async def _create_file(self) -> File:
+        cached = self._page_files.get(self._current_page)
+        if cached is not None:
+            return File(io.BytesIO(cached), filename=self.draw_input.filename)
+
         characters = self.get_filtered_sorted_characters()
         chunked_chars = list(itertools.batched(characters, self.characters_per_page))
         chars = chunked_chars[self._current_page]
-        return await self._draw_card(chars)
+        file_ = await self._draw_card(chars)
+
+        data = file_.fp.read()
+        self._page_files[self._current_page] = data
+        return File(io.BytesIO(data), filename=self.draw_input.filename)
 
     async def start(self, i: Interaction) -> None:
         self.dyk = await get_dyk(i)
@@ -628,6 +639,7 @@ class CharactersView(PaginatorView):
         await self.update(i)
 
     async def update(self, i: Interaction) -> None:
+        self._page_files.clear()
         characters = self.get_filtered_sorted_characters()
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
         self._set_pages(characters, embed=embed)

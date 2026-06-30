@@ -153,10 +153,13 @@ class PureFictionCard(HSRChallengeUIDMixin):
             im.paste(star, pos)
             pos = (pos[0] + 62, pos[1])
 
+        node_1_score = stage.node_1.score if stage.node_1 is not None else 0
+        node_2_score = stage.node_2.score if stage.node_2 is not None else 0
+
         drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
-                score=f"{stage.node_1.score}+{stage.node_2.score}={stage.score}"
+                score=f"{node_1_score}+{node_2_score}={stage.score}"
                 if not stage.is_quick_clear
                 else 80000,
             ),
@@ -166,7 +169,9 @@ class PureFictionCard(HSRChallengeUIDMixin):
             locale=self._locale,
         )
 
-        characters = stage.node_1.avatars + stage.node_2.avatars
+        node_1_avatars = stage.node_1.avatars if stage.node_1 is not None else []
+        node_2_avatars = stage.node_2.avatars if stage.node_2 is not None else []
+        characters = node_1_avatars + node_2_avatars
 
         pos = (0, 135)
         for i in range(8):

@@ -612,7 +612,7 @@ class CharactersView(PaginatorView):
                     [agent.id for agent in agents]
                 )
             except Exception:
-                logger.exception("Failed to fetch ZZZ agent upgrade guides")
+                logger.warning("Failed to fetch ZZZ agent upgrade guides for {}", self.account.uid)
 
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))

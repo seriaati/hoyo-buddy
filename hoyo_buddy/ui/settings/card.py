@@ -400,7 +400,7 @@ class CardSettingsContainer(ui.Container):
             ui.ActionRow(
                 HighlightSubstatSelector(
                     current=card_settings.highlight_substats,
-                    disabled=self.disable_substat_roll_button,
+                    disabled=self.disable_highlight_substat_selector,
                 )
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
@@ -505,4 +505,11 @@ class CardSettingsContainer(ui.Container):
 
     @property
     def disable_substat_roll_button(self) -> bool:
+        if self.game is Game.ZZZ:
+            return False
+        # enka.cards supports substat rolls for GI and HSR
+        return get_template_name(self.card_settings.template) != "enka"
+
+    @property
+    def disable_highlight_substat_selector(self) -> bool:
         return self.game is not Game.ZZZ

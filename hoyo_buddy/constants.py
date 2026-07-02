@@ -970,8 +970,8 @@ NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 10848562841987
 
 DOCS_URL = "https://hb-docs.seria.moe{lang}/docs/{page}"
 LOCALE_TO_DOCS_LANG = {
-    Locale.taiwan_chinese: "/zh-Hant",
-    Locale.chinese: "/zh-Hans",
+    Locale.taiwan_chinese: "/zh-tw",
+    Locale.chinese: "/zh-cn",
     Locale.vietnamese: "/vi",
     Locale.spain_spanish: "/es",
 }

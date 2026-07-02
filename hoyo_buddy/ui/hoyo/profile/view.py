@@ -73,7 +73,6 @@ if TYPE_CHECKING:
 
 
 CARD_API_ENDPOINTS = {
-    "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
     "enkacard": "http://localhost:7652/enka-card",
     "src": "http://localhost:7652/star-rail-card",

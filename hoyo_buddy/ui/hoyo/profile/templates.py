@@ -4,14 +4,13 @@
 from hoyo_buddy.enums import Game
 
 TEMPLATES: dict[Game, tuple[str, ...]] = {
-    Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2", "enka1"),
+    Game.GENSHIN: ("hb1", "hb2", "encard1", "enkacard1", "enkacard2", "enka1"),
     Game.STARRAIL: ("hb1", "hb2", "src1", "src2", "src3", "enka1"),
     Game.ZZZ: ("hb1", "hb2", "hb3", "hb4", "enka1"),
 }
 TEMPLATE_AUTHORS: dict[str, tuple[str, str]] = {
     "hb": ("@ayasaku_", "@seriaati"),
     "src": ("@korzzex", "@korzzex"),
-    "hattvr": ("@algoinde", "@hattvr"),
     "encard": ("@korzzex", "@korzzex"),
     "enkacard": ("@korzzex", "@korzzex"),
     "enka": ("enka.network", "@LumiFae"),
@@ -19,7 +18,6 @@ TEMPLATE_AUTHORS: dict[str, tuple[str, str]] = {
 TEMPLATE_NAMES = {
     "hb": "profile.card_template_select.hb.label",
     "src": "profile.card_template_select.src.label",
-    "hattvr": "profile.card_template_select.enka_classic.label",
     "encard": "profile.card_template_select.encard.label",
     "enkacard": "profile.card_template_select.enkacard.label",
     "enka": "profile.card_template_select.enka.label",
@@ -28,7 +26,6 @@ TEMPLATE_NAMES = {
 DISABLE_COLOR = {
     (Game.GENSHIN, "hb1"): True,
     (Game.GENSHIN, "hb2"): True,
-    (Game.GENSHIN, "hattvr1"): True,
     (Game.GENSHIN, "encard1"): True,
     (Game.GENSHIN, "enkacard1"): True,
     (Game.GENSHIN, "enkacard2"): True,
@@ -48,7 +45,6 @@ DISABLE_COLOR = {
 DISABLE_DARK_MODE = {
     (Game.GENSHIN, "hb1"): False,
     (Game.GENSHIN, "hb2"): False,
-    (Game.GENSHIN, "hattvr1"): True,
     (Game.GENSHIN, "encard1"): True,
     (Game.GENSHIN, "enkacard1"): True,
     (Game.GENSHIN, "enkacard2"): True,
@@ -68,7 +64,6 @@ DISABLE_DARK_MODE = {
 DISABLE_IMAGE = {
     (Game.GENSHIN, "hb1"): False,
     (Game.GENSHIN, "hb2"): False,
-    (Game.GENSHIN, "hattvr1"): True,
     (Game.GENSHIN, "encard1"): False,
     (Game.GENSHIN, "enkacard1"): False,
     (Game.GENSHIN, "enkacard2"): False,
@@ -89,7 +84,6 @@ DISABLE_IMAGE = {
 TEMPLATE_PREVIEWS = {
     (Game.GENSHIN, "hb1"): "https://iili.io/24hQO3G.png",
     (Game.GENSHIN, "hb2"): "https://iili.io/24hQZyQ.png",
-    (Game.GENSHIN, "hattvr1"): "https://iili.io/24hZ5Al.png",
     (Game.GENSHIN, "encard1"): "https://iili.io/24hZGcb.png",
     (Game.GENSHIN, "enkacard1"): "https://iili.io/24ht5ga.png",
     (Game.GENSHIN, "enkacard2"): "https://iili.io/24hDSuR.png",

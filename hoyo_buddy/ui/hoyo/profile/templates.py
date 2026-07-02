@@ -4,7 +4,7 @@
 from hoyo_buddy.enums import Game
 
 TEMPLATES: dict[Game, tuple[str, ...]] = {
-    Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2"),
+    Game.GENSHIN: ("hb1", "hb2", "hattvr1", "encard1", "enkacard1", "enkacard2", "enka1"),
     Game.STARRAIL: ("hb1", "hb2", "src1", "src2", "src3", "enka1"),
     Game.ZZZ: ("hb1", "hb2", "hb3", "hb4", "enka1"),
 }
@@ -32,6 +32,7 @@ DISABLE_COLOR = {
     (Game.GENSHIN, "encard1"): True,
     (Game.GENSHIN, "enkacard1"): True,
     (Game.GENSHIN, "enkacard2"): True,
+    (Game.GENSHIN, "enka1"): True,
     (Game.STARRAIL, "hb1"): False,
     (Game.STARRAIL, "hb2"): True,
     (Game.STARRAIL, "src1"): False,
@@ -51,6 +52,7 @@ DISABLE_DARK_MODE = {
     (Game.GENSHIN, "encard1"): True,
     (Game.GENSHIN, "enkacard1"): True,
     (Game.GENSHIN, "enkacard2"): True,
+    (Game.GENSHIN, "enka1"): True,
     (Game.STARRAIL, "hb1"): False,
     (Game.STARRAIL, "hb2"): False,
     (Game.STARRAIL, "src1"): True,
@@ -70,6 +72,7 @@ DISABLE_IMAGE = {
     (Game.GENSHIN, "encard1"): False,
     (Game.GENSHIN, "enkacard1"): False,
     (Game.GENSHIN, "enkacard2"): False,
+    (Game.GENSHIN, "enka1"): True,
     (Game.STARRAIL, "hb1"): False,
     (Game.STARRAIL, "hb2"): False,
     (Game.STARRAIL, "src1"): False,
@@ -90,6 +93,7 @@ TEMPLATE_PREVIEWS = {
     (Game.GENSHIN, "encard1"): "https://iili.io/24hZGcb.png",
     (Game.GENSHIN, "enkacard1"): "https://iili.io/24ht5ga.png",
     (Game.GENSHIN, "enkacard2"): "https://iili.io/24hDSuR.png",
+    (Game.GENSHIN, "enka1"): "https://img.seria.moe/ljQyVGVKyxpLCSLG.png",
     (Game.STARRAIL, "hb1"): "https://img.seria.moe/lkOMrQRXnQnZqrvX.png",
     (Game.STARRAIL, "hb2"): "https://img.seria.moe/JyxFhSgpXAdNBMkJ.png",
     (Game.STARRAIL, "src1"): "https://iili.io/24hL2ig.png",

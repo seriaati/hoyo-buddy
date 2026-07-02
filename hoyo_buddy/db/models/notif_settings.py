@@ -23,6 +23,8 @@ class AccountNotifSettings(BaseModel):
         "mimo_draw_failure",
         "redeem_success",
         "redeem_failure",
+        "notify_on_accompany_success",
+        "notify_on_accompany_failure",
     )
 
     # Future me: Make sure to change NOTIF_SETTING_FIELDS in constants.py if you modify this section
@@ -36,6 +38,8 @@ class AccountNotifSettings(BaseModel):
     mimo_draw_failure = fields.BooleanField(default=True)
     redeem_success = fields.BooleanField(default=True)
     redeem_failure = fields.BooleanField(default=True)
+    notify_on_accompany_success = fields.BooleanField(default=True)
+    notify_on_accompany_failure = fields.BooleanField(default=True)
 
     web_events = fields.BooleanField(default=False)
 

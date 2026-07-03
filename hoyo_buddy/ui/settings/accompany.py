@@ -99,14 +99,20 @@ class AccompanySettingsContainer(ui.DefaultContainer["SettingsView"]):
         characters: Sequence[genshin.models.AccompanyCharacter],
         page_index: int,
     ) -> None:
+        character = next(
+            (c for c in characters if c.info.role_id == account.accompany_role_id), None
+        )
+        header = ui.TextDisplay(
+            LocaleStr(
+                custom_str="# {title}\n{desc}",
+                title=LocaleStr(key="accompany_settings_title"),
+                desc=LocaleStr(key="accompany_settings_desc"),
+            )
+        )
         super().__init__(
-            ui.TextDisplay(
-                LocaleStr(
-                    custom_str="# {title}\n{desc}",
-                    title=LocaleStr(key="accompany_settings_title"),
-                    desc=LocaleStr(key="accompany_settings_desc"),
-                )
-            ),
+            ui.Section(header, accessory=discord.ui.Thumbnail(media=character.profile.icon))
+            if character is not None
+            else header,
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             ui.Section(
                 ui.TextDisplay(

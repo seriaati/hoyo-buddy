@@ -73,7 +73,6 @@ if TYPE_CHECKING:
 
 
 CARD_API_ENDPOINTS = {
-    "hattvr": "http://localhost:7652/hattvr-enka-card",
     "encard": "http://localhost:7652/en-card",
     "enkacard": "http://localhost:7652/enka-card",
     "src": "http://localhost:7652/star-rail-card",
@@ -405,11 +404,13 @@ class ProfileView(View, PlayerEmbedMixin):
     async def _draw_enka_cards_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
     ) -> BytesIO:
-        """Draw HSR/ZZZ character card using the enka.cards service (enka.network style)."""
+        """Draw GI/HSR/ZZZ character card using the enka.cards service (enka.network style)."""
         params = {
             "lang": LOCALE_TO_ENKA_CARDS_LANG.get(await self.get_character_locale(character), "en"),
             "substats": str(card_settings.show_substat_rolls).lower(),
         }
+        # enka.network URLs use the plain avatar ID, without the traveler depot suffix
+        character_id = str(character.id).split("-")[0]
 
         if (
             all((self._owner_username, self._owner_hash, self._build_id))
@@ -418,11 +419,11 @@ class ProfileView(View, PlayerEmbedMixin):
             # Saved build on enka.network (game-agnostic /u/ route)
             url = (
                 f"{ENKA_CARDS_URL}/u/{self._owner_username}/{self._owner_hash}"
-                f"/{character.id}/{self._build_id}/image"
+                f"/{character_id}/{self._build_id}/image"
             )
         else:
-            game_path = "hsr" if self.game is Game.STARRAIL else "zzz"
-            url = f"{ENKA_CARDS_URL}/{game_path}/{self.uid}/{character.id}/image"
+            game_paths = {Game.GENSHIN: "u", Game.STARRAIL: "hsr", Game.ZZZ: "zzz"}
+            url = f"{ENKA_CARDS_URL}/{game_paths[self.game]}/{self.uid}/{character_id}/image"
 
         async with session.get(url, params=params) as resp:
             resp.raise_for_status()
@@ -576,7 +577,7 @@ class ProfileView(View, PlayerEmbedMixin):
         character = character or self.characters[character_id]
 
         # enka.cards renders only from enka.network showcase data, so HoYoLAB-sourced
-        # characters can't use it; fall back to the Hoyo Buddy template like GI does.
+        # characters can't use it; fall back to the Hoyo Buddy template.
         force_hb_temp = isinstance(character, HoyolabGICharacter) or (
             card_settings.template == "enka1" and isinstance(character, HoyolabCharacter)
         )
@@ -604,6 +605,8 @@ class ProfileView(View, PlayerEmbedMixin):
             return await self._draw_src_character_card(i.client.session, character, card_settings)
 
         if self.game is Game.GENSHIN:
+            if template == "enka1":
+                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(character, card_settings, draw_input)
             return await self._draw_enka_card(i.client.session, character, card_settings)

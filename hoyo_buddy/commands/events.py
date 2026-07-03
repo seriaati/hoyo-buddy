@@ -8,9 +8,9 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.enums import Game
+from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.models.zzz_event import ZZZEventCalendar, ZZZGachaEventWeapon, ZZZWeaponGachaEvent
 from hoyo_buddy.ui.hoyo.event_calendar import EventCalendarView
-from hoyo_buddy.ui.hoyo.events import EventsView
 from hoyo_buddy.utils import ephemeral
 
 if TYPE_CHECKING:
@@ -73,12 +73,9 @@ class EventsCommand:
                 events=events, characters=gacha_calendar.characters, weapons=weapon_banners
             )
         else:
-            calendar = None
+            raise FeatureNotImplementedError(game=account.game)
 
-        if calendar is not None:
-            view = EventCalendarView(
-                calendar, account, author=i.user, locale=locale, dark_mode=settings.dark_mode
-            )
-        else:
-            view = EventsView(account, author=i.user, locale=locale)
+        view = EventCalendarView(
+            calendar, account, author=i.user, locale=locale, dark_mode=settings.dark_mode
+        )
         await view.start(i)

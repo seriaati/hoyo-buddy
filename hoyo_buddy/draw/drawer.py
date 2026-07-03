@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import pathlib
+from collections import OrderedDict
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
 import numpy as np
@@ -40,6 +41,45 @@ LIGHT_ON_SURFACE_CONTAINER_HIGHEST = (70, 70, 79)
 DARK_SURFACE = (19, 19, 22)
 DARK_ON_SURFACE = (200, 197, 202)
 DARK_ON_SURFACE_CONTAINER_HIGHEST = (199, 197, 208)
+
+
+class _ResizedImageCache:
+    """Per-process in-memory cache of decoded + resized images, keyed by (path, size).
+
+    Decoding a PNG and running a LANCZOS resize costs ~45 ms per icon; since game
+    rosters are fixed and shared across users, caching the resized result lets warm
+    renders skip both. Bounded by total pixel bytes so large images can't blow up RAM.
+    """
+
+    def __init__(self, max_bytes: int) -> None:
+        self._max_bytes = max_bytes
+        self._nbytes = 0
+        self._cache: OrderedDict[tuple[str, tuple[int, int] | None], Image.Image] = OrderedDict()
+
+    @staticmethod
+    def _img_nbytes(image: Image.Image) -> int:
+        return image.width * image.height * 4
+
+    def get(self, key: tuple[str, tuple[int, int] | None]) -> Image.Image | None:
+        image = self._cache.get(key)
+        if image is not None:
+            self._cache.move_to_end(key)
+        return image
+
+    def put(self, key: tuple[str, tuple[int, int] | None], image: Image.Image) -> None:
+        if key in self._cache:
+            return
+        nbytes = self._img_nbytes(image)
+        if nbytes > self._max_bytes:
+            return
+        self._cache[key] = image
+        self._nbytes += nbytes
+        while self._nbytes > self._max_bytes:
+            _, evicted = self._cache.popitem(last=False)
+            self._nbytes -= self._img_nbytes(evicted)
+
+
+_resized_cache = _ResizedImageCache(max_bytes=128 * 1024 * 1024)
 
 
 class TextBBox(NamedTuple):
@@ -384,28 +424,35 @@ class Drawer:
         mask_color: tuple[int, int, int] | None = None,
         opacity: float = 1.0,
     ) -> Image.Image:
-        image: Image.Image | None = None
+        cache_key = (str(file_path), size)
+        cached = _resized_cache.get(cache_key)
+        if cached is not None:
+            image = cached.copy()
+        else:
+            image = None
+            if image_cache is not None:
+                image = image_cache.get(str(file_path))
 
-        if image_cache is not None:
-            image = image_cache.get(str(file_path))
-
-        if image is None:
-            try:
-                image = Image.open(file_path)
-                if image.mode != "RGBA":
-                    image = image.convert("RGBA")
-            except FileNotFoundError:
-                if "iili.io" in str(file_path):
-                    logger.warning(f"File not found: {file_path}")
+            if image is None:
+                try:
+                    image = Image.open(file_path)
+                    if image.mode != "RGBA":
+                        image = image.convert("RGBA")
+                except FileNotFoundError:
+                    if "iili.io" in str(file_path):
+                        logger.warning(f"File not found: {file_path}")
+                    else:
+                        logger.error(f"File not found: {file_path}")
+                    image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
                 else:
-                    logger.error(f"File not found: {file_path}")
-                image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
-            else:
-                if image_cache is not None:
-                    image_cache.set_background(str(file_path), image)
+                    if image_cache is not None:
+                        image_cache.set_background(str(file_path), image)
 
-        if size is not None and image.size != size:
-            image = image.resize(size, Image.Resampling.LANCZOS)
+            if size is not None and image.size != size:
+                image = image.resize(size, Image.Resampling.LANCZOS)
+
+            _resized_cache.put(cache_key, image)
+            image = image.copy()
 
         if mask_color:
             image = Drawer.mask_image_with_color(image, mask_color, opacity=opacity)
@@ -847,7 +894,7 @@ class Drawer:
         """Save an image to a BytesIO object, resizing it if it exceeds the Discord file size limit."""
         while True:
             bytes_obj = io.BytesIO()
-            img.save(bytes_obj, format="PNG", optimize=True)
+            img.save(bytes_obj, format="PNG")
             size_in_bytes = bytes_obj.tell()
 
             if size_in_bytes < DC_MAX_FILESIZE:

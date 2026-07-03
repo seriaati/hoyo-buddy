@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from genshin.models.zzz.character import ZZZFullAgent
+from discord import utils as dutils
+from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.l10n import LevelStr
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    from genshin.models import ZZZPartialAgent
+    from genshin.models import ZZZAgentUpgradeGuide, ZZZPartialAgent
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import UnownedZZZCharacter
@@ -21,6 +23,7 @@ if TYPE_CHECKING:
 def draw_agent_small_card(
     agent: ZZZPartialAgent | UnownedZZZCharacter,
     *,
+    guide: ZZZAgentUpgradeGuide | None,
     dark_mode: bool,
     locale: Locale,
     mask: Image.Image,
@@ -40,10 +43,15 @@ def draw_agent_small_card(
     im.paste(icon, (-204, 0), icon)
 
     # Rank
-    if isinstance(agent, ZZZFullAgent):
+    if guide is not None:
         im.paste(circle, (29, 29), circle)
         drawer.write(
-            str(agent.rank), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE
+            str(guide.avatar.rank),
+            size=58,
+            position=(69, 69),
+            style="medium",
+            anchor="mm",
+            color=WHITE,
         )
 
     # Level
@@ -61,15 +69,61 @@ def draw_agent_small_card(
 
     # W-engine
     im.paste(engine_block, (588, 45), engine_block)
+    if guide is not None and guide.weapon is not None:
+        icon = drawer.open_static(guide.weapon.icon, size=(268, 268))
+        im.paste(icon, (593, 49), icon)
+
+        im.paste(circle, (765, 214), circle)
+        drawer.write(
+            str(guide.weapon.refinement),
+            size=58,
+            position=(805, 254),
+            style="medium",
+            anchor="mm",
+            color=WHITE,
+        )
 
     # Skill
     im.paste(skill_bar, (457, 362), skill_bar)
+    if guide is not None:
+        skill_order = (
+            ZZZSkillType.BASIC_ATTACK,
+            ZZZSkillType.DODGE,
+            ZZZSkillType.ASSIST,
+            ZZZSkillType.SPECIAL_ATTACK,
+            ZZZSkillType.CHAIN_ATTACK,
+            ZZZSkillType.CORE_SKILL,
+        )
+        skill_levels: list[str] = []
+        for skill_type in skill_order:
+            skill = dutils.get(guide.avatar.skills, type=skill_type)
+            if skill is None:
+                continue
+
+            text = (
+                ZZZ_AGENT_CORE_LEVEL_MAP[skill.level]
+                if skill_type is ZZZSkillType.CORE_SKILL
+                else str(skill.level)
+            )
+            skill_levels.append(text)
+        text = "/".join(str(level) for level in skill_levels)
+        drawer.write(
+            text,
+            size=42,
+            position=(661, 394),
+            style="bold",
+            anchor="mm",
+            color=WHITE if dark_mode else (95, 95, 95),
+        )
 
     return im
 
 
 def draw_big_agent_card(
-    agents: Sequence[ZZZPartialAgent | UnownedZZZCharacter], dark_mode: bool, locale: Locale
+    agents: Sequence[ZZZPartialAgent | UnownedZZZCharacter],
+    guides: dict[int, ZZZAgentUpgradeGuide],
+    dark_mode: bool,
+    locale: Locale,
 ) -> BytesIO:
     asset_path = "hoyo-buddy-assets/assets/zzz-characters"
     theme = "dark" if dark_mode else "light"
@@ -85,6 +139,7 @@ def draw_big_agent_card(
     cards: list[Image.Image] = [
         draw_agent_small_card(
             agent,
+            guide=guides.get(agent.id),
             dark_mode=dark_mode,
             locale=locale,
             mask=mask,

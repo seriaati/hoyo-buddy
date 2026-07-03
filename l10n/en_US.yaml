@@ -338,7 +338,6 @@ profile.image_settings.button.label: Image settings
 profile.card_template_select.diff_author.description: "Designed by {author1} and programmed by {author2}"
 profile.card_template_select.enka.label: "Enka Network template {num}"
 profile.card_template_select.encard.label: "ENCard template {num}"
-profile.card_template_select.enka_classic.label: Classic Enka template
 profile.card_template_select.enkacard.label: "EnkaCard template {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy template {num}"
 profile.card_template_select.placeholder: Select a template

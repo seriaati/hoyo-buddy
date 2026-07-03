@@ -165,7 +165,9 @@ class MOCCard(HSRChallengeUIDMixin):
             im.paste(star, pos)
             pos = (pos[0] + 82, pos[1])
 
-        characters = stage.node_1.avatars + stage.node_2.avatars
+        node_1_avatars = stage.node_1.avatars if stage.node_1 is not None else []
+        node_2_avatars = stage.node_2.avatars if stage.node_2 is not None else []
+        characters = node_1_avatars + node_2_avatars
 
         pos = (0, 135)
         for i in range(8):

@@ -40,6 +40,7 @@ if TYPE_CHECKING:
         StarRailChallengeSeason,
         StarRailNote,
         StarRailPureFiction,
+        ZZZAgentUpgradeGuide,
         ZZZFullAgent,
         ZZZNotes,
         ZZZPartialAgent,
@@ -328,7 +329,9 @@ async def draw_moc_card(
     draw_input: DrawInput, data: StarRailChallenge, season: StarRailChallengeSeason, uid: int | None
 ) -> File:
     for floor in data.floors:
-        icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
+        node_1_avatars = floor.node_1.avatars if floor.node_1 is not None else []
+        node_2_avatars = floor.node_2.avatars if floor.node_2 is not None else []
+        icons = [chara.icon for chara in node_1_avatars + node_2_avatars]
         await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
@@ -345,7 +348,9 @@ async def draw_pure_fiction_card(
     uid: int | None,
 ) -> File:
     for floor in data.floors:
-        icons = [chara.icon for chara in floor.node_1.avatars + floor.node_2.avatars]
+        node_1_avatars = floor.node_1.avatars if floor.node_1 is not None else []
+        node_2_avatars = floor.node_2.avatars if floor.node_2 is not None else []
+        icons = [chara.icon for chara in node_1_avatars + node_2_avatars]
         await download_images(icons, draw_input.session)
 
     buffer = await draw_input.loop.run_in_executor(
@@ -614,15 +619,19 @@ async def draw_zzz_build_card(
 
 
 async def draw_zzz_characters_card(
-    draw_input: DrawInput, agents: Sequence[ZZZPartialAgent | UnownedZZZCharacter]
+    draw_input: DrawInput,
+    agents: Sequence[ZZZPartialAgent | UnownedZZZCharacter],
+    guides: dict[int, ZZZAgentUpgradeGuide],
 ) -> File:
     urls = [agent.banner_icon for agent in agents]
+    urls.extend(guide.weapon.icon for guide in guides.values() if guide.weapon is not None)
 
     await download_images(urls, draw_input.session)
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.zzz.draw_big_agent_card,
         agents,
+        guides,
         draw_input.dark_mode,
         draw_input.locale,
     )

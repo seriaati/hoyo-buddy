@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import io
 import itertools
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final, TypeAlias
@@ -8,12 +9,13 @@ from typing import TYPE_CHECKING, Final, TypeAlias
 import enka
 import genshin
 import hb_data
-from discord import ButtonStyle
+from discord import ButtonStyle, File
 from genshin.models import FullBattlesuit as HonkaiCharacter
 from genshin.models import GenshinDetailCharacter as GICharacter
 from genshin.models import StarRailDetailCharacter as HSRCharacter
 from genshin.models import ZZZPartialAgent as ZZZCharacter
 from genshin.models import ZZZSpecialty
+from loguru import logger
 
 from hoyo_buddy.constants import (
     AMBR_WEAPON_TYPES,
@@ -68,7 +70,7 @@ if TYPE_CHECKING:
     from collections import defaultdict
     from collections.abc import Iterable, Sequence
 
-    from discord import File, Member, User
+    from discord import Member, User
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.models import DrawInput
@@ -149,6 +151,7 @@ class CharactersView(PaginatorView):
         self.gi_characters: list[GICharacter | UnownedGICharacter] = []
         self.hsr_characters: list[HSRCharacter | UnownedHSRCharacter] = []
         self.zzz_characters: list[ZZZCharacter | UnownedZZZCharacter] = []
+        self.zzz_agent_guides: dict[int, genshin.models.ZZZAgentUpgradeGuide] = {}
         self.honkai_characters: list[HonkaiCharacter] = []
 
         self.filter: GIFilter = GIFilter.NONE
@@ -175,6 +178,8 @@ class CharactersView(PaginatorView):
         self.show_owned_only = True
         self.show_max_level_only = False
         self.characters_per_page = 32
+
+        self._page_files: dict[int, bytes] = {}
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
@@ -397,6 +402,7 @@ class CharactersView(PaginatorView):
             file_ = await draw_zzz_characters_card(
                 self.draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
+                self.zzz_agent_guides,
             )
         elif self.game is Game.HONKAI:
             file_ = await draw_honkai_suits_card(
@@ -564,10 +570,18 @@ class CharactersView(PaginatorView):
         self.pages = [Page(content=self.dyk, embed=embed) for _ in range(page_num)]
 
     async def _create_file(self) -> File:
+        cached = self._page_files.get(self._current_page)
+        if cached is not None:
+            return File(io.BytesIO(cached), filename=self.draw_input.filename)
+
         characters = self.get_filtered_sorted_characters()
         chunked_chars = list(itertools.batched(characters, self.characters_per_page))
         chars = chunked_chars[self._current_page]
-        return await self._draw_card(chars)
+        file_ = await self._draw_card(chars)
+
+        data = file_.fp.read()
+        self._page_files[self._current_page] = data
+        return File(io.BytesIO(data), filename=self.draw_input.filename)
 
     async def start(self, i: Interaction) -> None:
         self.dyk = await get_dyk(i)
@@ -604,6 +618,12 @@ class CharactersView(PaginatorView):
         elif self.game is Game.ZZZ:
             agents = await client.get_zzz_agents()
             self.zzz_characters = agents  # pyright: ignore[reportAttributeAccessIssue]
+            try:
+                self.zzz_agent_guides = await client.get_zzz_agent_upgrade_guides(
+                    [agent.id for agent in agents]
+                )
+            except Exception:
+                logger.warning("Failed to fetch ZZZ agent upgrade guides for {}", self.account.uid)
 
         elif self.game is Game.HONKAI:
             self.honkai_characters = list(await client.get_honkai_battlesuits(self.account.uid))
@@ -619,6 +639,7 @@ class CharactersView(PaginatorView):
         await self.update(i)
 
     async def update(self, i: Interaction) -> None:
+        self._page_files.clear()
         characters = self.get_filtered_sorted_characters()
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
         self._set_pages(characters, embed=embed)

@@ -199,7 +199,9 @@ class EventCalendarView(ui.View):
                 SingleBlock(
                     icon=i.icon,
                     bottom_text=str(i.num) if i.num > 0 else "-",
-                    bg_color=BLOCK_COLORS[self.dark_mode][i.rarity],
+                    bg_color=BLOCK_COLORS[self.dark_mode].get(
+                        i.rarity, BLOCK_COLORS[self.dark_mode][1]
+                    ),
                 )
                 for i in event.rewards
             ]

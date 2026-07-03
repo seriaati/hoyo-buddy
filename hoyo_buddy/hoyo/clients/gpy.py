@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -259,11 +260,7 @@ class GenshinClient(ProxyGenshinClient):
                 )
             break
         if highest_dmg_bonus_stat is None:
-            prop_id = ELEMENT_TO_BONUS_PROP_ID[
-                GenshinElement.ANEMO
-                if character.element == "None"
-                else GenshinElement(character.element)
-            ]
+            prop_id = ELEMENT_TO_BONUS_PROP_ID[GenshinElement(character.element)]
             prop = next(
                 (prop for prop in character.element_properties if prop.info.type == prop_id), None
             )
@@ -282,12 +279,13 @@ class GenshinClient(ProxyGenshinClient):
                     str(character.id)
                 ].get("Costumes")
                 if costumes:
-                    chara_costume = character.costumes[0]
-                    costume_data = costumes.get(str(chara_costume.id))
+                    char_costume = character.costumes[0]
+                    costume_data = costumes.get(str(char_costume.id))
                     if costume_data:
+                        ui_path = costume_data["Art"].removeprefix("/ui/").removesuffix(".png")
                         costume = models.HoyolabGICostume(
                             icon=models.HoyolabGICharacterIcon(
-                                gacha=AMBR_UI_URL.format(filename=costume_data["art"])
+                                gacha=AMBR_UI_URL.format(filename=ui_path)
                             )
                         )
 
@@ -552,6 +550,15 @@ class GenshinClient(ProxyGenshinClient):
         self, uid: int | None = None
     ) -> Sequence[genshin.models.ZZZPartialAgent]:
         return await super().get_zzz_agents(uid)
+
+    async def get_zzz_agent_upgrade_guides(
+        self, ids: Sequence[int], uid: int | None = None
+    ) -> dict[int, genshin.models.ZZZAgentUpgradeGuide]:
+        """Fetch detailed build data for the given agents, batched 10 per request."""
+        batches = [ids[i : i + 10] for i in range(0, len(ids), 10)]
+        tasks = [self.get_zzz_agent_upgrade_guide(batch, uid=uid) for batch in batches]
+        results = await asyncio.gather(*tasks)
+        return {guide.avatar.id: guide for batch_result in results for guide in batch_result}
 
     async def update_cookie_token(self) -> None:
         """Update the cookie token."""

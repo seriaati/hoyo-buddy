@@ -89,9 +89,10 @@ class AccompanyCheckin(AutoTaskMixin):
                         await queue.put(account)
             else:
                 cls._count += 1
-                await DiscordEmbed.create(
-                    embed, user_id=account.user.id, account_id=account.id, task_type="accompany"
-                )
+                if embed is not None:
+                    await DiscordEmbed.create(
+                        embed, user_id=account.user.id, account_id=account.id, task_type="accompany"
+                    )
 
                 account.last_accompany_time = get_now()
                 await account.save(update_fields=("last_accompany_time",))
@@ -100,7 +101,7 @@ class AccompanyCheckin(AutoTaskMixin):
                 queue.task_done()
 
     @classmethod
-    async def _accompany(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed:
+    async def _accompany(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or Locale.american_english
 
         try:
@@ -108,10 +109,19 @@ class AccompanyCheckin(AutoTaskMixin):
             client.use_proxy = True
             client.set_lang(locale)
 
+            details = await client.get_accompany_character_details(
+                topic_id=account.accompany_topic_id  # pyright: ignore[reportArgumentType]
+            )
+            if details.accompany_info.accompanied_today:
+                return None
+
             result = await client.accompany_character(
                 role_id=account.accompany_role_id,  # pyright: ignore[reportArgumentType]
                 topic_id=account.accompany_topic_id,  # pyright: ignore[reportArgumentType]
             )
+            if result.points_increased == 0:
+                return None
+
             embed = client.get_accompany_embed(
                 result, account.accompany_character_name or "", locale
             )

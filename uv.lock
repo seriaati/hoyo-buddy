@@ -42,7 +42,7 @@ name = "aiodns"
 version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycares" },
+    { name = "pycares", marker = "sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9b/22/a2d928e0e42baad0471d12ec44c71152ac870486e8298dddb2893b888c29/aiodns-4.0.4.tar.gz", hash = "sha256:cb10e0c0d2591636716ad2fe402e977c16d71bdaf76bb8cb49e8a6633596f736", size = 29918, upload-time = "2026-05-20T01:54:15.557Z" }
 wheels = [
@@ -868,8 +868,8 @@ wheels = [
 
 [[package]]
 name = "genshin"
-version = "1.7.27"
-source = { git = "https://github.com/thesadru/genshin.py?branch=master#5d0d2f2de87ae12fdcf9308bd3b9b153f689ec31" }
+version = "1.7.28"
+source = { git = "https://github.com/thesadru/genshin.py?branch=master#a2b65cd302f2cab965f4658351ae21697325239e" }
 dependencies = [
     { name = "aiohttp" },
     { name = "pydantic" },
@@ -1681,7 +1681,7 @@ name = "pycares"
 version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi" },
+    { name = "cffi", marker = "sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/df/a0/9c823651872e6a0face3f0311de2a40c8bbcb9c8dcb15680bd019ac56ac7/pycares-5.0.1.tar.gz", hash = "sha256:5a3c249c830432631439815f9a818463416f2a8cbdb1e988e78757de9ae75081", size = 652222, upload-time = "2026-01-01T12:37:00.604Z" }
 wheels = [

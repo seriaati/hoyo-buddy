@@ -71,7 +71,10 @@ async def main() -> None:
             f"role_id={account.accompany_role_id} char={account.accompany_character_name!r}"
         )
         embed = await AccompanyCheckin._accompany(account)  # noqa: SLF001
-        logger.info(f"Result embed: {embed.to_dict()}")
+        if embed is None:
+            logger.info("Already accompanied today or no points gained, no notification")
+        else:
+            logger.info(f"Result embed: {embed.to_dict()}")
 
 
 if __name__ == "__main__":

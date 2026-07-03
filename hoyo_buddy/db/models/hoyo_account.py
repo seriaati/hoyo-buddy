@@ -62,7 +62,6 @@ class HoyoAccount(BaseModel):
     # Character accompany (HoYoLAB only): the character chosen for the auto accompany task
     accompany_role_id: fields.Field[int | None] = fields.IntField(null=True)
     accompany_topic_id: fields.Field[int | None] = fields.IntField(null=True)
-    accompany_character_name: fields.Field[str | None] = fields.CharField(max_length=64, null=True)
 
     # Last completed time for each auto task
     # Future me: Make sure to change AUTO_TASK_LAST_TIME_FIELDS in constants.py if you modify this section

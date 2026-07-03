@@ -122,9 +122,7 @@ class AccompanyCheckin(AutoTaskMixin):
             if result.points_increased == 0:
                 return None
 
-            embed = client.get_accompany_embed(
-                result, account.accompany_character_name or "", locale
-            )
+            embed = client.get_accompany_embed(result, details.info.name, locale)
         except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:

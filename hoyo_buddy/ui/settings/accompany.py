@@ -59,15 +59,11 @@ class AccompanyCharacterSelect(ui.PaginatorSelect["SettingsView"]):
 
         role_id_str, topic_id_str = self.values[0].split(":")
         role_id, topic_id = int(role_id_str), int(topic_id_str)
-        character = next((c for c in self.characters if c.info.role_id == role_id), None)
 
         account = self.view.account
         account.accompany_role_id = role_id
         account.accompany_topic_id = topic_id
-        account.accompany_character_name = character.info.name if character is not None else None
-        await account.save(
-            update_fields=("accompany_role_id", "accompany_topic_id", "accompany_character_name")
-        )
+        await account.save(update_fields=("accompany_role_id", "accompany_topic_id"))
         await self.view.update(i)
 
 
@@ -121,10 +117,9 @@ class AccompanySettingsContainer(ui.DefaultContainer["SettingsView"]):
                         emoji=emojis.FREE_CANCELLATION,
                         title=LocaleStr(key="accompany_button_label"),
                         desc=LocaleStr(
-                            key="accompany_selected_character",
-                            character=account.accompany_character_name,
+                            key="accompany_selected_character", character=character.info.name
                         )
-                        if account.accompany_character_name is not None
+                        if character is not None
                         else LocaleStr(key="accompany_no_character_selected"),
                     )
                 ),

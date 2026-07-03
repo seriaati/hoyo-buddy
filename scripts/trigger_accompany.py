@@ -68,7 +68,7 @@ async def main() -> None:
 
         logger.info(
             f"Direct accompany for {account} | game={account.game} region={account.region} "
-            f"role_id={account.accompany_role_id} char={account.accompany_character_name!r}"
+            f"role_id={account.accompany_role_id}"
         )
         embed = await AccompanyCheckin._accompany(account)  # noqa: SLF001
         if embed is None:

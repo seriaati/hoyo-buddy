@@ -834,6 +834,22 @@ accompany_button_label: Auto character accompany
 accompany_selected_character: "Currently accompanying: {character}"
 accompany_no_character_selected: "Select a character below to enable this feature."
 accompany_character_select_placeholder: Select a character to accompany
+accompany_cmd_desc: View HoYoLAB accompany characters and set yours
+accompany_cmd_character_param_name: character
+accompany_cmd_character_param_desc: Character to view, defaults to the first available one
+accompany_videos_label: Videos
+accompany_header_stats: "{posts} posts · {fan_arts} fan arts"
+accompany_header_members: "{members} members"
+accompany_info_title: Your Accompany Progress
+accompany_info_body: "Days accompanied: {days}\nAccompany points: {points} ({available_points} available)\nAccompanied today: {today}"
+accompany_voice_lines_title: Voice Lines
+accompany_voice_audio_label: Play audio
+accompany_voice_lang_select_placeholder: Select a voice language
+accompany_voice_line_select_placeholder: Select a voice line
+accompany_view_no_character_set: You haven't set an accompany character yet.
+accompany_set_character_button_label: Set as accompany character
+accompany_now_button_label: Accompany now
+accompany_view_character_select_placeholder: Select a character to view
 user_settings_title: "User Settings"
 user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
 dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all infographics support this feature."

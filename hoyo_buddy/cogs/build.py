@@ -31,9 +31,10 @@ class Build(commands.GroupCog):
         await self.reload_szgf_guides()
         logger.debug(f"Loaded {len(self.guides)} ZZZ guides")
 
-    async def reload_szgf_guides(self) -> None:
+    async def reload_szgf_guides(self, *, download: bool = False) -> None:
         async with szgf.SZGFClient() as client:
-            await client.download_guides()
+            if download:
+                await client.download_guides()
             self.guides = await client.read_guides()
 
     def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
@@ -112,7 +113,7 @@ class Build(commands.GroupCog):
     @commands.is_owner()
     @commands.command(name="rguides")
     async def reload_guides(self, ctx: commands.Context) -> None:
-        await self.reload_szgf_guides()
+        await self.reload_szgf_guides(download=True)
         await ctx.send(f"Reloaded {len(self.guides)} ZZZ guides")
 
 

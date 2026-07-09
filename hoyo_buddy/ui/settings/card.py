@@ -348,7 +348,7 @@ class CardSettingsContainer(ui.Container):
                 )
             ),
             ui.ActionRow(CardTemplateSelect(current_template=card_settings.template, game=game)),
-            discord.ui.MediaGallery(discord.MediaGalleryItem(TEMPLATE_PREVIEWS[self.template])),
+            discord.ui.MediaGallery(discord.MediaGalleryItem(self.template_preview)),
             ui.TextDisplay(
                 LocaleStr(
                     custom_str="-# {desc}\n{empty}",
@@ -484,6 +484,13 @@ class CardSettingsContainer(ui.Container):
             ),
             accent_color=card_settings.custom_primary_color or default_color,
         )
+
+    @property
+    def template_preview(self) -> str:
+        if self.template not in TEMPLATE_PREVIEWS:
+            logger.error(f"Template {self.template} not found in TEMPLATE_PREVIEWS")
+            return TEMPLATE_PREVIEWS[self.game, "hb1"]
+        return TEMPLATE_PREVIEWS[self.template]
 
     @property
     def disable_color(self) -> bool:

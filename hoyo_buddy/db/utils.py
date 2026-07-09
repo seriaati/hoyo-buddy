@@ -223,13 +223,19 @@ async def set_highlight_substats(
 
 
 async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> models.CardSettings:
+    # Local import to avoid circular import
+    from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES  # noqa: PLC0415
+
     card_settings = await models.CardSettings.get_or_none(
         user_id=user_id, character_id=character_id, game=game
     )
     if card_settings is None:
-        card_settings = await models.CardSettings.get_or_none(
-            user_id=user_id, character_id=character_id
-        )
+        # Adopt legacy rows created before the game column existed. Character IDs
+        # collide across games (e.g. HSR and ZZZ both have 1501), so this must not
+        # match rows that belong to another game.
+        card_settings = await models.CardSettings.filter(
+            user_id=user_id, character_id=character_id, game=None
+        ).first()
 
     if card_settings is None:
         user_settings = await models.Settings.get(user_id=user_id)
@@ -272,6 +278,13 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> m
     elif card_settings.game is None:
         card_settings.game = game
         await card_settings.save(update_fields=("game",))
+
+    if card_settings.template not in TEMPLATES.get(game, ()):
+        logger.warning(
+            f"Invalid template {card_settings.template!r} for game {game!r}, resetting to 'hb1'"
+        )
+        card_settings.template = "hb1"
+        await card_settings.save(update_fields=("template",))
 
     return card_settings
 

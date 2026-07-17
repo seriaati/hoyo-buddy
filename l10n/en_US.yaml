@@ -402,6 +402,8 @@ resin_discount.embed.description: Weekly boss discounts are not used up yet
 resin_reminder_button.label: Resin reminder
 resin_reminder_modal.title: Resin Reminder Settings
 reward_claimed_title: Daily Check-In Reward Claimed
+accompany_success_title: "Accompanied {character}"
+accompany_success_desc: "Accompany days: {days}\nAccompany points gained: {points}"
 saturday: Saturday
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
 search_command_category_param_description: Category to search in
@@ -826,6 +828,28 @@ account_settings_desc: "Settings here are unique for each game account."
 public_account_desc: "Set account as public\nIf enabled, other people can see your account's data in some commands, like </profile>."
 daily_checkin_desc: "Auto daily check-in\nAutomatically claims rewards on the web check-in event."
 redeem_code_desc: "Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](:docs/FAQ:) for why."
+accompany_settings_title: "Character Accompany"
+accompany_settings_desc: "Automatically accompany a HoYoLAB character every day to earn accompany points and unlock rewards like wallpapers and stickers. Only available for HoYoLAB accounts."
+accompany_button_label: Auto character accompany
+accompany_selected_character: "Currently accompanying: {character}"
+accompany_no_character_selected: "Select a character below to enable this feature."
+accompany_character_select_placeholder: Select a character to accompany
+accompany_cmd_desc: View HoYoLAB accompany characters and set yours
+accompany_cmd_character_param_name: character
+accompany_cmd_character_param_desc: Character to view, defaults to the first available one
+accompany_videos_label: Videos
+accompany_header_stats: "{posts} posts · {fan_arts} fan arts"
+accompany_header_members: "{members} members"
+accompany_info_title: Your Accompany Progress
+accompany_info_body: "Days accompanied: {days}\nAccompany points: {points} ({available_points} available)\nAccompanied today: {today}"
+accompany_voice_lines_title: Voice Lines
+accompany_voice_audio_label: Play audio
+accompany_voice_lang_select_placeholder: Select a voice language
+accompany_voice_line_select_placeholder: Select a voice line
+accompany_view_no_character_set: You haven't set an accompany character yet.
+accompany_set_character_button_label: Set as accompany character
+accompany_now_button_label: Accompany now
+accompany_view_character_select_placeholder: Select a character to view
 user_settings_title: "User Settings"
 user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
 dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all infographics support this feature."

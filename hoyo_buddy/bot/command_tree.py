@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Literal
 from discord import InteractionType, NotFound, app_commands
 
 from hoyo_buddy.db import get_locale
+from hoyo_buddy.db.models.settings import Settings
+from hoyo_buddy.db.models.user import User
 from hoyo_buddy.utils import should_ignore_error
 
 from .error_handler import get_error_embed
@@ -23,12 +25,7 @@ class CommandTree(app_commands.CommandTree):
 
         try:
             # Set user's language if not set
-            async with i.client.pool.acquire() as conn:
-                await conn.execute(
-                    'UPDATE "settings" SET lang = $2 WHERE user_id = $1 AND lang IS NULL;',
-                    i.user.id,
-                    i.locale.value,
-                )
+            await Settings.filter(user_id=i.user.id, lang__isnull=True).update(lang=i.locale.value)
         except Exception as e:
             i.client.capture_exception(e)
 
@@ -36,18 +33,9 @@ class CommandTree(app_commands.CommandTree):
             return True
 
         try:
-            async with i.client.pool.acquire() as conn:
-                await conn.execute(
-                    'INSERT INTO "user" (id, temp_data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;',
-                    i.user.id,
-                    "{}",
-                )
-                await conn.execute(
-                    'INSERT INTO "settings" (user_id, lang) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING;',
-                    i.user.id,
-                    i.locale.value,
-                )
-                i.client.user_ids.add(i.user.id)
+            await User.get_or_create(id=i.user.id)
+            await Settings.get_or_create(user_id=i.user.id, defaults={"lang": i.locale.value})
+            i.client.user_ids.add(i.user.id)
         except Exception as e:
             i.client.capture_exception(e)
 

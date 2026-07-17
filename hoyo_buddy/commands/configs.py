@@ -3,7 +3,11 @@ from typing import Literal
 
 from discord.app_commands import locale_str
 
-from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, MIMO_SUPPORT_GAMES
+from hoyo_buddy.constants import (
+    ACCOMPANY_SUPPORT_GAMES,
+    AUTO_REDEEM_SUPPORT_GAMES,
+    MIMO_SUPPORT_GAMES,
+)
 from hoyo_buddy.enums import Game, Platform
 
 type CommandName = Literal[
@@ -39,6 +43,7 @@ type CommandName = Literal[
     "events",
     "mimo",
     "web-events",
+    "accompany",
     "lb akasha",
     "lb view",
     "profile genshin",
@@ -239,6 +244,13 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI, Game.TOT),
         description=locale_str(
             "View ongoing web events and set notifier", key="web_events_cmd_desc"
+        ),
+    ),
+    "accompany": CommandConfig(
+        games=ACCOMPANY_SUPPORT_GAMES,
+        platform=Platform.HOYOLAB,
+        description=locale_str(
+            "View HoYoLAB accompany characters and set yours", key="accompany_cmd_desc"
         ),
     ),
     "lb akasha": CommandConfig(

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from tortoise import Tortoise
+from tortoise.contrib.fastapi import RegisterTortoise
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import FRONTEND_URLS
@@ -20,11 +20,8 @@ if TYPE_CHECKING:
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
-    await Tortoise.init(config=DB_CONFIG)
-    try:
+    async with RegisterTortoise(app=_app, config=DB_CONFIG):
         yield
-    finally:
-        await Tortoise.close_connections()
 
 
 app = FastAPI(title="Hoyo Buddy Web API", lifespan=lifespan)

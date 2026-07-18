@@ -836,7 +836,7 @@ accompany_no_character_selected: "Select a character below to enable this featur
 accompany_character_select_placeholder: Select a character to accompany
 accompany_cmd_desc: View HoYoLAB accompany characters and set yours
 accompany_cmd_character_param_name: character
-accompany_cmd_character_param_desc: Character to view, defaults to the first available one
+accompany_cmd_character_param_desc: "Character to view, defaults to the first available one"
 accompany_videos_label: Videos
 accompany_header_stats: "{posts} posts · {fan_arts} fan arts"
 accompany_header_members: "{members} members"

@@ -592,10 +592,8 @@ def parse_changelog(content: str) -> dict[str, str]:
 
 def get_changelog_url(locale: Locale | None = None) -> str:
     """Get the URL for the changelog documentation."""
-    lang_code = None if locale is None else LOCALE_TO_DOCS_LANG.get(locale)
-    if lang_code is None:
-        return "https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/docs/changelog.md"
-    return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/i18n/{lang_code}/docusaurus-plugin-content-docs/current/changelog.md"
+    lang = "en" if locale is None else LOCALE_TO_DOCS_LANG.get(locale, "en")
+    return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/src/content/docs/{lang}/changelog.md"
 
 
 async def get_game_latest_stable_version(

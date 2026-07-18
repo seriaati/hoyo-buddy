@@ -968,12 +968,12 @@ NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 10848562841987
 """Discord servers that don't allow unreleased game content."""
 
 
-DOCS_URL = "https://hb-docs.seria.moe{lang}/docs/{page}"
+DOCS_URL = "https://docs.hb.seria.moe/{lang}/{page}"
 LOCALE_TO_DOCS_LANG = {
-    Locale.taiwan_chinese: "/zh-tw",
-    Locale.chinese: "/zh-cn",
-    Locale.vietnamese: "/vi",
-    Locale.spain_spanish: "/es",
+    Locale.taiwan_chinese: "zh-tw",
+    Locale.chinese: "zh-cn",
+    Locale.vietnamese: "vi",
+    Locale.spain_spanish: "es",
 }
 HEADINGS = {
     "how-does-the-email-and-password-login-method-work": {
@@ -1003,7 +1003,7 @@ def get_docs_url(page: str, *, locale: Locale) -> str:
     heading = page.split("#", 1)[1] if "#" in page else ""
     if heading in HEADINGS:
         page = page.replace(heading, HEADINGS[heading].get(locale, heading))
-    return DOCS_URL.format(lang=LOCALE_TO_DOCS_LANG.get(locale, ""), page=page)
+    return DOCS_URL.format(lang=LOCALE_TO_DOCS_LANG.get(locale, "en"), page=page)
 
 
 AMBR_UI_URL = "https://gi.yatta.moe/assets/UI/{filename}.png"

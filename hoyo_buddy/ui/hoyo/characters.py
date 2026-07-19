@@ -57,6 +57,7 @@ from hoyo_buddy.ui import (
     Label,
     Modal,
     Page,
+    PaginatorSelect,
     PaginatorView,
     Select,
     SelectOption,
@@ -781,26 +782,33 @@ class SpecialtyFilterSelector(Select[CharactersView]):
         await i.response.defer()
 
 
-class FactionFilterSelector(Select[CharactersView]):
+class FactionFilterSelector(PaginatorSelect[CharactersView]):
     def __init__(
         self, characters: Sequence[ZZZCharacter | UnownedZZZCharacter], current: list[str]
     ) -> None:
+        factions = sorted(
+            {character.faction_name for character in characters if character.faction_name}
+        )
         options = [
             SelectOption(label=faction, value=faction, default=faction in current)
-            for faction in {
-                character.faction_name for character in characters if character.faction_name
-            }
+            for faction in factions
         ]
         super().__init__(
+            options,
             placeholder=LocaleStr(key="characters.filter.faction.placeholder"),
-            options=options,
             max_values=len(options),
             min_values=0,
         )
 
     async def callback(self, i: Interaction) -> None:
-        self.view.faction_filters = self.values
-        await i.response.defer()
+        changed = self.update_page()
+        self.view.faction_filters = self.selected_values
+
+        if changed:
+            await i.response.edit_message(view=self.view)
+        else:
+            self.update_options_defaults()
+            await i.response.defer()
 
 
 class SorterSelector(Select[CharactersView]):

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.utils import MISSING
+from loguru import logger
 from seria.utils import split_list_to_chunks
 
 from hoyo_buddy import emojis
@@ -16,6 +17,9 @@ if TYPE_CHECKING:
     from .view import LayoutView, View
 
 __all__ = ("BooleanSelect", "PaginatorSelect", "Select", "SelectOption", "WeekdaySelect")
+
+MAX_OPTIONS = 25
+"""Discord's limit on the number of options in a select menu."""
 
 
 class SelectOption(discord.SelectOption):
@@ -53,6 +57,15 @@ class Select[V_co: View | LayoutView](discord.ui.Select):
         if not options:
             options = [SelectOption(label="placeholder", value="0")]
             disabled = True
+        if len(options) > MAX_OPTIONS:
+            logger.warning(
+                f"{self.__class__.__name__} received {len(options)} options, truncating to {MAX_OPTIONS}"
+            )
+            options = options[:MAX_OPTIONS]
+
+        max_values = max(1, min(max_values, len(options)))
+        min_values = min(min_values, max_values)
+
         super().__init__(
             custom_id=custom_id,
             min_values=min_values,
@@ -153,24 +166,42 @@ class Select[V_co: View | LayoutView](discord.ui.Select):
             option.default = False
 
 
-NEXT_PAGE = SelectOption(
-    label=LocaleStr(key="next_page_option_label"), value="next_page", emoji=emojis.FORWARD
-)
-PREV_PAGE = SelectOption(
-    label=LocaleStr(key="prev_page_option_label"), value="prev_page", emoji=emojis.BACK
-)
+NEXT_PAGE_VALUE = "next_page"
+PREV_PAGE_VALUE = "prev_page"
+NAV_VALUES = frozenset({NEXT_PAGE_VALUE, PREV_PAGE_VALUE})
+
+MAX_CARRY = 11
+"""Cap on selections carried across pages, keeps every page at least 12 real options."""
+
+
+def _next_page_option() -> SelectOption:
+    return SelectOption(
+        label=LocaleStr(key="next_page_option_label"), value=NEXT_PAGE_VALUE, emoji=emojis.FORWARD
+    )
+
+
+def _prev_page_option() -> SelectOption:
+    return SelectOption(
+        label=LocaleStr(key="prev_page_option_label"), value=PREV_PAGE_VALUE, emoji=emojis.BACK
+    )
 
 
 class PaginatorSelect[V_co: View | LayoutView](Select):
-    def __init__(self, options: list[SelectOption], **kwargs) -> None:
-        if not options:
-            options = [SelectOption(label="placeholder", value="0")]
-            kwargs["disabled"] = True
+    """A select that paginates its options when they exceed Discord's limit of 25.
 
+    When paginated, each page holds nav options (prev/next page), the user's current
+    selections carried over from other pages (so multi-select works across pages), and a
+    chunk of the full option list. Slot budget: 2 (nav) + max_values (carried, capped at
+    MAX_CARRY) + page chunk = 25.
+    """
+
+    def __init__(self, options: list[SelectOption], **kwargs) -> None:
         self.options_before_split = options
         self.page_index = 0
-        self._max_values = kwargs.get("max_values", 1)
-        super().__init__(options=self.process_options(), **kwargs)
+        self._max_values: int = kwargs.pop("max_values", 1)
+        super().__init__(
+            options=self.process_options(), max_values=self._effective_max_values(), **kwargs
+        )
 
         self.view: V_co
 
@@ -178,6 +209,34 @@ class PaginatorSelect[V_co: View | LayoutView](Select):
         return (
             f"<{self.__class__.__name__} custom_id={self.custom_id!r} page_index={self.page_index}>"
         )
+
+    @property
+    def selected_values(self) -> list[str]:
+        """`self.values` without the page-navigation values."""
+        return [value for value in self.values if value not in NAV_VALUES]
+
+    @property
+    def _is_paginated(self) -> bool:
+        return len(self.options_before_split) > MAX_OPTIONS
+
+    def _effective_max_values(self) -> int:
+        if self._is_paginated:
+            return min(self._max_values, MAX_CARRY)
+        return self._max_values
+
+    def _page_size(self) -> int:
+        return MAX_OPTIONS - 2 - self._effective_max_values()
+
+    def _selected_options(self) -> list[SelectOption]:
+        try:
+            values = self.values
+        except AttributeError:
+            values = []
+        return [
+            option
+            for option in self.options_before_split
+            if option.default or option.value in values
+        ]
 
     @staticmethod
     def remove_duplicate_options(
@@ -187,73 +246,54 @@ class PaginatorSelect[V_co: View | LayoutView](Select):
         return [option for option in options if option.value not in existing_values]
 
     def process_options(self) -> list[SelectOption]:
-        split_options = split_list_to_chunks(self.options_before_split, 23 - self._max_values)
-        if not split_options:
-            return []
-
-        try:
-            values = self.values
-        except AttributeError:
-            values = []
-
-        selected_options = [
-            option
-            for option in self.options_before_split
-            if option.value in values and option.value not in {NEXT_PAGE.value, PREV_PAGE.value}
-        ]
-
-        try:
-            split_options[self.page_index]
-        except IndexError:
+        if not self._is_paginated:
             self.page_index = 0
+            return list(self.options_before_split)
 
-        if self.page_index == 0:
-            if len(split_options) == 1:
-                return split_options[0]
-            selected_options = self.remove_duplicate_options(selected_options, split_options[0])
-            return [NEXT_PAGE] + selected_options + split_options[0]
+        pages = split_list_to_chunks(self.options_before_split, self._page_size())
+        self.page_index = min(max(self.page_index, 0), len(pages) - 1)
+        page = pages[self.page_index]
 
-        if self.page_index == len(split_options) - 1:
-            selected_options = self.remove_duplicate_options(selected_options, split_options[-1])
-            return [PREV_PAGE] + selected_options + split_options[-1]
+        carried = self.remove_duplicate_options(self._selected_options(), page)
+        carried = carried[: self._effective_max_values()]
 
-        selected_options = self.remove_duplicate_options(
-            selected_options, split_options[self.page_index]
-        )
-        return [PREV_PAGE] + [NEXT_PAGE] + selected_options + split_options[self.page_index]
+        nav: list[SelectOption] = []
+        if self.page_index > 0:
+            nav.append(_prev_page_option())
+        if self.page_index < len(pages) - 1:
+            nav.append(_next_page_option())
+
+        return nav + carried + page
 
     def set_page_based_on_value(self, value: str) -> None:
-        split_options = split_list_to_chunks(self.options_before_split, 23)
+        if not self._is_paginated:
+            self.page_index = 0
+            return
 
-        for i, options in enumerate(split_options):
-            if value in [option.value for option in options]:
+        for i, options in enumerate(
+            split_list_to_chunks(self.options_before_split, self._page_size())
+        ):
+            if any(option.value == value for option in options):
                 self.page_index = i
-                break
+                return
 
     def update_page(self) -> bool:
-        changed = False
-        if "next_page" in self.values:
-            changed = True
+        if NEXT_PAGE_VALUE in self.values:
             self.page_index += 1
-            self.options = self.process_options()
-        elif "prev_page" in self.values:
-            changed = True
+        elif PREV_PAGE_VALUE in self.values:
             self.page_index -= 1
-            self.options = self.process_options()
+        else:
+            self.translate(self.view.locale)
+            return False
 
-        if changed:
-            for option in self.options:
-                option.default = False
-            self.update_options_defaults()
-
-            for option in self.options:
-                if option.value in {PREV_PAGE.value, NEXT_PAGE.value}:
-                    option.default = False
-
-            self.max_values = min(self._max_values, len(self.options))
+        selected = set(self.selected_values)
+        self.options = self.process_options()
+        for option in self.options:
+            option.default = option.value in selected
+        self.max_values = max(1, min(self._effective_max_values(), len(self.options)))
 
         self.translate(self.view.locale)
-        return changed
+        return True
 
 
 class BooleanSelect[V_co: View](Select):

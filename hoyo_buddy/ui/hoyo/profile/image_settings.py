@@ -370,9 +370,9 @@ class ImageSelect(PaginatorSelect[ImageSettingsView]):
         self.default_collection = default_collection or self.default_collection
 
         self.options_before_split = self.get_options()
-        self.options = self.process_options()
         if current_image is not None:
             self.set_page_based_on_value(current_image)
+        self.options = self.process_options()
         self.translate(self.view.locale)
 
     def _get_select_option(self, image: str | CustomImage, num: int) -> SelectOption:

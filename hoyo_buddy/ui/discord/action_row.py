@@ -35,3 +35,13 @@ class ActionRow[V: View](discord.ui.ActionRow):
                 continue
 
             item.disabled = True
+
+    def enable_items(self) -> None:
+        for item in self.children:
+            if isinstance(item, Button) and item.url:
+                continue
+
+            if item.custom_id is not None:
+                item.disabled = self.view.item_states.get(item.custom_id, False)
+            else:
+                item.disabled = False

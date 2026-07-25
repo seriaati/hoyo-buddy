@@ -54,6 +54,11 @@ class Container[V: LayoutView](discord.ui.Container):
             if isinstance(child, (ActionRow, Section)):
                 child.disable_items()
 
+    def enable_items(self) -> None:
+        for child in self.children:
+            if isinstance(child, (ActionRow, Section)):
+                child.enable_items()
+
 
 class DefaultContainer[V: LayoutView](Container):
     def __init__(

@@ -218,6 +218,12 @@ class LayoutView(discord.ui.LayoutView, ViewMixin):
                 child.disable_items()
         return self
 
+    def enable_items(self) -> Self:
+        for child in self.children:
+            if isinstance(child, (Container, Section, ActionRow)):
+                child.enable_items()
+        return self
+
     async def on_error(self, i: Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         return await ViewMixin.on_error(self, i, error, item)
 

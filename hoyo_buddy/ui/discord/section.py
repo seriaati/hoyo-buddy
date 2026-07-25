@@ -41,3 +41,13 @@ class Section[V: View](discord.ui.Section):
                 return
 
             self.accessory.disabled = True
+
+    def enable_items(self) -> None:
+        if isinstance(self.accessory, Button):
+            if self.accessory.url:
+                return
+
+            if self.accessory.custom_id is not None:
+                self.accessory.disabled = self.view.item_states.get(self.accessory.custom_id, False)
+            else:
+                self.accessory.disabled = False

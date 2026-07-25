@@ -678,8 +678,8 @@ def locale_to_starrail_data_lang(locale: Locale) -> str:
 HSR_ASSETS_URL = "https://static.nanoka.cc/assets/hsr"
 HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/{{char_id}}.webp"
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/{{char_id}}.webp"
-ZZZ_M3_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_2.webp"
-ZZZ_M6_ART_URL = "https://api.hakush.in/zzz/UI/Mindscape_{char_id}_3.webp"
+ZZZ_M3_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_2.webp"
+ZZZ_M6_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_3.webp"
 ZZZ_TEAM_IMAGE_OVERRIDES: dict[str, str] = {
     "1211": "https://r2.img.seria.moe/vLLDhBOYnEjyFWQh.png",  # Rina
     "1501": "https://r2.img.seria.moe/jSgphDDloguDGVFe.png",  # Aria

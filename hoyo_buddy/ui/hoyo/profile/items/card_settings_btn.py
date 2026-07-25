@@ -44,5 +44,6 @@ class CardSettingsButton(Button[ProfileView]):
             game=self.view.game,
             author=i.user,
             locale=self.view.locale,
+            character=character,
         )
         await view.update(i, followup=True)

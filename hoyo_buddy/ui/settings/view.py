@@ -8,16 +8,18 @@ import genshin
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, MIMO_SUPPORT_GAMES, locale_to_hoyo_lang
-from hoyo_buddy.db.models import JSONFile, Settings
+from hoyo_buddy.db.models import CustomImage, JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art, get_default_art_fallback
 from hoyo_buddy.ui.settings import reminder
 from hoyo_buddy.ui.settings.accompany import AccompanySettingsContainer
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
 from hoyo_buddy.ui.settings.card import CardSettingsContainer
+from hoyo_buddy.ui.settings.image import ImageSettingsContainer
 from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
     NotificationSettingsContainer,
@@ -32,7 +34,8 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.db.models.card_settings import CardSettings
     from hoyo_buddy.enums import Locale
-    from hoyo_buddy.types import Interaction, User
+    from hoyo_buddy.types import Character, Interaction, User
+    from hoyo_buddy.ui.settings.image import ImageType
 
 
 class SettingsCategory(StrEnum):
@@ -230,6 +233,30 @@ class SettingsView(ui.LayoutView):
         self.message = await i.edit_original_response(view=self)
 
 
+class CardSettingsCategory(StrEnum):
+    CARD = "profile.card_settings.button.label"
+    IMAGE = "profile.image_settings.button.label"
+
+
+class CardSettingsCategorySelect(ui.Select["CardSettingsView"]):
+    def __init__(self, current: CardSettingsCategory) -> None:
+        super().__init__(
+            options=[
+                ui.SelectOption(
+                    label=LocaleStr(key=category.value),
+                    value=category.value,
+                    default=category == current,
+                )
+                for category in CardSettingsCategory
+            ],
+            custom_id="card_settings_category_select",
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        self.view.category = CardSettingsCategory(self.values[0])
+        await self.view.update(i)
+
+
 class CardSettingsView(ui.LayoutView):
     def __init__(
         self,
@@ -240,12 +267,62 @@ class CardSettingsView(ui.LayoutView):
         game: Game,
         author: User,
         locale: Locale,
+        character: Character | None = None,
+        category: CardSettingsCategory = CardSettingsCategory.CARD,
+        image_type: ImageType = "build_card_image",
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.card_settings = card_settings
         self.settings = settings
         self.character_name = character_name
         self.game = game
+        self.character = character
+        self.category = category
+        self.image_type: ImageType = image_type
+        self.custom_images: list[CustomImage] = []
+
+    @property
+    def current_image(self) -> str | None:
+        if self.image_type == "build_card_image":
+            return self.card_settings.current_image
+        return self.card_settings.current_team_image
+
+    async def set_current_image(self, image_url: str | None) -> None:
+        if self.image_type == "build_card_image":
+            self.card_settings.current_image = image_url
+            await self.card_settings.save(update_fields=("current_image",))
+        else:
+            self.card_settings.current_team_image = image_url
+            await self.card_settings.save(update_fields=("current_team_image",))
+
+    async def _fetch_custom_images(self, user_id: int) -> list[CustomImage]:
+        if self.card_settings.custom_images:
+            # Migrate legacy JSON-field images to CustomImage rows
+            for url in self.card_settings.custom_images:
+                await CustomImage.create(
+                    user_id=user_id, character_id=self.card_settings.character_id, url=url
+                )
+            self.card_settings.custom_images = []
+            await self.card_settings.save(update_fields=("custom_images",))
+
+        return await CustomImage.filter(
+            user_id=user_id, character_id=self.card_settings.character_id
+        )
+
+    def _get_default_art(self) -> str | None:
+        is_team = self.image_type == "team_card_image" or (
+            self.game is Game.ZZZ and self.card_settings.template == "hb4"
+        )
+        if self.character is not None:
+            return get_default_art(
+                self.character, is_team=is_team, use_m3_art=self.card_settings.use_m3_art
+            )
+        return get_default_art_fallback(
+            self.card_settings.character_id,
+            game=self.game,
+            is_team=is_team,
+            use_m3_art=self.card_settings.use_m3_art,
+        )
 
     async def update(self, i: Interaction, *, followup: bool = False) -> None:
         if not i.response.is_done():
@@ -260,13 +337,32 @@ class CardSettingsView(ui.LayoutView):
             gacha_data_filename = f"zzz_gacha_data_{lang}.json"
         gacha_data: dict[str, dict[str, str]] = await JSONFile.read(gacha_data_filename, default={})
 
-        container = CardSettingsContainer(
-            card_settings=self.card_settings,
-            settings=self.settings,
-            character_name=self.character_name,
-            game=self.game,
-            gacha_data=gacha_data,
+        container: ui.Container
+        if self.category is CardSettingsCategory.IMAGE:
+            self.custom_images = await self._fetch_custom_images(i.user.id)
+            container = ImageSettingsContainer(
+                card_settings=self.card_settings,
+                character_name=self.character_name,
+                game=self.game,
+                gacha_data=gacha_data,
+                custom_images=self.custom_images,
+                image_type=self.image_type,
+                default_art=self._get_default_art(),
+            )
+        else:
+            container = CardSettingsContainer(
+                card_settings=self.card_settings,
+                settings=self.settings,
+                character_name=self.character_name,
+                game=self.game,
+                gacha_data=gacha_data,
+            )
+
+        container.add_item(
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large)
         )
+        container.add_item(ui.ActionRow(CardSettingsCategorySelect(self.category)))
+
         self.clear_items()
         self.add_item(container)
 

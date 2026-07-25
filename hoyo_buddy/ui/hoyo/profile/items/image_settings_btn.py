@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from discord import ButtonStyle
 
-from hoyo_buddy.db import CustomImage, Settings
+from hoyo_buddy.db import Settings
 from hoyo_buddy.db.utils import get_card_settings
 from hoyo_buddy.emojis import PHOTO
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button
-from hoyo_buddy.ui.hoyo.profile.image_settings import ImageSettingsView
+from hoyo_buddy.ui.settings.view import CardSettingsCategory, CardSettingsView
 
 if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
@@ -31,29 +31,23 @@ class ImageSettingsButton(Button[ProfileView]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+
         character_id = self.view.character_ids[0]
         card_settings = await get_card_settings(i.user.id, character_id, game=self.view.game)
-        if card_settings.custom_images:
-            # Migration
-            for image_url in card_settings.custom_images:
-                await CustomImage.create(
-                    user_id=i.user.id, character_id=character_id, url=image_url
-                )
-            card_settings.custom_images = []
-            await card_settings.save(update_fields=("custom_images",))
-
-        custom_images = await CustomImage.filter(user_id=i.user.id, character_id=character_id)
         settings = await Settings.get(user_id=i.user.id)
-
-        view = ImageSettingsView(
-            list(self.view.characters.values()),
-            character_id,
-            card_settings,
-            custom_images,
-            self.view.game,
-            settings,
-            is_team=len(self.view.character_ids) > 1,
+        character = self.view.characters[character_id]
+        view = CardSettingsView(
+            card_settings=card_settings,
+            settings=settings,
+            character_name=character.name,
+            game=self.view.game,
             author=i.user,
             locale=self.view.locale,
+            character=character,
+            category=CardSettingsCategory.IMAGE,
+            image_type="team_card_image"
+            if len(self.view.character_ids) > 1
+            else "build_card_image",
         )
-        await view.start(i)
+        await view.update(i, followup=True)

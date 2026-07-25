@@ -8,11 +8,13 @@ from discord.ext.commands import GroupCog
 from hoyo_buddy.commands.challenge import ChallengeCommand
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs
-from hoyo_buddy.db import HoyoAccount  # noqa: TC001
+from hoyo_buddy.db import HoyoAccount  # ruff:ignore[typing-only-first-party-import]
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import ChallengeType
-from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer  # noqa: TC001
-from hoyo_buddy.types import User  # noqa: TC001
+from hoyo_buddy.hoyo.transformers import (
+    HoyoAccountTransformer,  # ruff:ignore[typing-only-first-party-import]
+)
+from hoyo_buddy.types import User  # ruff:ignore[typing-only-first-party-import]
 from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import handle_autocomplete_errors
 

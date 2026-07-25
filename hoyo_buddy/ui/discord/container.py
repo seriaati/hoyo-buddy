@@ -33,7 +33,7 @@ class Container[V: LayoutView](discord.ui.Container):
         *children: ContainerItem,
         accent_color: discord.Color | int | str | None = None,
         spoiler: bool = False,
-        id: int | None = None,  # noqa: A002
+        id: int | None = None,  # ruff:ignore[builtin-argument-shadowing]
     ) -> None:
         if isinstance(accent_color, str):
             if not is_valid_hex_color(accent_color):
@@ -60,7 +60,7 @@ class DefaultContainer[V: LayoutView](Container):
         self,
         *children: ContainerItem,
         spoiler: bool = False,
-        id: int | None = None,  # noqa: A002
+        id: int | None = None,  # ruff:ignore[builtin-argument-shadowing]
     ) -> None:
         super().__init__(*children, accent_color=discord.Color(6649080), spoiler=spoiler, id=id)
         self.view: V

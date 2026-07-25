@@ -20,7 +20,7 @@ class Section[V: View](discord.ui.Section):
         self,
         *children: TextDisplay,
         accessory: Button | discord.ui.Thumbnail,
-        id: int | None = None,  # noqa: A002
+        id: int | None = None,  # ruff:ignore[builtin-argument-shadowing]
     ) -> None:
         super().__init__(*children, accessory=accessory, id=id)
         self.view: V

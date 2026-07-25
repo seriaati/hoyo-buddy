@@ -70,7 +70,8 @@ def is_valid_hex_color(color: str) -> bool:
 async def upload_image(
     session: aiohttp.ClientSession, *, image_url: str | None = None, image: bytes | None = None
 ) -> str:
-    from hoyo_buddy.exceptions import ImageFileTooLargeError  # noqa: PLC0415
+    # ruff:ignore[import-outside-top-level]
+    from hoyo_buddy.exceptions import ImageFileTooLargeError
 
     if CONFIG.img_upload_api_key is None:
         msg = "Image upload API key is not set"
@@ -117,7 +118,7 @@ def should_ignore_error(e: Exception) -> bool:
     # 10062: Unknown interaction
     # 10008: Unknown message
     # 40060: Interaction has already been acknowledged
-    if isinstance(e, discord.HTTPException) and e.code in {10062, 10008, 40060}:  # noqa: SIM103
+    if isinstance(e, discord.HTTPException) and e.code in {10062, 10008, 40060}:  # ruff:ignore[needless-bool]
         return True
 
     return False
@@ -400,7 +401,7 @@ def measure_time(name: str) -> Generator[Any, None, None]:
     finally:
         end_time = time.perf_counter()
         execution_time = end_time - start_time
-        print(f"Execution time of {name}: {execution_time:.8f} seconds")  # noqa: T201
+        print(f"Execution time of {name}: {execution_time:.8f} seconds")  # ruff:ignore[print]
 
 
 @contextmanager

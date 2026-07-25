@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models.settings import Settings
     from hoyo_buddy.types import Interaction
 
-    from .view import SettingsView  # noqa: F401
+    from .view import SettingsView  # ruff:ignore[unused-import]
 
 
 class DarkThemeToggleButton(ui.EmojiToggleButton["SettingsView"]):

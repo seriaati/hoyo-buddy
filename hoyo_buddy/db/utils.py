@@ -224,7 +224,8 @@ async def set_highlight_substats(
 
 async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> models.CardSettings:
     # Local import to avoid circular import
-    from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES  # noqa: PLC0415
+    # ruff:ignore[import-outside-top-level]
+    from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 
     card_settings = await models.CardSettings.get_or_none(
         user_id=user_id, character_id=character_id, game=game

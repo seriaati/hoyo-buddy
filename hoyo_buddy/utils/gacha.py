@@ -156,7 +156,7 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
 async def calculate_gacha_stats(
     *,
     account_id: int,
-    game: Game,  # noqa: ARG001
+    game: Game,  # ruff:ignore[unused-function-argument]
     banner_type: int,
 ) -> GachaStatsResult:
     account = await HoyoAccount.get(id=account_id)

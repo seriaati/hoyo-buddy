@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
 
-    from .view import SettingsView  # noqa: F401
+    from .view import SettingsView  # ruff:ignore[unused-import]
 
 type ReminderModal = (
     modals.TypeOneModal

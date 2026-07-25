@@ -100,7 +100,7 @@ def get_props(
             for d in agent.discs
         )
         pen = ZZZAgentProperty(
-            **{  # noqa: PIE804
+            **{  # ruff:ignore[unnecessary-dict-kwargs]
                 "property_name": PEN_NAME.get(locale, "PEN") if locale else "PEN",
                 "property_id": 232,
                 "base": str(val),

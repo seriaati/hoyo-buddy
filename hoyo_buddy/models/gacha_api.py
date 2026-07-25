@@ -38,11 +38,11 @@ class HSRGachaWeaponItem(BaseModel):
 
 
 class HSRGachaCharacterListData(BaseModel):
-    list: list[HSRGachaCharacterItem]  # noqa: A003
+    list: list[HSRGachaCharacterItem]  # ruff:ignore[builtin-attribute-shadowing]
 
 
 class HSRGachaWeaponListData(BaseModel):
-    list: list[HSRGachaWeaponItem]  # noqa: A003
+    list: list[HSRGachaWeaponItem]  # ruff:ignore[builtin-attribute-shadowing]
 
 
 class HSRGachaCharacterListResponse(BaseModel):
@@ -62,7 +62,7 @@ class ZZZGachaItem(BaseModel):
 
 
 class ZZZGachaListData(BaseModel):
-    list: list[ZZZGachaItem]  # noqa: A003
+    list: list[ZZZGachaItem]  # ruff:ignore[builtin-attribute-shadowing]
 
 
 class ZZZGachaListResponse(BaseModel):

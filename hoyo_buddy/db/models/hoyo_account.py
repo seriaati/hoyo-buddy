@@ -90,7 +90,8 @@ class HoyoAccount(BaseModel):
 
     @cached_property
     def client(self) -> GenshinClient:
-        from hoyo_buddy.hoyo.clients.gpy import GenshinClient  # noqa: PLC0415
+        # ruff:ignore[import-outside-top-level]
+        from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 
         return GenshinClient(self)
 

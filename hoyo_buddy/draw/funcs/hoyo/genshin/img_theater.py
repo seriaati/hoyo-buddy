@@ -151,7 +151,7 @@ class ImgTheaterCard:
                     mi18n_game=Game.GENSHIN,
                 )
                 .translate(self.locale)
-                .replace("Ⅰ", "I")  # noqa: RUF001
+                .replace("Ⅰ", "I")  # ruff:ignore[ambiguous-unicode-character-string]
                 .replace("Ⅱ", "II")
             )
         else:

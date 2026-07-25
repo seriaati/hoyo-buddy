@@ -56,7 +56,7 @@ class FarmChecker:
         return False
 
     async def execute(self, uid_start: str) -> None:
-        try:  # noqa: PLR1702
+        try:  # ruff:ignore[too-many-nested-blocks]
             logger.info(f"Starting farm check task for uid_start {uid_start}")
 
             farm_notifies = await FarmNotify.filter(enabled=True).all().prefetch_related("account")

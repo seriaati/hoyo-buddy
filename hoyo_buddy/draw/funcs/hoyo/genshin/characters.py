@@ -50,7 +50,7 @@ def draw_character_card(
                     for talent_id in talent_order
                 ]
 
-            talent_str = " / ".join(str(t.level) if t is not None else "?" for t in talents)  # noqa: RUF001
+            talent_str = " / ".join(str(t.level) if t is not None else "?" for t in talents)  # ruff:ignore[ambiguous-unicode-character-string]
 
         card = draw_small_gi_chara_card(talent_str, dark_mode, character, locale)
         c_cards[str(character.id)] = card

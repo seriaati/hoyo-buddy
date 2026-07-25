@@ -758,7 +758,7 @@ async def draw_shiyu_card(
 
         for bangboo in bangboos:
             if not hasattr(bangboo, "icon") and bangboo.id in bangboo_icons:
-                setattr(bangboo, "icon", bangboo_icons[bangboo.id])  # noqa: B010
+                setattr(bangboo, "icon", bangboo_icons[bangboo.id])  # ruff:ignore[set-attr-with-constant]
 
     # Backward compatibility, some old ShiyuDefenseCharacter models don't have icon attribute
     for floor in shiyu.floors:
@@ -767,7 +767,7 @@ async def draw_shiyu_card(
                 icon = str(
                     ZZZ_V2_GAME_RECORD / f"role_square_avatar/role_square_avatar_{character.id}.png"
                 )
-                setattr(character, "icon", icon)  # noqa: B010
+                setattr(character, "icon", icon)  # ruff:ignore[set-attr-with-constant]
 
     urls = [
         character.icon

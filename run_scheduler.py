@@ -20,7 +20,7 @@ async def main() -> None:
         scheduler.start()
 
         try:
-            while True:  # noqa: ASYNC110
+            while True:  # ruff:ignore[async-busy-wait]
                 await asyncio.sleep(1)
         except (KeyboardInterrupt, asyncio.CancelledError):
             scheduler.shutdown()

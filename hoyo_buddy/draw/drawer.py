@@ -17,7 +17,7 @@ from hoyo_buddy.l10n import translator
 from hoyo_buddy.models import TopPadding
 from hoyo_buddy.utils import get_static_img_path
 
-from .fonts import *  # noqa: F403
+from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
     from PIL import ImageDraw
@@ -260,7 +260,7 @@ class Drawer:
     def mask_image_with_color(
         cls, image: Image.Image, color: tuple[int, int, int], *, opacity: float = 1.0
     ) -> Image.Image:
-        if opacity != 1.0:  # noqa: RUF069
+        if opacity != 1.0:  # ruff:ignore[float-equality-comparison]
             mask = Image.new("RGBA", image.size, cls.apply_color_opacity(color, opacity))
             return ImageChops.multiply(image, mask)
         colored_image = Image.new("RGBA", image.size, color)

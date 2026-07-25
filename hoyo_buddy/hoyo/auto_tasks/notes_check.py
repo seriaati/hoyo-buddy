@@ -576,7 +576,7 @@ class NotesChecker:
         ):
             return True
 
-        if (  # noqa: SIM103
+        if (  # ruff:ignore[needless-bool]
             notify.notify_time is not None
             and get_now()
             < notify.account.server_reset_datetime - datetime.timedelta(hours=notify.notify_time)
@@ -611,7 +611,7 @@ class NotesChecker:
         if cls._lock.locked():
             return
 
-        async with cls._lock:  # noqa: PLR1702
+        async with cls._lock:  # ruff:ignore[too-many-nested-blocks]
             cls._bot = bot
             notes_cache: defaultdict[Game, dict[int, Notes | StarRailNote | ZZZNotes]] = (
                 defaultdict(dict)

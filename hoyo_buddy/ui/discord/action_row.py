@@ -16,7 +16,7 @@ __all__ = ("ActionRow",)
 
 
 class ActionRow[V: View](discord.ui.ActionRow):
-    def __init__(self, *children: Button | Select, id: int | None = None) -> None:  # noqa: A002
+    def __init__(self, *children: Button | Select, id: int | None = None) -> None:  # ruff:ignore[builtin-argument-shadowing]
         super().__init__(*children, id=id)
 
         self.view: V

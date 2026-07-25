@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models.settings import Settings
     from hoyo_buddy.types import Interaction
 
-    from .view import CardSettingsView  # noqa: F401
+    from .view import CardSettingsView  # ruff:ignore[unused-import]
 
 
 class HighlightSubstatSelector(ui.Select["CardSettingsView"]):

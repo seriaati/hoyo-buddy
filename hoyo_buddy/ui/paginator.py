@@ -128,7 +128,7 @@ class PaginatorView(View):
         i: Interaction,
         button: Button[PaginatorView] | None,
         *,
-        type_: Literal["next", "prev", "first", "last", "start"],  # noqa: ARG002
+        type_: Literal["next", "prev", "first", "last", "start"],  # ruff:ignore[unused-method-argument]
         followup: bool = False,
         ephemeral: bool = False,
     ) -> None:

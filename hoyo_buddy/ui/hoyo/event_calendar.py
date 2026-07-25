@@ -296,7 +296,7 @@ class BannerSelector(ItemSelector):
             banner_items = list(banner.characters) + list(banner.weapons)
         elif isinstance(banner, genshin.models.EventWarp):
             banner_items = list(banner.characters) + list(banner.light_cones)
-        else:  # noqa: PLR5501
+        else:  # ruff:ignore[collapsible-else-if]
             if isinstance(banner, genshin.models.ZZZCharacterGachaEvent):
                 banner_items = banner.characters
             else:

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db.models.hoyo_account import HoyoAccount
     from hoyo_buddy.types import Interaction
 
-    from .view import SettingsView  # noqa: F401
+    from .view import SettingsView  # ruff:ignore[unused-import]
 
 
 class DisableAllNotificationsButton(ui.Button["SettingsView"]):

@@ -292,7 +292,7 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         locale = await get_locale(i)
 
         if (
-            not (character_id := i.namespace.character)  # noqa: PLR0916
+            not (character_id := i.namespace.character)  # ruff:ignore[too-many-boolean-expressions]
             or character_id == "none"
             or not (category := i.namespace.leaderboard)
             or category == "none"

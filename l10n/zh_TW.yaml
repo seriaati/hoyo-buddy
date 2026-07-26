@@ -336,6 +336,7 @@ profile.card_info.embed.title: 關於角色面板卡片
 profile.card_settings.button.label: 卡片設定
 profile.image_settings.button.label: 圖片設定
 profile.card_template_select.diff_author.description: "由 {author1} 設計並由 {author2} 製作"
+profile.card_template_select.enka.label: "Enka Network 樣式 {num}"
 profile.card_template_select.encard.label: "ENCard 樣式 {num}"
 profile.card_template_select.enka_classic.label: 經典 Enka 樣式
 profile.card_template_select.enkacard.label: "EnkaCard 樣式 {num}"
@@ -402,6 +403,8 @@ resin_discount.embed.description: 每週首領折扣尚未全部使用完畢
 resin_reminder_button.label: 樹脂通知
 resin_reminder_modal.title: 樹脂通知設定
 reward_claimed_title: 已領取每日簽到獎勵
+accompany_success_title: "已陪伴 {character}"
+accompany_success_desc: "陪伴天數：{days}\n獲得陪伴值：{points}"
 saturday: 星期六
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
 search_command_category_param_description: 欲搜尋的分類
@@ -826,6 +829,28 @@ account_settings_desc: "此處的設定對每個遊戲帳戶都是獨立的。"
 public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 1。"
 daily_checkin_desc: "自動每日簽到\n自動領取網頁簽到活動的獎勵。"
 redeem_code_desc: "自動兌換碼兌換\n自動兌換直播兌換碼和其他禮包碼。如果你沒有使用電子郵件和密碼登入，此按鈕將被停用，請參閱[常見問題](:docs/FAQ:)了解原因。"
+accompany_settings_title: "角色陪伴"
+accompany_settings_desc: "每天自動陪伴一位 HoYoLAB 角色，賺取陪伴值並解鎖桌布、貼圖等獎勵。僅適用於 HoYoLAB 帳戶。"
+accompany_button_label: "自動角色陪伴"
+accompany_selected_character: "目前陪伴角色：{character}"
+accompany_no_character_selected: "在下方選擇一個角色以啟用此功能。"
+accompany_character_select_placeholder: "選擇要陪伴的角色"
+accompany_cmd_desc: "查看 HoYoLAB 陪伴角色並設定你的陪伴角色"
+accompany_cmd_character_param_name: "角色"
+accompany_cmd_character_param_desc: "要查看的角色，預設為第一個可用的角色"
+accompany_videos_label: "影片"
+accompany_header_stats: "{posts} 篇貼文 · {fan_arts} 張同人圖"
+accompany_header_members: "{members} 位成員"
+accompany_info_title: "你的陪伴進度"
+accompany_info_body: "陪伴天數：{days}\n陪伴值：{points}（可用 {available_points}）\n今日已陪伴：{today}"
+accompany_voice_lines_title: "語音台詞"
+accompany_voice_audio_label: "播放語音"
+accompany_voice_lang_select_placeholder: "選擇語音語言"
+accompany_voice_line_select_placeholder: "選擇語音台詞"
+accompany_view_no_character_set: "你還沒有設定陪伴角色。"
+accompany_set_character_button_label: "設為陪伴角色"
+accompany_now_button_label: "立即陪伴"
+accompany_view_character_select_placeholder: "選擇要查看的角色"
 user_settings_title: "使用者設定"
 user_settings_desc: "此處的設定與你的 Discord 帳戶關聯，適用於所有遊戲帳戶。"
 dark_theme_desc: "深色主題\n讓資訊圖表使用深色配色方案，並非所有資訊圖表都支援此功能。"
@@ -855,3 +880,8 @@ open_captcha_button_label: 點擊開始驗證
 captcha_verifying: 驗證中...
 build_cmd_zzz_desc: 查看一個絕區零代理人的指南及養成建議
 elation: 歡愉
+image_settings_modifying_for: "正在修改 {name} 的圖片設定"
+image_settings_modifying_for_desc: "圖片為每個角色獨立保存，並在所有樣式之間共享。自訂圖片僅會套用於支援自訂圖片的樣式。"
+image_settings_template_supported: "目前樣式支援自訂圖片。"
+image_settings_template_not_supported: "目前樣式不支援自訂圖片，因此下方選擇的圖片不會被套用。"
+image_settings_use_m3_art_desc: "使用代理人的意象影畫 3 繪圖作為卡片圖片，僅 Hoyo Buddy 樣式 2 支援。"

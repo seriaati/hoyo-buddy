@@ -334,6 +334,7 @@ profile.card_info.embed.title: キャラクタービルドカードについて
 profile.card_settings.button.label: カード設定
 profile.image_settings.button.label: 画像設定
 profile.card_template_select.diff_author.description: "{author1} がデザインし、{author2} がプログラムしました"
+profile.card_template_select.enka.label: "Enka Network テンプレート {num}"
 profile.card_template_select.encard.label: "ENCard テンプレート {num}"
 profile.card_template_select.enka_classic.label: クラシック Enka テンプレート
 profile.card_template_select.enkacard.label: "EnkaCard テンプレート {num}"
@@ -400,6 +401,8 @@ resin_discount.embed.description: 週ボス報酬減額がまだ使用されて�
 resin_reminder_button.label: 樹脂リマインダー
 resin_reminder_modal.title: 樹脂リマインダー設定
 reward_claimed_title: デイリーチェックイン報酬受け取り済み
+accompany_success_title: "{character} に同行しました"
+accompany_success_desc: "同行日数：{days}\n獲得同行ポイント：{points}"
 saturday: 土曜日
 search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
 search_command_category_param_description: 検索するカテゴリ
@@ -824,6 +827,28 @@ account_settings_desc: "ここの設定は各ゲームアカウントに固有�
 public_account_desc: "アカウントを公開に設定\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
 daily_checkin_desc: "自動デイリーチェックイン\nウェブチェックインイベントで自動的に報酬を受け取ります。"
 redeem_code_desc: "自動コード引き換え\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
+accompany_settings_title: "キャラクター同行"
+accompany_settings_desc: "毎日HoYoLABのキャラクターに自動で同行して同行ポイントを獲得し、壁紙やスタンプなどの報酬をアンロックします。HoYoLABアカウントのみ利用可能です。"
+accompany_button_label: "キャラクター自動同行"
+accompany_selected_character: "現在の同行キャラクター：{character}"
+accompany_no_character_selected: "この機能を有効にするには、下でキャラクターを選択してください。"
+accompany_character_select_placeholder: "同行するキャラクターを選択"
+accompany_cmd_desc: "HoYoLABの同行キャラクターを閲覧し、自分の同行キャラクターを設定します"
+accompany_cmd_character_param_name: "キャラクター"
+accompany_cmd_character_param_desc: "表示するキャラクター、デフォルトは最初に利用可能なキャラクター"
+accompany_videos_label: "動画"
+accompany_header_stats: "投稿 {posts} 件 · ファンアート {fan_arts} 件"
+accompany_header_members: "メンバー {members} 人"
+accompany_info_title: "あなたの同行進捗"
+accompany_info_body: "同行日数：{days}\n同行ポイント：{points}（利用可能：{available_points}）\n今日の同行：{today}"
+accompany_voice_lines_title: "ボイス"
+accompany_voice_audio_label: "音声を再生"
+accompany_voice_lang_select_placeholder: "音声の言語を選択"
+accompany_voice_line_select_placeholder: "ボイスを選択"
+accompany_view_no_character_set: "まだ同行キャラクターを設定していません。"
+accompany_set_character_button_label: "同行キャラクターに設定"
+accompany_now_button_label: "今すぐ同行"
+accompany_view_character_select_placeholder: "表示するキャラクターを選択"
 user_settings_title: "ユーザー設定"
 user_settings_desc: "ここの設定はDiscordアカウントにリンクされており、すべてのゲームアカウントに適用されます。"
 dark_theme_desc: "ダークテーマ\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
@@ -853,3 +878,8 @@ open_captcha_button_label: クリックして認証を開始
 captcha_verifying: 認証中...
 build_cmd_zzz_desc: ゼンレスゾーンゼロエージェントのビルドとガイドを表示します
 elation: 愉悦
+image_settings_modifying_for: "{name} の画像設定を変更中"
+image_settings_modifying_for_desc: "画像はキャラクターごとに固有で、テンプレート間で共有されます。カスタム画像は対応しているテンプレートにのみ適用されます。"
+image_settings_template_supported: "現在のテンプレートはカスタム画像に対応しています。"
+image_settings_template_not_supported: "現在のテンプレートはカスタム画像に対応していないため、下で選択した画像は適用されません。"
+image_settings_use_m3_art_desc: "エージェントのM3シネマアートをカード画像として使用します。Hoyo Buddy テンプレート 2 のみ対応。"

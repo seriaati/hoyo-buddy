@@ -336,6 +336,7 @@ profile.card_info.embed.title: Về thẻ xây dựng nhân vật
 profile.card_settings.button.label: Cài đặt thẻ
 profile.image_settings.button.label: Cài đặt hình ảnh
 profile.card_template_select.diff_author.description: "Thiết kế bởi {author1} và lập trình bởi {author2}"
+profile.card_template_select.enka.label: "Mẫu thẻ Enka Network {num}"
 profile.card_template_select.encard.label: "Mẫu thẻ ENCard {num}"
 profile.card_template_select.enka_classic.label: Mẫu Enka cổ điển
 profile.card_template_select.enkacard.label: "Mẫu thẻ EnkaCard {num}"
@@ -402,6 +403,8 @@ resin_discount.embed.description: Lượt giảm nhựa tiêu hao chưa dùng t�
 resin_reminder_button.label: Nhắc nhở Nhựa
 resin_reminder_modal.title: Cài đặt Nhắc nhở Nhưa
 reward_claimed_title: Đã nhận phần thưởng điểm danh
+accompany_success_title: "Đã đồng hành cùng {character}"
+accompany_success_desc: "Số ngày đồng hành: {days}\nĐiểm đồng hành nhận được: {points}"
 saturday: Thứ bảy
 search_autocomplete_not_setup: "Chưa thiết lập tự động điền lựa chọn tìm kiếm, vui lòng thử lại sau"
 search_command_category_param_description: Mục muốn tìm kiếm
@@ -826,6 +829,28 @@ account_settings_desc: "Cài đặt ở đây là duy nhất cho mỗi tài kho�
 public_account_desc: "Đặt tài khoản công khai\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
 daily_checkin_desc: "Tự động điểm danh hàng ngày\nTự động nhận phần thưởng trong sự kiện điểm danh web."
 redeem_code_desc: "Tự động đổi mã\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
+accompany_settings_title: "Đồng hành cùng nhân vật"
+accompany_settings_desc: "Tự động đồng hành cùng một nhân vật HoYoLAB mỗi ngày để nhận điểm đồng hành và mở khóa phần thưởng như hình nền và sticker. Chỉ khả dụng cho tài khoản HoYoLAB."
+accompany_button_label: "Tự động đồng hành cùng nhân vật"
+accompany_selected_character: "Đang đồng hành cùng: {character}"
+accompany_no_character_selected: "Chọn một nhân vật bên dưới để bật tính năng này."
+accompany_character_select_placeholder: "Chọn nhân vật để đồng hành"
+accompany_cmd_desc: "Xem các nhân vật đồng hành trên HoYoLAB và đặt nhân vật của bạn"
+accompany_cmd_character_param_name: "nhân-vật"
+accompany_cmd_character_param_desc: "Nhân vật muốn xem, mặc định là nhân vật khả dụng đầu tiên"
+accompany_videos_label: "Video"
+accompany_header_stats: "{posts} bài đăng · {fan_arts} ảnh fan art"
+accompany_header_members: "{members} thành viên"
+accompany_info_title: "Tiến độ đồng hành của bạn"
+accompany_info_body: "Số ngày đồng hành: {days}\nĐiểm đồng hành: {points} ({available_points} khả dụng)\nĐã đồng hành hôm nay: {today}"
+accompany_voice_lines_title: "Lời thoại"
+accompany_voice_audio_label: "Phát âm thanh"
+accompany_voice_lang_select_placeholder: "Chọn ngôn ngữ lồng tiếng"
+accompany_voice_line_select_placeholder: "Chọn lời thoại"
+accompany_view_no_character_set: "Bạn chưa đặt nhân vật đồng hành."
+accompany_set_character_button_label: "Đặt làm nhân vật đồng hành"
+accompany_now_button_label: "Đồng hành ngay"
+accompany_view_character_select_placeholder: "Chọn nhân vật để xem"
 user_settings_title: "Cài đặt người dùng"
 user_settings_desc: "Cài đặt ở đây được liên kết với tài khoản Discord của bạn, chúng áp dụng cho tất cả tài khoản game."
 dark_theme_desc: "Chủ đề tối\nLàm cho infographic sử dụng bảng màu tối, không phải tất cả infographic đều hỗ trợ tính năng này."
@@ -855,3 +880,8 @@ open_captcha_button_label: Nhấp để bắt đầu xác minh
 captcha_verifying: Đang xác minh...
 build_cmd_zzz_desc: Xem build và hướng dẫn người đại diện Zenless Zone Zero
 elation: Hoan Lạc
+image_settings_modifying_for: "Đang chỉnh sửa cài đặt hình ảnh cho {name}"
+image_settings_modifying_for_desc: "Hình ảnh là riêng cho từng nhân vật và được dùng chung giữa các mẫu thẻ. Ảnh tự chọn chỉ áp dụng cho các mẫu thẻ hỗ trợ."
+image_settings_template_supported: "Mẫu thẻ hiện tại hỗ trợ ảnh tự chọn."
+image_settings_template_not_supported: "Mẫu thẻ hiện tại không hỗ trợ ảnh tự chọn, nên ảnh bạn chọn bên dưới sẽ không được áp dụng."
+image_settings_use_m3_art_desc: "Sử dụng Ảnh M3 của người đại diện làm ảnh thẻ, chỉ được hỗ trợ bởi mẫu thẻ Hoyo Buddy 2."

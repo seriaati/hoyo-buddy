@@ -334,6 +334,7 @@ profile.card_info.embed.title: Sobre os Cards de Build de Personagem
 profile.card_settings.button.label: Configurações do card
 profile.image_settings.button.label: Configurações de imagem
 profile.card_template_select.diff_author.description: "Desenhado por {author1} e programado por {author2}"
+profile.card_template_select.enka.label: "Template Enka Network {num}"
 profile.card_template_select.encard.label: "Template ENCard {num}"
 profile.card_template_select.enka_classic.label: Template Enka clássico
 profile.card_template_select.enkacard.label: "Template EnkaCard {num}"
@@ -400,6 +401,8 @@ resin_discount.embed.description: Descontos de chefe semanal ainda não foram us
 resin_reminder_button.label: Lembrete de resina
 resin_reminder_modal.title: Configurações do Lembrete de Resina
 reward_claimed_title: Recompensa de Check-In Diário Resgatada
+accompany_success_title: "Você acompanhou {character}"
+accompany_success_desc: "Dias de acompanhamento: {days}\nPontos de acompanhamento ganhos: {points}"
 saturday: Sábado
 search_autocomplete_not_setup: "As opções de preenchimento automático da pesquisa ainda não foram configuradas, por favor, tente novamente mais tarde."
 search_command_category_param_description: Categoria para pesquisar
@@ -824,6 +827,28 @@ account_settings_desc: "As configurações aqui são únicas para cada conta do 
 public_account_desc: "Definir conta como pública\nSe habilitado, outras pessoas podem ver os dados da sua conta em alguns comandos, como </profile>."
 daily_checkin_desc: "Check-in diário automático\nReivindica recompensas automaticamente no evento de check-in na web."
 redeem_code_desc: "Resgate automático de código\nResgata automaticamente códigos de livestream e outros códigos de presente. O botão fica desabilitado se você não estiver logado com e-mail e senha, veja a [FAQ](:docs/FAQ:) para saber o porquê."
+accompany_settings_title: "Acompanhamento de personagem"
+accompany_settings_desc: "Acompanhe automaticamente um personagem do HoYoLAB todos os dias para ganhar pontos de acompanhamento e desbloquear recompensas como papéis de parede e figurinhas. Disponível apenas para contas HoYoLAB."
+accompany_button_label: "Acompanhamento automático de personagem"
+accompany_selected_character: "Acompanhando atualmente: {character}"
+accompany_no_character_selected: "Selecione um personagem abaixo para ativar este recurso."
+accompany_character_select_placeholder: "Selecione um personagem para acompanhar"
+accompany_cmd_desc: "Veja os personagens de acompanhamento do HoYoLAB e defina o seu"
+accompany_cmd_character_param_name: "personagem"
+accompany_cmd_character_param_desc: "Personagem a visualizar, o padrão é o primeiro disponível"
+accompany_videos_label: "Vídeos"
+accompany_header_stats: "{posts} publicações · {fan_arts} fan arts"
+accompany_header_members: "{members} membros"
+accompany_info_title: "Seu progresso de acompanhamento"
+accompany_info_body: "Dias acompanhados: {days}\nPontos de acompanhamento: {points} ({available_points} disponíveis)\nAcompanhado hoje: {today}"
+accompany_voice_lines_title: "Falas"
+accompany_voice_audio_label: "Reproduzir áudio"
+accompany_voice_lang_select_placeholder: "Selecione um idioma de voz"
+accompany_voice_line_select_placeholder: "Selecione uma fala"
+accompany_view_no_character_set: "Você ainda não definiu um personagem de acompanhamento."
+accompany_set_character_button_label: "Definir como personagem de acompanhamento"
+accompany_now_button_label: "Acompanhar agora"
+accompany_view_character_select_placeholder: "Selecione um personagem para visualizar"
 user_settings_title: "Configurações do Usuário"
 user_settings_desc: "As configurações aqui estão vinculadas à sua conta do Discord, elas se aplicam a todas as contas do jogo."
 dark_theme_desc: "Tema escuro\nFaz com que os infográficos usem um esquema de cores escuro, nem todos os infográficos suportam este recurso."
@@ -853,3 +878,8 @@ open_captcha_button_label: Clique para iniciar a verificação
 captcha_verifying: Verificando...
 build_cmd_zzz_desc: Veja builds e guias de um agente de Zenless Zone Zero
 elation: A Euforia
+image_settings_modifying_for: "Modificando as configurações de imagem de {name}"
+image_settings_modifying_for_desc: "As imagens são únicas para cada personagem e compartilhadas entre os templates. Imagens personalizadas só se aplicam aos templates que as suportam."
+image_settings_template_supported: "O template atual suporta imagens personalizadas."
+image_settings_template_not_supported: "O template atual não suporta imagens personalizadas, então a imagem selecionada abaixo não será aplicada."
+image_settings_use_m3_art_desc: "Usa a arte M3 do agente como imagem do card, suportada apenas pelo template 2 do Hoyo Buddy."

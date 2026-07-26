@@ -336,6 +336,7 @@ profile.card_info.embed.title: 캐릭터 빌드 카드 안내
 profile.card_settings.button.label: 카드 설정
 profile.image_settings.button.label: 이미지 설정
 profile.card_template_select.diff_author.description: "디자인 {author1}, 프로그래밍 {author2}"
+profile.card_template_select.enka.label: "Enka Network 템플릿 {num}"
 profile.card_template_select.encard.label: "ENCard 템플릿 {num}"
 profile.card_template_select.enka_classic.label: 클래식 Enka 템플릿
 profile.card_template_select.enkacard.label: "Enka카드 템플릿 {num}"
@@ -402,6 +403,8 @@ resin_discount.embed.description: 주간 보스 할인 횟수를 아직 모두 �
 resin_reminder_button.label: 레진 알리미
 resin_reminder_modal.title: 레진 알림 설정
 reward_claimed_title: 일일 출석 보상을 획득했습니다.
+accompany_success_title: "{character}와(과) 동행했습니다"
+accompany_success_desc: "동행 일수: {days}\n획득한 동행 포인트: {points}"
 saturday: 토요일
 search_autocomplete_not_setup: "검색 자동완성 항목이 아직 설정되지 않았습니다. 잠시 후 다시 시도해 주세요."
 search_command_category_param_description: 검색 카테고리
@@ -826,6 +829,28 @@ account_settings_desc: "이 설정은 각 게임 계정마다 개별적으로 �
 public_account_desc: "계정을 공개로 설정\n활성화하면 다른 사람들이 </profile>에서 계정 데이터를 볼 수 있습니다."
 daily_checkin_desc: "자동 일일 출석\n웹 출석 이벤트 보상을 자동으로 획득합니다"
 redeem_code_desc: "자동 리딤 코드 교환\n특별방송 리딤코드 및 기타 리딤코드를 자동으로 사용합니다. 이메일과 비밀번호로 로그인하지 않은 경우 버튼이 비활성화됩니다. 자세한 내용은 [FAQ](:docs/FAQ:)를 참고해 주세요."
+accompany_settings_title: "캐릭터 동행"
+accompany_settings_desc: "매일 HoYoLAB 캐릭터와 자동으로 동행하여 동행 포인트를 얻고 배경화면, 스티커 등의 보상을 잠금 해제하세요. HoYoLAB 계정에서만 사용할 수 있습니다."
+accompany_button_label: "자동 캐릭터 동행"
+accompany_selected_character: "현재 동행 중인 캐릭터: {character}"
+accompany_no_character_selected: "이 기능을 사용하려면 아래에서 캐릭터를 선택하세요."
+accompany_character_select_placeholder: "동행할 캐릭터 선택"
+accompany_cmd_desc: "HoYoLAB 동행 캐릭터를 확인하고 내 동행 캐릭터를 설정합니다"
+accompany_cmd_character_param_name: "캐릭터"
+accompany_cmd_character_param_desc: "조회할 캐릭터, 기본값은 첫 번째 사용 가능한 캐릭터입니다"
+accompany_videos_label: "동영상"
+accompany_header_stats: "게시물 {posts}개 · 팬아트 {fan_arts}개"
+accompany_header_members: "멤버 {members}명"
+accompany_info_title: "내 동행 진행 상황"
+accompany_info_body: "동행 일수: {days}\n동행 포인트: {points} (사용 가능: {available_points})\n오늘 동행: {today}"
+accompany_voice_lines_title: "음성 대사"
+accompany_voice_audio_label: "음성 재생"
+accompany_voice_lang_select_placeholder: "음성 언어 선택"
+accompany_voice_line_select_placeholder: "음성 대사 선택"
+accompany_view_no_character_set: "아직 동행 캐릭터를 설정하지 않았습니다."
+accompany_set_character_button_label: "동행 캐릭터로 설정"
+accompany_now_button_label: "지금 동행하기"
+accompany_view_character_select_placeholder: "조회할 캐릭터 선택"
 user_settings_title: "유저 설정"
 user_settings_desc: "이 설정은 Discord 계정과 연동되며, 모든 게임 계정에 적용됩니다."
 dark_theme_desc: "다크 테마\n인포그래픽에 다크 색상 테마를 적용합니다. 일부 인포그래픽은 이 기능을 지원하지 않을 수 있습니다."
@@ -855,3 +880,8 @@ open_captcha_button_label: 클릭하여 본인 인증 진행
 captcha_verifying: 인증중...
 build_cmd_zzz_desc: 젠레스 존 제로 에이전트 상세 빌드 및 공지 가이드 확인
 elation: 환락
+image_settings_modifying_for: "{name}의 이미지 설정 수정 중"
+image_settings_modifying_for_desc: "이미지는 캐릭터마다 고유하며 모든 템플릿에서 공유됩니다. 사용자 지정 이미지는 지원하는 템플릿에만 적용됩니다."
+image_settings_template_supported: "현재 템플릿은 사용자 지정 이미지를 지원합니다."
+image_settings_template_not_supported: "현재 템플릿은 사용자 지정 이미지를 지원하지 않으므로 아래에서 선택한 이미지는 적용되지 않습니다."
+image_settings_use_m3_art_desc: "요원의 마인드스케이프 시네마 3 아트를 카드 이미지로 사용합니다. Hoyo Buddy 템플릿 2에서만 지원됩니다."

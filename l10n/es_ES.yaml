@@ -336,6 +336,7 @@ profile.card_info.embed.title: Sobre las tarjetas de builds de personajes
 profile.card_settings.button.label: Configurar tarjeta
 profile.image_settings.button.label: Configurar imagen
 profile.card_template_select.diff_author.description: "Diseñado por {author1} y programado por {author2}"
+profile.card_template_select.enka.label: "Enka Network plantilla {num}"
 profile.card_template_select.encard.label: "Plantilla de tarjeta EN {num}"
 profile.card_template_select.enka_classic.label: Plantilla Enka clásica
 profile.card_template_select.enkacard.label: "Plantilla de tarjeta Enka {num}"
@@ -402,6 +403,8 @@ resin_discount.embed.description: Los descuentos de jefes semanales aún no se h
 resin_reminder_button.label: Recordatorio de resina
 resin_reminder_modal.title: Configurar Recordatorio de Resina
 reward_claimed_title: Recompensa de login diario reclamada
+accompany_success_title: "Has acompañado a {character}"
+accompany_success_desc: "Días de acompañamiento: {days}\nPuntos de acompañamiento ganados: {points}"
 saturday: Sábado
 search_autocomplete_not_setup: "Las opciones de autocompletar de búsqueda aún no están configuradas, por favor intenta nuevamente más tarde."
 search_command_category_param_description: Buscar en la categoría
@@ -826,6 +829,28 @@ account_settings_desc: "Las configuraciones hehcas son únicas para cada cuenta 
 public_account_desc: "Establecer cuenta como pública\nSi está habilitado, otras personas pueden ver los datos de tu cuenta en algunos comandos, como </profile>."
 daily_checkin_desc: "Inicio de sesión diario automático\nReclama automáticamente recompensas en el evento de inicio de sesión web."
 redeem_code_desc: "Canje automático de códigos\nCanjea automáticamente códigos de transmisión en vivo y otros códigos de regalo. El botón está deshabilitado si no has iniciado sesión con correo electrónico y contraseña, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+accompany_settings_title: "Acompañamiento de personajes"
+accompany_settings_desc: "Acompaña automáticamente a un personaje de HoYoLAB cada día para ganar puntos de acompañamiento y desbloquear recompensas como fondos de pantalla y stickers. Solo disponible para cuentas de HoYoLAB."
+accompany_button_label: "Acompañamiento automático de personajes"
+accompany_selected_character: "Acompañando actualmente a: {character}"
+accompany_no_character_selected: "Selecciona un personaje abajo para activar esta función."
+accompany_character_select_placeholder: "Selecciona un personaje para acompañar"
+accompany_cmd_desc: "Ve los personajes de acompañamiento de HoYoLAB y establece el tuyo"
+accompany_cmd_character_param_name: "personaje"
+accompany_cmd_character_param_desc: "Personaje a ver, por defecto el primero disponible"
+accompany_videos_label: "Vídeos"
+accompany_header_stats: "{posts} publicaciones · {fan_arts} fan arts"
+accompany_header_members: "{members} miembros"
+accompany_info_title: "Tu progreso de acompañamiento"
+accompany_info_body: "Días acompañados: {days}\nPuntos de acompañamiento: {points} ({available_points} disponibles)\nAcompañado hoy: {today}"
+accompany_voice_lines_title: "Líneas de voz"
+accompany_voice_audio_label: "Reproducir audio"
+accompany_voice_lang_select_placeholder: "Selecciona un idioma de voz"
+accompany_voice_line_select_placeholder: "Selecciona una línea de voz"
+accompany_view_no_character_set: "Aún no has establecido un personaje de acompañamiento."
+accompany_set_character_button_label: "Establecer como personaje de acompañamiento"
+accompany_now_button_label: "Acompañar ahora"
+accompany_view_character_select_placeholder: "Selecciona un personaje para ver"
 user_settings_title: "Configuración de usuario"
 user_settings_desc: "Las configuraciones aquí están vinculadas a tu cuenta de Discord, se aplican a todas las cuentas del juego."
 dark_theme_desc: "Tema oscuro\nHace que los infográficos usen un esquema de color oscuro, no todos los infográficos admiten esta función."
@@ -855,3 +880,8 @@ open_captcha_button_label: Haz clic para iniciar la verificación
 captcha_verifying: Verificando...
 build_cmd_zzz_desc: Ver las builds y guías de un personaje de Zenless Zone Zero
 elation: Exultación
+image_settings_modifying_for: "Modificando los ajustes de imagen de {name}"
+image_settings_modifying_for_desc: "Las imágenes son únicas para cada personaje y se comparten entre plantillas. Las imágenes personalizadas solo se aplican a las plantillas que las admiten."
+image_settings_template_supported: "La plantilla actual admite imágenes personalizadas."
+image_settings_template_not_supported: "La plantilla actual no admite imágenes personalizadas, por lo que la imagen que selecciones abajo no se aplicará."
+image_settings_use_m3_art_desc: "Usa la ilustración de M3 del agente como imagen de la tarjeta, solo compatible con la plantilla 2 de Hoyo Buddy."

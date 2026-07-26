@@ -336,6 +336,7 @@ profile.card_info.embed.title: Over Karakterbouwkaarten
 profile.card_settings.button.label: Kaartinstellingen
 profile.image_settings.button.label: Afbeeldingsinstellingen
 profile.card_template_select.diff_author.description: "Ontworpen door {author1} en geprogrammeerd door {author2}"
+profile.card_template_select.enka.label: "Enka Network-sjabloon {num}"
 profile.card_template_select.encard.label: "ENCard-sjabloon {num}"
 profile.card_template_select.enka_classic.label: Klassiek Enka-sjabloon
 profile.card_template_select.enkacard.label: "EnkaCard-sjabloon {num}"
@@ -402,6 +403,8 @@ resin_discount.embed.description: Wekelijkse kortingen voor bazen zijn nog niet 
 resin_reminder_button.label: Resin-herinnering
 resin_reminder_modal.title: Instellingen Resin-herinnering
 reward_claimed_title: Dagelijkse Incheckbeloning Geclaimd
+accompany_success_title: "{character} vergezeld"
+accompany_success_desc: "Vergezeldagen: {days}\nVerdiende vergezelpunten: {points}"
 saturday: Zaterdag
 search_autocomplete_not_setup: "Autocomplete-zoekkeuzes nog niet ingesteld, probeer het later nog eens."
 search_command_category_param_description: Categorie om in te zoeken
@@ -826,6 +829,28 @@ account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
 public_account_desc: "Account instellen als openbaar\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
 daily_checkin_desc: "Automatische dagelijkse inchecken\nClaimt automatisch beloningen bij het web-incheckenevenement."
 redeem_code_desc: "Automatisch inwisselen van codes\nWisselt automatisch livestream-codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor meer informatie."
+accompany_settings_title: "Karakter vergezellen"
+accompany_settings_desc: "Vergezel elke dag automatisch een HoYoLAB-karakter om vergezelpunten te verdienen en beloningen zoals achtergronden en stickers te ontgrendelen. Alleen beschikbaar voor HoYoLAB-accounts."
+accompany_button_label: "Automatisch karakter vergezellen"
+accompany_selected_character: "Momenteel aan het vergezellen: {character}"
+accompany_no_character_selected: "Selecteer hieronder een karakter om deze functie in te schakelen."
+accompany_character_select_placeholder: "Selecteer een karakter om te vergezellen"
+accompany_cmd_desc: "Bekijk HoYoLAB-vergezelkarakters en stel de jouwe in"
+accompany_cmd_character_param_name: "karakter"
+accompany_cmd_character_param_desc: "Karakter om te bekijken, standaard het eerste beschikbare"
+accompany_videos_label: "Video's"
+accompany_header_stats: "{posts} berichten · {fan_arts} fanarts"
+accompany_header_members: "{members} leden"
+accompany_info_title: "Jouw vergezelvoortgang"
+accompany_info_body: "Dagen vergezeld: {days}\nVergezelpunten: {points} ({available_points} beschikbaar)\nVandaag vergezeld: {today}"
+accompany_voice_lines_title: "Stemfragmenten"
+accompany_voice_audio_label: "Audio afspelen"
+accompany_voice_lang_select_placeholder: "Selecteer een taal voor de stem"
+accompany_voice_line_select_placeholder: "Selecteer een stemfragment"
+accompany_view_no_character_set: "Je hebt nog geen vergezelkarakter ingesteld."
+accompany_set_character_button_label: "Instellen als vergezelkarakter"
+accompany_now_button_label: "Nu vergezellen"
+accompany_view_character_select_placeholder: "Selecteer een karakter om te bekijken"
 user_settings_title: "Gebruikersinstellingen"
 user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze gelden voor alle gameaccounts."
 dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken. Niet alle infographics ondersteunen deze functie."
@@ -855,3 +880,8 @@ open_captcha_button_label: Klik om verificatie te starten
 captcha_verifying: Verifiëren...
 build_cmd_zzz_desc: Bekijk de builds en gidsen van een Zenless Zone Zero-karakter
 elation: Elation
+image_settings_modifying_for: "Afbeeldingsinstellingen van {name} aanpassen"
+image_settings_modifying_for_desc: "Afbeeldingen zijn uniek per karakter en worden gedeeld tussen sjablonen. Aangepaste afbeeldingen gelden alleen voor sjablonen die ze ondersteunen."
+image_settings_template_supported: "Het huidige sjabloon ondersteunt aangepaste afbeeldingen."
+image_settings_template_not_supported: "Het huidige sjabloon ondersteunt geen aangepaste afbeeldingen, dus de afbeelding die je hieronder selecteert wordt niet toegepast."
+image_settings_use_m3_art_desc: "Gebruik de M3-kunst van de agent als kaartafbeelding, alleen ondersteund door Hoyo Buddy-sjabloon 2."

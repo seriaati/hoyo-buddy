@@ -522,7 +522,7 @@ card_settings.build_card_image: Hình ảnh thẻ Build
 card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
 card_settings.footer: "Khi đã xong, nhấn nút màu xanh lá ở tin nhắn phía trên để làm mới thẻ"
-card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên.\nHỗ trợ ảnh trên Pixiv, chỉ cần sao chép link ảnh của tác phẩm đó."
+card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên."
 profile.team_dark_mode.button.label: Chủ đề tối thẻ đội
 team_card_dark_theme_desc: "Sử dụng bảng màu tối cho thẻ đội. Điều này áp dụng cho tất cả thẻ đội, bất kể nhân vật nào trong đó."
 profile.character_select.multi.placeholder: Chon (các) nhân vật...

@@ -520,7 +520,7 @@ card_settings.build_card_image: ビルドカード画像
 card_settings.team_card_image: チームカード画像
 profile.redraw_card_button_label: カードを再描画
 card_settings.footer: "完了したら、上のメッセージにある緑色のボタンをクリックしてカードを再描画してください"
-card_settings.description: "画像をアップロードして画像URLを取得するには </upload> を使用してください。\nPixivがサポートされています。アートワークの画像URLをコピーするだけです。"
+card_settings.description: "画像をアップロードして画像URLを取得するには </upload> を使用してください。"
 profile.team_dark_mode.button.label: チームカードダークテーマ
 team_card_dark_theme_desc: "チームカードにダークカラースキームを使用します。これは、どのキャラクターが含まれているかに関係なく、すべてのチームカードに適用されます。"
 profile.character_select.multi.placeholder: キャラクターを選択...

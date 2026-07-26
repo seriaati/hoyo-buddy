@@ -214,26 +214,6 @@ def capitalize_first_word(s: str) -> str:
     return " ".join(formatted_words)
 
 
-async def get_pixiv_proxy_img(session: aiohttp.ClientSession, url: str) -> str:
-    """Get the proxy image URL for a Pixiv artwork."""
-    # Example: https://i.pximg.net/img-master/img/2024/05/18/19/37/42/118837522_p0_master1200.jpg
-    filename = url.rsplit("/", maxsplit=1)[-1]
-    artwork_id = filename.split("_")[0]
-
-    api = f"https://phixiv.net/api/info?id={artwork_id}"
-    async with session.get(api) as resp:
-        resp.raise_for_status()
-        data = await resp.json()
-        proxy_img_urls: list[str] = data["image_proxy_urls"]
-
-    for img_url in proxy_img_urls:
-        proxy_filename = img_url.rsplit("/", maxsplit=1)[-1]
-        if proxy_filename == filename:
-            return img_url
-
-    return proxy_img_urls[0]
-
-
 def get_floor_difficulty(floor_name: str, season_name: str) -> str:
     """Get the difficulty of a floor in a Star Rail challenge."""
     return floor_name.replace(season_name, "").replace(":", "").replace("•", "").strip()

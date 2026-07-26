@@ -17,7 +17,7 @@ from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_collection
 from hoyo_buddy.ui.hoyo.profile.templates import DISABLE_IMAGE, TEMPLATE_NAMES
-from hoyo_buddy.utils import get_pixiv_proxy_img, is_image_url, test_url_validity, upload_image
+from hoyo_buddy.utils import is_image_url, test_url_validity, upload_image
 from hoyo_buddy.utils.gacha import get_gacha_icon
 from hoyo_buddy.utils.misc import get_template_name, get_template_num
 
@@ -159,10 +159,6 @@ class AddImageButton(ui.Button["CardSettingsView"]):
         await self.set_loading_state(i)
 
         image_url = modal.image_url.value.strip()
-
-        # Pixiv image support
-        if "i.pximg.net" in image_url:
-            image_url = await get_pixiv_proxy_img(i.client.session, image_url)
 
         # Check if the image URL is valid
         passed = is_image_url(image_url)

@@ -522,7 +522,7 @@ card_settings.build_card_image: 카드 이미지 생성
 card_settings.team_card_image: 팀 카드 이미지
 profile.redraw_card_button_label: 카드 다시 그리기
 card_settings.footer: "작업이 끝나면, 위 메시지의 초록색 버튼을 눌러 카드를 다시 그리세요"
-card_settings.description: "</upload> 를 사용해 이미지를 업로드하면 이미지 URL을 가져올 수 있습니다. \nPixiv도 지원되며, 작품의 이미지 URL을 복사해 사용하면 됩니다."
+card_settings.description: "</upload> 를 사용해 이미지를 업로드하면 이미지 URL을 가져올 수 있습니다."
 profile.team_dark_mode.button.label: 팀 카드 다크 테마
 team_card_dark_theme_desc: "팀 카드에 다크 색상 테마를 적용합니다. 포함된 캐릭터와 관계없이 모든 팀 카드에 적용됩니다."
 profile.character_select.multi.placeholder: 캐릭터 선택...

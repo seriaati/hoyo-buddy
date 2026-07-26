@@ -1278,7 +1278,7 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "dm": 0.1,
 }
 
-CONCURRENT_TASK_NUM = 250
+CONCURRENT_TASK_NUM = 100
 MAX_PROXY_ERROR_NUM = 8
 
 AUTO_TASK_FEATURE_KEYS: dict[AutoTaskType, str] = {

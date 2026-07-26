@@ -45,7 +45,6 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.types import Builds, HoyolabCharacter
 from hoyo_buddy.ui import ToggleUIButton, View
-from hoyo_buddy.ui.hoyo.profile.items.image_settings_btn import ImageSettingsButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
@@ -315,7 +314,6 @@ class ProfileView(View, PlayerEmbedMixin):
     def _add_items(self) -> None:
         self.add_item(PlayerInfoButton(row=0))
         self.add_item(CardSettingsButton(row=0))
-        self.add_item(ImageSettingsButton(row=1))
         self.add_item(RedrawCardButton(row=1))
 
         if self.characters:

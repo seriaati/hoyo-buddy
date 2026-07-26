@@ -31,12 +31,7 @@ class PlayerInfoButton(Button[ProfileView]):
     async def callback(self, i: Interaction) -> None:
         self.disabled = True
 
-        disable_btns = (
-            "profile_card_settings",
-            "profile_image_settings",
-            "profile_build_select",
-            "profile_redraw_card",
-        )
+        disable_btns = ("profile_card_settings", "profile_build_select", "profile_redraw_card")
         for btn in disable_btns:
             button = self.view.get_item(btn)
             button.disabled = True

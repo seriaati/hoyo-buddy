@@ -45,5 +45,8 @@ class CardSettingsButton(Button[ProfileView]):
             author=i.user,
             locale=self.view.locale,
             character=character,
+            image_type="team_card_image"
+            if len(self.view.character_ids) > 1
+            else "build_card_image",
         )
         await view.update(i, followup=True)

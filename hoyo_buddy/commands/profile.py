@@ -15,6 +15,7 @@ from hoyo_buddy.constants import (
 )
 from hoyo_buddy.utils.misc import capture_exception
 
+from ..ui.hoyo.profile.image_settings import save_gi_default_arts
 from ..ui.hoyo.profile.view import ProfileView
 
 if TYPE_CHECKING:
@@ -133,6 +134,16 @@ class ProfileCommand:
                 if enka_data is None:
                     # enka and hoyolab both failed, raise error
                     raise
+
+        gi_characters = [
+            *(enka_data.characters if enka_data is not None else []),
+            *hoyolab_characters,
+        ]
+        if gi_characters:
+            try:
+                await save_gi_default_arts(gi_characters)
+            except Exception as e:
+                capture_exception(e)
 
         return ProfileView(
             self._uid,

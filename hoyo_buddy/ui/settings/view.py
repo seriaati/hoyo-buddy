@@ -14,7 +14,11 @@ from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art, get_default_art_fallback
+from hoyo_buddy.ui.hoyo.profile.image_settings import (
+    get_default_art,
+    get_default_art_fallback,
+    get_zzz_default_art,
+)
 from hoyo_buddy.ui.settings import reminder
 from hoyo_buddy.ui.settings.accompany import AccompanySettingsContainer
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
@@ -309,15 +313,21 @@ class CardSettingsView(ui.LayoutView):
             user_id=user_id, character_id=self.card_settings.character_id
         )
 
-    def _get_default_art(self) -> str | None:
-        is_team = self.image_type == "team_card_image" or (
-            self.game is Game.ZZZ and self.card_settings.template == "hb4"
-        )
+    async def _get_default_art(self) -> str | None:
+        if self.game is Game.ZZZ and self.image_type == "build_card_image":
+            return await get_zzz_default_art(
+                self.card_settings.character_id,
+                template=self.card_settings.template,
+                use_m3_art=self.card_settings.use_m3_art,
+                character=self.character,
+            )
+
+        is_team = self.image_type == "team_card_image"
         if self.character is not None:
             return get_default_art(
                 self.character, is_team=is_team, use_m3_art=self.card_settings.use_m3_art
             )
-        return get_default_art_fallback(
+        return await get_default_art_fallback(
             self.card_settings.character_id,
             game=self.game,
             is_team=is_team,
@@ -347,7 +357,7 @@ class CardSettingsView(ui.LayoutView):
                 gacha_data=gacha_data,
                 custom_images=self.custom_images,
                 image_type=self.image_type,
-                default_art=self._get_default_art(),
+                default_art=await self._get_default_art(),
             )
         else:
             container = CardSettingsContainer(

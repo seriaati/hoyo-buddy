@@ -433,6 +433,32 @@ def _get_images_path(template: Literal[1, 2], *, use_m3_art: bool) -> str:
     return "zzz_images.json"
 
 
+def _build_zzz_agent_images(
+    data_characters: Sequence[hb_data.zzz.Character], template: Literal[1, 2], *, use_m3_art: bool
+) -> dict[int, str]:
+    if template == 2:
+        return {
+            char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
+            for char in data_characters
+        }
+    agent_images = {char.id: char.image for char in data_characters}
+    agent_images.update({skin.id: skin.image for char in data_characters for skin in char.skins})
+    return agent_images
+
+
+async def fetch_zzz_agent_images(
+    template: Literal[1, 2], *, use_m3_art: bool = False
+) -> dict[int, str]:
+    """Fetch the official agent art used by ZZZ templates 1 and 2 and cache it."""
+    async with hb_data.ZZZClient() as client:
+        agent_images = _build_zzz_agent_images(
+            client.get_characters(), template, use_m3_art=use_m3_art
+        )
+
+    await JSONFile.write(_get_images_path(template, use_m3_art=use_m3_art), agent_images)
+    return agent_images
+
+
 async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     *,
@@ -506,20 +532,8 @@ async def fetch_zzz_draw_data(
             if version is None:
                 version = await get_game_latest_stable_version(session, game=Game.ZZZ)
 
-            if template == 2:
-                agent_images = {
-                    char.id: char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
-                    for char in data_characters
-                }
-            else:  # template == 1
-                agent_images = {char.id: char.image for char in data_characters}
-                skin_images = {
-                    skin.id: skin.image for char in data_characters for skin in char.skins
-                }
-                agent_images.update(skin_images)
-
-            agent_images_path = _get_images_path(template, use_m3_art=use_m3_art)
-            await JSONFile.write(agent_images_path, agent_images)
+            agent_images = _build_zzz_agent_images(data_characters, template, use_m3_art=use_m3_art)
+            await JSONFile.write(_get_images_path(template, use_m3_art=use_m3_art), agent_images)
 
         # Fetch disc icons
         if fetch_disc_icons:

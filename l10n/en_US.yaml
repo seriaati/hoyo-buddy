@@ -881,7 +881,6 @@ build_cmd_zzz_desc: View a Zenless Zone Zero agent's builds and guides
 elation: Elation
 image_settings_modifying_for: "Modifying Image Settings for {name}"
 image_settings_modifying_for_desc: "Images are unique for each character and are shared across templates. Custom images only apply to templates that support them."
-image_settings_template_supported: "The current template, **{template}**, supports custom images."
-image_settings_template_not_supported: "The current template, **{template}**, doesn't support custom images, so the image settings below are disabled. To use custom images, select a template marked with \"{supported_label}\"."
-image_settings_team_image_note: "Team card images are supported by all templates."
+image_settings_template_supported: "The current template supports custom images."
+image_settings_template_not_supported: "The current template doesn't support custom images, so the image you select below won't be applied."
 image_settings_use_m3_art_desc: "Use the agent's Mindscape 3 cinema art as the card image, only supported by Hoyo Buddy template 2."

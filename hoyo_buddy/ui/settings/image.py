@@ -8,7 +8,6 @@ from seria.utils import read_json
 
 from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import EMPTY_CHAR
 from hoyo_buddy.db import CustomImage
 from hoyo_buddy.db.utils import get_default_color
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
@@ -16,10 +15,9 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_collection
-from hoyo_buddy.ui.hoyo.profile.templates import DISABLE_IMAGE, TEMPLATE_NAMES
+from hoyo_buddy.ui.hoyo.profile.templates import DISABLE_IMAGE
 from hoyo_buddy.utils import is_image_url, test_url_validity, upload_image
 from hoyo_buddy.utils.gacha import get_gacha_icon
-from hoyo_buddy.utils.misc import get_template_name, get_template_num
 
 from .card import CardTemplateSelect
 
@@ -62,7 +60,6 @@ class ImageSelect(ui.PaginatorSelect["CardSettingsView"]):
         current_image: str | None,
         default_collection: list[str],
         custom_images: list[CustomImage],
-        disabled: bool,
     ) -> None:
         self.current_image = current_image
         self.default_collection = default_collection
@@ -72,7 +69,6 @@ class ImageSelect(ui.PaginatorSelect["CardSettingsView"]):
             self.get_options(),
             placeholder=LocaleStr(key="profile.image_select.placeholder"),
             custom_id="profile_image_select",
-            disabled=disabled,
         )
         if current_image is not None:
             self.set_page_based_on_value(current_image)
@@ -139,12 +135,11 @@ class AddImageModal(ui.Modal):
 
 
 class AddImageButton(ui.Button["CardSettingsView"]):
-    def __init__(self, *, disabled: bool) -> None:
+    def __init__(self) -> None:
         super().__init__(
             label=LocaleStr(key="profile.add_image.button.label"),
             style=discord.ButtonStyle.green,
             emoji=ADD,
-            disabled=disabled,
             custom_id="profile_add_image",
         )
 
@@ -357,20 +352,42 @@ class ImageSettingsContainer(ui.Container):
             [discord.ui.MediaGallery(discord.MediaGalleryItem(preview_url))] if preview_url else []
         )
 
-        m3_art: list[ui.Section] = []
-        if game is Game.ZZZ:
-            m3_art.append(
-                ui.Section(
+        # Team cards have a single template that always supports custom images,
+        # so template switching is only shown for build card images
+        template_block: list[ui.TextDisplay | ui.ActionRow | discord.ui.Separator] = []
+        if image_type == "build_card_image":
+            template_block.extend(
+                (
                     ui.TextDisplay(
                         LocaleStr(
-                            custom_str="### {title}\n{desc}\n{empty}",
-                            title=LocaleStr(key="image_settings_use_m3_art"),
-                            desc=LocaleStr(key="image_settings_use_m3_art_desc"),
-                            empty=EMPTY_CHAR,
+                            custom_str="### {title}\n{desc}",
+                            title=LocaleStr(key="card_settings.template"),
+                            desc=self.template_status,
                         )
                     ),
-                    accessory=UseM3ArtButton(
-                        current=card_settings.use_m3_art, disabled=self.disable_m3_art
+                    ui.ActionRow(
+                        CardTemplateSelect(current_template=card_settings.template, game=game)
+                    ),
+                    discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+                )
+            )
+
+        m3_art: list[ui.Section | discord.ui.Separator] = []
+        if game is Game.ZZZ:
+            m3_art.extend(
+                (
+                    discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+                    ui.Section(
+                        ui.TextDisplay(
+                            LocaleStr(
+                                custom_str="### {title}\n{desc}",
+                                title=LocaleStr(key="image_settings_use_m3_art"),
+                                desc=LocaleStr(key="image_settings_use_m3_art_desc"),
+                            )
+                        ),
+                        accessory=UseM3ArtButton(
+                            current=card_settings.use_m3_art, disabled=self.disable_m3_art
+                        ),
                     ),
                 )
             )
@@ -386,16 +403,7 @@ class ImageSettingsContainer(ui.Container):
                 ),
                 accessory=discord.ui.Thumbnail(media=icon_url),
             ),
-            # Template
-            ui.TextDisplay(
-                LocaleStr(
-                    custom_str="### {title}\n{desc}",
-                    title=LocaleStr(key="card_settings.template"),
-                    desc=self.template_status,
-                )
-            ),
-            ui.ActionRow(CardTemplateSelect(current_template=card_settings.template, game=game)),
-            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            *template_block,
             # Current image
             ui.TextDisplay(
                 LocaleStr(
@@ -411,13 +419,12 @@ class ImageSettingsContainer(ui.Container):
                     current_image=current_image,
                     default_collection=default_collection,
                     custom_images=custom_images,
-                    disabled=self.disable_image,
                 )
             ),
             ui.ActionRow(
-                AddImageButton(disabled=self.disable_image),
+                AddImageButton(),
                 GenerateAIArtButton(disabled=self.disable_ai),
-                EditImageButton(disabled=self.disable_image or not is_custom),
+                EditImageButton(disabled=not is_custom),
                 RemoveImageButton(disabled=not is_custom),
             ),
             *m3_art,
@@ -426,19 +433,9 @@ class ImageSettingsContainer(ui.Container):
 
     @property
     def template_status(self) -> LocaleStr:
-        template_name = LocaleStr(
-            key=TEMPLATE_NAMES[get_template_name(self.card_settings.template)],
-            num=get_template_num(self.card_settings.template),
-        )
-        if self.image_type == "team_card_image":
-            return LocaleStr(key="image_settings_team_image_note")
         if self.disable_image:
-            return LocaleStr(
-                key="image_settings_template_not_supported",
-                template=template_name,
-                supported_label=LocaleStr(key="is_support_custom_image_desc"),
-            )
-        return LocaleStr(key="image_settings_template_supported", template=template_name)
+            return LocaleStr(key="image_settings_template_not_supported")
+        return LocaleStr(key="image_settings_template_supported")
 
     @property
     def disable_image(self) -> bool:
@@ -457,4 +454,4 @@ class ImageSettingsContainer(ui.Container):
 
     @property
     def disable_ai(self) -> bool:
-        return not CONFIG.novelai or self.game is Game.ZZZ or self.disable_image
+        return not CONFIG.novelai or self.game is Game.ZZZ

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import hb_data
 import szgf
 from discord import app_commands
 from discord.ext import commands
@@ -10,11 +9,14 @@ from loguru import logger
 
 from hoyo_buddy.commands.build import BuildCommand
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import locale_to_zenless_data_lang
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.enums import Game, Locale
-from hoyo_buddy.hoyo.clients import ambr, yatta
+from hoyo_buddy.hoyo.character_choices import (
+    get_gi_character_choices,
+    get_hsr_character_choices,
+    get_zzz_character_choices,
+)
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction
 
@@ -37,18 +39,20 @@ class Build(commands.GroupCog):
                 await client.download_guides()
             self.guides = await client.read_guides()
 
-    def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
+    async def _get_choices(self, locale: Locale, game: Game) -> list[app_commands.Choice[str]]:
         if game is Game.GENSHIN:
-            characters = self.bot.search_autofill[Game.GENSHIN][ambr.ItemCategory.CHARACTERS]
+            # The command passes the chosen value to AmbrAPI's character guide endpoint,
+            # which only knows per-element Traveler IDs (e.g. 10000005-anemo)
+            characters = await get_gi_character_choices(locale, ambr_traveler_ids=True)
         elif game is Game.STARRAIL:
-            characters = self.bot.search_autofill[Game.STARRAIL][yatta.ItemCategory.CHARACTERS]
+            characters = await get_hsr_character_choices(locale)
         else:
-            characters = {}
+            characters = []
 
         if not characters:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
-        return characters.get(locale, characters[Locale.american_english])
+        return characters
 
     @app_commands.command(
         name=app_commands.locale_str("genshin"), description=COMMANDS["build genshin"].description
@@ -73,7 +77,9 @@ class Build(commands.GroupCog):
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
         return [
-            c for c in self._get_choices(locale, Game.GENSHIN) if current.lower() in c.name.lower()
+            c
+            for c in await self._get_choices(locale, Game.GENSHIN)
+            if current.lower() in c.name.lower()
         ][:25]
 
     @app_commands.command(
@@ -98,17 +104,11 @@ class Build(commands.GroupCog):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
+        choices = await get_zzz_character_choices(locale)
 
-        async with hb_data.ZZZClient() as client:
-            characters = client.get_characters(
-                lang=hb_data.zzz.Language(locale_to_zenless_data_lang(locale))
-            )
-
-        return [
-            app_commands.Choice(name=c.name, value=str(c.id))
-            for c in characters
-            if current.lower() in c.name.lower() and str(c.id) in self.guides
-        ][:25]
+        return [c for c in choices if current.lower() in c.name.lower() and c.value in self.guides][
+            :25
+        ]
 
     @commands.is_owner()
     @commands.command(name="rguides")

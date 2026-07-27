@@ -478,6 +478,7 @@ class HoyoBuddy(commands.AutoShardedBot):
             enka.HSRClient() as enka_hsr,
             enka.ZZZClient() as enka_zzz,
             hb_data.GIClient() as gi_client,
+            hb_data.HSRClient() as hsr_client,
             hb_data.ZZZClient() as zzz_client,
         ):
             await asyncio.gather(
@@ -495,6 +496,7 @@ class HoyoBuddy(commands.AutoShardedBot):
                 translator.fetch_mi18n_files(),
                 # hb-data
                 gi_client.download(force=True),
+                hsr_client.download(force=True),
                 zzz_client.download(force=True),
             )
 

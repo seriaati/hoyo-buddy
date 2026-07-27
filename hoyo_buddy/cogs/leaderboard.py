@@ -14,13 +14,13 @@ from hoyo_buddy.constants import get_describe_kwargs, get_rename_kwargs, locale_
 from hoyo_buddy.db import HoyoAccount, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.enums import Game, LeaderboardType, Locale
+from hoyo_buddy.enums import Game, LeaderboardType
 from hoyo_buddy.exceptions import (
     AccountNotFoundError,
     LeaderboardNotFoundError,
     NoAccountFoundError,
 )
-from hoyo_buddy.hoyo.clients.ambr import ItemCategory
+from hoyo_buddy.hoyo.character_choices import get_gi_character_choices
 from hoyo_buddy.hoyo.transformers import HoyoAccountTransformer
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.types import Interaction, User
@@ -218,12 +218,11 @@ class LeaderboardCog(commands.GroupCog, name=app_commands.locale_str("lb")):
         self, i: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         locale = await get_locale(i)
-        characters = self.bot.search_autofill[Game.GENSHIN][ItemCategory.CHARACTERS]
+        choices = await get_gi_character_choices(locale)
 
-        if not characters:
+        if not choices:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
-        choices = characters.get(locale, characters[Locale.american_english])
         return [choice for choice in choices if current.lower() in choice.name.lower()][:25]
 
     @akasha_command.autocomplete("category_")

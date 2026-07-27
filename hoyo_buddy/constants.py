@@ -54,6 +54,18 @@ AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
 
 MANIKEN_IDS = {10000117, 10000118}
 
+# Non-playable UGC template avatars present in AvatarExcelConfigData with useType AVATAR_FORMAL
+GI_UGC_CHARACTER_IDS = {10000998, 10000999}
+
+TRAVELER_ELEMENTS = (
+    GenshinElement.ANEMO,
+    GenshinElement.GEO,
+    GenshinElement.ELECTRO,
+    GenshinElement.DENDRO,
+    GenshinElement.HYDRO,
+    GenshinElement.PYRO,
+)
+
 TRAILBLAZER_IDS = {
     8001,  # Destruction male
     8002,  # Destruction female
@@ -574,6 +586,24 @@ LOCALE_TO_STARRAIL_DATA_LANG: dict[Locale, str] = {
     Locale.vietnamese: "VI",
 }
 
+LOCALE_TO_GENSHIN_DATA_LANG: dict[Locale, str] = {
+    Locale.chinese: "CHS",
+    Locale.taiwan_chinese: "CHT",
+    Locale.german: "DE",
+    Locale.american_english: "EN",
+    Locale.spain_spanish: "ES",
+    Locale.french: "FR",
+    Locale.indonesian: "ID",
+    Locale.italian: "IT",
+    Locale.japanese: "JP",
+    Locale.korean: "KR",
+    Locale.brazil_portuguese: "PT",
+    Locale.russian: "RU",
+    Locale.thai: "TH",
+    Locale.turkish: "TR",
+    Locale.vietnamese: "VI",
+}
+
 ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY = {
     enka.zzz.StatType.CRIT_RATE_FLAT: genshin.models.ZZZPropertyType.CRIT_RATE,
     enka.zzz.StatType.CRIT_DMG_FLAT: genshin.models.ZZZPropertyType.CRIT_DMG,
@@ -673,6 +703,10 @@ LOCALE_TO_ZZZ_ENKA_LANG: Final[dict[Locale, enka.zzz.Language]] = {
 
 def locale_to_starrail_data_lang(locale: Locale) -> str:
     return LOCALE_TO_STARRAIL_DATA_LANG.get(locale, "EN")
+
+
+def locale_to_genshin_data_lang(locale: Locale) -> str:
+    return LOCALE_TO_GENSHIN_DATA_LANG.get(locale, "EN")
 
 
 HSR_ASSETS_URL = "https://static.nanoka.cc/assets/hsr"

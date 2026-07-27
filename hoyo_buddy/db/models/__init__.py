@@ -1,3 +1,4 @@
+from .auto_task_result import AutoTaskResult
 from .card_settings import CardSettings
 from .challenge_history import ChallengeHistory
 from .custom_image import CustomImage

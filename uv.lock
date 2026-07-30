@@ -2090,7 +2090,7 @@ wheels = [
 [[package]]
 name = "szgf"
 version = "0.1.5"
-source = { git = "https://github.com/seriaati/zzz-guides#d553d338e21e658d83e87f5b28a38e830e64c6e0" }
+source = { git = "https://github.com/seriaati/zzz-guides#dcf53318b3adc40d1229e9300cd7dd68ed872b29" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

@@ -733,7 +733,7 @@ speed = [
 [[package]]
 name = "enka"
 version = "2.5.20"
-source = { git = "https://github.com/seriaati/enka-py#79746dc112ae6d96c4953385c84f0e3601fe2fb4" }
+source = { git = "https://github.com/seriaati/enka-py#71a583a608ba66eac45a7a90b2e804a1b1bd63bd" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },
@@ -928,7 +928,7 @@ wheels = [
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#6bb316c6d0e3413381f03688140ff4002f894216" }
+source = { git = "https://github.com/seriaati/hb-data#64a6d82c7ec06f570688c6172fac067abfa77298" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

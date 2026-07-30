@@ -116,6 +116,7 @@ ZZZ_ELEMENT_EMOJIS: dict[ZZZElement, str] = {
     ZZZElement.ICE: "<:ICE:1261296218101907569>",
     ZZZElement.PHYSICAL: "<:PHYSICAL:1261296216126390273>",
     ZZZElement.WIND: "<:ZZZWind:1516661052501135360>",
+    ZZZElement.LUMIFLUX: "<:ZZZLumiflux:1532425890896674939>",
 }
 ZZZ_SPECIALTY_EMOJIS: dict[genshin.models.ZZZSpecialty, str] = {
     genshin.models.ZZZSpecialty.ANOMALY: "<:zzzProfessionNuclear:1263458200980689046>",

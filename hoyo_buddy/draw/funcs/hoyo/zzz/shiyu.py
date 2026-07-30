@@ -153,6 +153,7 @@ class ShiyuDefenseCard:
                 genshin.models.ZZZElementType.ICE: "Ice.png",
                 genshin.models.ZZZElementType.PHYSICAL: "Physical.png",
                 genshin.models.ZZZElementType.WIND: "Wind.png",
+                genshin.models.ZZZElementType.LUMIFLUX: "Lumiflux.png",
                 None: "None.png",
             }
             icon_start_pos = (tbox.right + 34, tbox.top + tbox.height // 2 - 50)

@@ -647,6 +647,7 @@ ZZZ_ENKA_ELEMENT_TO_ZZZ_ELEMENT_TYPE = {
     enka.zzz.Element.AURIC_ETHER: genshin.models.ZZZElementType.ETHER,  # Yi Xuan element
     enka.zzz.Element.ZHEN_ASSAULT: genshin.models.ZZZElementType.PHYSICAL,  # YSG element
     enka.zzz.Element.WIND: genshin.models.ZZZElementType.WIND,
+    enka.zzz.Element.LUMIFLUX: genshin.models.ZZZElementType.LUMIFLUX,
 }
 
 ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY = {

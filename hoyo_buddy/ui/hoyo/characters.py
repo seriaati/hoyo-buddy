@@ -678,7 +678,7 @@ class GIFilterSelector(Select[CharactersView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        self.view.filter = GIFilter(self.values[0])
+        self.view.filter = GIFilter(self.values[0]) if self.values else GIFilter.NONE
         await i.response.defer()
 
 

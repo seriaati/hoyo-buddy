@@ -421,9 +421,12 @@ class Search(commands.Cog):
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
-            choices = self.bot.beta_search_autofill[game].get(
-                locale, self.bot.beta_search_autofill[game][Locale.american_english]
-            )
+            beta_autofill = self.bot.beta_search_autofill.get(game)
+            if beta_autofill is None:
+                return self.bot.get_error_choice(
+                    LocaleStr(key="search_autocomplete_not_setup"), locale
+                )
+            choices = beta_autofill.get(locale, beta_autofill.get(Locale.american_english, []))
             if not choices:
                 return []
         else:

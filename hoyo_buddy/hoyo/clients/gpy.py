@@ -473,7 +473,9 @@ class GenshinClient(ProxyGenshinClient):
                         type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.sub_stat.type],
                         value=agent.w_engine.sub_stat.formatted_value,
                     )
-                ],
+                ]
+                if agent.w_engine.sub_stat is not None  # pyright: ignore[reportUnnecessaryComparison]
+                else [],
                 main_properties=[
                     models.ZZZStat(
                         name=agent.w_engine.main_stat.name,

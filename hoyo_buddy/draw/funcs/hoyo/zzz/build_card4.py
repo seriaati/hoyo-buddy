@@ -289,7 +289,7 @@ class ZZZAgentCard4:
             anchor="mm",
         )
 
-        stats = (engine.main_properties[0], engine.properties[0])
+        stats = (*engine.main_properties[:1], *engine.properties[:1])
         for i, stat in enumerate(stats):
             if isinstance(stat.type, PropType):
                 position = (2222, 636 + 79 * i)

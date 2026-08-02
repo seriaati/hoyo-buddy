@@ -30,9 +30,7 @@ from loguru import logger
 # Parse our own args before any hoyo_buddy imports, because hoyo_buddy.config uses
 # pydantic-settings with cli_parse_args=True which would hijack sys.argv.
 _parser = argparse.ArgumentParser(description="Generate a ZZZ build card")
-_parser.add_argument(
-    "--uid", type=int, default=10000827, help="ZZZ UID to fetch showcase for"
-)
+_parser.add_argument("--uid", type=int, default=10000827, help="ZZZ UID to fetch showcase for")
 _parser.add_argument(
     "--char-id",
     type=str,
@@ -45,14 +43,9 @@ _parser.add_argument(
     default=None,
     help="Outfit (skin) ID; uses {char_id}_{outfit_id} card data and outfit art (e.g. 3110911)",
 )
+_parser.add_argument("--image-url", type=str, default=None, help="Override the agent art image URL")
 _parser.add_argument(
-    "--image-url", type=str, default=None, help="Override the agent art image URL"
-)
-_parser.add_argument(
-    "--color",
-    type=str,
-    default=None,
-    help="Override the primary color hex (e.g. #95B84B)",
+    "--color", type=str, default=None, help="Override the primary color hex (e.g. #95B84B)"
 )
 _parser.add_argument(
     "--template",
@@ -62,10 +55,7 @@ _parser.add_argument(
     help="Template to generate; omit to generate all four",
 )
 _parser.add_argument(
-    "--use-m3-art",
-    action="store_true",
-    default=False,
-    help="Use M3 cinema art (template 2)",
+    "--use-m3-art", action="store_true", default=False, help="Use M3 cinema art (template 2)"
 )
 _args = _parser.parse_args()
 
@@ -111,9 +101,7 @@ def _resolve_image_url(
             skin = next((s for s in char.skins if s.id == outfit_id), None)
             if skin is not None:
                 return skin.image
-            print(
-                f"Warning: No skin data for outfit ID {outfit_id}, using default art."
-            )
+            print(f"Warning: No skin data for outfit ID {outfit_id}, using default art.")
         return char.image
     if template == 2:
         if char is None:
@@ -189,9 +177,7 @@ async def main() -> None:
     logger.enable("enka")
     logger.enable("hb_data")
     args = _args
-    templates: list[int] = (
-        [args.template] if args.template is not None else [1, 2, 3, 4]
-    )
+    templates: list[int] = [args.template] if args.template is not None else [1, 2, 3, 4]
 
     temp1_data: dict[str, dict] = await read_yaml(ZZZ_DATA_PATH)
     temp2_data: dict[str, dict] = await read_yaml(ZZZ_DATA2_PATH)
@@ -219,9 +205,7 @@ async def main() -> None:
     char_by_id = {char.id: char for char in characters}
     template_char = char_by_id.get(int(lookup_id))
     if template_char is not None:
-        name_data = AgentNameData(
-            short_name=template_char.name, full_name=template_char.full_name
-        )
+        name_data = AgentNameData(short_name=template_char.name, full_name=template_char.full_name)
     else:
         print(f"Warning: No character data for ID {lookup_id}, using base agent name.")
         name_data = AgentNameData(short_name=agent.name, full_name=agent.name)

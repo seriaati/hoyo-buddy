@@ -7,7 +7,7 @@ from loguru import logger
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import locale_to_hoyo_lang
-from hoyo_buddy.emojis import CHECK, CLOSE
+from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils.misc import is_valid_hex_color, shorten_preserving_newlines
 
@@ -261,7 +261,9 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         account: HoyoAccount,
         characters: Sequence[genshin.models.AccompanyCharacter],
         character: genshin.models.AccompanyCharacter,
-    ) -> tuple[ui.TextDisplay, discord.ui.Separator, ui.ActionRow]:
+    ) -> tuple[
+        ui.TextDisplay, discord.ui.Separator, ui.ActionRow, discord.ui.Separator, ui.Section
+    ]:
         current_character = next(
             (c for c in characters if c.info.role_id == account.accompany_role_id), None
         )
@@ -282,6 +284,19 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
                 SetAccompanyCharacterButton(
                     disabled=account.accompany_role_id == character.info.role_id
                 )
+            ),
+            discord.ui.Separator(spacing=discord.SeparatorSpacing.small, visible=False),
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="{emoji} {title}",
+                        emoji=FREE_CANCELLATION,
+                        title=LocaleStr(key="accompany_button_label"),
+                    )
+                ),
+                accessory=AutoAccompanyToggleButton(
+                    current=account.accompany_checkin, disabled=account.accompany_role_id is None
+                ),
             ),
         )
 
@@ -420,4 +435,12 @@ class SetAccompanyCharacterButton(ui.Button["AccompanyView"]):
         account.accompany_role_id = character.info.role_id
         account.accompany_topic_id = character.info.topic_id
         await account.save(update_fields=("accompany_role_id", "accompany_topic_id"))
+        await self.view.update(i)
+
+
+class AutoAccompanyToggleButton(ui.EmojiToggleButton["AccompanyView"]):
+    async def callback(self, i: Interaction) -> None:
+        account = self.view.account
+        account.accompany_checkin = not self.current
+        await account.save(update_fields=("accompany_checkin",))
         await self.view.update(i)

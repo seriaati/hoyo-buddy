@@ -9,7 +9,9 @@ from tortoise.exceptions import IntegrityError
 
 from hoyo_buddy.constants import AUTO_TASK_TOGGLE_FIELDS, NOTIF_SETTING_FIELDS
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
+from hoyo_buddy.utils import get_now
 
+from .auto_task_result import AutoTaskResult
 from .base import BaseModel
 from .hoyo_account import HoyoAccount
 from .notif_settings import AccountNotifSettings
@@ -31,6 +33,7 @@ class DiscordEmbed(BaseModel):
     )
     task_type: AutoTaskType = fields.CharField(max_length=20)
     type: Literal["default", "error"] = fields.CharField(max_length=7)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     user_id: int
     account_id: int
@@ -53,6 +56,17 @@ class DiscordEmbed(BaseModel):
         if toggle_field is None:
             logger.error(f"No toggle field found for task type: {task_type!r}")
             return
+
+        try:
+            await AutoTaskResult.record(
+                account_id=account_id, task_type=task_type, success=isinstance(embed, DefaultEmbed)
+            )
+        except IntegrityError:
+            # The account got deleted at the time this embed was created
+            return
+
+        if embed.timestamp is None:
+            embed.timestamp = get_now()
 
         if isinstance(embed, ErrorEmbed):
             await HoyoAccount.filter(id=account_id).update(**{toggle_field: False})

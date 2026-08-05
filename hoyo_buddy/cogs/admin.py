@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
@@ -11,19 +12,24 @@ from discord.ext import commands
 from tortoise import Tortoise
 from tortoise.functions import Count
 
-from hoyo_buddy.db import HoyoAccount, Settings, User
+from hoyo_buddy.constants import AUTO_TASK_TOGGLE_FIELDS, NOTIF_SETTING_FIELDS
+from hoyo_buddy.db import DiscordEmbed, HoyoAccount, Settings, User
 from hoyo_buddy.db.models.gacha_history import GachaHistory
 from hoyo_buddy.draw.card_data import CARD_DATA
+from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import get_game_emoji
+from hoyo_buddy.enums import Locale
+from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import translator
-from hoyo_buddy.utils import add_to_hoyo_codes
+from hoyo_buddy.utils import add_to_hoyo_codes, get_now
 
 if TYPE_CHECKING:
     from discord.ext.commands.context import Context
 
     from ..bot import HoyoBuddy
+    from ..types import AutoTaskType
     from .search import Search
 
 
@@ -117,6 +123,75 @@ class Admin(commands.Cog):
             ]
         )
         await ctx.send(msg)
+
+    @commands.command(name="test-notifs", aliases=["tn"])
+    async def test_notifs_command(
+        self,
+        ctx: commands.Context,
+        count: int = 3,
+        embed_type: Literal["default", "error"] = "default",
+        task_type: str = "checkin",
+        stale_hours: int = 0,
+    ) -> Any:
+        """Enqueue fake notification embeds for the invoker and run EmbedSender.
+
+        Usage: hb tn [count] [default|error] [task_type] [stale_hours]
+        """
+        if task_type not in NOTIF_SETTING_FIELDS:
+            await ctx.send(f"Invalid task type, must be one of: {', '.join(NOTIF_SETTING_FIELDS)}")
+            return
+        task_type = cast("AutoTaskType", task_type)
+
+        account = await HoyoAccount.filter(user_id=ctx.author.id, current=True).first()
+        account = account or await HoyoAccount.filter(user_id=ctx.author.id).first()
+        if account is None:
+            await ctx.send("You have no accounts.")
+            return
+
+        settings = await Settings.get(user_id=ctx.author.id)
+        locale = settings.locale or Locale.american_english
+        toggle_field = AUTO_TASK_TOGGLE_FIELDS[task_type]
+        toggle_value = getattr(account, toggle_field)
+
+        before = await DiscordEmbed.filter(user_id=ctx.author.id).count()
+        for n in range(1, count + 1):
+            embed_cls = DefaultEmbed if embed_type == "default" else ErrorEmbed
+            embed = embed_cls(
+                locale,
+                title=f"Test notification {n}/{count}",
+                description=f"{task_type=} {stale_hours=}",
+            )
+            embed.add_acc_info(account, blur=False)
+            await DiscordEmbed.create(
+                embed, user_id=ctx.author.id, account_id=account.id, task_type=task_type
+            )
+
+        if embed_type == "error":
+            # DiscordEmbed.create disables the toggle for error embeds, restore it
+            await HoyoAccount.filter(id=account.id).update(**{toggle_field: toggle_value})
+
+        after = await DiscordEmbed.filter(user_id=ctx.author.id).count()
+        enqueued = after - before
+
+        if stale_hours and enqueued:
+            ids = (
+                await DiscordEmbed.filter(user_id=ctx.author.id)
+                .order_by("-id")
+                .limit(enqueued)
+                .values_list("id", flat=True)
+            )
+            await DiscordEmbed.filter(id__in=list(ids)).update(
+                created_at=get_now() - datetime.timedelta(hours=stale_hours)
+            )
+
+        message = await ctx.send(
+            f"Enqueued {enqueued}/{count} embeds (notif settings may filter), running EmbedSender..."
+        )
+        await EmbedSender.execute(self.bot)
+        remaining = await DiscordEmbed.filter(user_id=ctx.author.id).count()
+        await message.edit(
+            content=f"Enqueued {enqueued}/{count} embeds, {remaining} remaining in queue after send."
+        )
 
     @commands.command(name="get-cookies", aliases=["gc"])
     async def get_cookies_command(self, ctx: commands.Context, account_id: int) -> Any:

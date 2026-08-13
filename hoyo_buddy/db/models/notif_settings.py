@@ -46,3 +46,5 @@ class AccountNotifSettings(BaseModel):
     account: fields.OneToOneRelation[HoyoAccount] = fields.OneToOneField(
         "models.HoyoAccount", related_name="notif_settings", pk=True
     )
+
+    account_id: int

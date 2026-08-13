@@ -155,12 +155,14 @@ class EmbedSender:
 
                 logger.info(f"Starting {cls.__name__} for {cnt} embeds")
 
+                failed_users: set[int] = set()
+
                 while True:
+                    query = DiscordEmbed.all()
+                    if failed_users:
+                        query = query.exclude(user_id__in=failed_users)
                     embeds = (
-                        await DiscordEmbed.all()
-                        .order_by("-type", "id")
-                        .limit(100)
-                        .prefetch_related("account")
+                        await query.order_by("-type", "id").limit(100).prefetch_related("account")
                     )
                     if not embeds:
                         logger.debug("No embeds to send for")
@@ -178,12 +180,10 @@ class EmbedSender:
                     for embed in embeds:
                         embeds_dict[embed.user_id].append(embed)
 
-                    deleted = 0
                     for user_id, user_embeds in embeds_dict.items():
-                        deleted += await cls._send_embeds(user_id, user_embeds, notif_settings)
-
-                    if deleted == 0:
-                        # Every send in this batch errored, break to avoid spinning on them
-                        break
+                        deleted = await cls._send_embeds(user_id, user_embeds, notif_settings)
+                        if deleted == 0:
+                            # Every send for this user errored, skip them to avoid spinning
+                            failed_users.add(user_id)
             except Exception as e:
                 bot.capture_exception(e)

@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 import discord
 from loguru import logger
+from seria.utils import shorten
 
 from hoyo_buddy.constants import AUTO_TASK_FEATURE_KEYS, NOTIF_SETTING_FIELDS
 from hoyo_buddy.db.models import AccountNotifSettings, DiscordEmbed, Settings
@@ -113,8 +114,9 @@ class EmbedSender:
                 locale = locale or await cls._get_locale(user_id)
                 content = cls._get_error_content(embed.task_type, locale, embed.account)
                 if content is not None:
-                    dc_embed.description = (
-                        f"{dc_embed.description}\n\n{content}" if dc_embed.description else content
+                    dc_embed.description = shorten(
+                        f"{dc_embed.description}\n\n{content}" if dc_embed.description else content,
+                        4096,
                     )
 
             to_send.append((embed, dc_embed))

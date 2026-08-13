@@ -61,13 +61,11 @@ class EmbedSender:
         return Locale(settings.lang) if settings.lang else None
 
     @classmethod
-    async def _is_notify_enabled(cls, embed: DiscordEmbed) -> bool:
+    def _is_notify_enabled(
+        cls, embed: DiscordEmbed, notif_settings: AccountNotifSettings | None
+    ) -> bool:
         notif_fields = NOTIF_SETTING_FIELDS.get(embed.task_type, ())
-        if len(notif_fields) < 2:
-            return True
-
-        notif_settings = await AccountNotifSettings.get_or_none(account_id=embed.account_id)
-        if notif_settings is None:
+        if len(notif_fields) < 2 or notif_settings is None:
             return True
 
         field = notif_fields[0] if embed.type == "default" else notif_fields[1]
@@ -98,14 +96,19 @@ class EmbedSender:
         return chunks
 
     @classmethod
-    async def _send_embeds(cls, user_id: int, embeds: list[DiscordEmbed]) -> int:
+    async def _send_embeds(
+        cls,
+        user_id: int,
+        embeds: list[DiscordEmbed],
+        notif_settings: dict[int, AccountNotifSettings],
+    ) -> int:
         """Send queued embeds to a user in batches, returns the number of deleted rows."""
         deleted = 0
         to_send: list[tuple[DiscordEmbed, discord.Embed]] = []
         locale: Locale | None = None
 
         for embed in embeds:
-            if not await cls._is_notify_enabled(embed):
+            if not cls._is_notify_enabled(embed, notif_settings.get(embed.account_id)):
                 deleted += await DiscordEmbed.filter(id=embed.id).delete()
                 continue
 
@@ -163,6 +166,13 @@ class EmbedSender:
                         logger.debug("No embeds to send for")
                         break
 
+                    notif_settings = {
+                        settings.account_id: settings
+                        for settings in await AccountNotifSettings.filter(
+                            account_id__in={embed.account_id for embed in embeds}
+                        )
+                    }
+
                     # Organize embeds into a dictionary with user_id as key
                     embeds_dict: defaultdict[int, list[DiscordEmbed]] = defaultdict(list)
                     for embed in embeds:
@@ -170,7 +180,7 @@ class EmbedSender:
 
                     deleted = 0
                     for user_id, user_embeds in embeds_dict.items():
-                        deleted += await cls._send_embeds(user_id, user_embeds)
+                        deleted += await cls._send_embeds(user_id, user_embeds, notif_settings)
 
                     if deleted == 0:
                         # Every send in this batch errored, break to avoid spinning on them

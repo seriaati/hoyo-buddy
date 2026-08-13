@@ -885,3 +885,4 @@ image_settings_modifying_for_desc: "Images are unique for each character and are
 image_settings_template_supported: "The current template supports custom images."
 image_settings_template_not_supported: "The current template doesn't support custom images, so the image you select below won't be applied."
 image_settings_use_m3_art_desc: "Use the agent's Mindscape 3 cinema art as the card image, only supported by Hoyo Buddy template 2."
+lumiflux: Lumiflux

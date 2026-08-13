@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
@@ -532,7 +533,10 @@ class ChallengeView(View):
         await item.unset_loading_state(i, embed=embed, attachments=[file_])
 
     async def fetch_data_and_update_ui(self) -> None:
-        await self._fetch_data()
+        # No data for the current phase, but previous phases may still be
+        # available in ChallengeHistory
+        with contextlib.suppress(NoChallengeDataError):
+            await self._fetch_data()
 
         histories = await ChallengeHistory.filter(
             uid=self.account.uid, challenge_type=self.challenge_type

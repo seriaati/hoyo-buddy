@@ -1,7 +1,7 @@
 """Generate a ZZZ build card for any agent using enka data as the base.
 
 Usage:
-    uv run scripts/gen_zzz_build_card.py [--uid UID] [--char-id CHAR_ID] \
+    uv run scripts/gen_zzz_build_card.py [--uid UID] [--char-id CHAR_ID] [--outfit-id OUTFIT_ID] \
         [--image-url URL] [--color HEX] [--template {1,2,3,4}] [--use-m3-art]
 
 The script fetches showcase data for a ZZZ UID via enka, picks the first agent, then
@@ -36,6 +36,12 @@ _parser.add_argument(
     type=str,
     default=None,
     help="Override agent ID for template/image/color lookup (e.g. 1091)",
+)
+_parser.add_argument(
+    "--outfit-id",
+    type=int,
+    default=None,
+    help="Outfit (skin) ID; uses {char_id}_{outfit_id} card data and outfit art (e.g. 3110911)",
 )
 _parser.add_argument("--image-url", type=str, default=None, help="Override the agent art image URL")
 _parser.add_argument(
@@ -81,6 +87,7 @@ def _resolve_image_url(
     template: int,
     *,
     lookup_id: str,
+    outfit_id: int | None,
     char: hb_data.zzz.models.Character | None,
     override: str | None,
     use_m3_art: bool,
@@ -88,15 +95,29 @@ def _resolve_image_url(
     if override is not None:
         return override
     if template == 1:
-        return char.image if char is not None else ""
+        if char is None:
+            return ""
+        if outfit_id is not None:
+            skin = next((s for s in char.skins if s.id == outfit_id), None)
+            if skin is not None:
+                return skin.image
+            print(f"Warning: No skin data for outfit ID {outfit_id}, using default art.")
+        return char.image
     if template == 2:
         if char is None:
             return ""
         return char.phase_2_cinema_art if use_m3_art else char.phase_3_cinema_art
     # 3, 4: banner / vertical-painting art (or curated override)
+    painting_id = lookup_id if outfit_id is None else f"{lookup_id}_{outfit_id}"
     return ZZZ_TEAM_IMAGE_OVERRIDES.get(
-        lookup_id,
-        str(ZZZ_V2_GAME_RECORD / f"role_vertical_painting/role_vertical_painting_{lookup_id}.png"),
+        painting_id,
+        ZZZ_TEAM_IMAGE_OVERRIDES.get(
+            lookup_id,
+            str(
+                ZZZ_V2_GAME_RECORD
+                / f"role_vertical_painting/role_vertical_painting_{painting_id}.png"
+            ),
+        ),
     )
 
 
@@ -154,6 +175,7 @@ def _build_card(
 
 async def main() -> None:
     logger.enable("enka")
+    logger.enable("hb_data")
     args = _args
     templates: list[int] = [args.template] if args.template is not None else [1, 2, 3, 4]
 
@@ -171,7 +193,8 @@ async def main() -> None:
     print(f"Using base agent: {agent.name} (ID: {agent.id})")
 
     lookup_id = args.char_id or str(agent.id)
-    print(f"Template lookup ID: {lookup_id}")
+    data_key = lookup_id if args.outfit_id is None else f"{lookup_id}_{args.outfit_id}"
+    print(f"Template lookup ID: {lookup_id} | card data key: {data_key}")
 
     # Fetch name data and disc icons directly from hb_data (the bot reads these from its DB
     # cache, which this standalone script doesn't have).
@@ -198,10 +221,10 @@ async def main() -> None:
     async with aiohttp.ClientSession() as session:
         for template in templates:
             if template == 2:
-                temp2 = temp2_data.get(lookup_id)
-                temp1 = temp1_data.get(lookup_id)
+                temp2 = temp2_data.get(data_key)
+                temp1 = temp1_data.get(data_key)
                 if temp2 is None:
-                    print(f"Skipping template 2: no temp2 data for ID {lookup_id}.")
+                    print(f"Skipping template 2: no temp2 data for key {data_key}.")
                     continue
                 card_data: ZZZTemp1CardData = ZZZTemp2CardData.model_validate(temp2)
                 if card_data.color is None and temp1 is not None:
@@ -209,15 +232,16 @@ async def main() -> None:
                         update={"color": ZZZTemp1CardData.model_validate(temp1).color}
                     )
             else:
-                temp1 = temp1_data.get(lookup_id)
+                temp1 = temp1_data.get(data_key)
                 if temp1 is None:
-                    print(f"Skipping template {template}: no data for ID {lookup_id}.")
+                    print(f"Skipping template {template}: no data for key {data_key}.")
                     continue
                 card_data = ZZZTemp1CardData.model_validate(temp1)
 
             image_url = _resolve_image_url(
                 template,
                 lookup_id=lookup_id,
+                outfit_id=args.outfit_id,
                 char=template_char,
                 override=args.image_url,
                 use_m3_art=args.use_m3_art,

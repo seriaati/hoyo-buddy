@@ -10,6 +10,7 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from io import BytesIO
 
     import genshin
@@ -51,19 +52,23 @@ class SpiralAbyssCard:
             LocaleStr(key="abyss.damage"), size=82, style="bold", position=(193, 295), anchor="lm"
         )
 
-        try:
-            damage_info: tuple[tuple[str, genshin.models.AbyssRankCharacter], ...] = (
-                ("max_rout_count", self._data.ranks.most_kills[0]),
-                ("powerful_attack", self._data.ranks.strongest_strike[0]),
-                ("max_take_damage", self._data.ranks.most_damage_taken[0]),
-                ("element_break_count", self._data.ranks.most_bursts_used[0]),
-                ("element_skill_use_count", self._data.ranks.most_skills_used[0]),
-            )
-        except IndexError:
+        ranks = self._data.ranks
+        rank_lists: tuple[tuple[str, Sequence[genshin.models.AbyssRankCharacter]], ...] = (
+            ("max_rout_count", ranks.most_kills),
+            ("powerful_attack", ranks.strongest_strike),
+            ("max_take_damage", ranks.most_damage_taken),
+            ("element_break_count", ranks.most_bursts_used),
+            ("element_skill_use_count", ranks.most_skills_used),
+        )
+        damage_info = [(key, rank[0]) for key, rank in rank_lists if rank]
+        if not damage_info:
             return
 
+        y_start, y_end = 410, 830
+        spacing = (y_end - y_start) / (len(damage_info) - 1) if len(damage_info) > 1 else 0
+
         for i, (key, character) in enumerate(damage_info):
-            position = (193, 381 + 108 * i)
+            position = (193, y_start + round(spacing * i))
             icon = self.drawer.open_static(self._character_icons[str(character.id)])
             icon = self.drawer.circular_crop(self.drawer.resize_crop(icon, (95, 88)))
             self.im.alpha_composite(icon, position)

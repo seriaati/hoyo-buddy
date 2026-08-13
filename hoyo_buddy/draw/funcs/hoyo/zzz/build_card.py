@@ -291,7 +291,7 @@ class ZZZAgentCard:
             bottom = name_tbox[3]
 
             # Engine stats
-            stats = (engine.main_properties[0], engine.properties[0])
+            stats = (*engine.main_properties[:1], *engine.properties[:1])
             stat_positions = {0: (74, bottom + 40), 1: (74, bottom + 40 + 60)}
             for i, stat in enumerate(stats):
                 if isinstance(stat.type, PropType):

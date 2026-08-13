@@ -151,6 +151,7 @@ class ZZZElement(StrEnum):
     PHYSICAL = "Physical"
     ELECTRIC = "Electric"
     WIND = "Wind"
+    LUMIFLUX = "Lumiflux"
 
 
 class BetaItemCategory(StrEnum):

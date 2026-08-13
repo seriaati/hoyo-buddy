@@ -281,7 +281,7 @@ class ZZZTeamCard:
             locale=Locale(self._locale),
         )
 
-        stats = (engine.main_properties[0], engine.properties[0])
+        stats = (*engine.main_properties[:1], *engine.properties[:1])
         start_pos = (621, 100)
         y_diff = 35
         for stat in stats:

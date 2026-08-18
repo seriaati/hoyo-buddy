@@ -825,7 +825,7 @@ async def draw_assault_card(
     draw_input: DrawInput, data: genshin.models.DeadlyAssault, uid: int | None = None
 ) -> File:
     urls: list[str] = []
-    for challenge in data.challenges:
+    for challenge in (*data.challenges, *data.hard_challenges):
         urls.extend((challenge.boss.icon, challenge.boss.badge_icon))
         urls.extend(buff.icon for buff in challenge.buffs)
         urls.extend(agent.icon for agent in challenge.agents)

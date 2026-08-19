@@ -75,6 +75,8 @@ class HoyoAccount(BaseModel):
     # Misc
     current = fields.BooleanField(default=False)
     redeemed_codes: fields.Field[list[str]] = fields.JSONField(default=[])
+    gacha_cursors: fields.Field[dict[str, int]] = fields.JSONField(default=dict)
+    """Newest gacha record ID fetched from the API per banner type, for incremental imports."""
     mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
 
     class Meta:

@@ -17,6 +17,10 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, TextInput, URLButtonView, View
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+    from genshin.paginators import Paginator
+
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
@@ -27,6 +31,31 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
 IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
+
+
+async def _fetch_new_records[RecordT: genshin.models.Unique](
+    make_paginator: Callable[[int], Paginator[RecordT]],
+    banner_types: Iterable[int],
+    cursors: dict[str, int],
+) -> list[RecordT]:
+    """Fetch records newer than the per-banner cursors, updating `cursors` in place.
+
+    Each banner's paginator yields records newest-first, so iteration stops (and no
+    further API requests are made) once a record at or below the cursor is reached.
+    """
+    records: list[RecordT] = []
+
+    for banner_type in banner_types:
+        key = str(banner_type)
+        cutoff = cursors.get(key, 0)
+
+        async for record in make_paginator(banner_type):
+            if record.id <= cutoff:
+                break
+            cursors[key] = max(cursors.get(key, 0), record.id)
+            records.append(record)
+
+    return records
 
 
 def _zzz_signal_records(
@@ -147,13 +176,20 @@ class HoyolabImport(Button[GachaImportView]):
         await i.edit_original_response(embed=self.view.loading_embed, view=None)
 
         client = GenshinClient(self.account)
-        signals: list[genshin.models.SignalSearch] = [
-            signal async for signal in client.chronicle_signal_history(uid=self.account.uid)
-        ]
+        cursors = dict(self.account.gacha_cursors)
+        signals = await _fetch_new_records(
+            lambda b: client.chronicle_signal_history(b, uid=self.account.uid),
+            genshin.models.ZZZBannerType,
+            cursors,
+        )
         signals.sort(key=lambda x: x.id)
 
         before = await GachaHistory.get_wish_count(self.account)
         await GachaHistory.bulk_create(_zzz_signal_records(signals, self.account))
+
+        self.account.gacha_cursors = cursors
+        await self.account.save(update_fields=("gacha_cursors",))
+
         after = await GachaHistory.get_wish_count(self.account)
         await update_gacha_nums(i.client.pool, account=self.account)
 
@@ -209,12 +245,15 @@ class URLImport(Button[GachaImportView]):
         await i.edit_original_response(embed=self.view.loading_embed, view=None)
 
         records: list[GachaHistory] = []
+        cursors = dict(self.account.gacha_cursors)
         before = await GachaHistory.get_wish_count(self.account)
 
         if self.account.game is Game.GENSHIN:
-            wishes: list[genshin.models.Wish] = [
-                history async for history in client.wish_history(authkey=authkey)
-            ]
+            wishes = await _fetch_new_records(
+                lambda b: client.wish_history(b, authkey=authkey),
+                genshin.models.GenshinBannerType,
+                cursors,
+            )
             wishes.sort(key=lambda x: x.id)
 
             ambr = AmbrAPIClient(session=i.client.session)
@@ -242,9 +281,11 @@ class URLImport(Button[GachaImportView]):
                     )
                 )
 
-            mw_wishes: list[genshin.models.MWWish] = [
-                history async for history in client.mw_wish_history(authkey=authkey)
-            ]
+            mw_wishes = await _fetch_new_records(
+                lambda b: client.mw_wish_history(b, authkey=authkey),
+                (genshin.models.MWBannerType.STANDARD, genshin.models.MWBannerType.EVENT),
+                cursors,
+            )
             mw_wishes.sort(key=lambda x: x.id)
 
             for wish in mw_wishes:
@@ -268,9 +309,11 @@ class URLImport(Button[GachaImportView]):
                 )
 
         elif self.account.game is Game.STARRAIL:
-            warps: list[genshin.models.Warp] = [
-                history async for history in client.warp_history(authkey=authkey)
-            ]
+            warps = await _fetch_new_records(
+                lambda b: client.warp_history(b, authkey=authkey),
+                genshin.models.StarRailBannerType,
+                cursors,
+            )
             warps.sort(key=lambda x: x.id)
 
             for warp in warps:
@@ -290,9 +333,11 @@ class URLImport(Button[GachaImportView]):
                 )
 
         elif self.account.game is Game.ZZZ:
-            signals: list[genshin.models.SignalSearch] = [
-                history async for history in client.signal_history(authkey=authkey)
-            ]
+            signals = await _fetch_new_records(
+                lambda b: client.signal_history(b, authkey=authkey),
+                genshin.models.ZZZBannerType,
+                cursors,
+            )
             signals.sort(key=lambda x: x.id)
 
             for signal in signals:
@@ -303,6 +348,9 @@ class URLImport(Button[GachaImportView]):
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
         await GachaHistory.bulk_create(records)
+
+        self.account.gacha_cursors = cursors
+        await self.account.save(update_fields=("gacha_cursors",))
 
         after = await GachaHistory.get_wish_count(self.account)
         await update_gacha_nums(i.client.pool, account=self.account)

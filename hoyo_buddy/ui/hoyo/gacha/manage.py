@@ -80,6 +80,8 @@ class DeleteConfirmButton(Button[GachaLogManageView]):
 
     async def callback(self, i: Interaction) -> Any:
         await GachaHistory.filter(account=self.view.account).delete()
+        self.view.account.gacha_cursors = {}
+        await self.view.account.save(update_fields=("gacha_cursors",))
         embed = ErrorEmbed(
             self.view.locale,
             title=LocaleStr(key="gacha_log_delete_done_embed_title"),

@@ -588,6 +588,7 @@ gacha_import_loading_embed_title: Importing Gacha Logs
 gacha_import_pc_import_embed_desc: "Search and open Powershell with the start menu, then copy and paste the following code into it.\n This script is written by the Hoyo Buddy team and is safe to use."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
+gacha_import_hoyolab_button_label: Import from HoYoLAB
 gacha_import_pc_source_code: Source code
 gacha_import_loading_embed_description: "{loading_emoji} This can take a while, please be patient..."
 gacha_upload_invalid_file_error_title: Invalid file format

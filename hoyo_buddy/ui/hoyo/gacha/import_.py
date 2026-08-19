@@ -8,8 +8,8 @@ import genshin
 from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
 from hoyo_buddy.db import GachaHistory, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import LINK, LOADING
-from hoyo_buddy.enums import Game
+from hoyo_buddy.emojis import COOKIE, LINK, LOADING
+from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError, UIDMismatchError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
@@ -29,6 +29,24 @@ IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
 
 
+def _zzz_signal_records(
+    signals: list[genshin.models.SignalSearch], account: HoyoAccount
+) -> list[GachaHistory]:
+    return [
+        GachaHistory(
+            wish_id=signal.id,
+            rarity=signal.rarity,
+            time=signal.time,
+            banner_type=signal.banner_type,
+            item_id=signal.item_id,
+            account=account,
+            banner_id=None,
+            game=Game.ZZZ,
+        )
+        for signal in signals
+    ]
+
+
 class GachaImportView(View):
     def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
@@ -42,8 +60,33 @@ class GachaImportView(View):
             description=LocaleStr(key="gacha_import_embed_description"),
         ).add_acc_info(self.account)
 
+    @property
+    def loading_embed(self) -> DefaultEmbed:
+        return DefaultEmbed(
+            self.locale,
+            title=LocaleStr(key="gacha_import_loading_embed_title"),
+            description=LocaleStr(
+                key="gacha_import_loading_embed_description", loading_emoji=LOADING
+            ),
+        ).add_acc_info(self.account)
+
+    def success_embed(self, count: int) -> DefaultEmbed:
+        return DefaultEmbed(
+            self.locale,
+            title=LocaleStr(key="gacha_import_success_title"),
+            description=LocaleStr(key="gacha_import_success_message", count=count),
+        ).add_acc_info(self.account)
+
     async def start(self, i: Interaction) -> Any:
-        self.add_items((URLImport(self.account), PCButton(), IOSButton(), AndroidButton()))
+        items: list[Button[GachaImportView]] = [
+            URLImport(self.account),
+            PCButton(),
+            IOSButton(),
+            AndroidButton(),
+        ]
+        if self.account.game is Game.ZZZ and self.account.platform is Platform.HOYOLAB:
+            items.insert(0, HoyolabImport(self.account))
+        self.add_items(items)
         await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
 
@@ -87,6 +130,34 @@ class AndroidButton(Button[GachaImportView]):
 
     async def callback(self, i: Interaction) -> Any:
         await i.response.send_message(content=ANDROID_VIDEO_URL, ephemeral=True)
+
+
+class HoyolabImport(Button[GachaImportView]):
+    def __init__(self, account: HoyoAccount) -> None:
+        super().__init__(
+            label=LocaleStr(key="gacha_import_hoyolab_button_label"),
+            emoji=COOKIE,
+            style=discord.ButtonStyle.primary,
+            row=0,
+        )
+        self.account = account
+
+    async def callback(self, i: Interaction) -> Any:
+        await i.response.defer()
+        await i.edit_original_response(embed=self.view.loading_embed, view=None)
+
+        client = GenshinClient(self.account)
+        signals: list[genshin.models.SignalSearch] = [
+            signal async for signal in client.chronicle_signal_history(uid=self.account.uid)
+        ]
+        signals.sort(key=lambda x: x.id)
+
+        before = await GachaHistory.get_wish_count(self.account)
+        await GachaHistory.bulk_create(_zzz_signal_records(signals, self.account))
+        after = await GachaHistory.get_wish_count(self.account)
+        await update_gacha_nums(i.client.pool, account=self.account)
+
+        await i.edit_original_response(embed=self.view.success_embed(after - before))
 
 
 class EnterURLModal(Modal):
@@ -135,14 +206,7 @@ class URLImport(Button[GachaImportView]):
         if authkey is None:
             raise AuthkeyExtractError
 
-        embed = DefaultEmbed(
-            self.view.locale,
-            title=LocaleStr(key="gacha_import_loading_embed_title"),
-            description=LocaleStr(
-                key="gacha_import_loading_embed_description", loading_emoji=LOADING
-            ),
-        ).add_acc_info(self.account)
-        await i.edit_original_response(embed=embed, view=None)
+        await i.edit_original_response(embed=self.view.loading_embed, view=None)
 
         records: list[GachaHistory] = []
         before = await GachaHistory.get_wish_count(self.account)
@@ -234,18 +298,7 @@ class URLImport(Button[GachaImportView]):
             for signal in signals:
                 self._check_uid(signal)
 
-                records.append(
-                    GachaHistory(
-                        wish_id=signal.id,
-                        rarity=signal.rarity,
-                        time=signal.time,
-                        banner_type=signal.banner_type,
-                        item_id=signal.item_id,
-                        account=self.account,
-                        banner_id=None,
-                        game=Game.ZZZ,
-                    )
-                )
+            records.extend(_zzz_signal_records(signals, self.account))
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
@@ -254,9 +307,4 @@ class URLImport(Button[GachaImportView]):
         after = await GachaHistory.get_wish_count(self.account)
         await update_gacha_nums(i.client.pool, account=self.account)
 
-        embed = DefaultEmbed(
-            self.view.locale,
-            title=LocaleStr(key="gacha_import_success_title"),
-            description=LocaleStr(key="gacha_import_success_message", count=after - before),
-        ).add_acc_info(self.account)
-        await i.edit_original_response(embed=embed)
+        await i.edit_original_response(embed=self.view.success_embed(after - before))

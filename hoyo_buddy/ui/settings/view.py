@@ -187,7 +187,7 @@ class SettingsView(ui.LayoutView):
                 for acc in accounts:
                     if acc.notif_settings is None:  # pyright: ignore[reportUnnecessaryComparison]
                         await AccountNotifSettings.create(account=acc)
-                        await acc.fetch_related("notif_settings")  # pyright: ignore[reportGeneralTypeIssues]
+                        await acc.fetch_related("notif_settings")
 
             return {"account": account, "accounts": accounts}
 

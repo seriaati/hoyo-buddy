@@ -34,6 +34,20 @@ class MOCCard(HSRChallengeUIDMixin):
         self._season = season
         self._locale = locale
         self._uid = uid
+        self._starward = False
+
+    def _get_starward_string(self) -> str:
+        """Return localized name of 'Starward mode'."""
+        if self._data.starward_stars <= 0:
+            return ""
+        max_floor = self._data.max_floor  # Stormcleanse (XII)
+        floor_names = [floor.name for floor in self._data.floors]
+        for name in floor_names:
+            # Stormcleanse (XII)Starward Mode
+            if name.startswith(max_floor):
+                return name[len(max_floor) :]  # Starward Mode
+
+        return ""
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -66,7 +80,7 @@ class MOCCard(HSRChallengeUIDMixin):
                 stage=get_floor_difficulty(self._data.max_floor, self._season.name),
             ),
             size=25,
-            position=(303, 340),
+            position=(383 if self._starward else 303, 340),
             color=WHITE,
             locale=self._locale,
         )
@@ -75,10 +89,38 @@ class MOCCard(HSRChallengeUIDMixin):
         self._drawer.write(
             LocaleStr(key="moc_card_battles_fought", battles=self._data.total_battles),
             size=25,
-            position=(303, 374),
+            position=(383 if self._starward else 303, 374),
             color=WHITE,
             locale=self._locale,
         )
+
+    def _draw_starward_summary_star(self) -> None:
+        star = self._drawer.open_asset("starward_star.png")
+        self._im.paste(star, (282, 344), star)
+        self._drawer.draw.line(((360, 349), (360, 397)), fill=WHITE, width=3)
+
+    def _draw_starward_section(self, floor: StarRailFloor, col_x: int) -> None:
+        line = self._drawer.open_asset("line.png")
+        self._im.paste(line, (col_x - 40, 219))
+
+        star = self._drawer.open_asset("starward_star_small.png")
+        self._im.paste(star, (col_x - 115, 231), star)
+
+        self._drawer.write(
+            LocaleStr(key="moc_starward"),
+            size=44,
+            position=(col_x - 122, 260),
+            style="bold",
+            color=WHITE,
+            anchor="rm",
+            locale=self._locale,
+        )
+
+        avatars = floor.node_3.avatars if floor.node_3 is not None else []
+        for i in range(4):
+            chara = avatars[i] if i < len(avatars) else None
+            block = self._draw_block(chara)
+            self._im.paste(block, (col_x + i * 172, 199), block)
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
         block = Drawer.open_image("hoyo-buddy-assets/assets/moc/block.png")
@@ -131,7 +173,9 @@ class MOCCard(HSRChallengeUIDMixin):
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
         drawer = Drawer(ImageDraw.Draw(im), folder="moc", dark_mode=True)
 
-        stage_name = get_floor_difficulty(stage.name, self._season.name)
+        stage_name = get_floor_difficulty(stage.name, self._season.name).replace(
+            self._get_starward_string(), ""
+        )
         name_tbox = drawer.write(
             stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
         )
@@ -161,7 +205,7 @@ class MOCCard(HSRChallengeUIDMixin):
 
         star = drawer.open_asset("star.png")
         pos = (rightmost + padding + 37, 21)
-        for _ in range(stage.star_num):
+        for _ in range(stage.star_num - stage.starward_stars):
             im.paste(star, pos)
             pos = (pos[0] + 82, pos[1])
 
@@ -189,6 +233,11 @@ class MOCCard(HSRChallengeUIDMixin):
         floors.reverse()
         battled_floors = [f for f in floors if not f.is_quick_clear]
 
+        starward_floor = next((f for f in floors if f.node_3 is not None), None)
+        if self._data.starward_stars <= 0:
+            starward_floor = None
+        self._starward = starward_floor is not None
+
         is_square = False
         if len(battled_floors) == 4:
             filename = "moc_square.png"
@@ -210,6 +259,10 @@ class MOCCard(HSRChallengeUIDMixin):
         self._write_farthest_stage()
         self._write_battles_fought()
         self._write_uid()
+
+        if starward_floor is not None:
+            self._draw_starward_summary_star()
+            self._draw_starward_section(starward_floor, col_x=862 if is_square else 1641)
 
         pos = (83, 492)
         for i, stage in enumerate(floors):

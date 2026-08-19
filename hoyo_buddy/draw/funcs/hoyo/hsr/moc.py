@@ -114,6 +114,8 @@ class MOCCard(HSRChallengeUIDMixin):
             color=WHITE,
             anchor="rm",
             locale=self._locale,
+            max_width=col_x - 198,
+            dynamic_fontsize=True,
         )
 
         avatars = floor.node_3.avatars if floor.node_3 is not None else []

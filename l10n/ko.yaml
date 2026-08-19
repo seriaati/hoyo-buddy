@@ -255,6 +255,7 @@ moc_card_battles_fought: "전투 횟수: {battles}"
 moc_card_cycles_used: "사용한 사이클: {cycles}"
 moc_card_farthest_stage: "최대 도달 단계: {stage}"
 moc_quick_clear: 간편 클리어
+moc_starward: 스타라이즈 모드
 monday: 월요일
 mondstadt: 몬드
 nod_krai: 노드크라이

@@ -255,6 +255,7 @@ moc_card_battles_fought: "戰鬥次數: {battles}"
 moc_card_cycles_used: "使用輪次: {cycles}"
 moc_card_farthest_stage: "最高關卡: {stage}"
 moc_quick_clear: 快速通關
+moc_starward: 星啟模式
 monday: 星期一
 mondstadt: 蒙德
 nod_krai: 挪德卡萊

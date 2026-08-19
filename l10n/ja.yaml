@@ -253,6 +253,7 @@ moc_card_battles_fought: "戦闘回数：{battles}"
 moc_card_cycles_used: "消費ラウンド数：{cycles}"
 moc_card_farthest_stage: "到達ステージ：{stage}"
 moc_quick_clear: クイッククリア
+moc_starward: 星拓きモード
 monday: 月曜日
 mondstadt: モンド
 nod_krai: ナド・クライ

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_starward_string
 from hoyo_buddy.draw.mixins import HSRChallengeUIDMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
@@ -35,19 +36,6 @@ class MOCCard(HSRChallengeUIDMixin):
         self._locale = locale
         self._uid = uid
         self._starward = False
-
-    def _get_starward_string(self) -> str:
-        """Return localized name of 'Starward mode'."""
-        if self._data.starward_stars <= 0:
-            return ""
-        max_floor = self._data.max_floor  # Stormcleanse (XII)
-        floor_names = [floor.name for floor in self._data.floors]
-        for name in floor_names:
-            # Stormcleanse (XII)Starward Mode
-            if name.startswith(max_floor):
-                return name[len(max_floor) :]  # Starward Mode
-
-        return ""
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -176,7 +164,7 @@ class MOCCard(HSRChallengeUIDMixin):
         drawer = Drawer(ImageDraw.Draw(im), folder="moc", dark_mode=True)
 
         stage_name = get_floor_difficulty(stage.name, self._season.name).replace(
-            self._get_starward_string(), ""
+            get_starward_string(self._data), ""
         )
         name_tbox = drawer.write(
             stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale

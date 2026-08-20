@@ -11,7 +11,21 @@ from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
+    from genshin.models.starrail import StarRailChallenge, StarRailPureFiction
     from PIL import Image
+
+
+def get_starward_string(data: StarRailChallenge | StarRailPureFiction) -> str:
+    """Return localized name of 'Starward mode'."""
+    if data.starward_stars <= 0:
+        return ""
+    max_floor = data.max_floor  # Stormcleanse (XII)
+    for floor in data.floors:
+        # Stormcleanse (XII)Starward Mode
+        if floor.name.startswith(max_floor):
+            return floor.name[len(max_floor) :]  # Starward Mode
+
+    return ""
 
 
 @dataclass

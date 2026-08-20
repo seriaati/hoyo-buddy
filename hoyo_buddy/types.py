@@ -75,9 +75,6 @@ ItemCategory: TypeAlias = ambr.ItemCategory | yatta.ItemCategory
 AutocompleteChoices: TypeAlias = Mapping[
     Game, Mapping[ItemCategory, Mapping[Locale, list[discord.app_commands.Choice[str]]]]
 ]
-BetaAutocompleteChoices: TypeAlias = Mapping[
-    Game, Mapping[Locale, list[discord.app_commands.Choice[str]]]
-]
 Tasks: TypeAlias = defaultdict[
     Game, defaultdict[ItemCategory, dict[Locale, asyncio.Task[list[Any]]]]
 ]

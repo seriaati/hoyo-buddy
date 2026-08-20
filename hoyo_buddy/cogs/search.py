@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import NO_BETA_CONTENT_GUILDS, UTC_8
+from hoyo_buddy.constants import UTC_8
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.db.models.json_file import JSONFile
 from hoyo_buddy.dismissibles import show_anniversary_dismissible
@@ -18,7 +18,7 @@ from hoyo_buddy.utils import ephemeral
 from hoyo_buddy.utils.misc import get_now, handle_autocomplete_errors
 
 from ..emojis import PROJECT_AMBER
-from ..enums import BetaItemCategory, Game, Locale
+from ..enums import Game, Locale
 from ..exceptions import InvalidQueryError
 from ..hoyo.clients import ambr, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
@@ -43,7 +43,6 @@ class Search(commands.Cog):
             Game.GENSHIN: list(ambr.ItemCategory),
             Game.STARRAIL: list(yatta.ItemCategory),
         }
-        self._beta_id_to_category: dict[str, str] = {}
 
     async def cog_load(self) -> None:
         if not self.bot.config.search:
@@ -83,17 +82,6 @@ class Search(commands.Cog):
                     ]
         return new
 
-    def _serialize_beta_search_autofill(self) -> dict[str, Any]:
-        original = dict(self.bot.beta_search_autofill)
-        new: dict[str, Any] = {}
-        for game, locales in original.items():
-            new[game.value] = {}
-            for locale, choices in locales.items():
-                new[game.value][locale.value] = [
-                    {"name": choice.name, "value": choice.value} for choice in choices
-                ]
-        return new
-
     def _deserialize_search_autofill(
         self, data: dict[str, Any]
     ) -> dict[Game, dict[StrEnum, dict[Locale, list[app_commands.Choice[str]]]]]:
@@ -118,21 +106,6 @@ class Search(commands.Cog):
                     ]
         return new
 
-    def _deserialize_beta_search_autofill(
-        self, data: dict[str, Any]
-    ) -> dict[Game, dict[Locale, list[app_commands.Choice[str]]]]:
-        new: dict[Game, dict[Locale, list[app_commands.Choice[str]]]] = {}
-        for game_str, locales in data.items():
-            game = Game(game_str)
-            new[game] = {}
-            for locale_str, choices in locales.items():
-                locale = Locale(locale_str)
-                new[game][locale] = [
-                    app_commands.Choice[str](name=choice["name"], value=choice["value"])
-                    for choice in choices
-                ]
-        return new
-
     async def _load_search_autofill(self) -> None:
         data = await JSONFile.read("search_autofill.json")
         if not data:
@@ -140,10 +113,6 @@ class Search(commands.Cog):
 
         try:
             self.bot.search_autofill = self._deserialize_search_autofill(data["search_autofill"])  # pyright: ignore[reportAttributeAccessIssue]
-            self.bot.beta_search_autofill = self._deserialize_beta_search_autofill(
-                data["beta_search_autofill"]
-            )
-            self._beta_id_to_category = data.get("beta_id_to_category", {})
         except KeyError:
             pass
         except Exception as e:
@@ -158,8 +127,6 @@ class Search(commands.Cog):
             "search_autofill.json",
             {
                 "search_autofill": self._serialize_search_autofill(),
-                "beta_id_to_category": self._beta_id_to_category,
-                "beta_search_autofill": self._serialize_beta_search_autofill(),
                 "last_updated": get_now().isoformat(),
             },
         )
@@ -169,11 +136,7 @@ class Search(commands.Cog):
         start = self.bot.loop.time()
 
         try:
-            (
-                self.bot.search_autofill,
-                self._beta_id_to_category,
-                self.bot.beta_search_autofill,
-            ) = await AutocompleteSetup.start(self.bot.cache_session)
+            self.bot.search_autofill = await AutocompleteSetup.start(self.bot.cache_session)
         except Exception as e:
             logger.warning("Failed to set up search autocomplete choices")
             self.bot.capture_exception(e)
@@ -222,11 +185,9 @@ class Search(commands.Cog):
 
         locale = await get_locale(i)
 
-        category = self._beta_id_to_category.get(query, category_value)
-
         if game is Game.GENSHIN:
             try:
-                category = ambr.ItemCategory(category)
+                category = ambr.ItemCategory(category_value)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -343,7 +304,7 @@ class Search(commands.Cog):
 
         elif game is Game.STARRAIL:
             try:
-                category = yatta.ItemCategory(category)
+                category = yatta.ItemCategory(category_value)
             except ValueError as e:
                 raise InvalidQueryError from e
 
@@ -402,8 +363,6 @@ class Search(commands.Cog):
         if categories is None:
             return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
 
-        if i.guild is None or i.guild.id not in NO_BETA_CONTENT_GUILDS:
-            categories = [BetaItemCategory.UNRELEASED_CONTENT, *categories]
         return self.bot.get_enum_choices(categories, locale, current)
 
     @search_command.autocomplete("query")
@@ -420,35 +379,25 @@ class Search(commands.Cog):
         if not self.bot.search_autofill or game not in self.bot.search_autofill:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
-        if i.namespace.category == BetaItemCategory.UNRELEASED_CONTENT.value:
-            beta_autofill = self.bot.beta_search_autofill.get(game)
-            if beta_autofill is None:
-                return self.bot.get_error_choice(
-                    LocaleStr(key="search_autocomplete_not_setup"), locale
-                )
-            choices = beta_autofill.get(locale, beta_autofill.get(Locale.american_english, []))
-            if not choices:
-                return []
-        else:
-            try:
-                if game is Game.GENSHIN:
-                    category = ambr.ItemCategory(i.namespace.category)
-                elif game is Game.STARRAIL:
-                    category = yatta.ItemCategory(i.namespace.category)
-                else:
-                    return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
-            except ValueError:
-                return self.bot.get_error_choice(LocaleStr(key="invalid_category_selected"), locale)
+        try:
+            if game is Game.GENSHIN:
+                category = ambr.ItemCategory(i.namespace.category)
+            elif game is Game.STARRAIL:
+                category = yatta.ItemCategory(i.namespace.category)
+            else:
+                return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+        except ValueError:
+            return self.bot.get_error_choice(LocaleStr(key="invalid_category_selected"), locale)
 
-            # Special handling for spiral abyss
-            # if category is ambr.ItemCategory.SPIRAL_ABYSS:
-            #     return await AbyssEnemyView.get_autocomplete_choices()
+        # Special handling for spiral abyss
+        # if category is ambr.ItemCategory.SPIRAL_ABYSS:
+        #     return await AbyssEnemyView.get_autocomplete_choices()
 
-            choices = self.bot.search_autofill[game][category].get(
-                locale, self.bot.search_autofill[game][category][Locale.american_english]
-            )
-            if not choices:
-                return []
+        choices = self.bot.search_autofill[game][category].get(
+            locale, self.bot.search_autofill[game][category][Locale.american_english]
+        )
+        if not choices:
+            return []
 
         choices = [c for c in choices if current.lower() in c.name.lower()]
         if not choices:

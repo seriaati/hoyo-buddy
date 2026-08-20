@@ -999,10 +999,6 @@ POST_REPLIES = (
     "pretty informative!",
 )
 
-NO_BETA_CONTENT_GUILDS = {916725085019181056, 888984573403340860, 1084856284198752388}
-"""Discord servers that don't allow unreleased game content."""
-
-
 DOCS_URL = "https://docs.hb.seria.moe/{lang}/{page}"
 LOCALE_TO_DOCS_LANG = {
     Locale.taiwan_chinese: "zh-tw",

@@ -63,7 +63,7 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.config import Config
     from hoyo_buddy.enums import Locale, Platform
-    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, Interaction, User
+    from hoyo_buddy.types import AutocompleteChoices, Interaction, User
 
 __all__ = ("HoyoBuddy",)
 
@@ -137,7 +137,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         self.search_autofill: AutocompleteChoices = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))
         )
-        self.beta_search_autofill: BetaAutocompleteChoices = defaultdict(lambda: defaultdict(list))
 
         self.geetest_command_task: asyncio.Task | None = None
         self.farm_check_running: bool = False

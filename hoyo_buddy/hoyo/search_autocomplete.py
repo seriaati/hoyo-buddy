@@ -17,15 +17,11 @@ if TYPE_CHECKING:
 
     import aiohttp
 
-    from hoyo_buddy.types import AutocompleteChoices, BetaAutocompleteChoices, ItemCategory, Tasks
+    from hoyo_buddy.types import AutocompleteChoices, Tasks
 
 
 class AutocompleteSetup:
     _result: ClassVar[AutocompleteChoices]
-    _beta_result: ClassVar[BetaAutocompleteChoices]
-    _beta_id_to_category: ClassVar[dict[str, str]]
-    """Item ID to ItemCategory.value."""
-    _category_beta_ids: ClassVar[dict[tuple[Game, ItemCategory], list[str | int] | list[int]]]
     _tasks: ClassVar[Tasks]
 
     @classmethod
@@ -98,14 +94,9 @@ class AutocompleteSetup:
                 await sleep("search_autofill")
 
     @classmethod
-    async def start(
-        cls, session: aiohttp.ClientSession
-    ) -> tuple[AutocompleteChoices, dict[str, str], BetaAutocompleteChoices]:
+    async def start(cls, session: aiohttp.ClientSession) -> AutocompleteChoices:
         # Initialize variables
         cls._result = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
-        cls._beta_result = defaultdict(lambda: defaultdict(list))
-        cls._beta_id_to_category = {}
-        cls._category_beta_ids = {}
         cls._tasks = defaultdict(lambda: defaultdict(dict))
 
         creat_task_tasks = [
@@ -124,9 +115,6 @@ class AutocompleteSetup:
 
         for game, categories in cls._tasks.items():
             for category, locales in categories.items():
-                beta_ids = cls._category_beta_ids.get((game, category), [])
-                beta_ids = [str(i) for i in beta_ids]
-
                 for locale, task in locales.items():
                     items = task.result()
                     for item in items:
@@ -141,4 +129,4 @@ class AutocompleteSetup:
                             Choice(name=item.name, value=str(item.id))
                         )
 
-        return cls._result, cls._beta_id_to_category, cls._beta_result
+        return cls._result

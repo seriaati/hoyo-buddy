@@ -774,6 +774,7 @@ gi_mimo_start_desc: "Please set up the Traveling Mimo event on [HoYoLAB]({url}) 
 mimo_auto_draw_button_label: Auto prize draw
 mimo_auto_draw_desc: "Hoyo Buddy will draw prizes for you whenever possible; if auto buy and auto prize draw are both enabled, it will try to buy first and draw if there are not enough points to buy."
 mimo_auto_draw_embed_desc: "Hoyo Buddy drew the following items with {points} points.\nIf you see gift codes below, please redeem them manually with </redeem>."
+mimo_point_history_page_footer: "Page {page}"
 dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for HSR character cards, select it in card settings. It is recommended to use horizontal images for this template."
 bounty_commission.embed.description: Bounty commissions not completed yet
 ridu_points.embed.description: Ridu weekly tasks not completed yet

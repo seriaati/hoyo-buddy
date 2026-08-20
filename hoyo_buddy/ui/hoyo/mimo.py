@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 import genshin
 from discord import ButtonStyle
+from discord.utils import format_dt
 from seria.utils import create_bullet_list, shorten
 
 from hoyo_buddy import ui
@@ -12,10 +13,13 @@ from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME
 from hoyo_buddy.db.utils import get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
+    BOOK_MULTIPLE,
     INFO,
+    LEFT,
     MIMO_POINT_EMOJIS,
     PAYMENTS,
     REDEEM_GIFT,
+    RIGHT,
     SHOPPING_CART,
     TASK_LIST,
 )
@@ -31,6 +35,14 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
+
+
+POINT_HISTORY_PAGE_SIZE = 20
+POINT_TYPE_TAG_KEYS: dict[int | genshin.models.MimoPointType, str] = {
+    genshin.models.MimoPointType.MISSION: "point_detail_tag_task",
+    genshin.models.MimoPointType.PRIZE_DRAW: "point_detail_tag_draw",
+    genshin.models.MimoPointType.EXCHANGED: "point_detail_tag_exchange",
+}
 
 
 def is_valuable(reward: genshin.models.MimoLotteryReward | genshin.models.MimoShopItem) -> bool:
@@ -50,6 +62,8 @@ class MimoView(ui.View):
         self.dark_mode = dark_mode
         self.point_emoji = MIMO_POINT_EMOJIS.get(account.game, "")
         self.mimo_game: genshin.models.MimoGame = None  # pyright: ignore[reportAttributeAccessIssue]
+        self.point_history_operation = genshin.models.MimoPointOperation.INCOME
+        self.point_history_page = 1
 
     @property
     def game_id(self) -> int:
@@ -192,6 +206,54 @@ class MimoView(ui.View):
         )
         return embed.add_acc_info(self.account)
 
+    def get_point_history_embed(
+        self, records: Sequence[genshin.models.MimoPointRecord]
+    ) -> DefaultEmbed:
+        embed = DefaultEmbed(
+            self.locale, title=LocaleStr(key="pc_modal_title_point", mi18n_game="mimo")
+        )
+        if records:
+            lines: list[str] = []
+            for record in records:
+                tag_key = POINT_TYPE_TAG_KEYS.get(record.point_type)
+                tag = (
+                    f"{LocaleStr(key=tag_key, mi18n_game='mimo').translate(self.locale)} "
+                    if tag_key is not None
+                    else ""
+                )
+                sign = "+" if record.operation is genshin.models.MimoPointOperation.INCOME else "-"
+                lines.append(
+                    f"{format_dt(record.created_at, 'd')} {tag}"
+                    f"{shorten(record.description, 100)} {sign}{record.point} {self.point_emoji}"
+                )
+            embed.description = create_bullet_list(lines)
+        else:
+            embed.description = LocaleStr(key="point_detail_no_data", mi18n_game="mimo").translate(
+                self.locale
+            )
+
+        embed.set_footer(
+            text=LocaleStr(key="mimo_point_history_page_footer", page=self.point_history_page)
+        )
+        return embed.add_acc_info(self.account)
+
+    async def update_point_history(self, i: Interaction) -> None:
+        records = await self.client.get_mimo_point_history(
+            self.point_history_operation,
+            page=self.point_history_page,
+            page_size=POINT_HISTORY_PAGE_SIZE,
+            game_id=self.game_id,
+            version_id=self.version_id,
+        )
+
+        prev_button: PointHistoryPrevButton = self.get_item("mimo_point_history_prev")
+        next_button: PointHistoryNextButton = self.get_item("mimo_point_history_next")
+        prev_button.disabled = self.point_history_page == 1
+        next_button.disabled = len(records) < POINT_HISTORY_PAGE_SIZE
+
+        embed = self.get_point_history_embed(records)
+        await i.edit_original_response(embed=embed, view=self)
+
     async def start(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=ephemeral(i))
 
@@ -210,6 +272,7 @@ class MimoView(ui.View):
         self.add_item(TaskButton())
         self.add_item(ViewShopButton())
         self.add_item(LotteryInfoButton())
+        self.add_item(PointHistoryButton())
         self.add_item(InfoButton())
 
         embed = await self.get_tasks_embed(points=points)
@@ -475,3 +538,85 @@ class LotteryInfoButton(ui.Button[MimoView]):
             LotteryDrawButton(disabled=lottery_info.current_count >= lottery_info.limit_count)
         )
         await i.edit_original_response(embed=embed, view=view)
+
+
+class PointHistoryButton(ui.Button[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="pc_modal_title_point", mi18n_game="mimo"),
+            row=1,
+            emoji=BOOK_MULTIPLE,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+
+        view = self.view
+        view.point_history_operation = genshin.models.MimoPointOperation.INCOME
+        view.point_history_page = 1
+
+        go_back_button = GoBackButton(view.children)
+        view.clear_items()
+        view.add_item(PointHistoryOperationSelector())
+        view.add_item(PointHistoryPrevButton())
+        view.add_item(PointHistoryNextButton())
+        view.add_item(go_back_button)
+
+        await view.update_point_history(i)
+
+
+class PointHistoryOperationSelector(ui.Select[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            options=[
+                ui.SelectOption(
+                    label=LocaleStr(key="point_detail_got", mi18n_game="mimo"),
+                    value=str(genshin.models.MimoPointOperation.INCOME.value),
+                    default=True,
+                ),
+                ui.SelectOption(
+                    label=LocaleStr(key="point_detail_used", mi18n_game="mimo"),
+                    value=str(genshin.models.MimoPointOperation.EXPENSE.value),
+                ),
+            ]
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+
+        view = self.view
+        view.point_history_operation = genshin.models.MimoPointOperation(int(self.values[0]))
+        view.point_history_page = 1
+        self.update_options_defaults()
+
+        await view.update_point_history(i)
+
+
+class PointHistoryPrevButton(ui.Button[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            emoji=LEFT,
+            style=ButtonStyle.blurple,
+            custom_id="mimo_point_history_prev",
+            disabled=True,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+        self.view.point_history_page = max(self.view.point_history_page - 1, 1)
+        await self.view.update_point_history(i)
+
+
+class PointHistoryNextButton(ui.Button[MimoView]):
+    def __init__(self) -> None:
+        super().__init__(
+            emoji=RIGHT,
+            style=ButtonStyle.blurple,
+            custom_id="mimo_point_history_next",
+            disabled=True,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+        self.view.point_history_page += 1
+        await self.view.update_point_history(i)

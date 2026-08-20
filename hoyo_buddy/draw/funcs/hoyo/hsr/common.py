@@ -17,8 +17,6 @@ if TYPE_CHECKING:
 
 def get_starward_string(data: StarRailChallenge | StarRailPureFiction | StarRailAPCShadow) -> str:
     """Return localized name of 'Starward mode'."""
-    if data.starward_stars <= 0:
-        return ""
     max_floor = data.max_floor  # Stormcleanse (XII)
     for floor in data.floors:
         # Stormcleanse (XII)Starward Mode

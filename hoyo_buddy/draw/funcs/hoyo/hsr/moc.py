@@ -224,9 +224,7 @@ class MOCCard(HSRChallengeUIDMixin):
         battled_floors = [f for f in floors if not f.is_quick_clear]
 
         starward_floor = next((f for f in floors if f.node_3 is not None), None)
-        if self._data.starward_stars <= 0:
-            starward_floor = None
-        self._starward = starward_floor is not None
+        self._starward = self._data.starward_stars > 0
 
         is_square = False
         if len(battled_floors) == 4:
@@ -250,8 +248,9 @@ class MOCCard(HSRChallengeUIDMixin):
         self._write_battles_fought()
         self._write_uid()
 
-        if starward_floor is not None:
+        if self._starward:
             self._draw_starward_summary_star()
+        if starward_floor is not None:
             self._draw_starward_section(starward_floor, col_x=862 if is_square else 1641)
 
         pos = (83, 492)

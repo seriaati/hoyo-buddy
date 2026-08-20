@@ -244,9 +244,7 @@ class PureFictionCard(HSRChallengeUIDMixin):
         stages.reverse()
 
         starward_floor = next((f for f in self._data.floors if f.node_3 is not None), None)
-        if self._data.starward_stars <= 0:
-            starward_floor = None
-        self._starward = starward_floor is not None
+        self._starward = self._data.starward_stars > 0
 
         filename = "pf_short.png" if len(stages) <= 2 else "pf.png"
         self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/pf/{filename}")
@@ -259,8 +257,9 @@ class PureFictionCard(HSRChallengeUIDMixin):
         self._write_battles_fought()
         self._write_uid()
 
-        if starward_floor is not None:
+        if self._starward:
             self._draw_starward_summary_star()
+        if starward_floor is not None:
             self._draw_starward_section(starward_floor)
 
         pos = (83, 482)

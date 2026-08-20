@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_starward_string
 from hoyo_buddy.draw.mixins import HSRChallengeUIDMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
@@ -34,6 +35,7 @@ class APCShadowCard(HSRChallengeUIDMixin):
         self._season = season
         self._locale = locale
         self._uid = uid
+        self._starward = False
 
     def _write_title(self) -> None:
         self._drawer.write(
@@ -56,7 +58,7 @@ class APCShadowCard(HSRChallengeUIDMixin):
                 diff=get_floor_difficulty(self._data.max_floor, self._season.name),
             ),
             size=25,
-            position=(303, 340),
+            position=(383 if self._starward else 303, 340),
             locale=self._locale,
         )
 
@@ -64,9 +66,26 @@ class APCShadowCard(HSRChallengeUIDMixin):
         self._drawer.write(
             LocaleStr(key="apc_shadow.times_challenged", times=self._data.total_battles),
             size=25,
-            position=(303, 374),
+            position=(383 if self._starward else 303, 374),
             locale=self._locale,
         )
+
+    def _draw_starward_summary_star(self) -> None:
+        star = self._drawer.open_asset("starward_star.png")
+        self._im.paste(star, (282, 344), star)
+        self._drawer.draw.line(((360, 349), (360, 397)), fill=WHITE, width=3)
+
+    def _draw_starward_section(self, floor: APCShadowFloor) -> None:
+        star = self._drawer.open_asset("starward_star_small.png")
+        self._im.paste(star, (864, 219), star)
+
+        self._drawer.draw.line(((943, 221), (943, 272)), fill=WHITE, width=3)
+
+        avatars = floor.node_3.avatars if floor.node_3 is not None else []
+        for i in range(4):
+            chara = avatars[i] if i < len(avatars) else None
+            block = self._draw_block(chara)
+            self._im.paste(block, (967 + i * 138, 198), block)
 
     def _draw_block(self, chara: FloorCharacter | None = None) -> Image.Image:
         block = Drawer.open_image("hoyo-buddy-assets/assets/apc-shadow/block.png")
@@ -121,23 +140,28 @@ class APCShadowCard(HSRChallengeUIDMixin):
 
         node_1_score = stage.node_1.score if stage.node_1 is not None else 0
         node_2_score = stage.node_2.score if stage.node_2 is not None else 0
+        score_str = f"{node_1_score}+{node_2_score}"
+        if stage.node_3 is not None:
+            score_str += f"+{stage.node_3.score}"
 
-        stage_name = get_floor_difficulty(stage.name, self._season.name)
+        stage_name = get_floor_difficulty(stage.name, self._season.name).replace(
+            get_starward_string(self._data), ""
+        )
         name_tbox = drawer.write(
             stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
         )
         score_tbox = drawer.write(
             LocaleStr(
                 key="pf_card_total_score",
-                score=f"{node_1_score}+{node_2_score}={stage.score}"
-                if not stage.is_quick_clear
-                else 8000,
+                score=f"{score_str}={stage.score}" if not stage.is_quick_clear else 8000,
             ),
             size=25,
             position=(0, 60),
             color=WHITE,
             style="medium",
             locale=self._locale,
+            max_width=350,
+            dynamic_fontsize=True,
         )
 
         rightmost = max(name_tbox[2], score_tbox[2])
@@ -147,7 +171,7 @@ class APCShadowCard(HSRChallengeUIDMixin):
 
         star = drawer.open_asset("star.png")
         pos = (rightmost + padding + 37, 0)
-        for _ in range(stage.star_num):
+        for _ in range(stage.star_num - stage.starward_stars):
             im.paste(star, pos)
             pos = (pos[0] + 62, pos[1])
 
@@ -195,6 +219,9 @@ class APCShadowCard(HSRChallengeUIDMixin):
         stages = [f for f in self._data.floors if not f.is_quick_clear]
         stages.reverse()
 
+        starward_floor = next((f for f in self._data.floors if f.node_3 is not None), None)
+        self._starward = self._data.starward_stars > 0
+
         filename = "apc_shadow_short.png" if len(stages) <= 2 else "apc_shadow.png"
         self._im = Drawer.open_image(f"hoyo-buddy-assets/assets/apc-shadow/{filename}")
         self._drawer = Drawer(ImageDraw.Draw(self._im), folder="apc-shadow", dark_mode=True)
@@ -205,6 +232,11 @@ class APCShadowCard(HSRChallengeUIDMixin):
         self._write_farthest_stage()
         self._write_times_challenged()
         self._write_uid()
+
+        if self._starward:
+            self._draw_starward_summary_star()
+        if starward_floor is not None:
+            self._draw_starward_section(starward_floor)
 
         pos = (83, 482)
         for i, stage in enumerate(stages):

@@ -11,11 +11,11 @@ from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
-    from genshin.models.starrail import StarRailChallenge, StarRailPureFiction
+    from genshin.models.starrail import StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
     from PIL import Image
 
 
-def get_starward_string(data: StarRailChallenge | StarRailPureFiction) -> str:
+def get_starward_string(data: StarRailChallenge | StarRailPureFiction | StarRailAPCShadow) -> str:
     """Return localized name of 'Starward mode'."""
     if data.starward_stars <= 0:
         return ""

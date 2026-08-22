@@ -32,10 +32,8 @@ async def fetch_zzz_banners(session: aiohttp.ClientSession) -> list[ZZZBanner]:
     async with session.get(ZZZ_BANNER_URL) as resp:
         resp.raise_for_status()
         data = await resp.json()
-        return [
-            ZZZBanner(id=int(banner_id), **banner)
-            for banner_id, banner in data.get("data", {}).items()
-        ]
+        banners = data.get("data") or data.get("config", {}).get("banners", {})
+        return [ZZZBanner(id=int(banner_id), **banner) for banner_id, banner in banners.items()]
 
 
 async def get_standard_items(game: Game) -> set[int]:
@@ -63,8 +61,19 @@ async def fetch_gi_banners(session: aiohttp.ClientSession) -> list[GIBanner]:
     return [GIBanner(id=k, **v) for k, v in banners_dict.items()]
 
 
-def check_zzz_item_is_standard(item: GachaHistory, standard_items: set[int]) -> bool:
-    return item.item_id in standard_items
+def check_zzz_item_is_standard(
+    item: GachaHistory, zzz_banners: list[ZZZBanner], standard_items: set[int]
+) -> bool:
+    is_standard = item.item_id in standard_items
+    for banner in zzz_banners:
+        if item.item_id not in banner.five_stars:
+            continue
+        if item.banner_id is not None:
+            if item.banner_id == banner.id:
+                return False
+        elif banner.start_at <= item.time <= banner.end_at:
+            return False
+    return is_standard
 
 
 def check_hsr_item_is_standard(
@@ -126,6 +135,7 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
     gi_banners: list[GIBanner] = []
     item_names: dict[int, str] = {}
     hsr_banners: list[HSRBanner] = []
+    zzz_banners: list[ZZZBanner] = []
 
     async with aiohttp.ClientSession() as session:
         if account.game is Game.GENSHIN:
@@ -136,6 +146,11 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
             item_names = {int(k): v["name"] for k, v in gi_data.items()}
         elif account.game is Game.STARRAIL:
             hsr_banners = await fetch_hsr_banners(session)
+        elif account.game is Game.ZZZ:
+            try:
+                zzz_banners = await fetch_zzz_banners(session)
+            except aiohttp.ClientError as e:
+                logger.warning(f"Failed to fetch ZZZ banners: {e}")
 
     standard_items = await get_standard_items(account.game)
 
@@ -146,7 +161,7 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
         elif account.game is Game.STARRAIL:
             is_standard = check_hsr_item_is_standard(item, hsr_banners, standard_items)
         elif account.game is Game.ZZZ:
-            is_standard = check_zzz_item_is_standard(item, standard_items)
+            is_standard = check_zzz_item_is_standard(item, zzz_banners, standard_items)
         else:
             logger.error(f"Unknown game for checking is_standard: {account.game}")
             continue

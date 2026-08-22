@@ -8,7 +8,7 @@ import aiohttp
 import chompjs
 from loguru import logger
 
-from hoyo_buddy.constants import STANDARD_ITEMS
+from hoyo_buddy.constants import STANDARD_ITEMS_FILENAME
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
 from hoyo_buddy.enums import Game
 from hoyo_buddy.models.gacha import GIBanner, HSRBanner, ZZZBanner
@@ -38,6 +38,11 @@ async def fetch_zzz_banners(session: aiohttp.ClientSession) -> list[ZZZBanner]:
         ]
 
 
+async def get_standard_items(game: Game) -> set[int]:
+    data: dict[str, list[int]] = await JSONFile.read(STANDARD_ITEMS_FILENAME, default={})
+    return set(data.get(game.value, []))
+
+
 async def fetch_gi_banners(session: aiohttp.ClientSession) -> list[GIBanner]:
     async with session.get(GI_BANNER_URL) as resp:
         resp.raise_for_status()
@@ -58,12 +63,14 @@ async def fetch_gi_banners(session: aiohttp.ClientSession) -> list[GIBanner]:
     return [GIBanner(id=k, **v) for k, v in banners_dict.items()]
 
 
-def check_zzz_item_is_standard(item: GachaHistory) -> bool:
-    return item.item_id in STANDARD_ITEMS.get(Game.ZZZ, [])
+def check_zzz_item_is_standard(item: GachaHistory, standard_items: set[int]) -> bool:
+    return item.item_id in standard_items
 
 
-def check_hsr_item_is_standard(item: GachaHistory, hsr_banners: list[HSRBanner]) -> bool:
-    is_standard = item.item_id in STANDARD_ITEMS.get(Game.STARRAIL, [])
+def check_hsr_item_is_standard(
+    item: GachaHistory, hsr_banners: list[HSRBanner], standard_items: set[int]
+) -> bool:
+    is_standard = item.item_id in standard_items
     for banner in hsr_banners:
         if item.banner_id == banner.id and item.item_id in banner.five_stars:
             return False
@@ -71,9 +78,12 @@ def check_hsr_item_is_standard(item: GachaHistory, hsr_banners: list[HSRBanner])
 
 
 def check_gi_item_is_standard(
-    item: GachaHistory, gi_banners: list[GIBanner], item_names: dict[int, str]
+    item: GachaHistory,
+    gi_banners: list[GIBanner],
+    item_names: dict[int, str],
+    standard_items: set[int],
 ) -> bool:
-    is_standard = item.item_id in STANDARD_ITEMS.get(Game.GENSHIN, [])
+    is_standard = item.item_id in standard_items
 
     for banner in gi_banners:
         if banner.start_at <= item.time.replace(tzinfo=None) <= banner.end_at:
@@ -127,14 +137,16 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
         elif account.game is Game.STARRAIL:
             hsr_banners = await fetch_hsr_banners(session)
 
+    standard_items = await get_standard_items(account.game)
+
     is_standards: list[bool] = []
     for item in five_stars:
         if account.game is Game.GENSHIN:
-            is_standard = check_gi_item_is_standard(item, gi_banners, item_names)
+            is_standard = check_gi_item_is_standard(item, gi_banners, item_names, standard_items)
         elif account.game is Game.STARRAIL:
-            is_standard = check_hsr_item_is_standard(item, hsr_banners)
+            is_standard = check_hsr_item_is_standard(item, hsr_banners, standard_items)
         elif account.game is Game.ZZZ:
-            is_standard = check_zzz_item_is_standard(item)
+            is_standard = check_zzz_item_is_standard(item, standard_items)
         else:
             logger.error(f"Unknown game for checking is_standard: {account.game}")
             continue

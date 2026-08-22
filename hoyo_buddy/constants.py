@@ -741,65 +741,7 @@ BANNER_FIVE_STAR_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80, 102: 90, 103: 80},
 }
 
-STANDARD_ITEMS: Final[dict[Game, set[int]]] = {
-    Game.GENSHIN: {
-        # Characters
-        10000079,  # Dehya
-        10000016,  # Diluc
-        10000003,  # Jean
-        10000042,  # Keqing
-        10000041,  # Mona
-        10000035,  # Qiqi
-        10000069,  # Tighnari
-        # Weapons
-        15502,  # Amo's Bow
-        11501,  # Aquila Favonia
-        14502,  # Lost Prayer to the Sacred Winds
-        13505,  # Primordial Jade Winged-Spear
-        14501,  # Skyward Atlas
-        11502,  # Skyward Blade
-        15501,  # Skyward Harp
-        12501,  # Skyward Pride
-        13502,  # Skyward Spine
-        12502,  # Wolf's Gravestone
-    },
-    Game.STARRAIL: {
-        # Characters
-        1211,  # Bailu
-        1101,  # Bronya
-        1107,  # Clara
-        1104,  # Gepard
-        1003,  # Himeko
-        1004,  # Welt
-        1209,  # Yanqing
-        1205,  # Blade
-        1102,  # Seele
-        # Light Cones
-        23003,  # But the Battle Isn't Over
-        23004,  # In the Name of the World
-        23005,  # Moment of Victory
-        23000,  # Night on the Milky Way
-        23012,  # Sleep Like the Dead
-        23002,  # Something Irreplaceable
-        23013,  # Time Waits for No One
-    },
-    Game.ZZZ: {
-        # Agents
-        1181,  # Grace
-        1101,  # Koleda
-        1141,  # Lycaon
-        1021,  # Nekomata
-        1211,  # Rina
-        1041,  # Soldier 11
-        # W-Engines
-        14102,  # Steel Cushion
-        14110,  # Hellfire Gears
-        14114,  # The Restrained
-        14104,  # The Brimstone
-        14118,  # Fusion Compiler
-        14121,  # Weeping Cradle
-    },
-}
+STANDARD_ITEMS_FILENAME: Final[str] = "standard_items.json"
 
 CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {
     Game.GENSHIN: 90,
@@ -807,13 +749,6 @@ CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {
     Game.ZZZ: 60,
     Game.HONKAI: 80,
 }
-
-
-def is_standard_item(game: Game, item_id: int) -> bool:
-    if game not in STANDARD_ITEMS:
-        msg = f"Game {game} is missing from the standard items list."
-        raise ValueError(msg)
-    return item_id in STANDARD_ITEMS[game]
 
 
 # From https://www.prydwen.gg/zenless/guides/disk-drives-stats/

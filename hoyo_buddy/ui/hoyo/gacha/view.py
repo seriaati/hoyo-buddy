@@ -13,7 +13,6 @@ from hoyo_buddy.constants import (
     FRONTEND_URLS,
     MW_BANNER_TYPES,
     MW_EVENT_BANNER_TYPES,
-    STANDARD_ITEMS,
 )
 from hoyo_buddy.db import GachaHistory, GachaStats, get_dyk, get_last_gacha_num
 from hoyo_buddy.embeds import DefaultEmbed
@@ -23,7 +22,7 @@ from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES, LocaleStr
 from hoyo_buddy.ui import Button, Select, SelectOption, View
 from hoyo_buddy.utils import ephemeral
-from hoyo_buddy.utils.gacha import calculate_gacha_stats
+from hoyo_buddy.utils.gacha import calculate_gacha_stats, get_standard_items
 
 if TYPE_CHECKING:
     import asyncpg
@@ -116,7 +115,7 @@ class ViewGachaLogView(View):
         )
         if gacha is None:
             return False
-        return gacha.item_id in STANDARD_ITEMS[self.account.game]
+        return gacha.item_id in await get_standard_items(self.account.game)
 
     async def get_ranking_str(self, pool: asyncpg.Pool, *, stat: GlobalStat) -> str:
         rank, total = await get_ranking(

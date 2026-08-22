@@ -13,6 +13,7 @@ from hoyo_buddy.hoyo.auto_tasks.accompany_checkin import AccompanyCheckin
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
+from hoyo_buddy.hoyo.auto_tasks.update_standard_items import UpdateStandardItems
 from hoyo_buddy.utils import get_now
 
 if TYPE_CHECKING:
@@ -64,6 +65,14 @@ class Scheduler:
             "interval",
             minutes=INTERVAL_MIN,
             id="auto_tasks",
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            UpdateStandardItems.execute,
+            "interval",
+            hours=24,
+            id="update_standard_items",
+            args=[self.session],
             next_run_time=get_now(datetime.UTC),
         )
         if CONFIG.scheduler_heartbeat_url is not None:

@@ -12,6 +12,7 @@ from discord.ext import commands
 from tortoise import Tortoise
 from tortoise.functions import Count
 
+from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import AUTO_TASK_TOGGLE_FIELDS, NOTIF_SETTING_FIELDS
 from hoyo_buddy.db import DiscordEmbed, HoyoAccount, Settings, User
 from hoyo_buddy.db.models.gacha_history import GachaHistory
@@ -341,6 +342,14 @@ class Admin(commands.Cog):
     async def clear_cache_command(self, ctx: commands.Context) -> Any:
         await self.bot.cache_session.cache.clear()
         await ctx.send("Cache cleared.")
+
+    @commands.command(name="clear-image-cache", aliases=["cic"])
+    async def clear_image_cache_command(self, ctx: commands.Context) -> Any:
+        if image_cache is None:
+            await ctx.send("Image cache is not enabled.")
+            return
+        deleted = await asyncio.to_thread(image_cache.clear)
+        await ctx.send(f"Cleared {deleted} cached images.")
 
     @commands.command(name="download-guides", aliases=["dg"])
     async def download_guides_command(self, ctx: commands.Context) -> Any:

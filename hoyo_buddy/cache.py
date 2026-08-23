@@ -16,6 +16,7 @@ from redis.retry import Retry
 from hoyo_buddy.config import CONFIG
 
 IMAGE_CACHE_TTL = 3600
+IMAGE_CACHE_KEY_PREFIX = "img:"
 
 
 class OrjsonSerializer(BaseSerializer):
@@ -70,7 +71,7 @@ class RedisImageCache:
             self._ensure_connected()
             with redis.Redis(connection_pool=self.redis) as r, io.BytesIO() as output:
                 image.save(output, format="PNG")
-                r.setex(key, IMAGE_CACHE_TTL, output.getvalue())
+                r.setex(IMAGE_CACHE_KEY_PREFIX + key, IMAGE_CACHE_TTL, output.getvalue())
         except redis.BusyLoadingError:
             pass
         except RedisError as e:
@@ -84,7 +85,7 @@ class RedisImageCache:
         try:
             self._ensure_connected()
             with redis.Redis(connection_pool=self.redis) as r:
-                image_data = r.get(key)
+                image_data = r.get(IMAGE_CACHE_KEY_PREFIX + key)
                 if image_data is None:
                     return None
         except redis.BusyLoadingError:
@@ -94,6 +95,18 @@ class RedisImageCache:
             return None
         else:
             return Image.open(io.BytesIO(image_data))  # pyright: ignore[reportArgumentType]
+
+    def clear(self) -> int:
+        try:
+            self._ensure_connected()
+            with redis.Redis(connection_pool=self.redis) as r:
+                keys = list(r.scan_iter(match=f"{IMAGE_CACHE_KEY_PREFIX}*", count=500))
+                if not keys:
+                    return 0
+                return r.delete(*keys)
+        except RedisError as e:
+            self._handle_error("clear", IMAGE_CACHE_KEY_PREFIX, e)
+            return 0
 
     def connect(self) -> None:
         if self._redis is not None and self._bg_executor is not None:

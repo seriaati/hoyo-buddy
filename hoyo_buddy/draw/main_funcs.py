@@ -132,9 +132,6 @@ async def draw_hsr_build_card(
 
 
 async def draw_hsr_notes_card(draw_input: DrawInput, notes: StarRailNote) -> BytesIO:
-    await download_images(
-        [exped.item_url for exped in notes.expeditions], session=draw_input.session
-    )
     return await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.hsr.draw_hsr_notes_card,

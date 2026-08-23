@@ -7,7 +7,6 @@ from PIL import ImageDraw
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import format_timedelta
 
 if TYPE_CHECKING:
     from io import BytesIO
@@ -85,33 +84,5 @@ def draw_hsr_notes_card(notes: StarRailNote, locale: Locale, dark_mode: bool) ->
     textbbox = drawer.write(
         f"{notes.current_reserve_stamina}/2400", size=60, position=(596, 860), style="medium"
     )
-
-    exped_padding = 201
-    icon_pos = (1060, 231)
-    text_x_padding = 20
-
-    for index, exped in enumerate(notes.expeditions):
-        pos = (icon_pos[0], index * exped_padding + icon_pos[1])
-
-        icon = drawer.open_static(exped.item_url, size=(100, 100))
-        icon = drawer.circular_crop(icon)
-        im.paste(icon, pos, icon)
-
-        text = (
-            LocaleStr(key="notes-card.gi.expedition-finished")
-            if exped.finished
-            else LocaleStr(
-                key="notes-card.gi.expedition-remaining",
-                time=format_timedelta(exped.remaining_time),
-            )
-        )
-
-        drawer.write(
-            text,
-            size=40,
-            position=(icon_pos[0] + icon.width + text_x_padding, 280 + index * exped_padding),
-            anchor="lm",
-            locale=locale,
-        )
 
     return Drawer.save_image(im)

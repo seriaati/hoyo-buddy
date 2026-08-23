@@ -47,7 +47,6 @@ NOTIFY_TYPE_TO_MODAL_TYPE: dict[NotesNotifyType, type[ReminderModal]] = {
     NotesNotifyType.RESIN_DISCOUNT: modals.TypeFourModal,
     NotesNotifyType.TB_POWER: modals.TypeOneModal,
     NotesNotifyType.RESERVED_TB_POWER: modals.TypeOneModal,
-    NotesNotifyType.HSR_EXPED: modals.TypeTwoModal,
     NotesNotifyType.HSR_DAILY: modals.TypeThreeModal,
     NotesNotifyType.ECHO_OF_WAR: modals.TypeFourModal,
     NotesNotifyType.PLANAR_FISSURE: modals.TypeFiveModal,
@@ -100,7 +99,7 @@ NOTIFY_TYPE_MODAL_KWARGS: dict[NotesNotifyType | tuple[NotesNotifyType, ...], di
         "min_notify_interval": 30,
     },
     NotesNotifyType.PT: {"title": LocaleStr(key="pt_modal.title"), "min_notify_interval": 30},
-    (NotesNotifyType.GI_EXPED, NotesNotifyType.HSR_EXPED): {
+    NotesNotifyType.GI_EXPED: {
         "title": LocaleStr(key="exped_modal.title"),
         "min_notify_interval": 30,
     },
@@ -155,7 +154,6 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
     NotesNotifyType.RESIN_DISCOUNT: 30,
     NotesNotifyType.TB_POWER: 10,
     NotesNotifyType.RESERVED_TB_POWER: 30,
-    NotesNotifyType.HSR_EXPED: 30,
     NotesNotifyType.HSR_DAILY: 30,
     NotesNotifyType.ECHO_OF_WAR: 30,
     NotesNotifyType.PLANAR_FISSURE: 60,
@@ -462,7 +460,6 @@ class HSRReminderContainer(BaseReminderContainer):
         *,
         tbp_notify: NotesNotify | None,
         reserved_tbp_notify: NotesNotify | None,
-        expedition_notify: NotesNotify | None,
         daily_notify: NotesNotify | None,
         echo_of_war_notify: NotesNotify | None,
         planar_fissure_notify: NotesNotify | None,
@@ -479,11 +476,6 @@ class HSRReminderContainer(BaseReminderContainer):
                 notify=reserved_tbp_notify,
                 notify_type=NotesNotifyType.RESERVED_TB_POWER,
                 emoji=emojis.RESERVED_TRAILBLAZE_POWER,
-            ),
-            ReminderItem(
-                title=LocaleStr(key="exped_button.label"),
-                notify=expedition_notify,
-                notify_type=NotesNotifyType.HSR_EXPED,
             ),
             ReminderItem(
                 title=LocaleStr(key="daily_button.label"),
@@ -595,9 +587,6 @@ class ReminderContainer:
                 ),
                 reserved_tbp_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.RESERVED_TB_POWER
-                ),
-                expedition_notify=await NotesNotify.get_or_none(
-                    account=account, type=NotesNotifyType.HSR_EXPED
                 ),
                 daily_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.HSR_DAILY

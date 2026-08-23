@@ -98,7 +98,7 @@ class NotesChecker:
                     ),
                 )
                 embed.set_thumbnail(url=RTBP_ICON)
-            case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
+            case NotesNotifyType.GI_EXPED:
                 embed = DefaultEmbed(
                     locale,
                     title=LocaleStr(key="exped_button.label"),
@@ -303,9 +303,7 @@ class NotesChecker:
         return None
 
     @classmethod
-    async def _process_expedition_notify(
-        cls, notify: NotesNotify, notes: GenshinNotes | StarRailNote
-    ) -> None:
+    async def _process_expedition_notify(cls, notify: NotesNotify, notes: GenshinNotes) -> None:
         """Process expedition notification."""
         if any(not exped.finished for exped in notes.expeditions):
             min_remain_time = min(
@@ -492,8 +490,8 @@ class NotesChecker:
             case NotesNotifyType.RESERVED_TB_POWER:
                 assert isinstance(notes, StarRailNote)
                 await cls._process_rtbp_notify(notify, notes)
-            case NotesNotifyType.GI_EXPED | NotesNotifyType.HSR_EXPED:
-                assert isinstance(notes, GenshinNotes | StarRailNote)
+            case NotesNotifyType.GI_EXPED:
+                assert isinstance(notes, GenshinNotes)
                 await cls._process_expedition_notify(notify, notes)
             case NotesNotifyType.PT:
                 assert isinstance(notes, GenshinNotes)

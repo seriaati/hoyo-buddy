@@ -30,8 +30,6 @@ class NotesNotifyType(IntEnum):
     """Star Rail Trailblaze Power"""
     GI_EXPED = 4
     """Genshin Impact Expedition"""
-    HSR_EXPED = 5
-    """Star Rail Expedition"""
     PT = 6
     """Genshin Impact Parametric Transformer"""
     GI_DAILY = 7

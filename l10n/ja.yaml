@@ -781,6 +781,7 @@ web_events_notify_toggle_label: 新しいウェブイベント時に通知
 web_events_cmd_desc: 開催中のウェブイベントを表示し、通知を設定します
 web_events_embed_footer: /web-events を使用して通知を設定します
 auto_task_error_dm_content: "**{feature}** はエラーのため `{account}` で **__無効__** にされました。{command} を使用して再度有効にできます。\nこのエラーが続く場合や修正方法がわからない場合は、[Discordサーバー](<https://link.seria.moe/hb-dc>) でヘルプを求めてください。"
+auto_task_status_field_name: 自動タスクのステータス
 is_support_custom_image_desc: カスタム画像をサポートしています
 is_not_support_custom_image_desc: カスタム画像をサポートしていません
 missing_permissions_error_title: Hoyo Buddyに必要な権限がありません

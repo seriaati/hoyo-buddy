@@ -782,6 +782,7 @@ web_events_notify_toggle_label: Meld nieuwe web-evenementen
 web_events_cmd_desc: Bekijk lopende web-evenementen en stel een melder in
 web_events_embed_footer: Gebruik /web-events om meldingen te configureren
 auto_task_error_dm_content: "**{feature}** is **__uitgeschakeld__** voor `{account}` vanwege een fout. Je kunt deze weer inschakelen met {command}.\nAls deze fout aanhoudt of je weet niet hoe je dit kunt oplossen, kun je hulp vinden op onze [Discord-server](<https://link.seria.moe/hb-dc>)."
+auto_task_status_field_name: Status automatische taken
 is_support_custom_image_desc: Ondersteunt aangepaste afbeeldingen
 is_not_support_custom_image_desc: Ondersteunt geen aangepaste afbeeldingen
 missing_permissions_error_title: Hoyo Buddy Mist Machtigingen

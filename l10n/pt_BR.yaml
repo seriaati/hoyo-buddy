@@ -781,6 +781,7 @@ web_events_notify_toggle_label: Notificar sobre novos eventos web
 web_events_cmd_desc: Ver eventos web em andamento e definir notificador
 web_events_embed_footer: Use /web-events para configurar notificações
 auto_task_error_dm_content: "**{feature}** foi **__desativado__** para `{account}` devido a um erro, você pode reativá-lo usando {command}.\nSe este erro persistir ou você não souber como corrigi-lo, por favor, procure ajuda em nosso [servidor do Discord](<https://link.seria.moe/hb-dc>)."
+auto_task_status_field_name: Status das tarefas automáticas
 is_support_custom_image_desc: Suporta imagem personalizada
 is_not_support_custom_image_desc: Não suporta imagem personalizada
 missing_permissions_error_title: Hoyo Buddy Está Sem Permissões

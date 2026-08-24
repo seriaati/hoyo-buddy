@@ -783,6 +783,7 @@ web_events_notify_toggle_label: 신규 웹 이벤트 개방 알림 설정
 web_events_cmd_desc: 진행 중인 웹 이벤트 확인 및 알림 설정
 web_events_embed_footer: "[/web-events] 명령어를 통해 웹 이벤트 알림을 설정할 수 있습니다."
 auto_task_error_dm_content: "오류가 발생하여 `{account}` 계정의 **{feature}** 기능이 **__비활성화__**되었습니다. {command} 명령어를 통해 해당 기능을 다시 활성화하실 수 있습니다.\n동일한 문제가 반복되거나 조치가 어려우신 경우, 공식 [Discord 서버](<https://link.seria.moe/hb-dc>)를 통해 문의해 주시기 바랍니다."
+auto_task_status_field_name: 자동 작업 상태
 is_support_custom_image_desc: 커스텀 이미지 적용 기능 지원
 is_not_support_custom_image_desc: 커스텀 이미지 적용 기능 미지원
 missing_permissions_error_title: "[호요 버디] 실행 권한 부족"

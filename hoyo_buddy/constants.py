@@ -9,6 +9,7 @@ import akasha
 import ambr
 import enka
 import genshin
+import hakushin
 import yatta
 from discord import app_commands
 from loguru import logger
@@ -256,6 +257,19 @@ LOCALE_TO_AMBR_LANG: dict[Locale, ambr.Language] = {
 
 def locale_to_ambr_lang(locale: Locale) -> ambr.Language:
     return LOCALE_TO_AMBR_LANG.get(locale, ambr.Language.EN)
+
+
+LOCALE_TO_HAKUSHIN_LANG: dict[Locale, hakushin.Language] = {
+    Locale.chinese: hakushin.Language.ZH,
+    Locale.taiwan_chinese: hakushin.Language.ZH,
+    Locale.japanese: hakushin.Language.JA,
+    Locale.korean: hakushin.Language.KO,
+    Locale.american_english: hakushin.Language.EN,
+}
+
+
+def locale_to_hakushin_lang(locale: Locale) -> hakushin.Language:
+    return LOCALE_TO_HAKUSHIN_LANG.get(locale, hakushin.Language.EN)
 
 
 LOCALE_TO_YATTA_LANG: dict[Locale, yatta.Language] = {

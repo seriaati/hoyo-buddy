@@ -926,6 +926,18 @@ wheels = [
 ]
 
 [[package]]
+name = "hakushin-py"
+version = "0.6.1"
+source = { git = "https://github.com/seriaati/hakushin-py#423003574be64f83ccfa401c934daaeab140a6ab" }
+dependencies = [
+    { name = "aiofiles" },
+    { name = "aiohttp" },
+    { name = "aiohttp-client-cache", extra = ["sqlite"] },
+    { name = "loguru" },
+    { name = "pydantic" },
+]
+
+[[package]]
 name = "hb-data"
 version = "0.1.0"
 source = { git = "https://github.com/seriaati/hb-data#980a81c10976d77159a9acac550e0fd6618417f0" }
@@ -1023,6 +1035,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "fonttools" },
     { name = "genshin", extra = ["auth", "socks-proxy", "sqlite"] },
+    { name = "hakushin-py" },
     { name = "hb-data" },
     { name = "itsdangerous" },
     { name = "jishaku" },
@@ -1081,6 +1094,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "fonttools", specifier = ">=4.53.1" },
     { name = "genshin", extras = ["auth", "sqlite", "socks-proxy"], git = "https://github.com/thesadru/genshin.py?branch=master" },
+    { name = "hakushin-py", git = "https://github.com/seriaati/hakushin-py" },
     { name = "hb-data", git = "https://github.com/seriaati/hb-data" },
     { name = "itsdangerous", specifier = ">=2.2.0" },
     { name = "jishaku", specifier = ">=2.5.2" },

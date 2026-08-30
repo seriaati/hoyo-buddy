@@ -35,7 +35,11 @@ if TYPE_CHECKING:
     from ..bot import HoyoBuddy
 
 
-class Search(commands.Cog):
+class Search(
+    commands.GroupCog,
+    name=app_commands.locale_str("search"),
+    description=app_commands.locale_str("Search commands"),
+):
     def __init__(self, bot: HoyoBuddy) -> None:
         self.bot = bot
 
@@ -154,17 +158,13 @@ class Search(commands.Cog):
             raise InvalidQueryError from e
 
     @app_commands.command(
-        name=app_commands.locale_str("search"), description=COMMANDS["search"].description
+        name=app_commands.locale_str("genshin"), description=COMMANDS["search genshin"].description
     )
     @app_commands.rename(
-        game_value=app_commands.locale_str("game", key="search_command_game_param_name"),
         category_value=app_commands.locale_str("category", key="search_cmd_category_param_name"),
         query=app_commands.locale_str("query", key="search_command_query_param_name"),
     )
     @app_commands.describe(
-        game_value=app_commands.locale_str(
-            "Game to search in", key="search_command_game_param_description"
-        ),
         category_value=app_commands.locale_str(
             "Category to search in", key="search_command_category_param_description"
         ),
@@ -172,241 +172,236 @@ class Search(commands.Cog):
             "Query to search for", key="search_command_query_param_description"
         ),
     )
-    async def search_command(
-        self, i: Interaction, game_value: str, category_value: str, query: str
-    ) -> Any:
+    async def search_gi_command(self, i: Interaction, category_value: str, query: str) -> Any:
         if category_value == "none" or query == "none":
             raise InvalidQueryError
 
         try:
-            game = Game(game_value)
+            category = ambr.ItemCategory(category_value)
         except ValueError as e:
             raise InvalidQueryError from e
 
         locale = await get_locale(i)
 
-        if game is Game.GENSHIN:
-            try:
-                category = ambr.ItemCategory(category_value)
-            except ValueError as e:
-                raise InvalidQueryError from e
+        match category:
+            case ambr.ItemCategory.CHARACTERS:
+                character_ui = gi_search.CharacterUI(query, author=i.user, locale=locale)
+                await character_ui.update(i)
 
-            match category:
-                case ambr.ItemCategory.CHARACTERS:
-                    character_ui = gi_search.CharacterUI(query, author=i.user, locale=locale)
-                    await character_ui.update(i)
+            case ambr.ItemCategory.WEAPONS:
+                weapon_ui = gi_search.WeaponUI(query, author=i.user, locale=locale)
+                await weapon_ui.start(i)
 
-                case ambr.ItemCategory.WEAPONS:
-                    weapon_ui = gi_search.WeaponUI(query, author=i.user, locale=locale)
-                    await weapon_ui.start(i)
-
-                case ambr.ItemCategory.NAMECARDS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        namecard_detail = await api.fetch_namecard_detail(int(query))
-                        embed = api.get_namecard_embed(namecard_detail)
-                        await i.followup.send(embed=embed)
-
-                case ambr.ItemCategory.ARTIFACT_SETS:
-                    artifact_set_ui = gi_search.ArtifactSetUI(query, author=i.user, locale=locale)
-                    await artifact_set_ui.start(i)
-
-                case ambr.ItemCategory.FOOD:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        food_detail = await api.fetch_food_detail(int(query))
-                        embed = api.get_food_embed(food_detail)
-                        await i.followup.send(embed=embed)
-
-                case ambr.ItemCategory.MATERIALS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        material_detail = await api.fetch_material_detail(int(query))
-                        embed = api.get_material_embed(material_detail)
-                        await i.followup.send(embed=embed)
-
-                case ambr.ItemCategory.FURNISHINGS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        furniture_detail = await api.fetch_furniture_detail(int(query))
-                        embed = api.get_furniture_embed(furniture_detail)
-                        await i.followup.send(
-                            embed=embed,
-                            view=URLButtonView(
-                                locale,
-                                url=f"https://ambr.top/{api.lang.value}/archive/furniture/{query}/",
-                                label="ambr.top",
-                                emoji=PROJECT_AMBER,
-                            ),
-                        )
-
-                case ambr.ItemCategory.FURNISHING_SETS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
-                        embed = api.get_furniture_set_embed(furniture_set_detail)
-                        await i.followup.send(
-                            embed=embed,
-                            view=URLButtonView(
-                                locale,
-                                url=f"https://ambr.top/{api.lang.value}/archive/furnitureSuite/{query}/",
-                                label="ambr.top",
-                                emoji=PROJECT_AMBER,
-                            ),
-                        )
-
-                case ambr.ItemCategory.LIVING_BEINGS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        monster_detail = await api.fetch_monster_detail(int(query))
-                        embed = api.get_monster_embed(monster_detail)
-                        await i.followup.send(
-                            embed=embed,
-                            view=URLButtonView(
-                                locale,
-                                url=f"https://ambr.top/{api.lang.value}/archive/monster/{query}/",
-                                label="ambr.top",
-                                emoji=PROJECT_AMBER,
-                            ),
-                        )
-
-                case ambr.ItemCategory.BOOKS:
-                    async with ambr.AmbrAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        book = await api.fetch_book_detail(int(query))
-                        book_volume_ui = gi_search.BookVolumeUI(
-                            book, api.lang.value, author=i.user, locale=locale
-                        )
-                        await book_volume_ui.start(i)
-
-                case ambr.ItemCategory.TCG:
+            case ambr.ItemCategory.NAMECARDS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
                     self._ensure_query_is_int(query)
-                    tcg_card_ui = gi_search.TCGCardUI(int(query), author=i.user, locale=locale)
-                    await tcg_card_ui.start(i)
+                    namecard_detail = await api.fetch_namecard_detail(int(query))
+                    embed = api.get_namecard_embed(namecard_detail)
+                    await i.followup.send(embed=embed)
 
-                # case ambr.ItemCategory.SPIRAL_ABYSS:
-                #     try:
-                #         index = int(query)
-                #     except ValueError as e:
-                #         raise InvalidQueryError from e
+            case ambr.ItemCategory.ARTIFACT_SETS:
+                artifact_set_ui = gi_search.ArtifactSetUI(query, author=i.user, locale=locale)
+                await artifact_set_ui.start(i)
 
-                #     view = AbyssEnemyView(
-                #         index, dark_mode=settings.dark_mode, author=i.user, locale=locale
-                #     )
-                #     await view.start(i)
-
-        elif game is Game.STARRAIL:
-            try:
-                category = yatta.ItemCategory(category_value)
-            except ValueError as e:
-                raise InvalidQueryError from e
-
-            match category:
-                case yatta.ItemCategory.ITEMS:
-                    async with yatta.YattaAPIClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        item = await api.fetch_item_detail(int(query))
-                        embed = api.get_item_embed(item)
-                        await i.followup.send(embed=embed)
-
-                case yatta.ItemCategory.LIGHT_CONES:
-                    light_cone_ui = LightConeUI(query, author=i.user, locale=locale)
-                    await light_cone_ui.start(i)
-
-                case yatta.ItemCategory.BOOKS:
-                    book_ui = hsr_search.BookUI(query, author=i.user, locale=locale)
-                    await book_ui.start(i)
-
-                case yatta.ItemCategory.RELICS:
-                    relic_set_ui = hsr_search.RelicSetUI(query, author=i.user, locale=locale)
-                    await relic_set_ui.start(i)
-
-                case yatta.ItemCategory.CHARACTERS:
+            case ambr.ItemCategory.FOOD:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
                     self._ensure_query_is_int(query)
-                    character_id = int(query)
+                    food_detail = await api.fetch_food_detail(int(query))
+                    embed = api.get_food_embed(food_detail)
+                    await i.followup.send(embed=embed)
 
-                    character_ui = hsr_search.CharacterUI(
-                        character_id, author=i.user, locale=locale
+            case ambr.ItemCategory.MATERIALS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    material_detail = await api.fetch_material_detail(int(query))
+                    embed = api.get_material_embed(material_detail)
+                    await i.followup.send(embed=embed)
+
+            case ambr.ItemCategory.FURNISHINGS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    furniture_detail = await api.fetch_furniture_detail(int(query))
+                    embed = api.get_furniture_embed(furniture_detail)
+                    await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/furniture/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
                     )
-                    await character_ui.start(i)
 
-                case yatta.ItemCategory.ENEMIES:
-                    async with hakushin.HakushinHSRClient(locale) as api:
-                        await i.response.defer(ephemeral=ephemeral(i))
-                        self._ensure_query_is_int(query)
-                        monster_detail = await api.fetch_monsters_detail(int(query))
+            case ambr.ItemCategory.FURNISHING_SETS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    furniture_set_detail = await api.fetch_furniture_set_detail(int(query))
+                    embed = api.get_furniture_set_embed(furniture_set_detail)
+                    await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/furnitureSuite/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
+                    )
 
-                        item_names: dict[int, str] = {}
-                        if any(drop.item_ids for drop in monster_detail.drops):
-                            async with yatta.YattaAPIClient(locale) as yatta_api:
-                                items = await yatta_api.fetch_items()
-                                item_names = {item.id: item.name for item in items}
+            case ambr.ItemCategory.LIVING_BEINGS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    monster_detail = await api.fetch_monster_detail(int(query))
+                    embed = api.get_monster_embed(monster_detail)
+                    await i.followup.send(
+                        embed=embed,
+                        view=URLButtonView(
+                            locale,
+                            url=f"https://ambr.top/{api.lang.value}/archive/monster/{query}/",
+                            label="ambr.top",
+                            emoji=PROJECT_AMBER,
+                        ),
+                    )
 
-                        embed = api.get_enemy_embed(monster_detail, item_names)
-                        await i.followup.send(embed=embed)
+            case ambr.ItemCategory.BOOKS:
+                async with ambr.AmbrAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    book = await api.fetch_book_detail(int(query))
+                    book_volume_ui = gi_search.BookVolumeUI(
+                        book, api.lang.value, author=i.user, locale=locale
+                    )
+                    await book_volume_ui.start(i)
+
+            case ambr.ItemCategory.TCG:
+                self._ensure_query_is_int(query)
+                tcg_card_ui = gi_search.TCGCardUI(int(query), author=i.user, locale=locale)
+                await tcg_card_ui.start(i)
+
+            # case ambr.ItemCategory.SPIRAL_ABYSS:
+            #     try:
+            #         index = int(query)
+            #     except ValueError as e:
+            #         raise InvalidQueryError from e
+
+            #     view = AbyssEnemyView(
+            #         index, dark_mode=settings.dark_mode, author=i.user, locale=locale
+            #     )
+            #     await view.start(i)
 
         await show_anniversary_dismissible(i)
 
-    @search_command.autocomplete("game_value")
-    @handle_autocomplete_errors
-    async def search_command_game_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice]:
-        locale = await get_locale(i)
-        return self.bot.get_enum_choices((Game.GENSHIN, Game.STARRAIL, Game.ZZZ), locale, current)
+    @app_commands.command(
+        name=app_commands.locale_str("hsr"), description=COMMANDS["search hsr"].description
+    )
+    @app_commands.rename(
+        category_value=app_commands.locale_str("category", key="search_cmd_category_param_name"),
+        query=app_commands.locale_str("query", key="search_command_query_param_name"),
+    )
+    @app_commands.describe(
+        category_value=app_commands.locale_str(
+            "Category to search in", key="search_command_category_param_description"
+        ),
+        query=app_commands.locale_str(
+            "Query to search for", key="search_command_query_param_description"
+        ),
+    )
+    async def search_hsr_command(self, i: Interaction, category_value: str, query: str) -> Any:
+        if category_value == "none" or query == "none":
+            raise InvalidQueryError
 
-    @search_command.autocomplete("category_value")
-    @handle_autocomplete_errors
-    async def search_command_category_autocomplete(
-        self, i: Interaction, current: str
-    ) -> list[app_commands.Choice]:
-        locale = await get_locale(i)
         try:
-            game = Game(i.namespace.game)
-        except ValueError:
-            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+            category = yatta.ItemCategory(category_value)
+        except ValueError as e:
+            raise InvalidQueryError from e
 
-        categories = self._search_categories.get(game)
-        if categories is None:
-            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+        locale = await get_locale(i)
 
-        return self.bot.get_enum_choices(categories, locale, current)
+        match category:
+            case yatta.ItemCategory.ITEMS:
+                async with yatta.YattaAPIClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    item = await api.fetch_item_detail(int(query))
+                    embed = api.get_item_embed(item)
+                    await i.followup.send(embed=embed)
 
-    @search_command.autocomplete("query")
-    @handle_autocomplete_errors
-    async def search_command_query_autocomplete(
-        self, i: Interaction, current: str
+            case yatta.ItemCategory.LIGHT_CONES:
+                light_cone_ui = LightConeUI(query, author=i.user, locale=locale)
+                await light_cone_ui.start(i)
+
+            case yatta.ItemCategory.BOOKS:
+                book_ui = hsr_search.BookUI(query, author=i.user, locale=locale)
+                await book_ui.start(i)
+
+            case yatta.ItemCategory.RELICS:
+                relic_set_ui = hsr_search.RelicSetUI(query, author=i.user, locale=locale)
+                await relic_set_ui.start(i)
+
+            case yatta.ItemCategory.CHARACTERS:
+                self._ensure_query_is_int(query)
+                character_id = int(query)
+
+                character_ui = hsr_search.CharacterUI(character_id, author=i.user, locale=locale)
+                await character_ui.start(i)
+
+            case yatta.ItemCategory.ENEMIES:
+                async with hakushin.HakushinHSRClient(locale) as api:
+                    await i.response.defer(ephemeral=ephemeral(i))
+                    self._ensure_query_is_int(query)
+                    monster_detail = await api.fetch_monsters_detail(int(query))
+
+                    item_names: dict[int, str] = {}
+                    if any(drop.item_ids for drop in monster_detail.drops):
+                        async with yatta.YattaAPIClient(locale) as yatta_api:
+                            items = await yatta_api.fetch_items()
+                            item_names = {item.id: item.name for item in items}
+
+                    embed = api.get_enemy_embed(monster_detail, item_names)
+                    await i.followup.send(embed=embed)
+
+        await show_anniversary_dismissible(i)
+
+    async def _search_category_autocomplete(
+        self, i: Interaction, current: str, *, game: Game
     ) -> list[app_commands.Choice]:
         locale = await get_locale(i)
-        try:
-            game = Game(i.namespace.game)
-        except ValueError:
-            return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+        return self.bot.get_enum_choices(self._search_categories[game], locale, current)
+
+    @search_gi_command.autocomplete("category_value")
+    @handle_autocomplete_errors
+    async def search_gi_category_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        return await self._search_category_autocomplete(i, current, game=Game.GENSHIN)
+
+    @search_hsr_command.autocomplete("category_value")
+    @handle_autocomplete_errors
+    async def search_hsr_category_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        return await self._search_category_autocomplete(i, current, game=Game.STARRAIL)
+
+    async def _search_query_autocomplete(
+        self, i: Interaction, current: str, *, game: Game
+    ) -> list[app_commands.Choice]:
+        locale = await get_locale(i)
 
         if not self.bot.search_autofill or game not in self.bot.search_autofill:
             return self.bot.get_error_choice(LocaleStr(key="search_autocomplete_not_setup"), locale)
 
         try:
             if game is Game.GENSHIN:
-                category = ambr.ItemCategory(i.namespace.category)
-            elif game is Game.STARRAIL:
-                category = yatta.ItemCategory(i.namespace.category)
+                category: StrEnum = ambr.ItemCategory(i.namespace.category)
             else:
-                return self.bot.get_error_choice(LocaleStr(key="invalid_game_selected"), locale)
+                category = yatta.ItemCategory(i.namespace.category)
         except ValueError:
             return self.bot.get_error_choice(LocaleStr(key="invalid_category_selected"), locale)
-
-        # Special handling for spiral abyss
-        # if category is ambr.ItemCategory.SPIRAL_ABYSS:
-        #     return await AbyssEnemyView.get_autocomplete_choices()
 
         choices = self.bot.search_autofill[game][category].get(
             locale, self.bot.search_autofill[game][category][Locale.american_english]
@@ -420,6 +415,20 @@ class Search(commands.Cog):
 
         random.shuffle(choices)
         return choices[:25]
+
+    @search_gi_command.autocomplete("query")
+    @handle_autocomplete_errors
+    async def search_gi_query_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        return await self._search_query_autocomplete(i, current, game=Game.GENSHIN)
+
+    @search_hsr_command.autocomplete("query")
+    @handle_autocomplete_errors
+    async def search_hsr_query_autocomplete(
+        self, i: Interaction, current: str
+    ) -> list[app_commands.Choice]:
+        return await self._search_query_autocomplete(i, current, game=Game.STARRAIL)
 
 
 async def setup(bot: HoyoBuddy) -> None:

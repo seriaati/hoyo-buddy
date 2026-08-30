@@ -409,9 +409,9 @@ saturday: Saturday
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
 search_command_category_param_description: Category to search in
 search_cmd_category_param_name: category
-search_command_description: Search anything game related
-search_command_game_param_description: Game to search in
 search_command_game_param_name: game
+search_command_gi_description: Search anything Genshin Impact related
+search_command_hsr_description: Search anything Honkai Star Rail related
 search_command_query_param_description: Query to search for
 search_command_query_param_name: query
 select_account.embed.description: Selects accounts you want to add to Hoyo Buddy

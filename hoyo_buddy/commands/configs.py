@@ -53,7 +53,8 @@ type CommandName = Literal[
     "about",
     "upload",
     "settings",
-    "search",
+    "search genshin",
+    "search hsr",
     "invite",
     "help",
     "changelog",
@@ -296,8 +297,15 @@ COMMANDS: dict[CommandName, CommandConfig] = {
             key="profile_command_zzz_description",
         ),
     ),
-    "search": CommandConfig(
-        description=locale_str("Search anything game related", key="search_command_description")
+    "search genshin": CommandConfig(
+        description=locale_str(
+            "Search anything Genshin Impact related", key="search_command_gi_description"
+        )
+    ),
+    "search hsr": CommandConfig(
+        description=locale_str(
+            "Search anything Honkai Star Rail related", key="search_command_hsr_description"
+        )
     ),
     "settings": CommandConfig(
         description=locale_str("Configure your user settings", key="settings_command_description")

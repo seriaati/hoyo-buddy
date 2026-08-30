@@ -20,7 +20,7 @@ from hoyo_buddy.utils.misc import get_now, handle_autocomplete_errors
 from ..emojis import PROJECT_AMBER
 from ..enums import Game, Locale
 from ..exceptions import InvalidQueryError
-from ..hoyo.clients import ambr, yatta
+from ..hoyo.clients import ambr, hakushin, yatta
 from ..hoyo.search_autocomplete import AutocompleteSetup
 from ..l10n import LocaleStr
 from ..types import Interaction
@@ -337,6 +337,21 @@ class Search(commands.Cog):
                         character_id, author=i.user, locale=locale
                     )
                     await character_ui.start(i)
+
+                case yatta.ItemCategory.ENEMIES:
+                    async with hakushin.HakushinHSRClient(locale) as api:
+                        await i.response.defer(ephemeral=ephemeral(i))
+                        self._ensure_query_is_int(query)
+                        monster_detail = await api.fetch_monsters_detail(int(query))
+
+                        item_names: dict[int, str] = {}
+                        if any(drop.item_ids for drop in monster_detail.drops):
+                            async with yatta.YattaAPIClient(locale) as yatta_api:
+                                items = await yatta_api.fetch_items()
+                                item_names = {item.id: item.name for item in items}
+
+                        embed = api.get_enemy_embed(monster_detail, item_names)
+                        await i.followup.send(embed=embed)
 
         await show_anniversary_dismissible(i)
 

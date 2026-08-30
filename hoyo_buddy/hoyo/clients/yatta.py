@@ -42,6 +42,7 @@ class ItemCategory(StrEnum):
     ITEMS = "Items"
     RELICS = "Relics"
     BOOKS = "Books"
+    ENEMIES = "Enemies"
 
 
 class YattaAPIClient(yatta.YattaAPI):

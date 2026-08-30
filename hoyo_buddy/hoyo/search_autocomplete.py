@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING, Any, ClassVar
 
 from discord.app_commands import Choice
 
-from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_YATTA_LANG
+from hoyo_buddy.constants import LOCALE_TO_AMBR_LANG, LOCALE_TO_HAKUSHIN_LANG, LOCALE_TO_YATTA_LANG
 from hoyo_buddy.enums import Game
 from hoyo_buddy.utils import sleep
 
-from .clients import ambr, yatta
+from .clients import ambr, hakushin, yatta
 
 if TYPE_CHECKING:
     from types import CoroutineType
@@ -55,7 +55,7 @@ class AutocompleteSetup:
     @classmethod
     def _get_yatta_task(
         cls, api: yatta.YattaAPIClient, category: yatta.ItemCategory
-    ) -> CoroutineType[Any, Any, list[Any]]:
+    ) -> CoroutineType[Any, Any, list[Any]] | None:
         match category:
             case yatta.ItemCategory.CHARACTERS:
                 return api.fetch_characters(trailblazer_gender_symbol=True)
@@ -89,9 +89,21 @@ class AutocompleteSetup:
             api = yatta.YattaAPIClient(locale, session=session)
             for category in yatta.ItemCategory:
                 coro = cls._get_yatta_task(api, category)
-                task = asyncio.create_task(coro)
-                cls._tasks[game][category][locale] = task
-                await sleep("search_autofill")
+                if coro is not None:
+                    task = asyncio.create_task(coro)
+                    cls._tasks[game][category][locale] = task
+                    await sleep("search_autofill")
+
+    @classmethod
+    async def _setup_hakushin(cls, session: aiohttp.ClientSession) -> None:
+        game = Game.STARRAIL
+        category = yatta.ItemCategory.ENEMIES
+
+        for locale in LOCALE_TO_HAKUSHIN_LANG:
+            api = hakushin.HakushinHSRClient(locale, session=session)
+            task = asyncio.create_task(api.fetch_monsters())
+            cls._tasks[game][category][locale] = task
+            await sleep("search_autofill")
 
     @classmethod
     async def start(cls, session: aiohttp.ClientSession) -> AutocompleteChoices:
@@ -102,6 +114,7 @@ class AutocompleteSetup:
         creat_task_tasks = [
             asyncio.create_task(cls._setup_ambr(session)),
             asyncio.create_task(cls._setup_yatta(session)),
+            asyncio.create_task(cls._setup_hakushin(session)),
         ]
         await asyncio.gather(*creat_task_tasks, return_exceptions=True)
 

@@ -285,13 +285,13 @@ class HardChallengeCard:
         recommendation: str | None,
         *,
         is_advantage: bool,
-    ) -> None:
+        start: tuple[tuple[int, int], int] | None = None,
+    ) -> tuple[tuple[int, int], int]:
+        pill_pos, line = start if start is not None else ((pos[0] + 48, pos[1] + 752), 1)
         if recommendation is None:
-            return
+            return pill_pos, line
 
-        line = 1
-        pill_pos = (pos[0] + 48, pos[1] + 752)
-        max_width = pill_pos[0] + 776
+        max_width = pos[0] + 48 + 776
 
         for rec in recommendation.split(" | "):
             rec_text = rec
@@ -328,6 +328,8 @@ class HardChallengeCard:
             im.paste(pill, pill_pos, pill)
             pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
 
+        return pill_pos, line
+
     def _draw_enemy_weaknesses(
         self,
         drawer: Drawer,
@@ -345,9 +347,11 @@ class HardChallengeCard:
             locale=self._locale,
         )
 
-        self._draw_enemy_weakness(drawer, im, pos, recommendation.recommend, is_advantage=True)
+        state = self._draw_enemy_weakness(
+            drawer, im, pos, recommendation.recommend, is_advantage=True
+        )
         self._draw_enemy_weakness(
-            drawer, im, pos, recommendation.dont_recommend, is_advantage=False
+            drawer, im, pos, recommendation.dont_recommend, is_advantage=False, start=state
         )
 
     def _draw_challenge_stats(

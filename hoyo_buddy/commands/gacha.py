@@ -35,6 +35,7 @@ from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
 from hoyo_buddy.ui.hoyo.gacha.manage import GachaLogManageView
 from hoyo_buddy.ui.hoyo.gacha.view import ViewGachaLogView
 from hoyo_buddy.utils import ephemeral
+from hoyo_buddy.utils.gacha import zzz_rank_type_to_rarity
 
 if TYPE_CHECKING:
     import discord
@@ -75,7 +76,8 @@ class GachaCommand:
             if "rank_type" in record:
                 continue
 
-            record["rank_type"] = rarity_map[record["item_id"]]
+            rarity = rarity_map[record["item_id"]]
+            record["rank_type"] = rarity - 1 if game is Game.ZZZ else rarity
 
         return records
 
@@ -162,7 +164,7 @@ class GachaCommand:
             [
                 GachaHistory(
                     wish_id=record.id,
-                    rarity=record.rarity,
+                    rarity=zzz_rank_type_to_rarity(record.rarity),
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
@@ -415,7 +417,9 @@ class GachaCommand:
             [
                 GachaHistory(
                     wish_id=record.id,
-                    rarity=record.rarity,
+                    rarity=zzz_rank_type_to_rarity(record.rarity)
+                    if account.game is Game.ZZZ
+                    else record.rarity,
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,
@@ -495,7 +499,7 @@ class GachaCommand:
             [
                 GachaHistory(
                     wish_id=record.id,
-                    rarity=record.rarity,
+                    rarity=zzz_rank_type_to_rarity(record.rarity),
                     item_id=record.item_id,
                     banner_type=record.banner_type,
                     account=account,

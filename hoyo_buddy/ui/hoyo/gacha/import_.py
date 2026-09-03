@@ -15,6 +15,7 @@ from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, TextInput, URLButtonView, View
+from hoyo_buddy.utils.gacha import zzz_rank_type_to_rarity
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -64,7 +65,7 @@ def _zzz_signal_records(
     return [
         GachaHistory(
             wish_id=signal.id,
-            rarity=signal.rarity,
+            rarity=zzz_rank_type_to_rarity(signal.rarity),
             time=signal.time,
             banner_type=signal.banner_type,
             item_id=signal.item_id,

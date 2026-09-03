@@ -18,6 +18,11 @@ ZZZ_BANNER_URL = "https://zzz.rng.moe/api/v1/gacha/config?game=zzz"
 GI_BANNER_URL = "https://raw.githubusercontent.com/MadeBaruna/paimon-moe-api/refs/heads/main/src/data/banners.ts"
 
 
+def zzz_rank_type_to_rarity(rank_type: int) -> int:
+    """Convert ZZZ's native rank_type (S=4, A=3, B=2) to the canonical 5/4/3 rarity scale."""
+    return rank_type + 1
+
+
 async def fetch_hsr_banners(session: aiohttp.ClientSession) -> list[HSRBanner]:
     async with session.get(HSR_BANNER_URL) as resp:
         resp.raise_for_status()

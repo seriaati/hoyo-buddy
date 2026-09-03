@@ -18,6 +18,10 @@ class GachaHistory(BaseModel):
 
     wish_id = fields.BigIntField()
     rarity = fields.IntField()
+    """Canonical rarity: 5 = 5-star / S, 4 = 4-star / A, 3 = 3-star / B, regardless of game.
+
+    Importers convert from each source's own scale before constructing records.
+    """
     time = fields.DatetimeField()
     item_id = fields.IntField()
     banner_type = fields.IntField()
@@ -42,8 +46,9 @@ class GachaHistory(BaseModel):
 
     @classmethod
     async def bulk_create(cls, records: list[Self], **kwargs) -> None:
-        for record in records:
-            if record.game is Game.ZZZ:
-                record.rarity += 1
+        invalid = {record.rarity for record in records} - {3, 4, 5}
+        if invalid:
+            msg = f"Non-canonical rarities {sorted(invalid)}, expected 3, 4, or 5"
+            raise ValueError(msg)
 
         return await super().bulk_create(records, batch_size=5000, ignore_conflicts=True, **kwargs)

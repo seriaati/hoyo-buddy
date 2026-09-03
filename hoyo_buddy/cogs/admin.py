@@ -19,7 +19,7 @@ from hoyo_buddy.db.models.gacha_history import GachaHistory
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import get_game_emoji
-from hoyo_buddy.enums import Locale
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.auto_tasks.embed_sender import EmbedSender
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
@@ -329,9 +329,9 @@ class Admin(commands.Cog):
         await message.edit(content="Updating gacha rarities...")
 
         for game, rarity_map in (
-            (genshin.Game.GENSHIN, gi_rarity_map),
-            (genshin.Game.STARRAIL, hsr_rarity_map),
-            (genshin.Game.ZZZ, zzz_rarity_map),
+            (Game.GENSHIN, gi_rarity_map),
+            (Game.STARRAIL, hsr_rarity_map),
+            (Game.ZZZ, zzz_rarity_map),
         ):
             for item_id, rarity in rarity_map.items():
                 await GachaHistory.filter(game=game, item_id=item_id).update(rarity=rarity)

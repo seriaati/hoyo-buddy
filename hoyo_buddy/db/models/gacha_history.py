@@ -46,9 +46,9 @@ class GachaHistory(BaseModel):
 
     @classmethod
     async def bulk_create(cls, records: list[Self], **kwargs) -> None:
-        invalid = {record.rarity for record in records} - {3, 4, 5}
+        invalid = {record.rarity for record in records} - {2, 3, 4, 5}
         if invalid:
-            msg = f"Non-canonical rarities {sorted(invalid)}, expected 3, 4, or 5"
+            msg = f"Non-canonical rarities {sorted(invalid)}, expected 2, 3, 4, or 5"
             raise ValueError(msg)
 
         return await super().bulk_create(records, batch_size=5000, ignore_conflicts=True, **kwargs)

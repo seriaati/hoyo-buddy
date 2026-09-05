@@ -95,7 +95,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     attr="auto_redeem",
                     current=account.auto_redeem,
                     disabled=account.game not in AUTO_REDEEM_SUPPORT_GAMES
-                    or not account.can_redeem_code,
+                    or not account.can_use_cookie_token,
                 ),
             ),
         )

@@ -121,7 +121,7 @@ class HoyoAccount(BaseModel):
         return genshin.parse_cookie(self.cookies)
 
     @cached_property
-    def can_redeem_code(self) -> bool:
+    def can_use_cookie_token(self) -> bool:
         return ("cookie_token_v2" in self.dict_cookies) or (
             "ltmid_v2" in self.dict_cookies and "stoken" in self.dict_cookies
         )

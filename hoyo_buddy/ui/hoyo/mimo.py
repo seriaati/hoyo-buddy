@@ -407,7 +407,7 @@ class ShopItemSelector(ui.PaginatorSelect[MimoView]):
 
         if code:
             success = False
-            if self.view.account.can_redeem_code:
+            if self.view.account.can_use_cookie_token:
                 _, success = await self.view.client.redeem_code(code, locale=self.view.locale)
         else:
             success = True
@@ -485,7 +485,7 @@ class LotteryDrawButton(ui.Button[MimoView]):
         )
         if result.code:
             success = False
-            if self.view.account.can_redeem_code:
+            if self.view.account.can_use_cookie_token:
                 _, success = await self.view.client.redeem_code(
                     result.code, locale=self.view.locale
                 )

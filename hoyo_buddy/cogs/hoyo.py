@@ -150,7 +150,7 @@ class Hoyo(commands.Cog):
         account = account or await self.bot.get_account(
             i.user.id, COMMANDS["redeem"].games, COMMANDS["redeem"].platform
         )
-        if not account.can_redeem_code:
+        if not account.can_use_cookie_token:
             raise CantRedeemCodeError
 
         await account.fetch_related("notif_settings")

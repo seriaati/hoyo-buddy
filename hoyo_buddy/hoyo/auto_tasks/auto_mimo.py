@@ -201,7 +201,7 @@ class AutoMimoMixin(AutoTaskMixin):
             for item, code in bought:
                 bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
                 success = False
-                if account.can_redeem_code:
+                if account.can_use_cookie_token:
                     _, success = await client.redeem_code(code, locale=locale)
 
                 if not success:
@@ -278,7 +278,7 @@ class AutoMimoMixin(AutoTaskMixin):
 
                 if result.code:
                     success = False
-                    if account.can_redeem_code:
+                    if account.can_use_cookie_token:
                         _, success = await client.redeem_code(result.code, locale=locale)
                         await sleep("redeem")
 

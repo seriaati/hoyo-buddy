@@ -77,6 +77,17 @@ def _zzz_signal_records(
     ]
 
 
+def _check_uid(
+    record: genshin.models.Wish
+    | genshin.models.Warp
+    | genshin.models.SignalSearch
+    | genshin.models.MWWish,
+    account: HoyoAccount,
+) -> None:
+    if record.uid != account.uid:
+        raise UIDMismatchError(record.uid)
+
+
 class GachaImportView(View):
     def __init__(self, account: HoyoAccount, *, author: User, locale: Locale) -> None:
         super().__init__(author=author, locale=locale)
@@ -114,11 +125,129 @@ class GachaImportView(View):
             IOSButton(),
             AndroidButton(),
         ]
-        if self.account.game is Game.ZZZ and self.account.platform is Platform.HOYOLAB:
+        if self.account.platform is Platform.HOYOLAB and (
+            self.account.game is Game.ZZZ
+            or (self.account.game is Game.GENSHIN and self.account.can_use_cookie_token)
+        ):
             items.insert(0, HoyolabImport(self.account))
         self.add_items(items)
         await i.response.send_message(embed=self.embed, view=self, content=await get_dyk(i))
         self.message = await i.original_response()
+
+    async def import_with_authkey(self, i: Interaction, authkey: str) -> None:
+        client = GenshinClient(self.account)
+        records: list[GachaHistory] = []
+        cursors = dict(self.account.gacha_cursors)
+        before = await GachaHistory.get_wish_count(self.account)
+
+        if self.account.game is Game.GENSHIN:
+            wishes = await _fetch_new_records(
+                lambda b: client.wish_history(b, authkey=authkey),
+                genshin.models.GenshinBannerType,
+                cursors,
+            )
+            wishes.sort(key=lambda x: x.id)
+
+            ambr = AmbrAPIClient(session=i.client.session)
+            item_ids = await ambr.fetch_item_name_to_id_map()
+
+            for wish in wishes:
+                _check_uid(wish, self.account)
+
+                banner_type = 301 if wish.banner_type == 400 else wish.banner_type
+                item_id = item_ids.get(wish.name)
+                if item_id is None:
+                    msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
+                    raise ValueError(msg)
+
+                records.append(
+                    GachaHistory(
+                        wish_id=wish.id,
+                        rarity=wish.rarity,
+                        time=wish.time,
+                        banner_type=banner_type,
+                        item_id=item_id,
+                        account=self.account,
+                        banner_id=None,
+                        game=Game.GENSHIN,
+                    )
+                )
+
+            mw_wishes = await _fetch_new_records(
+                lambda b: client.mw_wish_history(b, authkey=authkey),
+                (genshin.models.MWBannerType.STANDARD, genshin.models.MWBannerType.EVENT),
+                cursors,
+            )
+            mw_wishes.sort(key=lambda x: x.id)
+
+            for wish in mw_wishes:
+                _check_uid(wish, self.account)
+
+                banner_type = (
+                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
+                )
+
+                records.append(
+                    GachaHistory(
+                        wish_id=wish.id,
+                        rarity=wish.rarity,
+                        time=wish.time,
+                        banner_type=banner_type,
+                        item_id=wish.item_id,
+                        account=self.account,
+                        banner_id=wish.banner_id,
+                        game=Game.GENSHIN,
+                    )
+                )
+
+        elif self.account.game is Game.STARRAIL:
+            warps = await _fetch_new_records(
+                lambda b: client.warp_history(b, authkey=authkey),
+                genshin.models.StarRailBannerType,
+                cursors,
+            )
+            warps.sort(key=lambda x: x.id)
+
+            for warp in warps:
+                _check_uid(warp, self.account)
+
+                records.append(
+                    GachaHistory(
+                        wish_id=warp.id,
+                        rarity=warp.rarity,
+                        time=warp.time,
+                        banner_type=warp.banner_type,
+                        item_id=warp.item_id,
+                        account=self.account,
+                        banner_id=warp.banner_id,
+                        game=Game.STARRAIL,
+                    )
+                )
+
+        elif self.account.game is Game.ZZZ:
+            signals = await _fetch_new_records(
+                lambda b: client.signal_history(b, authkey=authkey),
+                genshin.models.ZZZBannerType,
+                cursors,
+            )
+            signals.sort(key=lambda x: x.id)
+
+            for signal in signals:
+                _check_uid(signal, self.account)
+
+            records.extend(_zzz_signal_records(signals, self.account))
+        else:
+            raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
+
+        await GachaHistory.bulk_create(records)
+
+        self.account.gacha_cursors = cursors
+        await self.account.save(update_fields=("gacha_cursors",))
+
+        after = await GachaHistory.get_wish_count(self.account)
+        await update_gacha_nums(i.client.pool, account=self.account)
+
+        await i.edit_original_response(embed=self.success_embed(after - before))
 
 
 class PCButton(Button[GachaImportView]):
@@ -176,6 +305,23 @@ class HoyolabImport(Button[GachaImportView]):
         await i.response.defer()
         await i.edit_original_response(embed=self.view.loading_embed, view=None)
 
+        if self.account.game is Game.ZZZ:
+            await self._import_from_chronicle(i)
+        else:
+            await self.view.import_with_authkey(i, await self._fetch_authkey())
+
+    async def _fetch_authkey(self) -> str:
+        client = GenshinClient(self.account)
+        try:
+            return await client.fetch_authkey(self.account.uid)
+        except genshin.InvalidCookies:
+            cookies = self.account.dict_cookies
+            if "stoken" not in cookies or "ltmid_v2" not in cookies:
+                raise
+            await client.update_cookie_token()
+            return await client.fetch_authkey(self.account.uid)
+
+    async def _import_from_chronicle(self, i: Interaction) -> None:
         client = GenshinClient(self.account)
         cursors = dict(self.account.gacha_cursors)
         signals = await _fetch_new_records(
@@ -214,16 +360,6 @@ class URLImport(Button[GachaImportView]):
         )
         self.account = account
 
-    def _check_uid(
-        self,
-        record: genshin.models.Wish
-        | genshin.models.Warp
-        | genshin.models.SignalSearch
-        | genshin.models.MWWish,
-    ) -> None:
-        if record.uid != self.account.uid:
-            raise UIDMismatchError(record.uid)
-
     async def callback(self, i: Interaction) -> Any:
         modal = EnterURLModal()
         modal.translate(self.view.locale)
@@ -234,7 +370,6 @@ class URLImport(Button[GachaImportView]):
             return
 
         url = modal.url.value
-        client = GenshinClient(self.account)
         try:
             authkey = genshin.utility.extract_authkey(url)
         except Exception as e:
@@ -244,116 +379,4 @@ class URLImport(Button[GachaImportView]):
             raise AuthkeyExtractError
 
         await i.edit_original_response(embed=self.view.loading_embed, view=None)
-
-        records: list[GachaHistory] = []
-        cursors = dict(self.account.gacha_cursors)
-        before = await GachaHistory.get_wish_count(self.account)
-
-        if self.account.game is Game.GENSHIN:
-            wishes = await _fetch_new_records(
-                lambda b: client.wish_history(b, authkey=authkey),
-                genshin.models.GenshinBannerType,
-                cursors,
-            )
-            wishes.sort(key=lambda x: x.id)
-
-            ambr = AmbrAPIClient(session=i.client.session)
-            item_ids = await ambr.fetch_item_name_to_id_map()
-
-            for wish in wishes:
-                self._check_uid(wish)
-
-                banner_type = 301 if wish.banner_type == 400 else wish.banner_type
-                item_id = item_ids.get(wish.name)
-                if item_id is None:
-                    msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
-                    raise ValueError(msg)
-
-                records.append(
-                    GachaHistory(
-                        wish_id=wish.id,
-                        rarity=wish.rarity,
-                        time=wish.time,
-                        banner_type=banner_type,
-                        item_id=item_id,
-                        account=self.account,
-                        banner_id=None,
-                        game=Game.GENSHIN,
-                    )
-                )
-
-            mw_wishes = await _fetch_new_records(
-                lambda b: client.mw_wish_history(b, authkey=authkey),
-                (genshin.models.MWBannerType.STANDARD, genshin.models.MWBannerType.EVENT),
-                cursors,
-            )
-            mw_wishes.sort(key=lambda x: x.id)
-
-            for wish in mw_wishes:
-                self._check_uid(wish)
-
-                banner_type = (
-                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
-                )
-
-                records.append(
-                    GachaHistory(
-                        wish_id=wish.id,
-                        rarity=wish.rarity,
-                        time=wish.time,
-                        banner_type=banner_type,
-                        item_id=wish.item_id,
-                        account=self.account,
-                        banner_id=wish.banner_id,
-                        game=Game.GENSHIN,
-                    )
-                )
-
-        elif self.account.game is Game.STARRAIL:
-            warps = await _fetch_new_records(
-                lambda b: client.warp_history(b, authkey=authkey),
-                genshin.models.StarRailBannerType,
-                cursors,
-            )
-            warps.sort(key=lambda x: x.id)
-
-            for warp in warps:
-                self._check_uid(warp)
-
-                records.append(
-                    GachaHistory(
-                        wish_id=warp.id,
-                        rarity=warp.rarity,
-                        time=warp.time,
-                        banner_type=warp.banner_type,
-                        item_id=warp.item_id,
-                        account=self.account,
-                        banner_id=warp.banner_id,
-                        game=Game.STARRAIL,
-                    )
-                )
-
-        elif self.account.game is Game.ZZZ:
-            signals = await _fetch_new_records(
-                lambda b: client.signal_history(b, authkey=authkey),
-                genshin.models.ZZZBannerType,
-                cursors,
-            )
-            signals.sort(key=lambda x: x.id)
-
-            for signal in signals:
-                self._check_uid(signal)
-
-            records.extend(_zzz_signal_records(signals, self.account))
-        else:
-            raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
-
-        await GachaHistory.bulk_create(records)
-
-        self.account.gacha_cursors = cursors
-        await self.account.save(update_fields=("gacha_cursors",))
-
-        after = await GachaHistory.get_wish_count(self.account)
-        await update_gacha_nums(i.client.pool, account=self.account)
-
-        await i.edit_original_response(embed=self.view.success_embed(after - before))
+        await self.view.import_with_authkey(i, authkey)

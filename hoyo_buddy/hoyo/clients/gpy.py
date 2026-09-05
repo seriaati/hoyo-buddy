@@ -126,6 +126,12 @@ class GenshinClient(ProxyGenshinClient):
             use_proxy=False,
         )
         self._account = account
+        self.on_cookie_update = self._save_cookies
+
+    async def _save_cookies(self, cookies: Mapping[str, str]) -> None:
+        self._account.cookies = "; ".join(f"{k}={v}" for k, v in cookies.items())
+        vars(self._account).pop("dict_cookies", None)
+        await self._account.save(update_fields=("cookies",))
 
     async def _request_mimo(
         self,

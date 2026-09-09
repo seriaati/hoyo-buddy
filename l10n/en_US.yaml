@@ -698,6 +698,7 @@ card_settings_hl_special_stats_button_label: Highlight special stats
 card_settings_hl_stats_desc: Emphasize a character's important stats with color.
 challenge_command_abyss_desc: Generate Spiral Abyss card
 challenge_command_theater_desc: Generate Imaginarium Theater card
+lunar_arcana_command_description: View your Imaginarium Theater Lunar Arcana card collection
 challenge_command_moc_desc: Generate Memory of Chaos card
 challenge_command_pf_desc: Generate Pure Fiction card
 challenge_command_apc_shadow_desc: Generate Apocalyptic Shadow card
@@ -893,3 +894,9 @@ enemy_weaknesses_field_name: Weaknesses
 enemy_resistances_field_name: DMG RES
 enemy_rewards_field_name: "Rewards (Equilibrium Lv. {level})"
 enemy_rewards_character_exp: "Character EXP x{exp}"
+lunar_arcana_collection_title: Lunar Arcana Collection
+lunar_arcana_browse_button_label: Browse cards
+lunar_arcana_back_button_label: Back to collection
+lunar_arcana_select_placeholder: Select a card...
+lunar_arcana_owned_count: "Owned: ×{count}"
+lunar_arcana_card_locked: Not obtained yet

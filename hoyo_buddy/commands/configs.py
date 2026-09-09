@@ -37,6 +37,7 @@ type CommandName = Literal[
     "check-in",
     "notes",
     "exploration",
+    "lunar-arcana",
     "redeem",
     "stats",
     "geetest",
@@ -214,6 +215,13 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str(
             "View your exploration statistics in Genshin Impact",
             key="exploration_command_description",
+        ),
+    ),
+    "lunar-arcana": CommandConfig(
+        games=(Game.GENSHIN,),
+        description=locale_str(
+            "View your Imaginarium Theater Lunar Arcana card collection",
+            key="lunar_arcana_command_description",
         ),
     ),
     "redeem": CommandConfig(

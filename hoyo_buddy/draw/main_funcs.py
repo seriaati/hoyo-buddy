@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from genshin.models import (
         FullBattlesuit,
         ImgTheaterData,
+        LunarArcanaCollection,
         PartialGenshinUserStats,
         SpiralAbyss,
         StarRailAPCShadow,
@@ -412,6 +413,20 @@ async def draw_img_theater_card(
         funcs.genshin.ImgTheaterCard(
             data, chara_consts, character_icons, draw_input.locale, traveler_element
         ).draw,
+    )
+
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_lunar_arcana_card(draw_input: DrawInput, collection: LunarArcanaCollection) -> File:
+    await download_images(
+        [card.icon for card in collection.cards if card.unlocked], draw_input.session
+    )
+
+    buffer = await draw_input.loop.run_in_executor(
+        draw_input.executor,
+        funcs.genshin.LunarArcanaCollectionCard(collection, draw_input.locale).draw,
     )
 
     buffer.seek(0)

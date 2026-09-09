@@ -11,6 +11,7 @@ from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
+from hoyo_buddy.ui.hoyo.genshin.lunar_arcana import LunarArcanaView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
 from hoyo_buddy.ui.hoyo.web_events import WebEventsView
 from hoyo_buddy.ui.settings.button import FakeSettingsButton
@@ -132,6 +133,31 @@ class Hoyo(commands.Cog):
         await view.start(i)
 
         await show_anniversary_dismissible(i)
+
+    @app_commands.command(
+        name=app_commands.locale_str("lunar-arcana"),
+        description=COMMANDS["lunar-arcana"].description,
+    )
+    @app_commands.rename(**get_rename_kwargs(user=True, account=True))
+    @app_commands.describe(**get_describe_kwargs(user=True, account=True))
+    async def lunar_arcana_command(
+        self,
+        i: Interaction,
+        user: User = None,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["lunar-arcana"].games)
+        ] = None,
+    ) -> None:
+        await i.response.defer(ephemeral=ephemeral(i))
+
+        user = user or i.user
+        account = account or await self.bot.get_account(
+            user.id, COMMANDS["lunar-arcana"].games, COMMANDS["lunar-arcana"].platform
+        )
+        locale = await get_locale(i)
+
+        view = LunarArcanaView(account, author=i.user, locale=locale)
+        await view.start(i)
 
     @app_commands.command(
         name=app_commands.locale_str("redeem"), description=COMMANDS["redeem"].description
@@ -281,6 +307,7 @@ class Hoyo(commands.Cog):
         )
 
     @exploration_command.autocomplete("account")
+    @lunar_arcana_command.autocomplete("account")
     @events_command.autocomplete("account")
     @notes_command.autocomplete("account")
     @redeem_command.autocomplete("account")

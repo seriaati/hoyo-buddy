@@ -991,6 +991,7 @@ PLAYER_GIRL_GACHA_ART = "https://img.seria.moe/EiTcXToCGWUYtfDe.png"
 PLAYER_BOY_GACHA_ART = "https://img.seria.moe/BPFICCXWkbOJrsqe.png"
 MANIKEN_BOY_GACHA_ART = "https://img.seria.moe/XUFQgIiAtKhRdzwD.png"
 MANIKEN_GIRL_GACHA_ART = "https://img.seria.moe/fqEPjXazbfMQxuFX.png"
+LUNAR_ARCANA_LOCKED_CARD_URL = "https://img.seria.moe/UMDxEQAhDdIIzqeN.png"
 
 RELIC_PROP_ID_TO_ENKA_TYPE: dict[int, enka.hsr.StatType] = {
     27: enka.hsr.StatType.HP_DELTA,

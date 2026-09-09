@@ -5,5 +5,6 @@ from .characters import draw_character_card
 from .exploration import ExplorationCard
 from .hard_challenge import HardChallengeCard
 from .img_theater import ImgTheaterCard
+from .lunar_arcana import LunarArcanaCollectionCard
 from .notes import draw_genshin_notes_card
 from .team_card import GITeamCard

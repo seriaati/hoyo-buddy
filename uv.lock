@@ -949,7 +949,7 @@ dependencies = [
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#9a3ec4d7cca2db08458772bdb1e50377fccb531f" }
+source = { git = "https://github.com/seriaati/hb-data#1b2bb7e39882777acc2d39a2eea51de5339f5f2d" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

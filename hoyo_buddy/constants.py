@@ -696,6 +696,7 @@ ZZZ_ENKA_SPECIALTY_TO_GPY_SPECIALTY: Final[
     enka.zzz.ProfessionType.SUPPORT: genshin.models.ZZZSpecialty.SUPPORT,
     enka.zzz.ProfessionType.STUN: genshin.models.ZZZSpecialty.STUN,
     enka.zzz.ProfessionType.RUPTURE: genshin.models.ZZZSpecialty.RUPTURE,
+    enka.zzz.ProfessionType.ARMORER: genshin.models.ZZZSpecialty.ARMORER,
     enka.zzz.ProfessionType.UNKNOWN: None,
 }
 

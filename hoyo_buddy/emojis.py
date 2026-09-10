@@ -125,6 +125,7 @@ ZZZ_SPECIALTY_EMOJIS: dict[genshin.models.ZZZSpecialty, str] = {
     genshin.models.ZZZSpecialty.STUN: "<:zzzProfessionMace:1263458199068082207>",
     genshin.models.ZZZSpecialty.SUPPORT: "<:zzzProfessionBullet:1263458197453148191>",
     genshin.models.ZZZSpecialty.RUPTURE: "<:Rupture:1380806002869403748>",
+    genshin.models.ZZZSpecialty.ARMORER: "<:ZZZArmorer:1547604369120165959>",
 }
 
 ARTIFACT_POS_EMOJIS: dict[str, str] = {

@@ -15,6 +15,7 @@ from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import DELETE, EXPORT
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models import UIGFHk4eRecord, UIGFHkrpgRecord, UIGFInfo, UIGFNapRecord, UIGFv4Record
 from hoyo_buddy.ui import Button, View
 from hoyo_buddy.utils import ephemeral
 
@@ -107,38 +108,41 @@ class ExportButton(Button[GachaLogManageView]):
             emoji=EXPORT,
         )
 
+    def _to_uigf_record(self, wish: GachaHistory) -> UIGFv4Record:
+        game = self.view.account.game
+        fields: dict[str, Any] = {
+            "id": wish.wish_id,
+            "item_id": wish.item_id,
+            "banner_type": wish.banner_type,
+            "rarity": wish.rarity - 1 if game is Game.ZZZ else wish.rarity,
+            "time": wish.time.astimezone(datetime.UTC),
+        }
+        if game is Game.GENSHIN:
+            return UIGFHk4eRecord(gacha_type=wish.banner_type, **fields)
+        gacha_id = str(wish.banner_id) if wish.banner_id is not None else None
+        if game is Game.STARRAIL:
+            return UIGFHkrpgRecord(gacha_id=gacha_id or "", **fields)
+        return UIGFNapRecord(gacha_id=gacha_id, **fields)
+
     async def callback(self, i: Interaction) -> Any:
         await i.response.defer(ephemeral=ephemeral(i))
 
-        info = {
-            "export_timestamp": int(time.time()),
-            "export_app": "Hoyo Buddy",
-            "export_app_version": i.client.version,
-            "version": "v4.0",
-        }
+        info = UIGFInfo(
+            export_timestamp=int(time.time()),
+            export_app="Hoyo Buddy",
+            export_app_version=i.client.version,
+            version="v4.0",
+        )
         game_info = {
             "uid": self.view.account.uid,
             "timezone": 0,
             "list": [
-                {
-                    "id": str(x.wish_id),
-                    "uigf_gacha_type": str(x.banner_type),
-                    "gacha_type": str(x.banner_type),
-                    "item_id": str(x.item_id),
-                    "time": x.time.astimezone(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S"),
-                    "rank_type": str(x.rarity - 1)
-                    if self.view.account.game is Game.ZZZ
-                    else str(x.rarity),
-                }
-                async for x in GachaHistory.filter(account=self.view.account)
+                self._to_uigf_record(wish).model_dump(by_alias=True, exclude_defaults=True)
+                async for wish in GachaHistory.filter(account=self.view.account)
             ],
         }
 
-        if self.view.account.game is Game.STARRAIL:
-            for item in game_info["list"]:
-                item["gacha_id"] = ""
-
-        result: dict[str, Any] = {"info": info}
+        result: dict[str, Any] = {"info": info.model_dump()}
         result[UIGF_GAME_KEYS[self.view.account.game]] = [game_info]
 
         json_dump = orjson.dumps(result, option=orjson.OPT_INDENT_2)

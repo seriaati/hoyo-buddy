@@ -1,9 +1,19 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Self
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import (
+    AliasChoices,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_serializer,
+    field_validator,
+    model_validator,
+)
+
+from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
 
 if TYPE_CHECKING:
     from pydantic import ValidationInfo
@@ -13,7 +23,14 @@ __all__ = (
     "StarDBRecord",
     "StarRailStationRecord",
     "StarwardZZZRecord",
+    "UIGFGameData",
+    "UIGFHk4eRecord",
+    "UIGFHk4eUgcRecord",
+    "UIGFHkrpgRecord",
+    "UIGFInfo",
+    "UIGFNapRecord",
     "UIGFRecord",
+    "UIGFv4Record",
     "ZZZRngMoeRecord",
 )
 
@@ -62,7 +79,7 @@ class StarDBRecord(BaseModel):
 
 
 class UIGFRecord(BaseModel):
-    banner_type: int = Field(alias="uigf_gacha_type")
+    banner_type: int = Field(validation_alias=AliasChoices("uigf_gacha_type", "gacha_type"))
     item_id: int
     tz_hour: int = Field(alias="timezone")
     time: datetime.datetime
@@ -76,13 +93,95 @@ class UIGFRecord(BaseModel):
             tzinfo=datetime.timezone(datetime.timedelta(hours=info.data["tz_hour"]))
         )
 
-    @model_validator(mode="before")
+
+class UIGFInfo(BaseModel):
+    export_timestamp: int
+    export_app: str
+    export_app_version: str
+    version: str
+
+
+class UIGFv4Record(BaseModel):
+    model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
+
+    id: int
+    item_id: int
+    banner_type: int
+    rarity: int = Field(alias="rank_type")
+    time: datetime.datetime
+    name: str | None = None
+    item_type: str | None = None
+    count: str | None = None
+
+    @property
+    def banner_id(self) -> int | None:
+        return None
+
+    @field_serializer("id", "item_id", "banner_type", "rarity")
+    def __serialize_int(self, value: int) -> str:
+        return str(value)
+
+    @field_serializer("time")
+    def __serialize_time(self, value: datetime.datetime) -> str:
+        return value.strftime("%Y-%m-%d %H:%M:%S")
+
+
+class UIGFHk4eRecord(UIGFv4Record):
+    banner_type: int = Field(alias="uigf_gacha_type")
+    gacha_type: int
+
+    @field_serializer("gacha_type")
+    def __serialize_gacha_type(self, value: int) -> str:
+        return str(value)
+
+
+class UIGFHkrpgRecord(UIGFv4Record):
+    banner_type: int = Field(alias="gacha_type")
+    gacha_id: str
+
+    @property
+    def banner_id(self) -> int | None:
+        return int(self.gacha_id) if self.gacha_id else None
+
+
+class UIGFNapRecord(UIGFv4Record):
+    banner_type: int = Field(alias="gacha_type")
+    gacha_id: str | None = None
+
+    @property
+    def banner_id(self) -> int | None:
+        return int(self.gacha_id) if self.gacha_id else None
+
+
+class UIGFHk4eUgcRecord(UIGFv4Record):
+    banner_type: int = Field(alias="op_gacha_type")
+    schedule_id: str
+    item_name: str
+
+    @property
+    def banner_id(self) -> int:
+        return int(self.schedule_id)
+
+    @field_validator("banner_type")
     @classmethod
-    def __find_gacha_type(cls, values: dict[str, Any]) -> dict[str, Any]:
-        banner_type = values.get("uigf_gacha_type")
-        if banner_type is None:
-            values["uigf_gacha_type"] = values["gacha_type"]
-        return values
+    def __unify_banner_type(cls, value: int) -> int:
+        return 2000 if value in MW_EVENT_BANNER_TYPES else value
+
+
+class UIGFGameData[RecordT: UIGFv4Record](BaseModel):
+    model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
+
+    uid: int
+    timezone: int
+    lang: str | None = None
+    records: list[RecordT] = Field(alias="list")
+
+    @model_validator(mode="after")
+    def __add_timezone(self) -> Self:
+        tz = datetime.timezone(datetime.timedelta(hours=self.timezone))
+        for record in self.records:
+            record.time = record.time.replace(tzinfo=tz)
+        return self
 
 
 class SRGFRecord(BaseModel):

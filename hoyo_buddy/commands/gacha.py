@@ -28,7 +28,13 @@ from hoyo_buddy.models import (
     StarDBRecord,
     StarRailStationRecord,
     StarwardZZZRecord,
+    UIGFGameData,
+    UIGFHk4eRecord,
+    UIGFHk4eUgcRecord,
+    UIGFHkrpgRecord,
+    UIGFNapRecord,
     UIGFRecord,
+    UIGFv4Record,
     ZZZRngMoeRecord,
 )
 from hoyo_buddy.ui.hoyo.gacha.import_ import GachaImportView
@@ -351,6 +357,18 @@ class GachaCommand:
 
         return 0
 
+    @staticmethod
+    def _parse_uigf_game_data(data: dict[str, Any], game: Game) -> list[UIGFv4Record]:
+        if game is Game.GENSHIN:
+            return list(UIGFGameData[UIGFHk4eRecord].model_validate(data).records)
+        if game is Game.STARRAIL:
+            return list(UIGFGameData[UIGFHkrpgRecord].model_validate(data).records)
+        if game is Game.ZZZ:
+            return list(UIGFGameData[UIGFNapRecord].model_validate(data).records)
+
+        msg = f"UIGF v4.0 import is not implemented for {game}"
+        raise ValueError(msg)
+
     @classmethod
     async def _uigf_import(
         cls, i: Interaction, *, account: HoyoAccount, file: discord.Attachment
@@ -377,9 +395,16 @@ class GachaCommand:
             if game_data is None:
                 raise UIDMismatchError(account.uid)
 
-            tz_hour = game_data["timezone"]
-            records = await cls._uigf_fill_item_rarities(game_data["list"], account.game)
-            records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
+            game_data["list"] = await cls._uigf_fill_item_rarities(game_data["list"], account.game)
+            records = cls._parse_uigf_game_data(game_data, account.game)
+
+            if account.game is Game.GENSHIN:
+                ugc_data = next(
+                    (d for d in data.get("hk4e_ugc", []) if int(d["uid"]) == account.uid), None
+                )
+                if ugc_data is not None:
+                    records.extend(UIGFGameData[UIGFHk4eUgcRecord].model_validate(ugc_data).records)
+
         else:
             uid = str(data["info"]["uid"])
             if uid != str(account.uid):
@@ -424,7 +449,7 @@ class GachaCommand:
                     banner_type=record.banner_type,
                     account=account,
                     time=record.time,
-                    banner_id=None,
+                    banner_id=record.banner_id if isinstance(record, UIGFv4Record) else None,
                     game=account.game,
                 )
                 for record in records

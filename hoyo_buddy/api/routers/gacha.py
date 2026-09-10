@@ -47,9 +47,9 @@ async def _load_gacha_data(game: Game, locale: Locale) -> GachaData:
             mw_costumes = client.get_mw_costumes()
             mw_items = client.get_mw_items()
             for costume in mw_costumes:
-                data[str(costume.id)] = {"name": costume.name, "icon": ""}
+                data[str(costume.id)] = {"name": costume.name, "icon": costume.icon or ""}
             for item in mw_items:
-                data[str(item.id)] = {"name": item.name, "icon": ""}
+                data[str(item.id)] = {"name": item.name, "icon": item.icon}
 
     return data
 

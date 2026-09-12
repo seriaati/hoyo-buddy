@@ -11,7 +11,6 @@ from discord import File
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS, ZZZ_TEAM_IMAGE_OVERRIDES
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
-from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
@@ -20,7 +19,6 @@ from hoyo_buddy.models import (
     UnownedHSRCharacter,
     ZZZDrawData,
 )
-from hoyo_buddy.utils.misc import get_game_latest_stable_version
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
@@ -28,7 +26,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    import aiohttp
     import enka
     import genshin
     from genshin.models import (
@@ -479,7 +476,6 @@ async def fetch_zzz_draw_data(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     *,
     template: Literal[1, 2, 3, 4],
-    session: aiohttp.ClientSession,
     use_m3_art: bool = False,
 ) -> ZZZDrawData:
     name_datas_path = "zzz_name_data.json"
@@ -526,43 +522,43 @@ async def fetch_zzz_draw_data(
             agent_images=agent_images,
         )
 
-    version: str | None = None
-
     async with hb_data.ZZZClient() as client:
         data_characters = client.get_characters()
         data_drive_discs = client.get_drive_discs()
 
         # Fetch name data
-        if fetch_name_data:
-            name_datas.update(
-                {
-                    char.id: {"short_name": char.name, "full_name": char.full_name}
-                    for char in data_characters
-                }
-            )
-            await JSONFile.write(name_datas_path, name_datas)
+        name_datas.update(
+            {
+                char.id: {"short_name": char.name, "full_name": char.full_name}
+                for char in data_characters
+            }
+        )
+        await JSONFile.write(name_datas_path, name_datas)
 
         # Fetch agent images
-        if fetch_agent_images and template in {1, 2}:
-            template = cast("Literal[1, 2]", template)
-            if version is None:
-                version = await get_game_latest_stable_version(session, game=Game.ZZZ)
-
-            agent_images = _build_zzz_agent_images(data_characters, template, use_m3_art=use_m3_art)
-            await JSONFile.write(_get_images_path(template, use_m3_art=use_m3_art), agent_images)
+        await JSONFile.write(
+            "zzz_m3_cinema_art.json", {char.id: char.phase_2_cinema_art for char in data_characters}
+        )
+        await JSONFile.write(
+            "zzz_m6_cinema_art.json", {char.id: char.phase_3_cinema_art for char in data_characters}
+        )
+        await JSONFile.write(
+            "zzz_images.json",
+            {char.id: char.image for char in data_characters}
+            | {skin.id: skin.image for char in data_characters for skin in char.skins},
+        )
 
         # Fetch disc icons
-        if fetch_disc_icons:
-            for agent in agents:
-                for disc in agent.discs:
-                    disc_item = next(
-                        (d_disc for d_disc in data_drive_discs if d_disc.id == disc.id), None
-                    )
-                    if disc_item is None:
-                        continue
-                    disc_icons[disc.id] = disc_item.icon
+        for agent in agents:
+            for disc in agent.discs:
+                disc_item = next(
+                    (d_disc for d_disc in data_drive_discs if d_disc.id == disc.id), None
+                )
+                if disc_item is None:
+                    continue
+                disc_icons[disc.id] = disc_item.icon
 
-            await JSONFile.write(disc_icons_path, disc_icons)
+        await JSONFile.write(disc_icons_path, disc_icons)
 
     return ZZZDrawData(
         name_data={k: AgentNameData(**v) for k, v in name_datas.items()},
@@ -585,16 +581,27 @@ async def draw_zzz_build_card(
     hl_special_stats: bool,
     use_m3_art: bool,
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data(
-        [agent], template=template, use_m3_art=use_m3_art, session=draw_input.session
-    )
+    draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 
     if template == 1:
-        image = draw_data.agent_images[agent.outfit_id or agent.id]
+        image = draw_data.agent_images.get(agent.outfit_id or agent.id, "")
     elif template == 2:
-        image = draw_data.agent_images[agent.id]
+        image = draw_data.agent_images.get(agent.id, "")
     else:  # 3, 4
-        image = custom_image or draw_data.agent_images[agent.id]
+        image = custom_image or draw_data.agent_images.get(agent.id, "")
+
+    if not image:
+        async with hb_data.ZZZClient() as client:
+            await client.download(force=True)
+
+    draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
+
+    if template == 1:
+        image = draw_data.agent_images.get(agent.outfit_id or agent.id, "")
+    elif template == 2:
+        image = draw_data.agent_images.get(agent.id, "")
+    else:  # 3, 4
+        image = custom_image or draw_data.agent_images.get(agent.id, "")
 
     urls: list[str] = [image]
     urls.extend(draw_data.disc_icons.values())
@@ -699,7 +706,7 @@ async def draw_zzz_team_card(
     agent_hl_substat_map: dict[int, list[int]],
     hl_special_stats: dict[int, bool],
 ) -> BytesIO:
-    draw_data = await fetch_zzz_draw_data(agents, template=3, session=draw_input.session)
+    draw_data = await fetch_zzz_draw_data(agents, template=3)
 
     urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)

@@ -410,6 +410,22 @@ class GachaCommand:
             records = await cls._uigf_fill_item_rarities(data["list"], account.game)
             records = [UIGFRecord(timezone=tz_hour, **record) for record in records]
 
+        if is_v4 and account.game is Game.GENSHIN and "hk4e_ugc" in data:
+            ugc_data = next((d for d in data["hk4e_ugc"] if int(d["uid"]) == account.uid), None)
+            if ugc_data:
+                tz_hour = ugc_data["timezone"]
+                for record in ugc_data["list"]:
+                    records.append(
+                        UIGFRecord(
+                            timezone=tz_hour,
+                            uigf_gacha_type=record["op_gacha_type"],
+                            rank_type=record["rank_type"],
+                            item_id=record["item_id"],
+                            time=record["time"],
+                            id=record["id"],
+                        )
+                    )
+
         records.sort(key=lambda x: x.id)
 
         before = await GachaHistory.get_wish_count(account)

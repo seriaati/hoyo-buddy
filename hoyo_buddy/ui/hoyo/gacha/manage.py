@@ -9,7 +9,7 @@ import discord
 import orjson
 from discord import ButtonStyle
 
-from hoyo_buddy.constants import UIGF_GAME_KEYS
+from hoyo_buddy.constants import MW_BANNER_TYPES, UIGF_GAME_KEYS
 from hoyo_buddy.db import GachaHistory, get_dyk
 from hoyo_buddy.embeds import DefaultEmbed, ErrorEmbed
 from hoyo_buddy.emojis import DELETE, EXPORT
@@ -114,8 +114,11 @@ class ExportButton(Button[GachaLogManageView]):
             "export_timestamp": int(time.time()),
             "export_app": "Hoyo Buddy",
             "export_app_version": i.client.version,
-            "version": "v4.0",
+            "version": "v4.2",
         }
+
+        is_genshin = self.view.account.game is Game.GENSHIN
+
         game_info = {
             "uid": self.view.account.uid,
             "timezone": 0,
@@ -131,6 +134,7 @@ class ExportButton(Button[GachaLogManageView]):
                     else str(x.rarity),
                 }
                 async for x in GachaHistory.filter(account=self.view.account)
+                if not is_genshin or x.banner_type not in MW_BANNER_TYPES
             ],
         }
 
@@ -141,9 +145,43 @@ class ExportButton(Button[GachaLogManageView]):
         result: dict[str, Any] = {"info": info}
         result[UIGF_GAME_KEYS[self.view.account.game]] = [game_info]
 
+        if is_genshin:
+            from hoyo_buddy.utils.gacha import fetch_mw_metadata
+            from hoyo_buddy.constants import locale_to_hoyo_lang
+
+            lang = locale_to_hoyo_lang(self.view.locale)
+            mw_metadata = await fetch_mw_metadata(lang)
+
+            hk4e_ugc = {
+                "uid": self.view.account.uid,
+                "timezone": 0,
+                "lang": lang,
+                "list": [
+                    {
+                        "id": str(x.wish_id),
+                        "schedule_id": str(x.banner_id) if x.banner_id else "0",
+                        "item_type": mw_metadata.get(str(x.item_id), {}).get(
+                            "type", "BEYOND_MATERIAL_COSTUME"
+                        ),
+                        "item_id": str(x.item_id),
+                        "item_name": mw_metadata.get(str(x.item_id), {}).get(
+                            "name", "Unknown Item"
+                        ),
+                        "rank_type": str(x.rarity),
+                        "time": x.time.astimezone(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S"),
+                        "op_gacha_type": str(x.banner_type),
+                    }
+                    async for x in GachaHistory.filter(
+                        account=self.view.account, banner_type__in=MW_BANNER_TYPES
+                    )
+                ],
+            }
+            if hk4e_ugc["list"]:
+                result["hk4e_ugc"] = [hk4e_ugc]
+
         json_dump = orjson.dumps(result, option=orjson.OPT_INDENT_2)
         file_ = discord.File(
-            filename=f"{self.view.account.uid}_hoyo_buddy_gacha_log_export_uigf_v4_0.json",
+            filename=f"{self.view.account.uid}_hoyo_buddy_gacha_log_export_uigf_v4_2.json",
             fp=io.BytesIO(json_dump),
         )
         await i.followup.send(file=file_, ephemeral=True)

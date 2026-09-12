@@ -140,7 +140,7 @@ from hoyo_buddy.l10n import LocaleStr
 
 # en_US.yaml:  account_deleted_description: "{account} has been deleted."
 label = LocaleStr(key="account_deleted_description", account=str(account))
-text = label.translate(locale)          # or translator.translate(label, locale)
+text = label.translate(locale)  # or translator.translate(label, locale)
 ```
 
 Key points:

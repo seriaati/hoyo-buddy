@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     # Disc and w-engine
     ZZZPropertyType.BASE_ATK: "ATK.png",
+    ZZZPropertyType.BASE_DEF: "DEF.png",
+    ZZZPropertyType.BASE_HP: "HP.png",
+    ZZZPropertyType.BASE_PEN: "PEN.png",
     ZZZPropertyType.FLAT_HP: "HP.png",
     ZZZPropertyType.FLAT_ATK: "ATK.png",
     ZZZPropertyType.FLAT_DEF: "DEF.png",
@@ -55,6 +58,7 @@ STAT_ICONS: Final[dict[ZZZPropertyType, str]] = {
     ZZZPropertyType.AGENT_IMPACT: "IMPACT.png",
     ZZZPropertyType.AGENT_ADRENALINE: "ADRENALINE.png",
     ZZZPropertyType.AGENT_SHEER_FORCE: "SHEER_FORCE.png",
+    ZZZPropertyType.AGENT_LACERATION_DMG: "LACERATION_DMG.png",
     # Agent DMG Bonus
     ZZZPropertyType.PHYSICAL_DMG_BONUS: "PHYSICAL.png",
     ZZZPropertyType.FIRE_DMG_BONUS: "FIRE.png",
@@ -122,6 +126,7 @@ def get_props(
     ]
 
     energy_index = 4
+    laceration_index = 8
     pen_ratio_index = 9
 
     # Enka chars have all props, while hoyolab chars only have some,
@@ -134,6 +139,14 @@ def get_props(
         )
         props.insert(
             pen_ratio_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_SHEER_FORCE)
+        )
+    elif agent.specialty is ZZZSpecialty.ARMORER:
+        props.insert(
+            laceration_index,
+            dutils.get(agent.properties, type=ZZZPropertyType.AGENT_LACERATION_DMG),
+        )
+        props.insert(
+            pen_ratio_index, dutils.get(agent.properties, type=ZZZPropertyType.AGENT_PEN_RATIO)
         )
     else:
         props.insert(

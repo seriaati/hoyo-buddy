@@ -481,6 +481,7 @@ class GenshinClient(ProxyGenshinClient):
                     )
                 ]
                 if agent.w_engine.sub_stat is not None  # pyright: ignore[reportUnnecessaryComparison]
+                and agent.w_engine.sub_stat.type in ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY
                 else [],
                 main_properties=[
                     models.ZZZStat(
@@ -488,7 +489,9 @@ class GenshinClient(ProxyGenshinClient):
                         type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[agent.w_engine.main_stat.type],
                         value=agent.w_engine.main_stat.formatted_value,
                     )
-                ],
+                ]
+                if agent.w_engine.main_stat.type in ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY
+                else [],
             )
         props = [
             models.ZZZStat(
@@ -497,6 +500,7 @@ class GenshinClient(ProxyGenshinClient):
                 value=stat.formatted_value,
             )
             for stat_type, stat in agent.stats.items()
+            if stat_type in ZZZ_ENKA_AGENT_STAT_TYPE_TO_ZZZ_AGENT_PROPERTY
         ]
         discs = [
             models.ZZZDiscDrive(
@@ -508,7 +512,9 @@ class GenshinClient(ProxyGenshinClient):
                         type=ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY[disc.main_stat.type],
                         value=disc.main_stat.formatted_value,
                     )
-                ],
+                ]
+                if disc.main_stat.type in ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY
+                else [],
                 properties=[
                     models.ZZZStat(
                         name=prop.name,
@@ -516,6 +522,7 @@ class GenshinClient(ProxyGenshinClient):
                         value=prop.formatted_value,
                     )
                     for prop in disc.sub_stats
+                    if prop.type in ZZZ_ENKA_STAT_TO_GPY_ZZZ_PROPERTY
                 ],
                 rarity=ZZZ_RARITY_NUM_TO_RARITY[disc.rarity_num],
                 position=disc.slot,

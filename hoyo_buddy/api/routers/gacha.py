@@ -43,13 +43,20 @@ async def _load_gacha_data(game: Game, locale: Locale) -> GachaData:
     data: GachaData = await JSONFile.read(filename, default={})
 
     if game is Game.GENSHIN:
-        async with hb_data.GIClient() as client:
-            mw_costumes = client.get_mw_costumes()
-            mw_items = client.get_mw_items()
-            for costume in mw_costumes:
-                data[str(costume.id)] = {"name": costume.name, "icon": ""}
-            for item in mw_items:
-                data[str(item.id)] = {"name": item.name, "icon": ""}
+        from hoyo_buddy.utils.gacha import fetch_mw_metadata
+
+        mw_data = await fetch_mw_metadata(lang)
+        for item_id, item_info in mw_data.items():
+            icon_url = (
+                f"https://ugc.studiobutter.io.vn/assets/{item_info['icon']}.png"
+                if item_info.get("icon")
+                else ""
+            )
+            data[str(item_id)] = {
+                "name": item_info["name"],
+                "icon": icon_url,
+                "type": item_info.get("type", ""),
+            }
 
     return data
 

@@ -439,6 +439,7 @@ AMBR_CITY_TO_CITY = {
     ambr.City.FONTAINE: GenshinCity.FONTAINE,
     ambr.City.NATLAN: GenshinCity.NATLAN,
     ambr.City.NOD_KRAI: GenshinCity.NOD_KRAI,
+    ambr.City.SNEZHNAYA: GenshinCity.SNEZHNAYA,
 }
 AMBR_WEAPON_TYPES = {
     "WEAPON_SWORD_ONE_HAND": 1,

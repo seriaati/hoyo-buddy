@@ -84,6 +84,7 @@ class GenshinCity(StrEnum):
     FONTAINE = "Fontaine"
     NATLAN = "Natlan"
     NOD_KRAI = "nod_krai"
+    SNEZHNAYA = "snezhnaya"
 
 
 class HSRElement(StrEnum):

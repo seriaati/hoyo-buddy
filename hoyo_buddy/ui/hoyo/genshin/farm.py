@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from discord import ButtonStyle
 
@@ -50,9 +50,14 @@ class FarmView(View):
 
         self.clear_items()
         self.add_item(WeekdaySelect(self._weekday))
-        for index, city in enumerate(list(GenshinCity)):
-            self.add_item(CityButton(city=city, current=self._city, row=index % 3 + 1))
+        self.add_item(CitySelect(self._city))
         self.add_item(ReminderButton())
+
+        await i.edit_original_response(view=self, **await self.get_message_kwargs(i))
+        self.message = await i.original_response()
+
+    async def get_message_kwargs(self, i: Interaction) -> dict[str, Any]:
+        content = await get_dyk(i)
 
         if self._weekday == 6:
             embed = DefaultEmbed(
@@ -60,11 +65,7 @@ class FarmView(View):
                 title=LocaleStr(key="farm_view.sundays"),
                 description=LocaleStr(key="farm_view.happy_farming"),
             )
-            await i.edit_original_response(
-                embed=embed, view=self, attachments=[], content=await get_dyk(i)
-            )
-            self.message = await i.original_response()
-            return
+            return {"embed": embed, "attachments": [], "content": content}
 
         draw_input = DrawInput(
             dark_mode=self._dark_mode,
@@ -77,11 +78,7 @@ class FarmView(View):
         file_ = await draw_farm_card(
             draw_input, await FarmDataFetcher.fetch(self._weekday, city=self._city)
         )
-
-        await i.edit_original_response(
-            attachments=[file_], view=self, embed=None, content=await get_dyk(i)
-        )
-        self.message = await i.original_response()
+        return {"attachments": [file_], "embed": None, "content": content}
 
 
 class WeekdaySelect(Select[FarmView]):
@@ -99,8 +96,8 @@ class WeekdaySelect(Select[FarmView]):
 
     async def callback(self, i: Interaction) -> None:
         self.view._weekday = int(self.values[0])
-        self.update_options_defaults()
-        await self.view.start(i)
+        await self.set_loading_state(i)
+        await self.unset_loading_state(i, **await self.view.get_message_kwargs(i))
 
 
 class ReminderButton(Button[FarmView]):
@@ -119,17 +116,23 @@ class ReminderButton(Button[FarmView]):
         await i.response.send_message(embed=embed, ephemeral=True)
 
 
-class CityButton(Button[FarmView]):
-    def __init__(self, *, city: GenshinCity, current: GenshinCity, row: int) -> None:
+class CitySelect(Select[FarmView]):
+    def __init__(self, current: GenshinCity) -> None:
         super().__init__(
-            label=EnumStr(city),
-            style=ButtonStyle.blurple if city == current else ButtonStyle.secondary,
-            emoji=GENSHIN_CITY_EMOJIS[city],
-            custom_id=f"city_{city.value.lower()}_btn",
-            row=row,
+            placeholder=LocaleStr(key="farm_view.city_select.placeholder"),
+            options=[
+                SelectOption(
+                    label=EnumStr(city),
+                    value=city.value,
+                    emoji=GENSHIN_CITY_EMOJIS[city],
+                    default=city == current,
+                )
+                for city in GenshinCity
+            ],
+            row=1,
         )
-        self._city = city
 
     async def callback(self, i: Interaction) -> None:
-        self.view._city = self._city
-        await self.view.start(i)
+        self.view._city = GenshinCity(self.values[0])
+        await self.set_loading_state(i)
+        await self.unset_loading_state(i, **await self.view.get_message_kwargs(i))

@@ -185,6 +185,7 @@ farm_reminder_command_description: Notify you when materials of characters/weapo
 farm_remove_command.item_not_found: Item not found
 farm_remove_command.item_not_found_description: This item is not in your farm reminder list.
 farm_remove_command_description: Remove character/weapon from farm reminder list
+farm_view.city_select.placeholder: Select a city
 farm_view.happy_farming: 🌾 Happy farming!
 farm_view.set_reminder: Set Reminders
 farm_view.set_reminder.embed.description: "To set reminders, use the </farm reminder> command"

@@ -58,15 +58,6 @@ MANIKEN_IDS = {10000117, 10000118}
 # Non-playable UGC template avatars present in AvatarExcelConfigData with useType AVATAR_FORMAL
 GI_UGC_CHARACTER_IDS = {10000998, 10000999}
 
-TRAVELER_ELEMENTS = (
-    GenshinElement.ANEMO,
-    GenshinElement.GEO,
-    GenshinElement.ELECTRO,
-    GenshinElement.DENDRO,
-    GenshinElement.HYDRO,
-    GenshinElement.PYRO,
-)
-
 TRAILBLAZER_IDS = {
     8001,  # Destruction male
     8002,  # Destruction female

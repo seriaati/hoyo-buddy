@@ -8,13 +8,12 @@ from discord.app_commands import Choice
 from hoyo_buddy.constants import (
     GI_UGC_CHARACTER_IDS,
     TRAILBLAZER_IDS,
-    TRAVELER_ELEMENTS,
     TRAVELER_IDS,
     locale_to_genshin_data_lang,
     locale_to_starrail_data_lang,
     locale_to_zenless_data_lang,
 )
-from hoyo_buddy.enums import HSRPath
+from hoyo_buddy.enums import GenshinElement, HSRPath
 from hoyo_buddy.l10n import EnumStr, translator
 
 if TYPE_CHECKING:
@@ -48,6 +47,7 @@ async def get_gi_character_choices(
         characters = client.get_characters(
             lang=hb_data.gi.Language(locale_to_genshin_data_lang(locale))
         )
+        traveler_elements = client.get_traveler_elements() if ambr_traveler_ids else []
 
     choices: list[Choice[str]] = []
     for character in characters:
@@ -57,8 +57,10 @@ async def get_gi_character_choices(
         if character.id in TRAVELER_IDS:
             gender = "♂" if character.id == 10000005 else "♀"
             if ambr_traveler_ids:
-                for element in TRAVELER_ELEMENTS:
-                    element_str = translator.translate(EnumStr(element), locale)
+                for element in traveler_elements:
+                    element_str = translator.translate(
+                        EnumStr(GenshinElement[element.name]), locale
+                    )
                     choices.append(
                         Choice(
                             name=f"{character.name} ({element_str}) ({gender})",

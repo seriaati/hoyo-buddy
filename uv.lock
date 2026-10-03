@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -949,7 +949,7 @@ dependencies = [
 [[package]]
 name = "hb-data"
 version = "0.1.0"
-source = { git = "https://github.com/seriaati/hb-data#1b2bb7e39882777acc2d39a2eea51de5339f5f2d" }
+source = { git = "https://github.com/seriaati/hb-data#15b89fe3f9e53c1fcd3d638d541b0cad1418154d" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

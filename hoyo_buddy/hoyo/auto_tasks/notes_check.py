@@ -531,22 +531,26 @@ class NotesChecker:
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
-        content = LocaleStr(
-            key="auto_task_error_dm_content",
-            feature=LocaleStr(key="notify_feature"),
-            command="</settings>",
-            account=notify.account,
-        )
-        locale = await cls._get_locale(notify)
-        embed = cls._get_notify_error_embed(e, locale)
-        embed.add_acc_info(notify.account, blur=False)
+        try:
+            content = LocaleStr(
+                key="auto_task_error_dm_content",
+                feature=LocaleStr(key="notify_feature"),
+                command="</settings>",
+                account=notify.account,
+            )
+            locale = await cls._get_locale(notify)
+            embed = cls._get_notify_error_embed(e, locale)
+            embed.add_acc_info(notify.account, blur=False)
 
-        await cls._bot.dm_user(
-            notify.account.user.id, embed=embed, content=content.translate(locale)
-        )
+            await cls._bot.dm_user(
+                notify.account.user.id, embed=embed, content=content.translate(locale)
+            )
 
-        notify.enabled = False
-        await notify.save(update_fields=("enabled",))
+            notify.enabled = False
+            await notify.save(update_fields=("enabled",))
+        except Exception as handle_err:
+            # Must not propagate, an unhandled exception permanently stops the tasks.loop
+            cls._bot.capture_exception(handle_err)
 
     @classmethod
     def _determine_skip(cls, notify: NotesNotify) -> bool:
@@ -628,6 +632,9 @@ class NotesChecker:
                     continue
 
                 await notify.fetch_related("account__user", "account__user__settings")
+                # Account was deleted after the notifies were fetched
+                if notify.account is None:  # pyright: ignore[reportUnnecessaryComparison]
+                    continue
 
                 try:
                     if notify.type is NotesNotifyType.PLANAR_FISSURE:

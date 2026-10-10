@@ -153,12 +153,18 @@ class EmbedSender:
                 if cnt == 0:
                     return
 
+                last_embed = await DiscordEmbed.all().order_by("-id").first()
+                if last_embed is None:
+                    return
+
                 logger.info(f"Starting {cls.__name__} for {cnt} embeds")
 
                 failed_users: set[int] = set()
 
                 while True:
-                    query = DiscordEmbed.all()
+                    # Only process embeds that existed when this run started, otherwise new embeds
+                    # keep the run alive forever and stale embeds are never cleaned up
+                    query = DiscordEmbed.filter(id__lte=last_embed.id)
                     if failed_users:
                         query = query.exclude(user_id__in=failed_users)
                     embeds = (

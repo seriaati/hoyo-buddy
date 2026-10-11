@@ -7,7 +7,11 @@ from genshin.models import ZZZPropertyType as PropType
 from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
+from hoyo_buddy.constants import (
+    ZZZ_AGENT_CORE_LEVEL_MAP,
+    get_disc_substat_roll_num,
+    is_hl_disc_substat,
+)
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.enums import Locale
 
@@ -200,7 +204,9 @@ class ZZZTeamCard:
                         color = (
                             drawer.get_agent_special_stat_color(self._agent_colors[agent.id])
                             if self._hl_special_stats[agent.id]
-                            and int(stat.type) in self._agent_hl_substat_map[agent.id]
+                            and is_hl_disc_substat(
+                                int(stat.type), self._agent_hl_substat_map[agent.id]
+                            )
                             else (20, 20, 20)
                         )
 

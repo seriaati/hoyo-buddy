@@ -884,18 +884,28 @@ def get_describe_kwargs(
 
 
 ZZZ_DISC_SUBSTATS = (
-    ("Crit", 20103, ""),
-    ("CritDmg", 21103, ""),
-    ("ElementMystery", 31203, ""),
-    ("PenDelta", 23203, ""),
-    ("HpMax", 11103, ""),
-    ("HpMax", 11102, "%"),
-    ("Atk", 12103, ""),
-    ("Atk", 12102, "%"),
-    ("Def", 13103, ""),
-    ("Def", 13102, "%"),
+    ("Crit", 20103),
+    ("CritDmg", 21103),
+    ("ElementMystery", 31203),
+    ("PenDelta", 23203),
+    ("HpMax", 11102),
+    ("Atk", 12102),
+    ("Def", 13102),
 )
-# LocaleStr key, substat id, LocaleStr append
+# LocaleStr key, substat id
+
+ZZZ_FLAT_TO_PERCENT_SUBSTAT = {
+    11103: 11102,  # HP
+    12103: 12102,  # ATK
+    13103: 13102,  # DEF
+}
+
+
+def is_hl_disc_substat(substat_id: int, hl_substats: list[int]) -> bool:
+    """Check if a disc substat is highlighted, treating flat and percent HP/ATK/DEF as the same."""
+    substat_id = ZZZ_FLAT_TO_PERCENT_SUBSTAT.get(substat_id, substat_id)
+    return substat_id in {ZZZ_FLAT_TO_PERCENT_SUBSTAT.get(s, s) for s in hl_substats}
+
 
 ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
     1: 11102,  # HP

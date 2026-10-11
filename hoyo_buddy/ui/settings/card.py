@@ -6,7 +6,7 @@ import discord
 from loguru import logger
 
 from hoyo_buddy import emojis, ui
-from hoyo_buddy.constants import EMPTY_CHAR, ZZZ_DISC_SUBSTATS
+from hoyo_buddy.constants import EMPTY_CHAR, ZZZ_DISC_SUBSTATS, is_hl_disc_substat
 from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.db.utils import get_default_color
 from hoyo_buddy.enums import Game
@@ -47,16 +47,16 @@ class HighlightSubstatSelector(ui.Select["CardSettingsView"]):
         options: list[ui.SelectOption] = []
         added: set[int] = set()
 
-        for key, substat_id, append in ZZZ_DISC_SUBSTATS:
+        for key, substat_id in ZZZ_DISC_SUBSTATS:
             if substat_id in added:
                 continue
 
             added.add(substat_id)
             options.append(
                 ui.SelectOption(
-                    label=LocaleStr(key=key, append=append, data_game=Game.ZZZ),
+                    label=LocaleStr(key=key, data_game=Game.ZZZ),
                     value=str(substat_id),
-                    default=substat_id in current,
+                    default=is_hl_disc_substat(substat_id, current),
                 )
             )
 

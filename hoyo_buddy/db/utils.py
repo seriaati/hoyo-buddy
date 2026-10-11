@@ -216,7 +216,7 @@ async def set_highlight_substats(
     ]
 
     hl_substats = [
-        substat_id for _, substat_id, _ in ZZZ_DISC_SUBSTATS if substat_id in special_substat_ids
+        substat_id for _, substat_id in ZZZ_DISC_SUBSTATS if substat_id in special_substat_ids
     ]
     card_settings.highlight_substats = hl_substats
     await card_settings.save(update_fields=("highlight_substats",))

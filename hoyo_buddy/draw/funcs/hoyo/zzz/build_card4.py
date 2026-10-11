@@ -7,7 +7,11 @@ from genshin.models import ZZZPropertyType as PropType
 from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
+from hoyo_buddy.constants import (
+    ZZZ_AGENT_CORE_LEVEL_MAP,
+    get_disc_substat_roll_num,
+    is_hl_disc_substat,
+)
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
 from hoyo_buddy.enums import Locale
@@ -383,7 +387,8 @@ class ZZZAgentCard4:
                 substat_pos = (pos[0] + 214 + 280 * (s % 2), pos[1] + 131 + 92 * (s // 2))
                 color = (
                     drawer.get_agent_special_stat_color(self._color)
-                    if self._hl_special_stats and int(substat.type) in self._hl_substats
+                    if self._hl_special_stats
+                    and is_hl_disc_substat(int(substat.type), self._hl_substats)
                     else (20, 20, 20)
                 )
 

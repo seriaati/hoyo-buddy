@@ -8,7 +8,11 @@ from genshin.models import ZZZSkillType
 from PIL import ImageDraw
 from PIL.Image import Transpose
 
-from hoyo_buddy.constants import ZZZ_AGENT_CORE_LEVEL_MAP, get_disc_substat_roll_num
+from hoyo_buddy.constants import (
+    ZZZ_AGENT_CORE_LEVEL_MAP,
+    get_disc_substat_roll_num,
+    is_hl_disc_substat,
+)
 from hoyo_buddy.draw.drawer import BLACK, Drawer
 from hoyo_buddy.enums import Locale
 
@@ -371,7 +375,8 @@ class ZZZAgentCard:
                     else:
                         color = (
                             drawer.get_agent_special_stat_color(agent_color)
-                            if self._hl_special_stats and int(sub_stat.type) in self.hl_substats
+                            if self._hl_special_stats
+                            and is_hl_disc_substat(int(sub_stat.type), self.hl_substats)
                             else (20, 20, 20)
                         )
 

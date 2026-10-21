@@ -126,6 +126,10 @@ Don't add unnecessary comments.
 
 `hoyo-buddy-assets/` (private submodule) holds images and fonts for card generation, organized by game and feature. Font files back multi-language rendering.
 
+### Emojis
+
+Custom emojis are application emojis, so dev and prod bots have different IDs. Images live in `hoyo-buddy-assets/assets/emojis/` (file stem = emoji name). `uv run scripts/sync_emojis.py` uploads missing ones to the bot in `.env` and writes their markdowns to `hoyo_buddy/emoji_ids.json` under `CONFIG.env`; `hoyo_buddy/emojis.py` reads it via `_emoji("name")`. To add an emoji: add the image, run the sync with both the dev and prod bot's `.env`, then add a constant to `emojis.py`.
+
 ### Localization (l10n)
 
 All user-facing strings go through `LocaleStr` (defined in `hoyo_buddy/l10n.py`), never raw `str`. The global `translator` resolves a `LocaleStr` to a given `Locale` at render time.

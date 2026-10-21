@@ -8,7 +8,7 @@ import genshin
 from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
 from hoyo_buddy.db import GachaHistory, get_dyk, update_gacha_nums
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import COOKIE, LINK, LOADING
+from hoyo_buddy.emojis import ANDROID, COOKIE, DESKTOP, IOS, LINK, LOADING
 from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError, UIDMismatchError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
@@ -253,9 +253,7 @@ class GachaImportView(View):
 class PCButton(Button[GachaImportView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="gacha_import_pc_player_button_label"),
-            emoji="<:Desktop:1412046347179397150>",
-            row=1,
+            label=LocaleStr(key="gacha_import_pc_player_button_label"), emoji=DESKTOP, row=1
         )
 
     async def callback(self, i: Interaction) -> Any:
@@ -273,7 +271,7 @@ class PCButton(Button[GachaImportView]):
 
 class IOSButton(Button[GachaImportView]):
     def __init__(self) -> None:
-        super().__init__(label="iOS", emoji="<:IOS:1412046328447635538>", row=1)
+        super().__init__(label="iOS", emoji=IOS, row=1)
 
     async def callback(self, i: Interaction) -> Any:
         await i.response.send_message(content=IOS_VIDEO_URL, ephemeral=True)
@@ -282,9 +280,7 @@ class IOSButton(Button[GachaImportView]):
 class AndroidButton(Button[GachaImportView]):
     def __init__(self) -> None:
         super().__init__(
-            label=LocaleStr(key="gacha_import_android_button_label"),
-            emoji="<:Android:1412046338824339589>",
-            row=1,
+            label=LocaleStr(key="gacha_import_android_button_label"), emoji=ANDROID, row=1
         )
 
     async def callback(self, i: Interaction) -> Any:

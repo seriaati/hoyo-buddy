@@ -4,10 +4,11 @@ Workflow (run from the repo root):
     1. uv run scripts/zzz_card_variants.py init 1641
        Fetches the agent's art from nanoka and writes scripts/output/zzz_variants/1641/variants.yaml
        with one card per art: template 1 default art + each skin, and template 2 M6 cinema art.
-       Each card's `base` starts from the latest agent in agent_data*.yaml (image rescaled to the
-       new art's aspect ratio), and `palette` lists colors extracted from the art. Design each
-       skin card like a separate agent: its own color, image size/position, level position and
-       zzz_text, rather than copying the default skin's.
+       Each card's `base` starts from the latest agent in agent_data*.yaml (template 1 image
+       rescaled to the new art's aspect ratio; template 2 image fitted so the solid art's top and
+       bottom touch the card's, centered), and `palette` lists colors extracted from the art.
+       Design each skin card like a separate agent: its own color, image size/position, level
+       position and zzz_text, rather than copying the default skin's.
     2. Add named entries under each card's `variants`. A variant overrides any keys of `base`
        (color, image_x, level_x, zzz_text, ...). If a variant overrides only one of image_w or
        image_h, the other is derived from the art's aspect ratio.
@@ -16,6 +17,8 @@ Workflow (run from the repo root):
        labelled contact sheet of all variants to scripts/output/zzz_variants/1641/<card_id>.png.
        Each variant's label also shows how much of the level text covers the art (level_stroke
        should be on only when it does) and where the art's head/shoulders land horizontally.
+       uv run scripts/zzz_card_variants.py holes 1641 t2_1641 [VARIANT]
+       Lists level text positions with the least art under them for a variant's image placement.
     4. uv run scripts/zzz_card_variants.py apply 1641 t1_1641 <variant>
        Writes the chosen variant into agent_data.yaml (template 1) or agent_data_temp2.yaml.
 
@@ -29,6 +32,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import colorsys
+import functools
 import io
 import json
 import math
@@ -52,6 +56,12 @@ _init_parser.add_argument("--force", action="store_true", help="Overwrite an exi
 _render_parser = _subparsers.add_parser("render", help="Render all variants of an agent")
 _render_parser.add_argument("agent_id", type=int)
 _render_parser.add_argument("cards", nargs="*", help="Only render these card IDs (e.g. t1_1641)")
+
+_holes_parser = _subparsers.add_parser("holes", help="Find level positions with the least art")
+_holes_parser.add_argument("agent_id", type=int)
+_holes_parser.add_argument("card_id", help="e.g. t2_1641")
+_holes_parser.add_argument("variant", nargs="?", help="Variant to use (default: the first one)")
+_holes_parser.add_argument("--count", type=int, default=6, help="Number of positions to list")
 
 _apply_parser = _subparsers.add_parser("apply", help="Write a variant into the card data yaml")
 _apply_parser.add_argument("agent_id", type=int)
@@ -106,8 +116,12 @@ FIELD_ORDER = (
     "zzz_text",
 )
 UNKNOWN_TEXT = "..."  # nanoka's placeholder for untranslated text of unreleased content
+CARD_SIZE = (3324, 1286)
 # Middle of the open area between the left equip panel and the right stats panel
 OPEN_AREA_CENTER_X = 1822
+# Where template 2 cinema art is centered, and how far its solid area overshoots the card's edges
+TEMPLATE2_CENTER_X = 1700
+TEMPLATE2_OVERSHOOT = 7
 
 
 def _spec_path(agent_id: int) -> Path:
@@ -214,16 +228,46 @@ async def _load_sample() -> tuple[ZZZEnkaCharacter, dict[int, str]]:
     return agent, {int(k): v for k, v in data["disc_icons"].items()}
 
 
-def _make_base(template: int, key: str, aspect: float) -> dict[str, Any]:
-    """Copy the key's existing card data, or the latest agent's with the image rescaled to the
-    new art's aspect ratio.
+def fit_template2(image: Image.Image) -> dict[str, int]:
+    """Size cinema art by its solid area so its top and bottom touch the card's, centered.
+
+    The images have transparent strips above and below the art, and the bottom edge is often a
+    soft or slanted cut, so the bottom is where the middle columns' solid pixels usually end.
+    """
+    solid = np.asarray(image.convert("RGBA").getchannel("A")) > 250
+    rows = np.flatnonzero(solid.any(axis=1))
+    cols = np.flatnonzero(solid.any(axis=0))
+    top, left, right = rows[0], cols[0], cols[-1] + 1
+
+    margin = (right - left) // 5
+    middle = solid[:, left + margin : right - margin]
+    ends = middle.shape[0] - np.argmax(middle[::-1], axis=0)
+    ends = ends[middle.any(axis=0) & (ends >= rows[-1] - 0.1 * solid.shape[0])]
+    bottom = float(np.median(ends))
+
+    scale = (CARD_SIZE[1] + 2 * TEMPLATE2_OVERSHOOT) / (bottom - top)
+    return {
+        "image_w": round(image.width * scale),
+        "image_h": round(image.height * scale),
+        "image_x": round(TEMPLATE2_CENTER_X - (left + right) / 2 * scale),
+        "image_y": round(-TEMPLATE2_OVERSHOOT - top * scale),
+    }
+
+
+def _make_base(template: int, key: str, image: Image.Image) -> dict[str, Any]:
+    """Copy the key's existing card data, or the latest agent's with the image fitted to the new
+    art.
     """
     card_data = _load_card_data(template)
     if key in card_data:
         return dict(card_data[key])
     latest_key = next(k for k in reversed(card_data) if "_" not in k)
     base = dict(card_data[latest_key])
-    base["image_w"] = round(base["image_h"] * aspect)
+    base["flip"] = False  # Art is drawn from a specific perspective, flipping looks wrong
+    if template == 2:
+        base.update(fit_template2(image))
+    else:
+        base["image_w"] = round(base["image_h"] * image.width / image.height)
     return base
 
 
@@ -239,7 +283,7 @@ async def _make_card(
         "label": label,
         "image": image_url,
         "palette": extract_palette(image),
-        "base": _make_base(template, key, image.width / image.height),
+        "base": _make_base(template, key, image),
         "variants": {"base": {}},
     }
 
@@ -303,29 +347,55 @@ def _get_fallback_color(spec: dict[str, Any]) -> str | None:
     return None
 
 
-def measure_layout(
-    agent: ZZZEnkaCharacter,
-    *,
-    card_data: ZZZTemp1CardData,
-    art: Image.Image,
-    card_size: tuple[int, int],
-) -> str:
-    """Describe how much of the level text covers the art, and where the art's focus lands."""
+def _place_art(card_data: ZZZTemp1CardData, art: Image.Image) -> Image.Image:
     art = Drawer.resize_crop(art.convert("RGBA"), (card_data.image_w, card_data.image_h))
     if card_data.flip:
         art = art.transpose(Transpose.FLIP_LEFT_RIGHT)
-    mask = Image.new("L", card_size)
-    mask.paste(art.getchannel("A"), (card_data.image_x, card_data.image_y))
-    opaque = np.asarray(mask) > 128
+    return art
 
-    # Mirrors how ZZZAgentCard draws the level text and the mindscape rank below it
+
+def _art_mask(card_data: ZZZTemp1CardData, art: Image.Image) -> np.ndarray:
+    """Get which pixels of the card the placed art covers."""
+    mask = Image.new("L", CARD_SIZE)
+    mask.paste(_place_art(card_data, art).getchannel("A"), (card_data.image_x, card_data.image_y))
+    return np.asarray(mask) > 128
+
+
+Box = tuple[int, int, int, int]
+
+
+@functools.cache
+def _level_metrics(level: int, rank: int) -> tuple[Box, tuple[int, int]]:
     font = ImageFont.truetype(NUNITO_SANS_BLACK_ITALIC, 250)
-    left, top, right, bottom = font.getbbox(f"Lv.{agent.level}")
-    x, y = card_data.level_x, card_data.level_y
-    rank = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-build-card/rank/M{agent.rank}.png")
-    rank_x = x + right - left - rank.width if card_data.level_flip else x
-    level_cover = opaque[y + top : y + bottom, x + left : x + right].mean()
-    rank_cover = opaque[y + 260 : y + 260 + rank.height, rank_x : rank_x + rank.width].mean()
+    left, top, right, bottom = (int(v) for v in font.getbbox(f"Lv.{level}"))
+    rank_image = Drawer.open_image(f"hoyo-buddy-assets/assets/zzz-build-card/rank/M{rank}.png")
+    return (left, top, right, bottom), rank_image.size
+
+
+def _level_boxes(agent: ZZZEnkaCharacter, *, x: int, y: int, flip: bool) -> tuple[Box, Box]:
+    """Get the boxes of the level text and the mindscape rank below it, as ZZZAgentCard draws."""
+    (left, top, right, bottom), (rank_w, rank_h) = _level_metrics(agent.level, agent.rank)
+    rank_x = x + right - left - rank_w if flip else x
+    return (
+        (x + left, y + top, x + right, y + bottom),
+        (rank_x, y + 260, rank_x + rank_w, y + 260 + rank_h),
+    )
+
+
+def _coverage(opaque: np.ndarray, box: Box) -> float:
+    return float(opaque[box[1] : box[3], box[0] : box[2]].mean())
+
+
+def measure_layout(
+    agent: ZZZEnkaCharacter, *, card_data: ZZZTemp1CardData, art: Image.Image
+) -> str:
+    """Describe how much of the level text covers the art, and where the art's focus lands."""
+    opaque = _art_mask(card_data, art)
+    level_box, rank_box = _level_boxes(
+        agent, x=card_data.level_x, y=card_data.level_y, flip=card_data.level_flip
+    )
+    level_cover = _coverage(opaque, level_box)
+    rank_cover = _coverage(opaque, rank_box)
 
     stroke = card_data.level_stroke
     overlaps = max(level_cover, rank_cover) > 0.01
@@ -333,7 +403,7 @@ def measure_layout(
     hint = " (stroke not needed)" if not overlaps and stroke else hint
 
     # Alpha-weighted x of the head/shoulders (top 30% of the art); long hair can skew it
-    alpha = np.asarray(art.getchannel("A"), dtype=float)
+    alpha = np.asarray(_place_art(card_data, art).getchannel("A"), dtype=float)
     first_row = int(np.argmax(alpha.max(axis=1) > 128))
     head = alpha[first_row : first_row + int(alpha.shape[0] * 0.3)]
     focus_x = card_data.image_x + (head.sum(axis=0) * np.arange(alpha.shape[1])).sum() / head.sum()
@@ -427,7 +497,7 @@ async def render(agent_id: int, card_ids: list[str]) -> None:
                 agent, card=card, card_data=card_data, name_data=name_data, disc_icons=disc_icons
             )
             image.save(out_dir / f"{variant}.png")
-            layout = measure_layout(agent, card_data=card_data, art=art, card_size=image.size)
+            layout = measure_layout(agent, card_data=card_data, art=art)
             desc = ", ".join(f"{k}={v}" for k, v in (overrides or {}).items()) or "base"
             tiles.append((variant, f"{desc}\n{layout}", image))
             print(f"Rendered {card_id}/{variant}: {layout}")
@@ -490,6 +560,57 @@ async def apply(agent_id: int, card_id: str, variant: str) -> None:
     print("\n".join(entry))
 
 
+def _is_valid_level_spot(level_box: Box, rank_box: Box, *, zzz_text: bool) -> bool:
+    """Check that the level text stays clear of the card's panels, big name and ZENLESS text."""
+    left, top, right, bottom = level_box
+    min_left = 880 if bottom <= 360 else 960  # The equip panel is narrower above the discs
+    if left < min_left or right > 2660 or rank_box[3] > CARD_SIZE[1] - 10:
+        return False
+    if top < 430 and right > 2230:  # Big name
+        return False
+    return not (zzz_text and left < 1450 and top < 420)
+
+
+async def holes(agent_id: int, card_id: str, variant: str | None, *, count: int) -> None:
+    spec = _load_spec(agent_id)
+    card = spec["cards"].get(card_id)
+    if card is None:
+        msg = f"Unknown card ID {card_id}, available: {', '.join(spec['cards'])}"
+        raise SystemExit(msg)
+    variant = variant or next(iter(card["variants"]))
+
+    async with aiohttp.ClientSession() as session:
+        await download_images([card["image"]], session)
+    art = Drawer.open_static(card["image"])
+    config = resolve_variant(card, variant, art.width / art.height)
+    model = ZZZTemp2CardData if card["template"] == 2 else ZZZTemp1CardData
+    card_data = model.model_validate({**config, "color": config.get("color") or "#000000"})
+    agent, _ = await _load_sample()
+    opaque = _art_mask(card_data, art)
+
+    spots: list[tuple[float, int, int]] = []
+    for y in range(20, CARD_SIZE[1], 20):
+        for x in range(880, 2100, 20):
+            level_box, rank_box = _level_boxes(agent, x=x, y=y, flip=card_data.level_flip)
+            if _is_valid_level_spot(level_box, rank_box, zzz_text=card_data.zzz_text):
+                cover = max(_coverage(opaque, level_box), _coverage(opaque, rank_box))
+                spots.append((cover, x, y))
+
+    # List distinct spots rather than many near-identical neighbours of the best one
+    picked: list[tuple[float, int, int]] = []
+    for spot in sorted(spots):
+        if all(abs(spot[1] - p[1]) > 150 or abs(spot[2] - p[2]) > 150 for p in picked):
+            picked.append(spot)
+        if len(picked) == count:
+            break
+
+    print(f"Level positions for {card_id}/{variant} (least art under Lv/rank first):")
+    for cover, x, y in picked:
+        print(
+            f"  level_x {x}, level_y {y}: {cover:.0%} art -> stroke {'on' if cover > 0.01 else 'off'}"
+        )
+
+
 async def main() -> None:
     match _args.command:
         case "fetch-sample":
@@ -498,6 +619,8 @@ async def main() -> None:
             await init(_args.agent_id, version=_args.version, force=_args.force)
         case "render":
             await render(_args.agent_id, _args.cards)
+        case "holes":
+            await holes(_args.agent_id, _args.card_id, _args.variant, count=_args.count)
         case "apply":
             await apply(_args.agent_id, _args.card_id, _args.variant)
 

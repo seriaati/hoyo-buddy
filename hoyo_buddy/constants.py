@@ -39,6 +39,7 @@ STATIC_FOLDER = pathlib.Path("./.static")
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
 DB_SMALLINT_MAX = 32767
 
+FREE_ACCOUNT_LIMIT = 6
 FREE_CUSTOM_IMAGE_LIMIT = 5
 FREE_AI_IMAGE_DAILY_LIMIT = 5
 

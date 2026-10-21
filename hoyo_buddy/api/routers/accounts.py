@@ -7,8 +7,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger
 
 from hoyo_buddy.api.utils import decrypt_string
-from hoyo_buddy.constants import GPY_GAME_TO_HB_GAME, locale_to_hoyo_lang
+from hoyo_buddy.constants import FREE_ACCOUNT_LIMIT, GPY_GAME_TO_HB_GAME, locale_to_hoyo_lang
 from hoyo_buddy.db.models import AccountNotifSettings, HoyoAccount, Settings, User
+from hoyo_buddy.db.utils import is_supporter
 from hoyo_buddy.enums import Locale, Platform
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
 from hoyo_buddy.utils import dict_cookie_to_str
@@ -163,6 +164,20 @@ async def submit_accounts(
 
     if not accounts_to_save:
         raise HTTPException(status_code=400, detail="None of the selected accounts were found")
+
+    if not await is_supporter(user_id):
+        existing = set(await HoyoAccount.filter(user_id=user_id).values_list("uid", "game"))
+        new_count = sum(
+            (acc.uid, GPY_GAME_TO_HB_GAME[acc.game]) not in existing for acc in accounts_to_save
+        )
+        if new_count and len(existing) + new_count > FREE_ACCOUNT_LIMIT:
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    f"You can add up to {FREE_ACCOUNT_LIMIT} accounts. "
+                    "Supporters can add as many as they want, use /supporter to learn more."
+                ),
+            )
 
     fetch_cookie = platform is Platform.HOYOLAB and "stoken" in cookies and "ltmid_v2" in cookies
     if fetch_cookie:

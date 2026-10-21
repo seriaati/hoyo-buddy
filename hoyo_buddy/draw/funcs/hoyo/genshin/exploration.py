@@ -1,47 +1,262 @@
 from __future__ import annotations
 
+import functools
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from PIL import ImageDraw
+import numpy as np
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LevelStr, LocaleStr
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
     from io import BytesIO
 
-    from genshin.models import Exploration, PartialGenshinUserStats
-    from PIL import Image
+    from genshin.models import Exploration, PartialGenshinUserStats, Stats
+
+FOLDER = "gi-exploration"
+PLACEHOLDER = "? ? ?"
+
+CANVAS_WIDTH = 1667
+COLUMN_X = (114, 868)
+TITLE_POS = (114, 81)
+SUMMARY_Y = 249
+SUMMARY_HEIGHT = 235
+SUMMARY_GAP = 63
+ROW_GAP = 31
+BOTTOM_MARGIN = 77
+
+BLOCK_WIDTH = 688
+CORNER_RADIUS = 15
+ART_OPACITY = 0.7
+BLOCK_TITLE_POS = (34, 23)
+ICON_CENTER_X = 52
+TEXT_X = 75
+
+# (blur, x offset, y offset, alpha) of each drop shadow layer in Figma
+SHADOW_LAYERS = ((11, 4, 3, 0.10), (20, 15, 13, 0.09), (27, 33, 30, 0.05), (32, 59, 54, 0.01))
+SHADOW_OPACITY = 0.3
+SHADOW_PAD = 110
+
+
+@dataclass(frozen=True, slots=True)
+class BlockSize:
+    height: int
+    first_line_y: int
+    line_gap: int
+
+
+REGULAR = BlockSize(287, first_line_y=117, line_gap=46)
+TALL = BlockSize(320, first_line_y=134, line_gap=45)
+SHORT = BlockSize(245, first_line_y=120, line_gap=64)
+
+
+@dataclass(frozen=True, slots=True)
+class StatLine:
+    icon: str
+    """Filename in the icons folder, without the _light/_dark suffix."""
+    text: Callable[[ExplorationCard, Exploration | None], LocaleStr | str]
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class RegionBlock:
+    art: str
+    """Filename in the art folder, without the extension."""
+    exploration_id: int
+    lines: Sequence[StatLine]
+    size: BlockSize = REGULAR
+    fade_start: float = 0.08
+    """Where the fade starts fading out, as a fraction of the block width."""
+
+
+def oculus(icon: str, key: str, count: Callable[[Stats], int]) -> StatLine:
+    return StatLine(
+        icon,
+        lambda card, _: LocaleStr(
+            key=key, mi18n_game=Game.GENSHIN, append=f": {count(card.user.stats)}"
+        ),
+    )
+
+
+def offering(icon: str) -> StatLine:
+    return StatLine(icon, lambda card, exploration: card.offering_text(exploration))
+
+
+def sub_area(exploration_id: int) -> StatLine:
+    return StatLine("pin", lambda card, _: card.sub_area_text(exploration_id))
+
+
+PROGRESS = StatLine(
+    "pin",
+    lambda _, e: LocaleStr(key="exploration.progress", progress=0 if e is None else e.explored),
+)
+REPUTATION = StatLine(
+    "reputation",
+    lambda _, e: LocaleStr(
+        key="reputation_level", mi18n_game=Game.GENSHIN, append=str(0 if e is None else e.level)
+    ),
+)
+NATLAN_REPUTATION = StatLine(
+    "reputation",
+    lambda _, e: LocaleStr(
+        key="natlan_reputation",
+        reputation=0 if e is None else e.level,
+        tribes=ExplorationCard.tribe_levels(e),
+    ),
+)
+
+# Blocks are laid out in this order, two per row
+REGIONS: tuple[RegionBlock, ...] = (
+    RegionBlock(
+        art="mondstadt",
+        exploration_id=1,
+        lines=(PROGRESS, oculus("anemoculus", "wind_god", lambda s: s.anemoculi), REPUTATION),
+    ),
+    RegionBlock(
+        art="liyue",
+        exploration_id=2,
+        lines=(PROGRESS, oculus("geoculus", "geoculus", lambda s: s.geoculi), REPUTATION),
+        fade_start=0.13,
+    ),
+    RegionBlock(
+        art="inazuma",
+        exploration_id=4,
+        lines=(
+            PROGRESS,
+            oculus("electroculus", "electroculus", lambda s: s.electroculi),
+            REPUTATION,
+            offering("offering_inazuma"),
+        ),
+        fade_start=0.07,
+    ),
+    RegionBlock(
+        art="sumeru",
+        exploration_id=8,
+        lines=(
+            PROGRESS,
+            oculus("dendroculus", "dendro_culus", lambda s: s.dendroculi),
+            REPUTATION,
+            offering("offering_sumeru"),
+        ),
+        fade_start=0.01,
+    ),
+    RegionBlock(
+        art="fontaine",
+        exploration_id=9,
+        lines=(
+            PROGRESS,
+            oculus("hydroculus", "hydro_god", lambda s: s.hydroculi),
+            REPUTATION,
+            offering("offering_fontaine"),
+        ),
+    ),
+    RegionBlock(
+        art="natlan",
+        exploration_id=15,
+        lines=(
+            PROGRESS,
+            oculus("pyroculus", "pyroculus_number", lambda s: s.pyroculi),
+            NATLAN_REPUTATION,
+            offering("offering_natlan"),
+        ),
+    ),
+    RegionBlock(art="ancientSacredMountain", exploration_id=16, lines=(PROGRESS,), fade_start=0.02),
+    RegionBlock(art="seaOfBygoneEras", exploration_id=14, lines=(PROGRESS,), fade_start=0.01),
+    RegionBlock(
+        art="chenyuVale",
+        exploration_id=10,
+        lines=(sub_area(13), sub_area(12), sub_area(11), offering("offering_chenyu")),
+        size=TALL,
+        fade_start=0.21,
+    ),
+    RegionBlock(
+        art="theChasm",
+        exploration_id=6,
+        lines=(PROGRESS, sub_area(7), offering("offering_chasm")),
+        size=TALL,
+        fade_start=0.14,
+    ),
+    RegionBlock(
+        art="dragonspine",
+        exploration_id=3,
+        lines=(PROGRESS, offering("offering_dragonspine")),
+        size=SHORT,
+        fade_start=0.21,
+    ),
+    RegionBlock(art="enkanomiya", exploration_id=5, lines=(PROGRESS,), size=SHORT, fade_start=0.04),
+)
+
+
+@functools.cache
+def get_shadow(width: int, height: int) -> Image.Image:
+    size = (width + SHADOW_PAD * 2, height + SHADOW_PAD * 2)
+    shape = Image.new("L", size, 0)
+    ImageDraw.Draw(shape).rounded_rectangle(
+        (SHADOW_PAD, SHADOW_PAD, SHADOW_PAD + width - 1, SHADOW_PAD + height - 1),
+        CORNER_RADIUS,
+        fill=255,
+    )
+
+    coverage = np.zeros((size[1], size[0]))
+    for blur, dx, dy, alpha in SHADOW_LAYERS:
+        layer = shape.transform(size, Image.Transform.AFFINE, (1, 0, -dx, 0, 1, -dy)).filter(
+            ImageFilter.GaussianBlur(blur / 2)
+        )
+        coverage += np.asarray(layer) / 255 * alpha * (1 - coverage)
+
+    shadow = Image.new("RGBA", size, (0, 0, 0, 0))
+    shadow.putalpha(Image.fromarray((coverage * SHADOW_OPACITY * 255).round().astype(np.uint8)))
+    return shadow
 
 
 class ExplorationCard:
     def __init__(self, user: PartialGenshinUserStats, dark_mode: bool, locale: str) -> None:
-        self._user = user
+        self.user = user
         self._dark_mode = dark_mode
-
         self._locale = locale
-        self._placeholder = "? ? ?"
 
     @property
     def locale(self) -> Locale:
         return Locale(self._locale)
 
-    @staticmethod
-    def _get_reputation_level(exploration: Exploration | None) -> str:
-        return str(0 if exploration is None else exploration.level)
+    @property
+    def _theme(self) -> str:
+        return "dark" if self._dark_mode else "light"
 
     @staticmethod
-    def _get_tribe_levels(exploration: Exploration | None) -> str:
+    def tribe_levels(exploration: Exploration | None) -> str:
         if exploration is None or exploration.natlan_reputation is None:
             return "0"
         return "/".join(str(t.level) for t in exploration.natlan_reputation.tribes)
 
-    def _get_card(self, name: str) -> Image.Image:
-        return self._drawer.open_asset(f"{name}_{'dark' if self._dark_mode else 'light'}.png")
+    def get_exploration(self, exploration_id: int) -> Exploration | None:
+        return next((e for e in self.user.explorations if e.id == exploration_id), None)
 
-    def _get_shadow(self, name: str) -> Image.Image:
-        return self._drawer.open_asset(f"{name}_shadow.png")
+    def offering_text(self, exploration: Exploration | None) -> str:
+        if exploration is None or not exploration.offerings:
+            offering_name = PLACEHOLDER
+            level = 0
+        else:
+            offering = exploration.offerings[0]
+            offering_name = offering.name
+            level = offering.level
+
+        level_str = LevelStr(level).translate(self.locale)
+        return f"{offering_name}: {level_str}"
+
+    def sub_area_text(self, exploration_id: int) -> str:
+        area = self.get_exploration(exploration_id)
+        if area is None:
+            return f"{PLACEHOLDER}: 0%"
+        return f"{area.name}: {area.explored}%"
+
+    def _new_drawer(self, im: Image.Image) -> Drawer:
+        return Drawer(
+            ImageDraw.Draw(im), folder=FOLDER, dark_mode=self._dark_mode, locale=self.locale
+        )
 
     def _write_title(
         self, text: LocaleStr | str, *, position: tuple[int, int], drawer: Drawer
@@ -53,34 +268,14 @@ class ExplorationCard:
     ) -> None:
         drawer.write(text, position=position, size=26, style="regular", anchor="lm")
 
-    def _get_exploration(self, exploration_id: int) -> Exploration | None:
-        return next((e for e in self._user.explorations if e.id == exploration_id), None)
-
-    def _get_offering_text(self, exploration: Exploration | None) -> str:
-        if exploration is None or not exploration.offerings:
-            offering_name = self._placeholder
-            level = 0
-        else:
-            offering = exploration.offerings[0]
-            offering_name = offering.name
-            level = offering.level
-
-        level_str = LevelStr(level).translate(self.locale)
-        return f"{offering_name}: {level_str}"
-
     def _draw_waypoint_card(self) -> Image.Image:
-        im = self._get_card("waypoint")
-        drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
-        )
+        im = self._drawer.open_asset(f"waypoint_{self._theme}.png")
+        drawer = self._new_drawer(im)
         self._write_title(LocaleStr(key="exploration.waypoints"), position=(35, 20), drawer=drawer)
 
         texts: dict[str, tuple[int, int]] = {
-            str(self._user.stats.unlocked_waypoints): (75, 193),
-            str(self._user.stats.unlocked_domains): (200, 193),
+            str(self.user.stats.unlocked_waypoints): (75, 193),
+            str(self.user.stats.unlocked_domains): (200, 193),
         }
         for text, pos in texts.items():
             drawer.write(
@@ -95,13 +290,8 @@ class ExplorationCard:
         return im
 
     def _draw_chest_card(self) -> Image.Image:
-        im = self._get_card("chest")
-        drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
-        )
+        im = self._drawer.open_asset(f"chest_{self._theme}.png")
+        drawer = self._new_drawer(im)
         self._write_title(LocaleStr(key="exploration.chests"), position=(21, 20), drawer=drawer)
 
         chest_types: dict[LocaleStr, tuple[int, int]] = {
@@ -112,11 +302,11 @@ class ExplorationCard:
             LocaleStr(key="exploration.remarkable_chests"): (611, 167),
         }
         chest_nums: dict[int, tuple[int, int]] = {
-            self._user.stats.common_chests: (79, 196),
-            self._user.stats.exquisite_chests: (210, 196),
-            self._user.stats.precious_chests: (343, 196),
-            self._user.stats.luxurious_chests: (476, 196),
-            self._user.stats.remarkable_chests: (610, 196),
+            self.user.stats.common_chests: (79, 196),
+            self.user.stats.exquisite_chests: (210, 196),
+            self.user.stats.precious_chests: (343, 196),
+            self.user.stats.luxurious_chests: (476, 196),
+            self.user.stats.remarkable_chests: (610, 196),
         }
         for text, pos in chest_types.items():
             drawer.write(
@@ -139,329 +329,72 @@ class ExplorationCard:
 
         return im
 
-    def _draw_exploration_card(
-        self,
-        name: str,
-        exploration: Exploration | None,
-        texts: dict[LocaleStr | str, tuple[int, int]],
-    ) -> Image.Image:
-        im = self._get_card(name)
-        drawer = Drawer(
-            ImageDraw.Draw(im),
-            folder="gi-exploration",
-            dark_mode=self._dark_mode,
-            locale=self._drawer.locale,
+    def _draw_region_background(self, block: RegionBlock) -> Image.Image:
+        size = (BLOCK_WIDTH, block.size.height)
+        art = Drawer.resize_crop(self._drawer.open_asset(f"art/{block.art}.png"), size)
+        art_alpha = np.asarray(art.getchannel("A")) * ART_OPACITY
+        art.putalpha(Image.fromarray(art_alpha.round().astype(np.uint8)))
+
+        color, start_alpha = ((42, 42, 42), 0.7) if self._dark_mode else ((255, 255, 255), 0.9)
+        progress = np.clip(
+            (np.arange(size[0]) / size[0] - block.fade_start) / (1 - block.fade_start), 0, 1
         )
+        alpha = (start_alpha * (1 - progress) * 255).round().astype(np.uint8)
+        fade = Image.new("RGBA", size, color)
+        fade.putalpha(Image.fromarray(np.tile(alpha, (size[1], 1))))
+
+        return Image.alpha_composite(art, fade)
+
+    def _draw_region(self, block: RegionBlock) -> Image.Image:
+        im = self._draw_region_background(block)
+        drawer = self._new_drawer(im)
+        exploration = self.get_exploration(block.exploration_id)
+
         self._write_title(
-            self._placeholder if exploration is None else exploration.name,
-            position=(34, 23),
+            PLACEHOLDER if exploration is None else exploration.name,
+            position=BLOCK_TITLE_POS,
             drawer=drawer,
         )
-        for text, pos in texts.items():
-            self._write_small_text(text, position=pos, drawer=drawer)
+        for i, line in enumerate(block.lines):
+            y = block.size.first_line_y + i * block.size.line_gap
+            icon = drawer.open_asset(f"icons/{line.icon}_{self._theme}.png")
+            im.alpha_composite(icon, (ICON_CENTER_X - icon.width // 2, y - icon.height // 2))
+            self._write_small_text(
+                line.text(self, exploration), position=(TEXT_X, y), drawer=drawer
+            )
 
+        mask = Image.new("L", im.size, 0)
+        ImageDraw.Draw(mask).rounded_rectangle(
+            (0, 0, im.width - 1, im.height - 1), CORNER_RADIUS, fill=255
+        )
+        im.putalpha(ImageChops.multiply(im.getchannel("A"), mask))
         return im
 
-    def _draw_mondstadt_card(self) -> Image.Image:
-        exploration = self._get_exploration(1)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 161),
-            LocaleStr(
-                key="wind_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.anemoculi}"
-            ): (75, 207),
-            LocaleStr(
-                key="reputation_level",
-                mi18n_game=Game.GENSHIN,
-                append=self._get_reputation_level(exploration),
-            ): (75, 253),
-        }
-        return self._draw_exploration_card("mondstadt", exploration, texts)
-
-    def _draw_liyue_card(self) -> Image.Image:
-        exploration = self._get_exploration(2)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 161),
-            LocaleStr(
-                key="geoculus", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.geoculi}"
-            ): (75, 207),
-            LocaleStr(
-                key="reputation_level",
-                mi18n_game=Game.GENSHIN,
-                append=self._get_reputation_level(exploration),
-            ): (75, 253),
-        }
-        return self._draw_exploration_card("liyue", exploration, texts)
-
-    def _draw_inazuma_card(self) -> Image.Image:
-        exploration = self._get_exploration(4)
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117),
-            LocaleStr(
-                key="electroculus",
-                mi18n_game=Game.GENSHIN,
-                append=f": {self._user.stats.electroculi}",
-            ): (75, 163),
-            LocaleStr(
-                key="reputation_level",
-                mi18n_game=Game.GENSHIN,
-                append=self._get_reputation_level(exploration),
-            ): (75, 209),
-            self._get_offering_text(exploration): (75, 252),
-        }
-        return self._draw_exploration_card("inazuma", exploration, texts)
-
-    def _draw_sumeru_card(self) -> Image.Image:
-        exploration = self._get_exploration(8)
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117),
-            LocaleStr(
-                key="dendro_culus",
-                mi18n_game=Game.GENSHIN,
-                append=f": {self._user.stats.dendroculi}",
-            ): (75, 163),
-            LocaleStr(
-                key="reputation_level",
-                mi18n_game=Game.GENSHIN,
-                append=self._get_reputation_level(exploration),
-            ): (75, 209),
-            self._get_offering_text(exploration): (75, 252),
-        }
-        return self._draw_exploration_card("sumeru", exploration, texts)
-
-    def _draw_fontaine_card(self) -> Image.Image:
-        exploration = self._get_exploration(9)
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117),
-            LocaleStr(
-                key="hydro_god", mi18n_game=Game.GENSHIN, append=f": {self._user.stats.hydroculi}"
-            ): (75, 163),
-            LocaleStr(
-                key="reputation_level",
-                mi18n_game=Game.GENSHIN,
-                append=self._get_reputation_level(exploration),
-            ): (75, 209),
-            self._get_offering_text(exploration): (75, 252),
-        }
-        return self._draw_exploration_card("fontaine", exploration, texts)
-
-    def _draw_placeholder_card(self) -> Image.Image:
-        im = self._get_card("placeholder")
-        draw = ImageDraw.Draw(im)
-        drawer = Drawer(
-            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale
-        )
-        self._write_title(self._placeholder, position=(34, 23), drawer=drawer)
-        self._write_small_text(
-            LocaleStr(key="exploration.placeholder"), position=(35, 113), drawer=drawer
-        )
-        self._write_small_text(
-            LocaleStr(key="exploration.placeholder_quote"), position=(34, 181), drawer=drawer
-        )
-        return im
-
-    def _draw_sea_of_bygone_eras_card(self) -> Image.Image:
-        exploration = self._get_exploration(14)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117)
-        }
-        return self._draw_exploration_card("seaOfBygoneEras", exploration, texts)
-
-    def _draw_chenyu_value_card(self) -> Image.Image:
-        exploration = self._get_exploration(10)
-        upper_vale = self._get_exploration(13)
-        south_mountain = self._get_exploration(12)
-        mt_laxing = self._get_exploration(11)
-
-        areas = (upper_vale, south_mountain, mt_laxing)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {}
-        for i, area in enumerate(areas):
-            name = self._placeholder if area is None else area.name
-            progress = 0 if area is None else area.explored
-            key = f"{name}: {progress}%"
-            if key in texts:
-                key = f"{name}: {progress}% "  # sus fix to avoid duplicate key
-
-            texts[key] = (65, 134 + 45 * i)
-        texts.update({self._get_offering_text(exploration): (65, 271)})
-
-        return self._draw_exploration_card("chenyuVale", exploration, texts)
-
-    def _draw_the_chasm_card(self) -> Image.Image:
-        exploration = self._get_exploration(6)
-        underground = self._get_exploration(7)
-
-        underground_name = self._placeholder if underground is None else underground.name
-        underground_progress = 0 if underground is None else underground.explored
-
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (65, 152),
-            f"{underground_name}: {underground_progress}%": (65, 212),
-            self._get_offering_text(exploration): (65, 272),
-        }
-
-        return self._draw_exploration_card("theChasm", exploration, texts)
-
-    def _draw_dragonspine_card(self) -> Image.Image:
-        exploration = self._get_exploration(3)
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (73, 120),
-            self._get_offering_text(exploration): (73, 184),
-        }
-        return self._draw_exploration_card("dragonspine", exploration, texts)
-
-    def _draw_enkanomiya_card(self) -> Image.Image:
-        exploration = self._get_exploration(5)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (73, 123)
-        }
-        return self._draw_exploration_card("enkanomiya", exploration, texts)
-
-    def _draw_natlan_card(self) -> Image.Image:
-        exploration = self._get_exploration(15)
-        texts = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117),
-            LocaleStr(
-                key="pyroculus_number",
-                mi18n_game=Game.GENSHIN,
-                append=f": {self._user.stats.pyroculi}",
-            ): (75, 163),
-            LocaleStr(
-                key="natlan_reputation",
-                reputation=self._get_reputation_level(exploration),
-                tribes=self._get_tribe_levels(exploration),
-            ): (75, 209),
-            self._get_offering_text(exploration): (75, 252),
-        }
-        return self._draw_exploration_card("natlan", exploration, texts)
-
-    def _draw_ancient_sacred_mountain_card(self) -> Image.Image:
-        exploration = self._get_exploration(16)
-        texts: dict[LocaleStr | str, tuple[int, int]] = {
-            LocaleStr(
-                key="exploration.progress",
-                progress=0 if exploration is None else exploration.explored,
-            ): (75, 117)
-        }
-        return self._draw_exploration_card("ancientSacredMountain", exploration, texts)
+    def _paste_block(self, block: Image.Image, position: tuple[int, int]) -> None:
+        x, y = position
+        self._im.alpha_composite(get_shadow(*block.size), (x - SHADOW_PAD, y - SHADOW_PAD))
+        self._im.alpha_composite(block, position)
 
     def draw(self) -> BytesIO:
-        mode_str = "dark" if self._dark_mode else "light"
-        self._im = Drawer.open_image(
-            f"hoyo-buddy-assets/assets/gi-exploration/background_{mode_str}.png"
-        )
-        draw = ImageDraw.Draw(self._im)
-        self._drawer = Drawer(
-            draw, folder="gi-exploration", dark_mode=self._dark_mode, locale=self.locale
-        )
+        rows = [REGIONS[i : i + 2] for i in range(0, len(REGIONS), 2)]
+        row_heights = [max(block.size.height for block in row) for row in rows]
+        regions_y = SUMMARY_Y + SUMMARY_HEIGHT + SUMMARY_GAP
+        height = regions_y + sum(row_heights) + ROW_GAP * (len(rows) - 1) + BOTTOM_MARGIN
 
+        bg_color = (37, 37, 37) if self._dark_mode else (245, 245, 245)
+        self._im = Image.new("RGBA", (CANVAS_WIDTH, height), bg_color)
+        self._drawer = self._new_drawer(self._im)
         self._drawer.write(
-            LocaleStr(key="exploration.title"), position=(114, 81), size=72, style="bold"
+            LocaleStr(key="exploration.title"), position=TITLE_POS, size=72, style="bold"
         )
-        shadow_offset = 5
 
-        waypoint = self._draw_waypoint_card()
-        shadow = self._get_shadow("waypoint")
-        self._im.paste(shadow, (114 - shadow_offset, 249 - shadow_offset), shadow)
-        self._im.paste(waypoint, (114, 249), waypoint)
+        self._paste_block(self._draw_waypoint_card(), (COLUMN_X[0], SUMMARY_Y))
+        self._paste_block(self._draw_chest_card(), (COLUMN_X[1], SUMMARY_Y))
 
-        chest = self._draw_chest_card()
-        shadow = self._get_shadow("chest")
-        self._im.paste(shadow, (868 - shadow_offset, 249 - shadow_offset), shadow)
-        self._im.paste(chest, (868, 249), chest)
-
-        mondstadt = self._draw_mondstadt_card()
-        shadow = self._get_shadow("mondstadt")
-        self._im.paste(shadow, (114 - shadow_offset, 547 - shadow_offset), shadow)
-        self._im.paste(mondstadt, (114, 547), mondstadt)
-
-        liyue = self._draw_liyue_card()
-        shadow = self._get_shadow("liyue")
-        self._im.paste(shadow, (868 - shadow_offset, 547 - shadow_offset), shadow)
-        self._im.paste(liyue, (868, 547), liyue)
-
-        inazuma = self._draw_inazuma_card()
-        shadow = self._get_shadow("inazuma")
-        self._im.paste(shadow, (114 - shadow_offset, 865 - shadow_offset), shadow)
-        self._im.paste(inazuma, (114, 865), inazuma)
-
-        sumeru = self._draw_sumeru_card()
-        shadow = self._get_shadow("sumeru")
-        self._im.paste(shadow, (868 - shadow_offset, 865 - shadow_offset), shadow)
-        self._im.paste(sumeru, (868, 865), sumeru)
-
-        fontaine = self._draw_fontaine_card()
-        shadow = self._get_shadow("fontaine")
-        self._im.paste(shadow, (114 - shadow_offset, 1183 - shadow_offset), shadow)
-        self._im.paste(fontaine, (114, 1183), fontaine)
-
-        natlan = self._draw_natlan_card()
-        shadow = self._get_shadow("natlan")
-        self._im.paste(shadow, (868 - shadow_offset, 1183 - shadow_offset), shadow)
-        self._im.paste(natlan, (868, 1183), natlan)
-
-        # placeholder = self._draw_placeholder_card()
-        # shadow = self._get_shadow("placeholder")
-        # self._im.paste(shadow, (114 - shadow_offset, 1501 - shadow_offset), shadow)
-        # self._im.paste(placeholder, (114, 1501), placeholder)
-
-        ancient_sacred_mountain = self._draw_ancient_sacred_mountain_card()
-        shadow = self._get_shadow("ancientSacredMountain")
-        self._im.paste(shadow, (114 - shadow_offset, 1501 - shadow_offset), shadow)
-        self._im.paste(ancient_sacred_mountain, (114, 1501), ancient_sacred_mountain)
-
-        sea_of_bygone_eras = self._draw_sea_of_bygone_eras_card()
-        shadow = self._get_shadow("seaOfBygoneEras")
-        self._im.paste(shadow, (868 - shadow_offset, 1501 - shadow_offset), shadow)
-        self._im.paste(sea_of_bygone_eras, (868, 1501), sea_of_bygone_eras)
-
-        chenyu_vale = self._draw_chenyu_value_card()
-        shadow = self._get_shadow("chenyuVale")
-        self._im.paste(shadow, (114 - shadow_offset, 1819 - shadow_offset), shadow)
-        self._im.paste(chenyu_vale, (114, 1819), chenyu_vale)
-
-        chasm = self._draw_the_chasm_card()
-        shadow = self._get_shadow("theChasm")
-        self._im.paste(shadow, (868 - shadow_offset, 1819 - shadow_offset), shadow)
-        self._im.paste(chasm, (868, 1819), chasm)
-
-        dragonspine = self._draw_dragonspine_card()
-        shadow = self._get_shadow("dragonspine")
-        self._im.paste(shadow, (114 - shadow_offset, 2170 - shadow_offset), shadow)
-        self._im.paste(dragonspine, (114, 2170), dragonspine)
-
-        enka = self._draw_enkanomiya_card()
-        shadow = self._get_shadow("enkanomiya")
-        self._im.paste(shadow, (868 - shadow_offset, 2170 - shadow_offset), shadow)
-        self._im.paste(enka, (868, 2170), enka)
+        y = regions_y
+        for row, row_height in zip(rows, row_heights, strict=True):
+            for block, x in zip(row, COLUMN_X, strict=False):
+                self._paste_block(self._draw_region(block), (x, y))
+            y += row_height + ROW_GAP
 
         return Drawer.save_image(self._im)

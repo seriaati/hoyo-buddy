@@ -246,7 +246,7 @@ async def geetest_callback(
         client = ProxyGenshinClient(region=genshin.Region.CHINESE)
         try:
             await client._send_mobile_otp(
-                mobile, mmt_result=genshin.models.SessionMMTResult(**mmt_result)
+                mobile, mmt_result=genshin.models.SessionMMTv4Result(**mmt_result)
             )
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc

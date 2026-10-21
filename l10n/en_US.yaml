@@ -165,6 +165,7 @@ exploration.placeholder_quote: '"Every journey has its final day.Don''t rush."
 exploration.precious_chests: Precious
 exploration.progress: "Exploration Progress: {progress}%"
 exploration.remarkable_chests: Remarkable
+exploration.settlements: "Settlements: {levels}"
 exploration.title: World Exploration
 exploration.waypoints: Waypoints Unlocked
 exploration_command_description: View your exploration statistics in Genshin Impact

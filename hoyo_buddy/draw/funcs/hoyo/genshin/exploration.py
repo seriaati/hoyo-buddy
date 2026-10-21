@@ -107,6 +107,12 @@ NATLAN_REPUTATION = StatLine(
         tribes=ExplorationCard.tribe_levels(e),
     ),
 )
+SETTLEMENTS = StatLine(
+    "reputation",
+    lambda _, e: LocaleStr(
+        key="exploration.settlements", levels=ExplorationCard.settlement_levels(e)
+    ),
+)
 
 # Blocks are laid out in this order, two per row
 REGIONS: tuple[RegionBlock, ...] = (
@@ -163,6 +169,20 @@ REGIONS: tuple[RegionBlock, ...] = (
             offering("offering_natlan"),
         ),
     ),
+    RegionBlock(
+        art="nodKrai",
+        exploration_id=17,
+        lines=(
+            PROGRESS,
+            oculus("lunoculus", "moonoculus_number", lambda s: s.lunoculi),
+            SETTLEMENTS,
+        ),
+    ),
+    RegionBlock(
+        art="snezhnaya",
+        exploration_id=20,
+        lines=(PROGRESS, oculus("cryoculus", "iceculus", lambda s: s.cryoculi), SETTLEMENTS),
+    ),
     RegionBlock(art="ancientSacredMountain", exploration_id=16, lines=(PROGRESS,), fade_start=0.02),
     RegionBlock(art="seaOfBygoneEras", exploration_id=14, lines=(PROGRESS,), fade_start=0.01),
     RegionBlock(
@@ -187,6 +207,13 @@ REGIONS: tuple[RegionBlock, ...] = (
         fade_start=0.21,
     ),
     RegionBlock(art="enkanomiya", exploration_id=5, lines=(PROGRESS,), size=SHORT, fade_start=0.04),
+    RegionBlock(art="windrestPeak", exploration_id=18, lines=(PROGRESS,), size=SHORT),
+    RegionBlock(
+        art="templeOfSpace",
+        exploration_id=19,
+        lines=(PROGRESS, offering("offering_temple_of_space")),
+        size=SHORT,
+    ),
 )
 
 
@@ -232,6 +259,14 @@ class ExplorationCard:
             return "0"
         return "/".join(str(t.level) for t in exploration.natlan_reputation.tribes)
 
+    @staticmethod
+    def settlement_levels(exploration: Exploration | None) -> str:
+        if exploration is None:
+            return "0"
+        # genshin.py appends the region's reputation as an offering named after its type
+        levels = [str(o.level) for o in exploration.offerings if o.name != exploration.type]
+        return "/".join(levels) or "0"
+
     def get_exploration(self, exploration_id: int) -> Exploration | None:
         return next((e for e in self.user.explorations if e.id == exploration_id), None)
 
@@ -241,7 +276,7 @@ class ExplorationCard:
             level = 0
         else:
             offering = exploration.offerings[0]
-            offering_name = offering.name
+            offering_name = offering.name.removeprefix(f"{exploration.name}: ")
             level = offering.level
 
         level_str = LevelStr(level).translate(self.locale)

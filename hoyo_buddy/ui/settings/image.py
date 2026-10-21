@@ -1,22 +1,30 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
 from loguru import logger
 from seria.utils import read_json
+from tortoise.expressions import F
 
 from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.db import CustomImage
-from hoyo_buddy.db.utils import get_default_color
+from hoyo_buddy.constants import FREE_AI_IMAGE_DAILY_LIMIT, FREE_CUSTOM_IMAGE_LIMIT
+from hoyo_buddy.db import CustomImage, User
+from hoyo_buddy.db.utils import get_default_color, is_supporter
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
 from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import InvalidImageURLError, NSFWPromptError
+from hoyo_buddy.exceptions import (
+    AIImageLimitError,
+    CustomImageLimitError,
+    InvalidImageURLError,
+    NSFWPromptError,
+)
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_collection
 from hoyo_buddy.ui.hoyo.profile.templates import DISABLE_IMAGE
-from hoyo_buddy.utils import is_image_url, test_url_validity, upload_image
+from hoyo_buddy.utils import get_now, is_image_url, test_url_validity, upload_image
 from hoyo_buddy.utils.gacha import get_gacha_icon
 
 from .card import CardTemplateSelect
@@ -28,6 +36,35 @@ if TYPE_CHECKING:
     from .view import CardSettingsView  # ruff:ignore[unused-import]
 
 type ImageType = Literal["build_card_image", "team_card_image"]
+
+
+async def check_custom_image_limit(user_id: int, character_id: str) -> None:
+    if await is_supporter(user_id):
+        return
+    count = await CustomImage.filter(user_id=user_id, character_id=character_id).count()
+    if count >= FREE_CUSTOM_IMAGE_LIMIT:
+        raise CustomImageLimitError(FREE_CUSTOM_IMAGE_LIMIT)
+
+
+async def check_ai_image_limit(user_id: int) -> None:
+    if await is_supporter(user_id):
+        return
+    now = get_now()
+    user = await User.get(id=user_id)
+    if user.ai_image_date == now.date() and user.ai_image_count >= FREE_AI_IMAGE_DAILY_LIMIT:
+        reset_time = datetime.datetime.combine(
+            now.date() + datetime.timedelta(days=1), datetime.time(), tzinfo=now.tzinfo
+        )
+        raise AIImageLimitError(FREE_AI_IMAGE_DAILY_LIMIT, reset_time)
+
+
+async def increment_ai_image_count(user_id: int) -> None:
+    today = get_now().date()
+    updated = await User.filter(id=user_id, ai_image_date=today).update(
+        ai_image_count=F("ai_image_count") + 1
+    )
+    if not updated:
+        await User.filter(id=user_id).update(ai_image_date=today, ai_image_count=1)
 
 
 class ImageTypeSelect(ui.Select["CardSettingsView"]):
@@ -144,6 +181,8 @@ class AddImageButton(ui.Button["CardSettingsView"]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        await check_custom_image_limit(i.user.id, self.view.card_settings.character_id)
+
         modal = AddImageModal()
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
@@ -211,6 +250,9 @@ class GenerateAIArtButton(ui.Button["CardSettingsView"]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        await check_custom_image_limit(i.user.id, self.view.card_settings.character_id)
+        await check_ai_image_limit(i.user.id)
+
         modal = GenerateAIArtModal(title=LocaleStr(key="profile.generate_ai_art.button.label"))
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
@@ -232,6 +274,7 @@ class GenerateAIArtButton(ui.Button["CardSettingsView"]):
             raise ValueError(msg)
 
         bytes_ = await client.generate_image(prompt, negative_prompt)
+        await increment_ai_image_count(i.user.id)
         url = await upload_image(i.client.session, image=bytes_)
 
         await CustomImage.create(

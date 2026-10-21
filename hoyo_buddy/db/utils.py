@@ -38,6 +38,7 @@ __all__ = (
     "get_last_gacha_num",
     "get_locale",
     "get_num_since_last",
+    "is_supporter",
     "update_gacha_nums",
     "update_lb_ranks",
 )
@@ -52,6 +53,11 @@ async def get_locale(i: Interaction) -> Locale:
     except ValueError:
         return Locale.american_english
     return locale
+
+
+async def is_supporter(user_id: int) -> bool:
+    supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
+    return user_id in supporter_ids
 
 
 async def get_enable_dyk(i: Interaction) -> bool:

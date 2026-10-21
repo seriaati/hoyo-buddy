@@ -92,6 +92,26 @@ class NSFWPromptError(HoyoBuddyError):
         )
 
 
+class CustomImageLimitError(HoyoBuddyError):
+    def __init__(self, limit: int) -> None:
+        super().__init__(
+            title=LocaleStr(key="custom_image_limit_error_title"),
+            message=LocaleStr(key="custom_image_limit_error_message", limit=limit),
+        )
+
+
+class AIImageLimitError(HoyoBuddyError):
+    def __init__(self, limit: int, reset_time: datetime) -> None:
+        super().__init__(
+            title=LocaleStr(key="ai_image_limit_error_title"),
+            message=LocaleStr(
+                key="ai_image_limit_error_message",
+                limit=limit,
+                reset_time=format_dt(reset_time, "R"),
+            ),
+        )
+
+
 class NoCharsFoundError(HoyoBuddyError):
     def __init__(self) -> None:
         super().__init__(

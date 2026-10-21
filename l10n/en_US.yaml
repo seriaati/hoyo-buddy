@@ -903,3 +903,7 @@ lunar_arcana_back_button_label: Back to collection
 lunar_arcana_select_placeholder: Select a card...
 lunar_arcana_owned_count: "Owned: ×{count}"
 lunar_arcana_card_locked: Not obtained yet
+custom_image_limit_error_title: Custom image limit reached
+custom_image_limit_error_message: "You can add up to {limit} custom images per character. Supporters can add as many as they want, use /supporter to learn more."
+ai_image_limit_error_title: Daily AI image limit reached
+ai_image_limit_error_message: "You can generate up to {limit} AI images per day, the limit resets {reset_time}. Supporters can generate as many as they want, use /supporter to learn more."

@@ -44,7 +44,7 @@ class ExplorationView(ui.LayoutView):
         return (
             DefaultEmbed(self.locale)
             .add_acc_info(self.account)
-            .set_image(url="attachment://exploration.png")
+            .set_image(url="attachment://exploration.webp")
         )
 
     def render(self, embed: discord.Embed) -> None:
@@ -66,14 +66,14 @@ class ExplorationView(ui.LayoutView):
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
                 session=bot.session,
-                filename="exploration.png",
+                filename="exploration.webp",
                 executor=bot.executor,
                 loop=bot.loop,
             ),
             self.genshin_user,
         )
         self.buffer.seek(0)
-        return discord.File(self.buffer, filename="exploration.png")
+        return discord.File(self.buffer, filename="exploration.webp")
 
     async def start(self, i: Interaction) -> None:
         client = self.account.client
@@ -105,7 +105,7 @@ class ShowCard(ui.Button[ExplorationView]):
             file_ = await self.view.draw_exploration_card(i.client)
         else:
             buffer.seek(0)
-            file_ = discord.File(buffer, filename="exploration.png")
+            file_ = discord.File(buffer, filename="exploration.webp")
 
         self.view.render(self.view.start_embed)
         await self.unset_loading_state(i, attachments=[file_])

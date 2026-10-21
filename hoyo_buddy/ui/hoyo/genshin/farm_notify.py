@@ -46,7 +46,7 @@ class FarmNotifyView(LayoutPaginatorView):
                     )
                 )
                 .add_acc_info(farm_notify.account)
-                .set_image(url="attachment://farm_notify.png")
+                .set_image(url="attachment://farm_notify.webp")
             )
             for i in range(len(self._split_item_ids))
         ]

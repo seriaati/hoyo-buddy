@@ -129,7 +129,7 @@ class CheckInUI(ui.LayoutView):
                 dark_mode=self.dark_mode,
                 locale=draw_locale(self.locale, self.account),
                 session=session,
-                filename="check-in.png",
+                filename="check-in.webp",
                 executor=executor,
                 loop=loop,
             ),
@@ -145,7 +145,7 @@ class CheckInUI(ui.LayoutView):
                 missed=info.missed_rewards,
             ),
         )
-        embed.set_image(url="attachment://check-in.png")
+        embed.set_image(url="attachment://check-in.webp")
         embed.add_acc_info(self.account)
         return embed, bytes_obj
 
@@ -155,7 +155,7 @@ class CheckInUI(ui.LayoutView):
         )
 
         self._bytes_obj.seek(0)
-        file_ = discord.File(self._bytes_obj, filename="check-in.png")
+        file_ = discord.File(self._bytes_obj, filename="check-in.webp")
         self.dyk = await get_dyk(i)
         self.render(embed)
         await i.followup.send(file=file_, view=self)
@@ -188,7 +188,7 @@ class CheckInButton(Button[CheckInUI]):
         )
 
         self.view._bytes_obj.seek(0)
-        file_ = discord.File(self.view._bytes_obj, filename="check-in.png")
+        file_ = discord.File(self.view._bytes_obj, filename="check-in.webp")
 
         self.view.render(embed)
         await i.edit_original_response(attachments=[file_], view=self.view)

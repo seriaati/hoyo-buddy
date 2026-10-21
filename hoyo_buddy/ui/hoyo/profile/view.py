@@ -309,7 +309,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
-        embed.set_image(url="attachment://card.png")
+        embed.set_image(url="attachment://card.webp")
         if self._account is not None:
             embed.add_acc_info(self._account)
         else:
@@ -599,7 +599,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             dark_mode=card_settings.dark_mode,
             locale=await self.get_character_locale(character),
             session=i.client.session,
-            filename="card.png",
+            filename="card.webp",
             executor=i.client.executor,
             loop=i.client.loop,
         )
@@ -647,7 +647,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             dark_mode=settings.team_card_dark_mode,
             locale=locale,
             session=i.client.session,
-            filename="card.png",
+            filename="card.webp",
             executor=i.client.executor,
             loop=i.client.loop,
         )
@@ -824,7 +824,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 raise ThirdPartyCardTempError from e
             raise
 
-        attachments = [File(bytes_obj, filename="card.png")]
+        attachments = [File(bytes_obj, filename="card.webp")]
         self.render(self.card_embed)
 
         if unset_loading_state and item is not None:

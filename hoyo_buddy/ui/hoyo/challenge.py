@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 from collections import defaultdict
+from itertools import starmap
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 import discord
@@ -24,6 +25,7 @@ from genshin.models import (
 )
 from loguru import logger
 
+from hoyo_buddy import ui
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import (
     GAME_CHALLENGE_TYPES,
@@ -181,7 +183,7 @@ class BuffSelector(Select[BuffView]):
         await i.response.edit_message(embed=embed, view=self.view)
 
 
-class ChallengeView(View):
+class ChallengeView(ui.LayoutView):
     def __init__(
         self,
         account: HoyoAccount,
@@ -209,6 +211,8 @@ class ChallengeView(View):
         self.agent_ranks: dict[int, int] = {}
         self.uid = account.uid
         self.show_uid = False
+        self._rows: list[list[Button | Select]] = []
+        self.dyk = ""
 
     @property
     def challenge(self) -> ChallengeWithLang | None:
@@ -516,17 +520,26 @@ class ChallengeView(View):
         raise NotImplementedError(msg)
 
     def _add_items(self) -> None:
-        self.add_item(
-            ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game], self.challenge_type)
-        )
-        self.add_item(PhaseSelect())
+        self._rows = [
+            [ChallengeTypeSelect(GAME_CHALLENGE_TYPES[self.account.game], self.challenge_type)],
+            [PhaseSelect()],
+        ]
 
         if self.challenge_type is ChallengeType.HARD_CHALLENGE:
-            self.add_item(HardChallengeModeSingle())
-            self.add_item(HardChallengeModeMulti())
+            self._rows.append([HardChallengeModeSingle(), HardChallengeModeMulti()])
 
-        self.add_item(ViewBuffs())
-        self.add_item(ShowUID())
+        self._rows.append([ViewBuffs(), ShowUID()])
+
+    @property
+    def card_embed(self) -> DefaultEmbed:
+        embed = DefaultEmbed(self.locale).add_acc_info(self.account)
+        return embed.set_image(url="attachment://challenge.png")
+
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
     async def update(
         self, item: Select[ChallengeView] | Button[ChallengeView], i: Interaction
@@ -536,13 +549,12 @@ class ChallengeView(View):
             file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
         except NoChallengeDataError as e:
             embed, _ = get_error_embed(e, self.locale)
-            await item.unset_loading_state(i, embed=embed, attachments=[])
+            self.render(embed)
+            await item.unset_loading_state(i, attachments=[])
             return
 
-        embed = DefaultEmbed(self.locale).add_acc_info(self.account)
-        embed.set_image(url="attachment://challenge.png")
-
-        await item.unset_loading_state(i, embed=embed, attachments=[file_])
+        self.render(self.card_embed)
+        await item.unset_loading_state(i, attachments=[file_])
 
     async def fetch_data_and_update_ui(self) -> None:
         # No data for the current phase, but previous phases may still be
@@ -583,16 +595,15 @@ class ChallengeView(View):
 
     async def start(self, i: Interaction) -> None:
         self._add_items()
+        self.render(self.card_embed)
 
         await self.fetch_data_and_update_ui()
         self.check_challenge_data(self.challenge)
         file_ = await self.draw_card(i.client.session, i.client.executor, i.client.loop)
-        embed = DefaultEmbed(self.locale).add_acc_info(self.account)
-        embed.set_image(url="attachment://challenge.png")
 
-        self.message = await i.edit_original_response(
-            embed=embed, attachments=[file_], view=self, content=await get_dyk(i)
-        )
+        self.dyk = await get_dyk(i)
+        self.render(self.card_embed)
+        self.message = await i.edit_original_response(attachments=[file_], view=self)
 
 
 class PhaseSelect(PaginatorSelect[ChallengeView]):

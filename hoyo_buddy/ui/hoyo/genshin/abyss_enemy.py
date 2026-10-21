@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+from itertools import starmap
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, app_commands
 
+from hoyo_buddy import ui
 from hoyo_buddy.draw.main_funcs import draw_item_list_card
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.ui import Button, Select, SelectOption, View
+from hoyo_buddy.ui import Button, Select, SelectOption
 from hoyo_buddy.utils import ephemeral, get_now
 
 if TYPE_CHECKING:
+    import discord
     from ambr.models import Abyss, AbyssResponse
     from discord import Member, User
 
@@ -21,7 +24,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
 
-class AbyssEnemyView(View):
+class AbyssEnemyView(ui.LayoutView):
     def __init__(
         self, index: int, *, dark_mode: bool, author: User | Member, locale: Locale
     ) -> None:
@@ -35,6 +38,7 @@ class AbyssEnemyView(View):
 
         self._abyss_data: AbyssResponse | None = None
         self._monster_curve: dict[str, dict[str, dict[str, float]]] | None = None
+        self._rows: list[list[Button[AbyssEnemyView] | Select[AbyssEnemyView]]] = []
 
     @staticmethod
     async def get_autocomplete_choices() -> list[app_commands.Choice[str]]:
@@ -54,12 +58,16 @@ class AbyssEnemyView(View):
     def add_items(self) -> None:
         assert self._abyss_data is not None
 
-        self.add_item(AbyssSeasonSelector(self._abyss_data.abyss_items, self._season_index))
-        self.add_item(FloorSelect(self._floor_index))
-        for chamber_index in range(3):
-            self.add_item(ChamberButton(chamber_index))
-        for wave_index in range(2):
-            self.add_item(WaveButton(wave_index))
+        self._rows = [
+            [AbyssSeasonSelector(self._abyss_data.abyss_items, self._season_index)],
+            [FloorSelect(self._floor_index)],
+            [ChamberButton(chamber_index) for chamber_index in range(3)],
+            [WaveButton(wave_index) for wave_index in range(2)],
+        ]
+
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
 
     def _update_item_styles(self, item_num: int) -> None:
         # Update chamber button color
@@ -120,8 +128,8 @@ class AbyssEnemyView(View):
             await i.response.defer(ephemeral=ephemeral(i))
 
         embed, items = await self._get_embed_and_enemy_items()
-        self.clear_items()
         self.add_items()
+        self.render(embed)
 
         # Draw card
         file_ = await draw_item_list_card(
@@ -139,7 +147,7 @@ class AbyssEnemyView(View):
         # Update item styles
         self._update_item_styles(len(items))
 
-        await i.edit_original_response(embed=embed, attachments=[file_], view=self)
+        await i.edit_original_response(attachments=[file_], view=self)
         self.message = await i.original_response()
 
     async def start(self, i: Interaction) -> None:

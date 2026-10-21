@@ -28,7 +28,7 @@ SynergyTeam: TypeAlias = Sequence[
 ]
 
 
-class GIBuildView(ui.View):
+class GIBuildView(ui.LayoutView):
     def __init__(
         self,
         character_id: str,
@@ -48,17 +48,22 @@ class GIBuildView(ui.View):
         self.weapons = weapons
         self.artifact_sets = artifact_sets
         self.dark_mode = dark_mode
+        self._rows: list[list[ui.Button[GIBuildView] | ui.Select[GIBuildView]]] = []
 
         if guide.aza_data is not None:
-            self.add_item(PageSelector())
+            self._rows.append([PageSelector()])
 
         if guide.gw_data is not None:
             if guide.gw_data.builds:
-                self.add_item(BuildSelector(guide.gw_data))
+                self._rows.append([BuildSelector(guide.gw_data)])
+
+            buttons: list[ui.Button[GIBuildView] | ui.Select[GIBuildView]] = []
             if guide.gw_data.synergies.teams:
-                self.add_item(ShowSynergyButton(guide.gw_data.synergies.teams))
+                buttons.append(ShowSynergyButton(guide.gw_data.synergies.teams))
             if guide.gw_data.playstyle is not None:
-                self.add_item(ShowPlaystyleButton())
+                buttons.append(ShowPlaystyleButton())
+            if buttons:
+                self._rows.append(buttons)
 
     @property
     def character(self) -> ambr.Character:
@@ -302,8 +307,13 @@ class GIBuildView(ui.View):
             embed.description = synergy.info[0].value
         return embed
 
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *itertools.starmap(ui.ActionRow, self._rows)))
+
     async def start(self, i: Interaction) -> None:
-        await i.followup.send(embed=self.start_embed, view=self)
+        self.render(self.start_embed)
+        await i.followup.send(view=self)
         self.message = await i.original_response()
 
 
@@ -357,9 +367,10 @@ class PageSelector(ui.Select[GIBuildView]):
             build_selector: BuildSelector = self.view.get_item("build_selector")
             build_selector.reset_options_defaults()
 
-        await self.unset_loading_state(
-            i, embed=embed, attachments=[file_] if file_ is not None else []
-        )
+        if file_ is None:
+            embed.set_image(url=None)
+        self.view.render(embed)
+        await self.unset_loading_state(i, attachments=[file_] if file_ is not None else [])
 
 
 class BuildSelector(ui.Select[GIBuildView]):
@@ -384,8 +395,8 @@ class BuildSelector(ui.Select[GIBuildView]):
             page_selector: PageSelector = self.view.get_item("page_selector")
             page_selector.reset_options_defaults()
 
-        embed = self.view.get_gw_build_embed(build)
-        await i.response.edit_message(embed=embed, attachments=[], view=self.view)
+        self.view.render(self.view.get_gw_build_embed(build))
+        await i.response.edit_message(attachments=[], view=self.view)
 
 
 class ShowPlaystyleButton(ui.Button[GIBuildView]):
@@ -401,9 +412,8 @@ class ShowPlaystyleButton(ui.Button[GIBuildView]):
             build_selector: BuildSelector = self.view.get_item("build_selector")
             build_selector.reset_options_defaults()
 
-        guide = self.view.guide
-        embed = self.view.get_playstyle_embed(guide)
-        await i.response.edit_message(embed=embed, attachments=[], view=self.view)
+        self.view.render(self.view.get_playstyle_embed(self.view.guide))
+        await i.response.edit_message(attachments=[], view=self.view)
 
 
 class ShowSynergyButton(ui.Button[GIBuildView]):
@@ -417,4 +427,7 @@ class ShowSynergyButton(ui.Button[GIBuildView]):
         await self.set_loading_state(i)
         embed = self.view.get_synergy_embed()
         file_ = await self.view.draw_synergy_teams_image(self.teams, i.client)
-        await self.unset_loading_state(i, embed=embed, attachments=[file_])
+        if file_ is None:
+            embed.set_image(url=None)
+        self.view.render(embed)
+        await self.unset_loading_state(i, attachments=[file_] if file_ is not None else [])

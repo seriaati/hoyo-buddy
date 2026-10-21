@@ -60,7 +60,6 @@ class Hoyo(commands.Cog):
         view = CheckInUI(
             account, dark_mode=settings.dark_mode, author=i.user, locale=await get_locale(i)
         )
-        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)
@@ -98,7 +97,6 @@ class Hoyo(commands.Cog):
             author=i.user,
             locale=await get_locale(i),
         )
-        view.add_item(FakeSettingsButton())
         await view.start(i)
 
         shown = await show_anniversary_dismissible(i)

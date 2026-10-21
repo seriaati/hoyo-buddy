@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import datetime
+from itertools import starmap
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
 from discord import File
 
+from hoyo_buddy import ui
 from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
@@ -22,7 +24,8 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.ui import Button, Select, SelectOption, View
+from hoyo_buddy.ui import Button, Select, SelectOption
+from hoyo_buddy.ui.settings.button import FakeSettingsButton
 
 if TYPE_CHECKING:
     import io
@@ -38,7 +41,7 @@ NotesWithCard: TypeAlias = (
 )
 
 
-class NotesView(View):
+class NotesView(ui.LayoutView):
     def __init__(
         self,
         account: HoyoAccount,
@@ -53,11 +56,22 @@ class NotesView(View):
         self.dark_mode = dark_mode
         self.accounts = accounts
         self.bytes_obj: io.BytesIO | None = None
+        self._rows: list[list[Button | Select]] = []
+        self.dyk = ""
 
     def _add_items(self) -> None:
+        self._rows = []
         if self.accounts is not None:
-            self.add_item(AccountSwitcher(self.accounts, self.account))
-        self.add_items(self.get_open_game_buttons(self.account, row=1))
+            self._rows.append([AccountSwitcher(self.accounts, self.account)])
+        if buttons := self.get_open_game_buttons(self.account):
+            self._rows.append(list(buttons))
+        self._rows.append([FakeSettingsButton()])
+
+    def render(self, embed: DefaultEmbed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
     async def get_reminder_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
@@ -220,16 +234,15 @@ class NotesView(View):
         else:
             file_ = None
 
+        files = [file_] if file_ is not None else []
         if acc_select is not None:
+            self.render(embed)
             acc_select._update_view(self)
-            await acc_select.unset_loading_state(
-                i, embed=embed, attachments=[file_] if file_ is not None else []
-            )
+            await acc_select.unset_loading_state(i, attachments=files)
         else:
-            kwargs = {"embed": embed, "view": self, "content": await get_dyk(i)}
-            if file_ is not None:
-                kwargs["file"] = file_
-            await i.followup.send(**kwargs)
+            self.dyk = await get_dyk(i)
+            self.render(embed)
+            await i.followup.send(view=self, files=files)
 
         self.message = await i.original_response()
 
@@ -281,5 +294,4 @@ class AccountSwitcher(Select[NotesView]):
 
         view = self.view
         view.account = account
-        view.clear_items()
         await view.start(i, acc_select=self)

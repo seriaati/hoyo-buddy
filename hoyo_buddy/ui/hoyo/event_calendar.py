@@ -122,7 +122,7 @@ def get_duration_str(banner_or_event: CalendarItem) -> str:
     return f"{start.strftime('%Y-%m-%d')} ~ {end.strftime('%Y-%m-%d')}"
 
 
-class EventCalendarView(ui.View):
+class EventCalendarView(ui.LayoutView):
     def __init__(
         self,
         calendar: genshin.models.GenshinEventCalendar
@@ -138,27 +138,28 @@ class EventCalendarView(ui.View):
         self.calendar = calendar
         self.account = account
         self.dark_mode = dark_mode
+        self._rows: list[list[ItemSelector]] = []
 
         if isinstance(calendar, genshin.models.GenshinEventCalendar):
             banners: list[genshin.models.Banner] = []
             banners.extend(calendar.character_banners)
             banners.extend(calendar.weapon_banners)
-            self.add_item(BannerSelector(banners))
+            self._rows.append([BannerSelector(banners)])
         elif isinstance(calendar, genshin.models.HSREventCalendar):
             warps: list[genshin.models.EventWarp] = []
             warps.extend(calendar.character_warps)
             warps.extend(calendar.light_cone_warps)
-            self.add_item(BannerSelector(warps, cur_game_version=calendar.cur_game_version))
+            self._rows.append([BannerSelector(warps, cur_game_version=calendar.cur_game_version)])
         else:
             gacha_events: list[ZZZGachaEvent] = []
             gacha_events.extend(calendar.characters)
             gacha_events.extend(calendar.weapons)
-            self.add_item(BannerSelector(gacha_events))
+            self._rows.append([BannerSelector(gacha_events)])
 
         if calendar.events:
-            self.add_item(EventSelector(calendar.events))
+            self._rows.append([EventSelector(calendar.events)])
         if calendar.challenges:
-            self.add_item(ChallengeSelector(calendar.challenges))
+            self._rows.append([ChallengeSelector(calendar.challenges)])
 
     @property
     def embed(self) -> DefaultEmbed:
@@ -218,15 +219,20 @@ class EventCalendarView(ui.View):
             list(itertools.batched(blocks, 4)),
         )
 
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *itertools.starmap(ui.ActionRow, self._rows)))
+
     async def start(self, i: Interaction) -> None:
-        await i.followup.send(embed=self.embed, view=self)
+        self.render(self.embed)
+        await i.followup.send(view=self)
         self.message = await i.original_response()
 
 
 class ItemSelector(ui.Select[EventCalendarView]):
     async def callback(self, _: Interaction) -> None:
-        for item in self.view.children:
-            if isinstance(item, ui.Select):
+        for row in self.view._rows:
+            for item in row:
                 item.reset_options_defaults()
         self.update_options_defaults()
 
@@ -328,9 +334,9 @@ class BannerSelector(ItemSelector):
             msg = f"Banner with ID {banner_id} not found."
             raise ValueError(msg)
 
-        embed = self.get_embed(banner)
         file_ = await self.draw_banner_items(i.client, banner)
-        await self.unset_loading_state(i, embed=embed, attachments=[file_])
+        self.view.render(self.get_embed(banner))
+        await self.unset_loading_state(i, attachments=[file_])
 
 
 class EventSelector(ItemSelector):
@@ -426,9 +432,11 @@ class EventSelector(ItemSelector):
         embed = self.get_embed(event)
         if isinstance(event, genshin.models.ZZZEvent) or event.rewards:
             file_ = await self.view.draw_rewards_card(i.client, event)
-            await self.unset_loading_state(i, embed=embed, attachments=[file_])
+            self.view.render(embed)
+            await self.unset_loading_state(i, attachments=[file_])
         else:
-            await self.unset_loading_state(i, embed=embed, attachments=[])
+            self.view.render(embed.set_image(url=None))
+            await self.unset_loading_state(i, attachments=[])
 
 
 class ChallengeSelector(ItemSelector):
@@ -543,6 +551,8 @@ class ChallengeSelector(ItemSelector):
         embed = self.get_embed(challenge)
         if challenge.rewards:
             file_ = await self.view.draw_rewards_card(i.client, challenge)
-            await self.unset_loading_state(i, embed=embed, attachments=[file_])
+            self.view.render(embed)
+            await self.unset_loading_state(i, attachments=[file_])
         else:
-            await self.unset_loading_state(i, embed=embed, attachments=[])
+            self.view.render(embed.set_image(url=None))
+            await self.unset_loading_state(i, attachments=[])

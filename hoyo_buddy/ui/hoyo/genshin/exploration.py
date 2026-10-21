@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from itertools import starmap
 from typing import TYPE_CHECKING
 
 import discord
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction, User
 
 
-class ExplorationView(ui.View):
+class ExplorationView(ui.LayoutView):
     def __init__(
         self, account: HoyoAccount, *, dark_mode: bool, author: User, locale: Locale
     ) -> None:
@@ -35,6 +36,8 @@ class ExplorationView(ui.View):
         self.buffer: BytesIO | None = None
 
         self._genshin_user: genshin.models.PartialGenshinUserStats | None = None
+        self._rows: list[list[ui.Button[ExplorationView] | ui.Select[ExplorationView]]] = []
+        self.dyk = ""
 
     @property
     def start_embed(self) -> DefaultEmbed:
@@ -43,6 +46,12 @@ class ExplorationView(ui.View):
             .add_acc_info(self.account)
             .set_image(url="attachment://exploration.png")
         )
+
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
     @property
     def genshin_user(self) -> genshin.models.PartialGenshinUserStats:
@@ -71,13 +80,12 @@ class ExplorationView(ui.View):
         client.set_lang(self.locale)
         self._genshin_user = await client.get_partial_genshin_user(self.account.uid)
 
-        self.add_item(ShowCard())
-        self.add_item(ExplorationSelector(self.genshin_user.explorations))
+        self._rows = [[ShowCard()], [ExplorationSelector(self.genshin_user.explorations)]]
 
         file_ = await self.draw_exploration_card(i.client)
-        await i.followup.send(
-            embed=self.start_embed, file=file_, content=await get_dyk(i), view=self
-        )
+        self.dyk = await get_dyk(i)
+        self.render(self.start_embed)
+        await i.followup.send(file=file_, view=self)
 
         self.message = await i.original_response()
 
@@ -91,7 +99,6 @@ class ShowCard(ui.Button[ExplorationView]):
 
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
-        embed = self.view.start_embed
         buffer = self.view.buffer
 
         if buffer is None:
@@ -100,7 +107,8 @@ class ShowCard(ui.Button[ExplorationView]):
             buffer.seek(0)
             file_ = discord.File(buffer, filename="exploration.png")
 
-        await self.unset_loading_state(i, embed=embed, attachments=[file_])
+        self.view.render(self.view.start_embed)
+        await self.unset_loading_state(i, attachments=[file_])
 
 
 class ExplorationSelector(ui.Select[ExplorationView]):
@@ -144,4 +152,5 @@ class ExplorationSelector(ui.Select[ExplorationView]):
     async def callback(self, i: Interaction) -> None:
         exploration = self._get_exploration(self.values[0])
         embed = self._get_exploration_embed(exploration)
-        await i.response.edit_message(embed=embed, attachments=[])
+        self.view.render(embed)
+        await i.response.edit_message(attachments=[], view=self.view)

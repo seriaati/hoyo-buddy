@@ -37,6 +37,7 @@ from hoyo_buddy.draw.main_funcs import (
 )
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
+    BACK,
     FILTER,
     GROUP,
     ZZZ_SPECIALTY_EMOJIS,
@@ -53,12 +54,11 @@ from hoyo_buddy.l10n import EnumStr, LocaleStr
 from hoyo_buddy.models import UnownedGICharacter, UnownedHSRCharacter, UnownedZZZCharacter
 from hoyo_buddy.ui import (
     Button,
-    GoBackButton,
     Label,
+    LayoutPaginatorView,
     Modal,
     Page,
     PaginatorSelect,
-    PaginatorView,
     Select,
     SelectOption,
     TextInput,
@@ -128,7 +128,7 @@ Character: TypeAlias = (
 Sorter: TypeAlias = GISorter | HSRSorter | ZZZSorter | HonkaiSorter
 
 
-class CharactersView(PaginatorView):
+class CharactersView(LayoutPaginatorView):
     def __init__(
         self,
         account: HoyoAccount,
@@ -552,19 +552,19 @@ class CharactersView(PaginatorView):
             )
 
         chunked_items = itertools.batched(items, 4)
-        for num, chunk in enumerate(chunked_items, 1):
-            self.add_item(FilterButton(num, chunk))
+        filter_buttons = list(itertools.starmap(FilterButton, enumerate(chunked_items, 1)))
 
-        self.add_item(CharactersPerPageButton())
-
+        toggles: list[Button | Select] = []
         if self.game in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}:
-            self.add_item(ShowOwnedOnly(current_toggle=self.show_owned_only))
-            self.add_item(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
-        elif self.game is Game.HONKAI:
-            self.add_item(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
+            toggles.append(ShowOwnedOnly(current_toggle=self.show_owned_only))
+        toggles.append(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
 
-        self.add_item(SorterSelector(self.sorter, self.game))
-        self.add_item(ToggleUIButton())
+        self.rows = [
+            [*filter_buttons, CharactersPerPageButton()],
+            toggles,
+            [SorterSelector(self.sorter, self.game)],
+            [ToggleUIButton()],
+        ]
 
     def _set_pages(self, characters: Sequence[Character], *, embed: DefaultEmbed) -> None:
         page_num = len(list(itertools.batched(characters, self.characters_per_page)))
@@ -644,9 +644,6 @@ class CharactersView(PaginatorView):
         characters = self.get_filtered_sorted_characters()
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
         self._set_pages(characters, embed=embed)
-
-        self.clear_items()
-        self._add_buttons()
         self._add_items()
         self.current_page = 0
         await super().start(i)
@@ -1008,7 +1005,10 @@ class WeaponTypeFilter(Select[CharactersView]):
         await i.response.defer()
 
 
-class CustomGoBackButton(GoBackButton[CharactersView]):
+class FilterBackButton(Button[CharactersView]):
+    def __init__(self) -> None:
+        super().__init__(emoji=BACK)
+
     async def callback(self, i: Interaction) -> None:
         await self.set_loading_state(i)
         await self.view.update(i)
@@ -1026,13 +1026,8 @@ class FilterButton(Button[CharactersView]):
 
     async def callback(self, i: Interaction) -> None:
         view = self.view
-        back_button = CustomGoBackButton(view.children)
-        view.clear_items()
-
-        for item in self._items:
-            view.add_item(item)
-        view.add_item(back_button)
-
+        view.rows = [*([item] for item in self._items), [FilterBackButton()]]
+        view.render(view.pages[view.current_page])
         await i.response.edit_message(view=view)
 
 

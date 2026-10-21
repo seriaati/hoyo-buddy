@@ -1,19 +1,21 @@
 from __future__ import annotations
 
+from itertools import starmap
 from typing import TYPE_CHECKING, Any
 
 import discord
 import genshin
 from genshin import Game
 
-from hoyo_buddy import emojis
+from hoyo_buddy import emojis, ui
 from hoyo_buddy.db import User, draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_checkin_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Platform
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, Reward
-from hoyo_buddy.ui import Button, View
+from hoyo_buddy.ui import Button
+from hoyo_buddy.ui.settings.button import FakeSettingsButton
 from hoyo_buddy.utils import ephemeral, get_now
 
 if TYPE_CHECKING:
@@ -37,7 +39,7 @@ CHECK_IN_URLS = {
 }
 
 
-class CheckInUI(View):
+class CheckInUI(ui.LayoutView):
     def __init__(
         self,
         account: HoyoAccount,
@@ -53,20 +55,29 @@ class CheckInUI(View):
 
         self.dark_mode = dark_mode
         self._bytes_obj: io.BytesIO | None = None
+        self._rows: list[list[Button[CheckInUI]]] = [[]]
+        self.dyk = ""
         self.add_items()
 
     def add_items(self) -> None:
-        self.add_item(CheckInButton())
+        self._rows[0].append(CheckInButton())
         if self.client.game is not None and self.account.platform is Platform.HOYOLAB:
             if self.client.game not in CHECK_IN_URLS:
                 msg = f"Check-in URL for {self.client.game} is not available."
                 raise ValueError(msg)
-            self.add_item(
+            self._rows[0].append(
                 Button(
                     url=CHECK_IN_URLS[self.client.game],
                     label=LocaleStr(key="make_up_for_checkin_button_label"),
                 )
             )
+        self._rows.append([FakeSettingsButton()])
+
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
     async def _get_rewards(self) -> tuple[list[Reward], DailyRewardInfo]:
         client = self.client
@@ -145,7 +156,9 @@ class CheckInUI(View):
 
         self._bytes_obj.seek(0)
         file_ = discord.File(self._bytes_obj, filename="check-in.png")
-        await i.followup.send(embed=embed, file=file_, view=self, content=await get_dyk(i))
+        self.dyk = await get_dyk(i)
+        self.render(embed)
+        await i.followup.send(file=file_, view=self)
         self.message = await i.original_response()
 
 
@@ -177,6 +190,7 @@ class CheckInButton(Button[CheckInUI]):
         self.view._bytes_obj.seek(0)
         file_ = discord.File(self.view._bytes_obj, filename="check-in.png")
 
-        await i.edit_original_response(embed=embed, attachments=[file_])
+        self.view.render(embed)
+        await i.edit_original_response(attachments=[file_], view=self.view)
         embed = client.get_daily_reward_embed(daily_reward, self.view.locale, blur=True)
         await i.followup.send(embed=embed)

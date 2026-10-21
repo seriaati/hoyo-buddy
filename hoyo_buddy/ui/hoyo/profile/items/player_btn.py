@@ -39,4 +39,5 @@ class PlayerInfoButton(Button[ProfileView]):
         chara_select: CharacterSelect = self.view.get_item("profile_character_select")
         chara_select.update_options_defaults(values=["none"])
 
-        await i.response.edit_message(embed=self.view.player_embed, attachments=[], view=self.view)
+        self.view.render(self.view.player_embed)
+        await i.response.edit_message(attachments=[], view=self.view)

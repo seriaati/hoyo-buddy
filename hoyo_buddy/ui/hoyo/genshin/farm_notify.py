@@ -13,7 +13,7 @@ from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient, ItemCategory
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import ItemWithTrailing
-from hoyo_buddy.ui import Button, Page, PaginatorView, ToggleButton
+from hoyo_buddy.ui import Button, LayoutPaginatorView, Page, ToggleButton
 
 if TYPE_CHECKING:
     from discord import Member, User
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Interaction
 
 
-class FarmNotifyView(PaginatorView):
+class FarmNotifyView(LayoutPaginatorView):
     def __init__(
         self,
         farm_notify: FarmNotify,
@@ -58,12 +58,9 @@ class FarmNotifyView(PaginatorView):
         self._item_icons: dict[str, str] = {}  # Item id to icon
 
         super().__init__(pages, author=author, locale=locale)
-
-    def _add_buttons(self) -> None:
-        super()._add_buttons()
-        self.add_item(NotifyToggle(current_toggle=self._notify.enabled))
-        self.add_item(AddItemButton())
-        self.add_item(RemoveItemButton())
+        self.rows = [
+            [NotifyToggle(current_toggle=self._notify.enabled), AddItemButton(), RemoveItemButton()]
+        ]
 
     async def _fetch_item_icons(self) -> None:
         async with AmbrAPIClient(self.locale) as client:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import string
 from io import BytesIO
+from itertools import starmap
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import aiohttp
@@ -12,6 +13,7 @@ from discord import File
 from genshin.models import ZZZPartialAgent
 from loguru import logger
 
+from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
     LOCALE_TO_ENKA_CARDS_LANG,
@@ -44,7 +46,7 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
 from hoyo_buddy.types import Builds, HoyolabCharacter
-from hoyo_buddy.ui import ToggleUIButton, View
+from hoyo_buddy.ui import ToggleUIButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
@@ -62,6 +64,7 @@ if TYPE_CHECKING:
     import io
     from collections.abc import Sequence
 
+    import discord
     import yatta
     from discord import Member, User
     from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats, ZZZFullAgent
@@ -82,7 +85,7 @@ ENKA_CARDS_URL = "https://cards.enka.network"
 TOP_PERCENT_RANK_DECIMALS = 4
 
 
-class ProfileView(View, PlayerEmbedMixin):
+class ProfileView(ui.LayoutView, PlayerEmbedMixin):
     def __init__(
         self,
         uid: int,
@@ -136,6 +139,8 @@ class ProfileView(View, PlayerEmbedMixin):
         self._owner_username: str | None = owner.username if owner is not None else None
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
+        self._rows: list[list[Button | Select]] = []
+        self.dyk = ""
 
     async def _get_hsr_character_color(self, *, user_id: int, character_id: str) -> str:
         card_setting = await get_card_settings(user_id, character_id, game=self.game)
@@ -312,9 +317,7 @@ class ProfileView(View, PlayerEmbedMixin):
         return embed
 
     def _add_items(self) -> None:
-        self.add_item(PlayerInfoButton(row=0))
-        self.add_item(CardSettingsButton(row=0))
-        self.add_item(RedrawCardButton(row=1))
+        self._rows = [[PlayerInfoButton(row=0), CardSettingsButton(row=0), RedrawCardButton(row=0)]]
 
         if self.characters:
             characters = [
@@ -323,22 +326,28 @@ class ProfileView(View, PlayerEmbedMixin):
                     self.characters.items(), key=lambda x: x[0] not in self.character_ids
                 )
             ]
-            self.add_item(
-                CharacterSelect(
-                    self.game,
-                    characters,
-                    self.genshin_data,
-                    self.starrail_data,
-                    self.zzz_data,
-                    self._account,
-                    self.character_ids,
-                    row=2,
-                )
+            self._rows.append(
+                [
+                    CharacterSelect(
+                        self.game,
+                        characters,
+                        self.genshin_data,
+                        self.starrail_data,
+                        self.zzz_data,
+                        self._account,
+                        self.character_ids,
+                        row=2,
+                    )
+                ]
             )
 
-        self.add_item(BuildSelect(row=3))
-        self.add_item(CardInfoButton(row=4))
-        self.add_item(ToggleUIButton())
+        self._rows.extend(([BuildSelect(row=3)], [CardInfoButton(row=4), ToggleUIButton()]))
+
+    def render(self, embed: discord.Embed) -> None:
+        self.clear_items()
+        self.add_item(ui.EmbedContainer(embed, *starmap(ui.ActionRow, self._rows)))
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
     async def _draw_src_character_card(
         self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
@@ -780,7 +789,6 @@ class ProfileView(View, PlayerEmbedMixin):
         *,
         unset_loading_state: bool = True,
         character: Character | None = None,
-        content: str | None = None,
     ) -> None:
         card_settings = await get_card_settings(i.user.id, self.character_ids[0], game=self.game)
         is_team = len(self.character_ids) > 1
@@ -817,15 +825,12 @@ class ProfileView(View, PlayerEmbedMixin):
             raise
 
         attachments = [File(bytes_obj, filename="card.png")]
+        self.render(self.card_embed)
 
         if unset_loading_state and item is not None:
-            await item.unset_loading_state(
-                i, attachments=attachments, embed=self.card_embed, content=content
-            )
+            await item.unset_loading_state(i, attachments=attachments)
         else:
-            self.message = await i.edit_original_response(
-                attachments=attachments, embed=self.card_embed, view=self, content=content
-            )
+            self.message = await i.edit_original_response(attachments=attachments, view=self)
 
     async def start(self, i: Interaction) -> None:
         self._set_characters()
@@ -834,12 +839,14 @@ class ProfileView(View, PlayerEmbedMixin):
         if self.game is Game.ZZZ:
             await self.add_default_hl_substats(i.user.id)
 
-        dyk = await get_dyk(i)
+        self.dyk = await get_dyk(i)
+        self.render(self.player_embed)
+
         if self.character_ids:
             CharacterSelect.update_ui(
                 self, character_id=self.character_ids[0], is_team=len(self.character_ids) > 1
             )
-            return await self.update(i, unset_loading_state=False, content=dyk)
+            return await self.update(i, unset_loading_state=False)
 
-        await i.followup.send(embed=self.player_embed, view=self, content=dyk)
+        await i.followup.send(view=self)
         self.message = await i.original_response()

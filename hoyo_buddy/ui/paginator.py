@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import textwrap
+from itertools import starmap
 from typing import TYPE_CHECKING, Any, Literal
 
 import discord
@@ -8,7 +9,7 @@ from attr import dataclass
 from discord import ButtonStyle
 
 from ..emojis import DOUBLE_LEFT, DOUBLE_RIGHT, LEFT, RIGHT
-from . import Button, View
+from . import ActionRow, Button, EmbedContainer, LayoutView, Select, TextDisplay, View
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
     from ..types import Interaction, User
 
 
-__all__ = ("Page", "PaginatorView")
+__all__ = ("LayoutPaginatorView", "Page", "PaginatorView")
 
 
 @dataclass(kw_only=True)
@@ -194,6 +195,121 @@ class PaginatorView(View):
         self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
     ) -> None:
         await self._update_page(i, None, type_="start", followup=followup, ephemeral=ephemeral)
+
+
+class LayoutPaginatorView(LayoutView):
+    """PaginatorView counterpart that renders each page's embed in a Components V2 container.
+
+    Subclasses put their extra controls in `rows`; they're rendered below the navigation buttons.
+    """
+
+    def __init__(
+        self, pages: list[Page], *, set_loading_state: bool = False, author: User, locale: Locale
+    ) -> None:
+        super().__init__(author=author, locale=locale)
+
+        self._pages = pages
+        self._current_page = 0
+        self._max_page = len(pages)
+        self._set_loading_state = set_loading_state
+
+        self._nav_buttons: list[Button[Any]] = [
+            FirstButton(emoji=DOUBLE_LEFT, custom_id="first_page"),
+            PreviousButton(emoji=LEFT, style=ButtonStyle.blurple, custom_id="previous_page"),
+            NextButton(emoji=RIGHT, style=ButtonStyle.blurple, custom_id="next_page"),
+            LastButton(emoji=DOUBLE_RIGHT, custom_id="last_page"),
+        ]
+        self.rows: list[list[Button[Any] | Select[Any]]] = []
+
+    @property
+    def pages(self) -> list[Page]:
+        return self._pages
+
+    @pages.setter
+    def pages(self, pages: list[Page]) -> None:
+        self._pages = pages
+        self._max_page = len(pages)
+
+    @property
+    def current_page(self) -> int:
+        return self._current_page
+
+    @current_page.setter
+    def current_page(self, current_page: int) -> None:
+        self._current_page = current_page
+        self._update_button_states()
+
+    def _update_button_states(self) -> None:
+        first, previous, next_, last = self._nav_buttons
+        first.disabled = previous.disabled = self._current_page == 0
+        next_.disabled = last.disabled = self._current_page == self._max_page - 1
+
+    def render(self, page: Page) -> None:
+        self.clear_items()
+        rows = starmap(ActionRow, [self._nav_buttons, *self.rows])
+        self.add_item(EmbedContainer(page.embed or discord.Embed(), *rows))
+        if page.content:
+            self.add_item(TextDisplay(page.content))
+
+    async def _create_file(self) -> discord.File | None:
+        """Method to create a file for the current page. Implemented by subclasses."""
+
+    async def _update_page(
+        self,
+        i: Interaction,
+        button: Button[Any] | None,
+        *,
+        followup: bool = False,
+        ephemeral: bool = False,
+    ) -> None:
+        if not i.response.is_done():
+            await i.response.defer(ephemeral=ephemeral)
+
+        try:
+            page = self._pages[self._current_page]
+        except IndexError:
+            return
+
+        self._update_button_states()
+
+        if not followup and button is not None and self._set_loading_state:
+            await button.set_loading_state(i)
+        file_ = await self._create_file()
+        if isinstance(file_, discord.File):
+            page.file = file_
+
+        self.render(page)
+        attachments = [page.file] if page.file else []
+
+        if followup:
+            await i.followup.send(files=attachments, view=self, ephemeral=ephemeral)
+            self.message = await i.original_response()
+        elif button is None or not self._set_loading_state:
+            self.message = await i.edit_original_response(attachments=attachments, view=self)
+        else:
+            await button.unset_loading_state(i, attachments=attachments)
+            self.message = await i.original_response()
+
+    async def _next_page(self, i: Interaction, button: Button[Any]) -> None:
+        self._current_page = min(self._current_page + 1, self._max_page)
+        await self._update_page(i, button)
+
+    async def _previous_page(self, i: Interaction, button: Button[Any]) -> None:
+        self._current_page = max(self._current_page - 1, 0)
+        await self._update_page(i, button)
+
+    async def _first_page(self, i: Interaction, button: Button[Any]) -> None:
+        self._current_page = 0
+        await self._update_page(i, button)
+
+    async def _last_page(self, i: Interaction, button: Button[Any]) -> None:
+        self._current_page = self._max_page - 1
+        await self._update_page(i, button)
+
+    async def start(
+        self, i: Interaction, *, followup: bool = False, ephemeral: bool = False
+    ) -> None:
+        await self._update_page(i, None, followup=followup, ephemeral=ephemeral)
 
 
 class NextButton(Button[PaginatorView]):

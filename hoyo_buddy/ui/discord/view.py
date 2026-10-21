@@ -20,7 +20,7 @@ from .select import Select
 from .text_display import TextDisplay
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable, Iterable, Iterator
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
@@ -44,6 +44,7 @@ class ViewMixin:
     message: discord.Message | None
     locale: Locale
     clear_items: Callable[[], None]
+    walk_children: Callable[[], Iterator[discord.ui.Item[Any]]]
     item_states: dict[str, bool]
 
     def __repr__(self) -> str:
@@ -101,7 +102,7 @@ class ViewMixin:
         return True
 
     def get_item(self, custom_id: str) -> Any:
-        for item in self.children:
+        for item in self.walk_children():
             if isinstance(item, Button | Select) and item.custom_id == custom_id:
                 return item
 

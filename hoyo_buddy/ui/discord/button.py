@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, TypeGuard
 
 import discord
 from seria.utils import clean_url
@@ -17,7 +17,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction
 
-    from .view import LayoutView, View
+    from .container import ContainerItem
+    from .view import LayoutView, LayoutViewItem, View
 
 __all__ = ("Button", "EmojiToggleButton", "GoBackButton", "ToggleButton", "ToggleUIButton")
 
@@ -121,7 +122,7 @@ class GoBackButton[V_co: View](Button):
         await i.response.edit_message(**kwargs)
 
 
-class ToggleButton[V_co: View](Button):
+class ToggleButton[V_co: View | LayoutView](Button):
     def __init__(self, current_toggle: bool, toggle_label: LocaleStr, **kwargs) -> None:
         self.current_toggle = current_toggle
         self.toggle_label = toggle_label
@@ -179,7 +180,7 @@ class EmojiToggleButton[V_co: View | LayoutView](Button):
         self.style = discord.ButtonStyle.green if self.current else discord.ButtonStyle.gray
 
 
-class ToggleUIButton[V_co: View](Button):
+class ToggleUIButton[V_co: View | LayoutView](Button):
     def __init__(self, *, row: int = 4) -> None:
         super().__init__(
             style=discord.ButtonStyle.gray,
@@ -188,6 +189,7 @@ class ToggleUIButton[V_co: View](Button):
             row=row,
         )
         self._items: Sequence[Button | Select] = []
+        self._layout_items: list[LayoutViewItem] = []
         self._mode: Literal["show", "hide"] = "hide"
         self.view: V_co
 
@@ -200,9 +202,47 @@ class ToggleUIButton[V_co: View](Button):
             key="hide_ui_button_label" if self._mode == "hide" else "show_ui_button_label"
         )
 
+    @staticmethod
+    def _is_display_item(item: discord.ui.Item[Any]) -> TypeGuard[ContainerItem]:
+        if isinstance(item, discord.ui.Section):
+            return isinstance(item.accessory, discord.ui.Thumbnail)
+        return isinstance(item, discord.ui.TextDisplay | discord.ui.MediaGallery | discord.ui.File)
+
+    def _toggle_layout(self, view: LayoutView) -> None:
+        # ruff:ignore[import-outside-top-level]
+        from .action_row import ActionRow
+
+        # ruff:ignore[import-outside-top-level]
+        from .container import Container
+
+        if self._mode == "hide":
+            self._layout_items = view.children.copy()
+            view.clear_items()
+
+            for item in self._layout_items:
+                if isinstance(item, discord.ui.Container):
+                    children = [c for c in item.children if self._is_display_item(c)]
+                    view.add_item(Container(*children, accent_color=item.accent_color))
+
+            self._mode = "show"
+            self._set_style()
+            self.translate(view.locale)
+            view.add_item(ActionRow(self))
+        else:
+            view.clear_items()
+            self._mode = "hide"
+            self._set_style()
+            for item in self._layout_items:
+                view.add_item(item)
+
     async def callback(self, i: Interaction) -> None:
         message = i.message
         if message is None:
+            return
+
+        if isinstance(self.view, discord.ui.LayoutView):
+            self._toggle_layout(self.view)
+            await i.response.edit_message(view=self.view)
             return
 
         if self._mode == "hide":

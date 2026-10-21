@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 
+from hoyo_buddy.emojis import GAME_ICON_EMOJIS
 from hoyo_buddy.utils.misc import is_valid_hex_color
 
 from .action_row import ActionRow
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
     from .view import LayoutView
 
-__all__ = ("Container", "DefaultContainer")
+__all__ = ("Container", "DefaultContainer", "EmbedContainer")
 
 type ContainerItem = (
     ActionRow
@@ -69,3 +70,56 @@ class DefaultContainer[V: LayoutView](Container):
     ) -> None:
         super().__init__(*children, accent_color=discord.Color(6649080), spoiler=spoiler, id=id)
         self.view: V
+
+
+class EmbedContainer[V: LayoutView](Container):
+    """Renders an embed's content as Components V2 items, followed by the given children."""
+
+    def __init__(self, embed: discord.Embed, *children: ContainerItem) -> None:
+        items = self._embed_to_items(embed)
+        if children:
+            items.extend((discord.ui.Separator(spacing=discord.SeparatorSpacing.large), *children))
+
+        super().__init__(*items, accent_color=embed.color)
+        self.view: V
+
+    @staticmethod
+    def _embed_to_items(embed: discord.Embed) -> list[ContainerItem]:
+        items: list[ContainerItem] = []
+
+        if embed.author.name:
+            author = embed.author.name
+            if embed.author.url:
+                author = f"[{author}]({embed.author.url})"
+            if emoji := GAME_ICON_EMOJIS.get(embed.author.icon_url or ""):
+                author = f"{emoji} {author}"
+            items.append(TextDisplay(author))
+
+        lines: list[str] = []
+        if embed.title:
+            lines.append(f"### [{embed.title}]({embed.url})" if embed.url else f"### {embed.title}")
+        if embed.description:
+            lines.append(embed.description)
+        for field in embed.fields:
+            value = str(field.value)
+            if field.inline and "\n" not in value and not value.startswith(("* ", "- ")):
+                lines.append(f"**{field.name}**: {field.value}")
+            else:
+                lines.append(f"**{field.name}**\n{field.value}")
+
+        if lines:
+            body = TextDisplay("\n".join(lines))
+            if embed.thumbnail.url:
+                items.append(Section(body, accessory=discord.ui.Thumbnail(embed.thumbnail.url)))
+            else:
+                items.append(body)
+
+        if embed.image.url:
+            items.append(discord.ui.MediaGallery(discord.MediaGalleryItem(embed.image.url)))
+
+        if embed.footer.text:
+            items.append(
+                TextDisplay("\n".join(f"-# {line}" for line in embed.footer.text.splitlines()))
+            )
+
+        return items

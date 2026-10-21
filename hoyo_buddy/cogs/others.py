@@ -293,6 +293,7 @@ class Others(commands.Cog):
             LocaleStr(key="supporter_embed.perk_custom_images", limit=FREE_CUSTOM_IMAGE_LIMIT),
             LocaleStr(key="supporter_embed.perk_ai_images", limit=FREE_AI_IMAGE_DAILY_LIMIT),
             LocaleStr(key="supporter_embed.perk_discord_role"),
+            LocaleStr(key="supporter_embed.perk_discord_channel"),
         )
         description = LocaleStr(key="supporter_embed.description").translate(locale)
         description += "\n" + "\n".join(f"- {perk.translate(locale)}" for perk in perks)

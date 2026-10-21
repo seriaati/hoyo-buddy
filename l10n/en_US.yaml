@@ -915,5 +915,6 @@ supporter_embed.perk_accounts: "Unlimited accounts (free: {limit})"
 supporter_embed.perk_custom_images: "Unlimited custom images per character (free: {limit})"
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_discord_role: Sponsor role in the Discord server
+supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server
 supporter_embed.status_supporter: "You're a supporter, thank you!"
 supporter_embed.status_not_supporter: You're not a supporter yet.

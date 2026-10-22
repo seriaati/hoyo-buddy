@@ -969,7 +969,23 @@ class Drawer:
         scale = ANIMATED_CARD_SCALE
         full_size = background.size
         size = (round(full_size[0] * scale), round(full_size[1] * scale))
-        background = background.resize(size, Image.Resampling.LANCZOS)
+
+        # The art area's edges can fall between pixels at this scale, where the frames leave part
+        # of a pixel to the background, so the first frame is drawn into it like a static image
+        with Image.open(animation_path) as animation:
+            first = animation.convert("RGBA")
+        first = first.resize(
+            (round(first.width / scale), round(first.height / scale)), Image.Resampling.LANCZOS
+        )
+        art = Image.new("RGBA", full_size)
+        art.alpha_composite(
+            first, (area_pos[0] + max(offset[0], 0), area_pos[1] + max(offset[1], 0))
+        )
+        if mask is not None:
+            area_mask = Image.new("L", full_size)
+            area_mask.paste(mask.getchannel("A"), area_pos)
+            art.putalpha(ImageChops.multiply(art.getchannel("A"), area_mask))
+        background = Image.alpha_composite(background, art).resize(size, Image.Resampling.LANCZOS)
 
         # Drawn on black and white to recover the foreground's true colors and alpha, resizing is
         # linear so it can happen before the recovery

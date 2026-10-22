@@ -467,6 +467,8 @@ not_implemented_error_title: Feature not Implemented Yet
 not_implemented_error_only_game_message: "This feature is not implemented for `{game}` accounts yet."
 not_implemented_error_message: "This feature is not implemented for `{game}` accounts on `{platform}` yet."
 profile.build.current.label: Current
+profile.skin_select.placeholder: Select a skin...
+profile.skin_select.default.label: Default
 abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon
 apocalyptic_shadow: Apocalyptic shadow
 apc_shadow.highest_diff_cleared: "Highest difficulty cleared: {diff}"
@@ -919,4 +921,4 @@ supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the 
 supporter_embed.status_supporter: "You're a supporter, thank you!"
 supporter_embed.status_not_supporter: You're not a supporter yet.
 card_settings_animated_image: Animated image
-card_settings_animated_image_desc: "Use the agent's animated art on the card, only available for supporters on Template 1 for agents with animated art. Use </supporter> to learn more."
+card_settings_animated_image_desc: "Use the character's animated art on the card, only available for supporters for characters with animated art, on Template 1 for ZZZ and Templates 1 and 2 for HSR. Use </supporter> to learn more."

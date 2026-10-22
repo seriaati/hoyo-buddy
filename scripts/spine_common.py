@@ -1,7 +1,7 @@
 """Shared helpers to pre-render characters' Spine loops into animated WEBPs for animated build cards.
 
-The game scripts (render_zzz_spine.py, render_hsr_spine.py) look up characters' Spine files on
-nanoka and suggest their framings. This renders each loop with scripts/spine/render.mjs
+The game scripts (render_zzz_spine.py, render_hsr_spine.py, render_gi_spine.py) look up characters'
+Spine files and suggest their framings. This renders each loop with scripts/spine/render.mjs
 (spine-webgl in headless Chrome), crops it to the card's art area and encodes it at
 ANIMATED_CARD_SCALE, uploads it to the image host and records it in the art area's spine.yaml.
 
@@ -58,11 +58,20 @@ ATLAS_PAGE_RE = re.compile(r"^[^:]+\.(png|webp|jpg)$", re.IGNORECASE)
 class SpineCharacter(NamedTuple):
     name: str
     spine: str
-    """nanoka's name of the character's Spine files."""
+    """Name of the character's Spine files."""
     base_url: str
     """URL of the folder the Spine files are in."""
     image: str | None = None
     """URL of the static art the animation is of, if it is."""
+    under: tuple[str, ...] = ()
+    """Names of Spine files drawn beneath, bottom to top, in the same folder, e.g. a TCG card's
+    scenery."""
+    background: str | None = None
+    """File name of an image drawn beneath everything, in the same folder."""
+    view: tuple[int, int, int, int] | None = None
+    """World rect (x, y its bottom-left, width, height) to render instead of the loop's bounds."""
+    untint_flags: bool = False
+    """Whether to render slots keyed to pure channel colors untinted, see scripts/spine/render.mjs."""
 
 
 class Framing(NamedTuple):
@@ -89,6 +98,8 @@ class SpineFiles(NamedTuple):
     atlas: Path
     folder: Path
     """Folder to render into."""
+    args: tuple[str, ...] = ()
+    """Extra renderer arguments, see renderer_args."""
 
 
 type SuggestFraming = Callable[
@@ -139,9 +150,20 @@ async def _download_page(session: aiohttp.ClientSession, url: str, path: Path) -
         await download(session, f"{url.rsplit('.', 1)[0]}.webp", path)
 
 
-async def download_spine(
-    session: aiohttp.ClientSession, base_url: str, spine: str, folder: Path
+async def download_spine(  # ruff:ignore[too-many-arguments]
+    session: aiohttp.ClientSession,
+    base_url: str,
+    spine: str,
+    folder: Path,
+    *,
+    under: tuple[str, ...] = (),
+    background: str | None = None,
 ) -> tuple[Path, Path]:
+    """Download Spine files and their atlas pages, and the files drawn beneath them if any.
+
+    Returns:
+        The skeleton and atlas files.
+    """
     skel, atlas = folder / f"{spine}.skel", folder / f"{spine}.atlas"
     await asyncio.gather(
         download(session, f"{base_url}/{skel.name}", skel),
@@ -149,11 +171,32 @@ async def download_spine(
     )
 
     pages = [line.strip() for line in atlas.read_text("utf-8").splitlines()]
-    pages = [page for page in pages if ATLAS_PAGE_RE.match(page)]
+    pages = [page for page in pages if ATLAS_PAGE_RE.match(page) and not (folder / page).exists()]
     await asyncio.gather(
         *(_download_page(session, f"{base_url}/{page}", folder / page) for page in pages)
     )
+
+    # After the pages, since the files beneath may share them
+    for name in under:
+        await download_spine(session, base_url, name, folder)
+    if background is not None:
+        await download(session, f"{base_url}/{background}", folder / background)
     return skel, atlas
+
+
+def renderer_args(character: SpineCharacter, folder: Path) -> tuple[str, ...]:
+    """Get the renderer arguments for the character's layers and view, downloaded to folder."""
+    args: list[str] = []
+    if character.under:
+        under = (folder / name for name in character.under)
+        args.extend(("--under", ";".join(f"{path}.skel,{path}.atlas" for path in under)))
+    if character.background is not None:
+        args.extend(("--background", str(folder / character.background)))
+    if character.view is not None:
+        args.extend(("--view", ",".join(map(str, character.view))))
+    if character.untint_flags:
+        args.append("--untint-flags")
+    return tuple(args)
 
 
 async def render_frames(  # ruff:ignore[too-many-arguments]
@@ -165,23 +208,34 @@ async def render_frames(  # ruff:ignore[too-many-arguments]
     height: int,
     frames: int | None = None,
     crop: tuple[int, int, int, int] | None = None,
+    args: tuple[str, ...] = (),
 ) -> tuple[dict[str, Any], list[Path]]:
     """Render the animation's frames to PNGs.
+
+    Args:
+        skel: The Spine skeleton file.
+        atlas: The Spine atlas file, next to its texture pages.
+        folder: Folder to render the PNGs into.
+        spine: The name of the Spine files.
+        height: The pixel height of the animation's bounds.
+        frames: Render only the first frames, e.g. 1 for a preview.
+        crop: Render only that region of the bounds, in pixels from their top-left.
+        args: Extra renderer arguments, see renderer_args.
 
     Returns:
         The renderer's info (the animation's full width and height, frame count) and the paths of
         the frames, in order.
     """
-    args = [str(skel), str(atlas), str(folder), "--fps", str(FPS), "--height", str(height)]
+    cmd = [str(skel), str(atlas), str(folder), "--fps", str(FPS), "--height", str(height), *args]
     if (animation := ANIMATION_OVERRIDES.get(spine)) is not None:
-        args.extend(("--anim", animation))
+        cmd.extend(("--anim", animation))
     if frames is not None:
-        args.extend(("--frames", str(frames)))
+        cmd.extend(("--frames", str(frames)))
     if crop is not None:
-        args.extend(("--crop", ",".join(map(str, crop))))
+        cmd.extend(("--crop", ",".join(map(str, crop))))
 
     proc = await asyncio.create_subprocess_exec(
-        "node", str(RENDERER), *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        "node", str(RENDERER), *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
@@ -206,6 +260,7 @@ async def render_card_frames(  # ruff:ignore[too-many-arguments]
     framing: Framing,
     area: tuple[int, int],
     frames: int | None = None,
+    args: tuple[str, ...] = (),
 ) -> list[Image.Image]:
     """Render the animation's frames as the animated card shows them.
 
@@ -216,13 +271,14 @@ async def render_card_frames(  # ruff:ignore[too-many-arguments]
         skel: The Spine skeleton file.
         atlas: The Spine atlas file, next to its texture pages.
         folder: Folder to render the PNGs into.
-        spine: nanoka's name of the Spine files.
+        spine: The name of the Spine files.
         framing: The animation's position, height and orientation in the static-scale art area.
         area: The art area's size on the static-scale card.
         frames: Render only the first frames, e.g. 1 for a preview.
+        args: Extra renderer arguments, see renderer_args.
     """
     info, _ = await render_frames(
-        skel, atlas, folder / "info", spine=spine, height=framing.height, frames=0
+        skel, atlas, folder / "info", spine=spine, height=framing.height, frames=0, args=args
     )
     left, top = max(0, -framing.x), max(0, -framing.y)
     right = min(info["width"], area[0] - framing.x)
@@ -241,6 +297,7 @@ async def render_card_frames(  # ruff:ignore[too-many-arguments]
         height=framing.height,
         frames=frames,
         crop=(left, top, right - left, bottom - top),
+        args=args,
     )
     size = (
         round((right - left) * ANIMATED_CARD_SCALE),
@@ -333,6 +390,7 @@ async def render_target(  # ruff:ignore[too-many-arguments]
         spine=character.spine,
         framing=framing,
         area=target.area,
+        args=files.args,
     )
     data, fps, quality = await asyncio.to_thread(
         encode_webp, frames, card_size_ratio=target.card_size_ratio
@@ -392,8 +450,14 @@ async def run(
                 with tempfile.TemporaryDirectory() as tmp:
                     folder = Path(tmp)
                     skel, atlas = await download_spine(
-                        session, character.base_url, character.spine, folder
+                        session,
+                        character.base_url,
+                        character.spine,
+                        folder,
+                        under=character.under,
+                        background=character.background,
                     )
+                    extra_args = renderer_args(character, folder)
                     for target, manifest in manifests.items():
                         if args.new and character_id in manifest:
                             continue
@@ -403,7 +467,7 @@ async def run(
                             manifest,
                             character_id,
                             character,
-                            files=SpineFiles(skel, atlas, folder / target.name),
+                            files=SpineFiles(skel, atlas, folder / target.name, extra_args),
                             suggest_framing=suggest_framing,
                             dry_run=args.dry_run,
                         )

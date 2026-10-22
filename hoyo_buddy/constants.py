@@ -1147,7 +1147,7 @@ def get_relic_substat_roll_num(
     return max(sum(closest_counts.values()), 1)
 
 
-DC_MAX_FILESIZE = 10 * 1024 * 1024  # 10 MB
+DC_MAX_FILESIZE = 20 * 1024 * 1024  # 20 MB
 
 NO_MASKED_LINK_GUILDS = {998109815521947678}
 """Discord servers that have masked links AutoMod rules."""

@@ -37,6 +37,16 @@ Card data is designed by rendering variants through the real `ZZZAgentCard` draw
 - **Template 2 color**: if the M6 art's color scheme is similar to the standing art, reuse the template 1 color by leaving `color` out of the template 2 variants (the entry then has no `color` and the bot falls back to template 1's). Only offer a different color when the M6 art's palette clearly differs.
 - **Don't flip** (`flip: false`). Art is drawn from a specific perspective and looks wrong mirrored.
 
+## Animated images (template 1)
+
+Supporters' template 1 cards can show the agent's Spine animation from nanoka instead of the static art. Its framing (`x`, `y`, `height` of the animation's bounds on the card, and `flip`) lives in `spine.yaml`, separate from `agent_data.yaml`, and should match the static card's framing.
+
+1. `uv run scripts/zzz_card_variants.py spine-init [agent_id ...]` suggests a framing by overlaying the animation's first frame on the static art. It warns when they overlap poorly, which usually means the animation is a different picture, so look at those closely.
+2. `uv run scripts/zzz_card_variants.py spine [agent_id ...]` renders contact sheets of the static card next to each variant's first animated frame. Add `variants` (overriding `x`, `y`, `height` or `flip`) in `scripts/output/zzz_variants/spine/variants.yaml` for any that don't match, and re-render.
+3. `uv run scripts/zzz_card_variants.py spine-apply <agent_id>[:<variant>] ...`, then `uv run scripts/render_zzz_spine.py <agent_id> ...` to re-render and upload them. The uploaded animation is cropped to its framing, so every framing change needs a re-render.
+
+The template 1 static card has to exist first, since the suggestion is based on it. A new agent rendered without a `spine.yaml` entry (e.g. by the weekly workflow) gets the suggested framing automatically, so review it afterwards.
+
 ## Gotchas
 
 - `init --force` overwrites the whole variants file, including your variants. Never run it on a file you've edited unless that's intended.

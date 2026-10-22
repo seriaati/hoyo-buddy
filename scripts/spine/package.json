@@ -1,5 +1,5 @@
 {
-  "name": "zzz-spine-render",
+  "name": "spine-render",
   "private": true,
   "type": "module",
   "dependencies": {

@@ -1,13 +1,14 @@
 from pathlib import Path
 from typing import Any
 
+import anyio
 from pydantic import BaseModel
 from seria.utils import read_yaml
 
 from hoyo_buddy.models.draw import (
     GICardData,
     HSRCardData,
-    ZZZSpineData,
+    SpineData,
     ZZZTemp1CardData,
     ZZZTemp2CardData,
 )
@@ -26,18 +27,21 @@ class CardDataManager:
         self._hsr: dict[str, HSRCardData] | None = None
         self._zzz: dict[str, ZZZTemp1CardData] | None = None
         self._zzz2: dict[str, ZZZTemp2CardData] | None = None
-        self._zzz_spine: dict[str, ZZZSpineData] | None = None
+        self._zzz_spine: dict[str, SpineData] | None = None
 
     def _parse_model[T: BaseModel](self, data: dict[str, Any], model: type[T]) -> dict[str, T]:
         return {k: model.model_validate(v) for k, v in data.items()}
+
+    async def _load_spine(self, path: Path) -> dict[str, SpineData]:
+        data = await read_yaml(path) if await anyio.Path(path).exists() else {}
+        return self._parse_model(data, SpineData)
 
     async def load(self) -> None:
         self._gi = self._parse_model(await read_yaml(GI_DATA), GICardData)
         self._hsr = self._parse_model(await read_yaml(HSR_DATA), HSRCardData)
         self._zzz = self._parse_model(await read_yaml(ZZZ_DATA), ZZZTemp1CardData)
         self._zzz2 = self._parse_model(await read_yaml(ZZZ_DATA2), ZZZTemp2CardData)
-        spine_data = await read_yaml(ZZZ_SPINE_DATA) if ZZZ_SPINE_DATA.exists() else {}
-        self._zzz_spine = self._parse_model(spine_data, ZZZSpineData)
+        self._zzz_spine = await self._load_spine(ZZZ_SPINE_DATA)
 
     @property
     def zzz(self) -> dict[str, ZZZTemp1CardData]:
@@ -54,7 +58,7 @@ class CardDataManager:
         return self._zzz2.copy()
 
     @property
-    def zzz_spine(self) -> dict[str, ZZZSpineData]:
+    def zzz_spine(self) -> dict[str, SpineData]:
         if self._zzz_spine is None:
             msg = "ZZZ spine data is not loaded"
             raise ValueError(msg)

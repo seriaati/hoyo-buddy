@@ -43,10 +43,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: scripts/zzz_spine/package-lock.json
+          cache-dependency-path: scripts/spine/package-lock.json
 
       - name: Install renderer
-        run: npm ci --prefix scripts/zzz_spine
+        run: npm ci --prefix scripts/spine
 
       - name: Render
         env:

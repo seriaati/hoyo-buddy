@@ -167,6 +167,6 @@ test.py
 test_*.py
 .hb_data/
 scripts/output/
-scripts/zzz_spine/node_modules/
+scripts/spine/node_modules/
 .serena/
 .claude/worktrees/

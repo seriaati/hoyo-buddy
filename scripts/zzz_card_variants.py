@@ -106,7 +106,7 @@ from PIL.Image import Transpose
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from hoyo_buddy.constants import ZZZ_ANIMATED_CARD_SCALE
+from hoyo_buddy.constants import ANIMATED_CARD_SCALE
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.fonts import NUNITO_SANS_BLACK_ITALIC
 from hoyo_buddy.draw.funcs.hoyo.zzz import ZZZAgentCard
@@ -115,7 +115,7 @@ from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 from hoyo_buddy.models.draw import ZZZTemp1CardData, ZZZTemp2CardData
-from scripts import render_zzz_spine
+from scripts import render_zzz_spine, spine_common
 
 NANOKA_URL = "https://static.nanoka.cc"
 SAMPLE_PATH = Path("scripts/data/zzz_sample_agent.json")
@@ -649,8 +649,8 @@ def _load_spine_spec() -> dict[str, dict[str, Any]]:
     return yaml.safe_load(SPINE_SPEC_PATH.read_text(encoding="utf-8"))
 
 
-def _spine_framing(entry: dict[str, Any], variant: str) -> render_zzz_spine.Framing:
-    return render_zzz_spine.Framing(**{**entry["base"], **(entry["variants"][variant] or {})})
+def _spine_framing(entry: dict[str, Any], variant: str) -> spine_common.Framing:
+    return spine_common.Framing(**{**entry["base"], **(entry["variants"][variant] or {})})
 
 
 async def _get_spine_files(session: aiohttp.ClientSession, spine: str) -> tuple[Path, Path]:
@@ -660,7 +660,7 @@ async def _get_spine_files(session: aiohttp.ClientSession, spine: str) -> tuple[
     if skel.exists():
         return skel, atlas
     folder.mkdir(parents=True, exist_ok=True)
-    return await render_zzz_spine.download_spine(session, spine, folder)
+    return await spine_common.download_spine(session, render_zzz_spine.SPINE_URL, spine, folder)
 
 
 async def spine_init(agent_ids: list[str], *, force: bool) -> None:
@@ -687,7 +687,7 @@ async def spine_init(agent_ids: list[str], *, force: bool) -> None:
                     atlas,
                     Path(tmp),
                     spine=agent.spine,
-                    static_art=await render_zzz_spine.download_image(session, agent.image),
+                    static_art=await spine_common.download_image(session, cast("str", agent.image)),
                     card_data=card_data[agent_id],
                 )
             spec[agent_id] = {
@@ -769,7 +769,7 @@ def _draw_spine_tiles(
             image = Image.open(card.draw_animated(frame_path, (framing.x, framing.y)))
             image.load()
         desc = _describe_on_card(
-            frame, x=max(framing.x, 0), y=max(framing.y, 0), scale=1 / ZZZ_ANIMATED_CARD_SCALE
+            frame, x=max(framing.x, 0), y=max(framing.y, 0), scale=1 / ANIMATED_CARD_SCALE
         )
         overrides = entry["variants"][variant] or {}
         changes = ", ".join(f"{k}={v}" for k, v in overrides.items()) or "base"
@@ -793,12 +793,13 @@ async def spine(agent_ids: list[str]) -> None:
         async with semaphore:
             skel, atlas = await _get_spine_files(session, spec[key]["spine"])
             with tempfile.TemporaryDirectory() as tmp:
-                frames = await render_zzz_spine.render_card_frames(
+                frames = await spine_common.render_card_frames(
                     skel,
                     atlas,
                     Path(tmp),
                     spine=spec[key]["spine"],
                     framing=_spine_framing(spec[key], variant),
+                    area=render_zzz_spine.CARD_SIZE,
                     frames=1,
                 )
             return key, variant, frames[0]

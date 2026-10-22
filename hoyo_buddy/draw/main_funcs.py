@@ -59,7 +59,7 @@ if TYPE_CHECKING:
         UnownedZZZCharacter,
         ZZZEnkaCharacter,
     )
-    from hoyo_buddy.models.draw import ZZZSpineData, ZZZTemp1CardData
+    from hoyo_buddy.models.draw import SpineData, ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -582,7 +582,7 @@ async def draw_zzz_build_card(
     hl_substats: list[int],
     hl_special_stats: bool,
     use_m3_art: bool,
-    animation: ZZZSpineData | None,
+    animation: SpineData | None,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 

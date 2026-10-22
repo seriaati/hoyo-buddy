@@ -24,9 +24,9 @@ __all__ = (
     "ItemWithDescription",
     "ItemWithTrailing",
     "SingleBlock",
+    "SpineData",
     "TopPadding",
     "ZZZDrawData",
-    "ZZZSpineData",
     "ZZZTemp1CardData",
     "ZZZTemp2CardData",
 )
@@ -136,14 +136,14 @@ class ZZZTemp2CardData(ZZZTemp1CardData):
     full_name: bool = False
 
 
-class ZZZSpineData(BaseModel):
-    """A pre-rendered animated agent image, see scripts/render_zzz_spine.py."""
+class SpineData(BaseModel):
+    """A pre-rendered animated character image, see scripts/spine_common.py."""
 
     url: str
     x: int
-    """The animation's uncropped left on the static-scale card."""
+    """The animation's uncropped left in the card's art area, on the static-scale card."""
     y: int
-    """The animation's uncropped top on the static-scale card."""
+    """The animation's uncropped top in the card's art area, on the static-scale card."""
 
 
 class GICardData(BaseModel):

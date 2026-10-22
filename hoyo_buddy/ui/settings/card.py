@@ -9,6 +9,7 @@ from hoyo_buddy import emojis, ui
 from hoyo_buddy.constants import EMPTY_CHAR, ZZZ_DISC_SUBSTATS, is_hl_disc_substat
 from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.db.utils import get_default_color
+from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import InvalidColorError
 from hoyo_buddy.l10n import LocaleStr
@@ -111,6 +112,20 @@ class SubstatRollButton(ui.EmojiToggleButton["CardSettingsView"]):
 
         self.view.card_settings.show_substat_rolls = self.current
         await self.view.card_settings.save(update_fields=("show_substat_rolls",))
+
+        await self.view.update(i)
+
+
+class AnimatedImageButton(ui.EmojiToggleButton["CardSettingsView"]):
+    def __init__(self, *, current: bool, disabled: bool) -> None:
+        super().__init__(current=current, disabled=disabled)
+
+    async def callback(self, i: Interaction) -> None:
+        self.current = not self.current
+        self.update_style()
+
+        self.view.card_settings.animated_image = self.current
+        await self.view.card_settings.save(update_fields=("animated_image",))
 
         await self.view.update(i)
 
@@ -295,9 +310,11 @@ class CardSettingsContainer(ui.Container):
         character_name: str,
         game: Game,
         gacha_data: dict[str, dict[str, str]],
+        is_supporter: bool,
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
+        self.is_supporter = is_supporter
         self.template = (game, card_settings.template)
         self.game = game
         self.character_id = card_settings.character_id
@@ -387,6 +404,21 @@ class CardSettingsContainer(ui.Container):
                 accessory=SubstatRollButton(
                     current=card_settings.show_substat_rolls,
                     disabled=self.disable_substat_roll_button,
+                ),
+            ),
+            # Animated image
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="card_settings_animated_image"),
+                        desc=LocaleStr(key="card_settings_animated_image_desc"),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=AnimatedImageButton(
+                    current=card_settings.animated_image,
+                    disabled=self.disable_animated_image_button,
                 ),
             ),
             # Highlight substat selector
@@ -520,3 +552,12 @@ class CardSettingsContainer(ui.Container):
     @property
     def disable_highlight_substat_selector(self) -> bool:
         return self.game is not Game.ZZZ
+
+    @property
+    def disable_animated_image_button(self) -> bool:
+        return (
+            not self.is_supporter
+            or self.game is not Game.ZZZ
+            or self.card_settings.template != "hb1"
+            or self.card_settings.character_id not in CARD_DATA.zzz_spine
+        )

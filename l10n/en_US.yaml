@@ -918,3 +918,5 @@ supporter_embed.perk_discord_role: Sponsor role in the Discord server
 supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server
 supporter_embed.status_supporter: "You're a supporter, thank you!"
 supporter_embed.status_not_supporter: You're not a supporter yet.
+card_settings_animated_image: Animated image
+card_settings_animated_image_desc: "Use the agent's animated art on the card, only available for supporters on Template 1 for agents with animated art. Use </supporter> to learn more."

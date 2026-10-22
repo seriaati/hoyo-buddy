@@ -5,24 +5,27 @@ from typing import TYPE_CHECKING, Literal
 from discord import utils as dutils
 from genshin.models import ZZZPropertyType as PropType
 from genshin.models import ZZZSkillType
-from PIL import ImageDraw
+from PIL import Image, ImageDraw, ImageSequence
 from PIL.Image import Transpose
 
 from hoyo_buddy.constants import (
+    DC_MAX_FILESIZE,
     ZZZ_AGENT_CORE_LEVEL_MAP,
+    ZZZ_ANIMATED_CARD_SCALE,
     get_disc_substat_roll_num,
     is_hl_disc_substat,
 )
-from hoyo_buddy.draw.drawer import BLACK, Drawer
+from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.enums import Locale
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from io import BytesIO
+    from pathlib import Path
 
     from genshin.models import ZZZFullAgent
-    from PIL import Image
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
     from hoyo_buddy.models.draw import ZZZTemp1CardData
@@ -428,3 +431,46 @@ class ZZZAgentCard:
         self._draw_agent_image(im)
         self._draw_foreground(im)
         return Drawer.save_image(im)
+
+    def draw_animated(self, animation_path: Path, position: tuple[int, int]) -> BytesIO:
+        """Draw the card with an animated agent image.
+
+        Args:
+            animation_path: Path of the agent's pre-rendered animated WEBP, already at
+                ZZZ_ANIMATED_CARD_SCALE and cropped to the card.
+            position: Position of the animation's uncropped top-left on the static-scale card.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        background = self._draw_background()
+        full_size = background.size
+        size = (
+            round(full_size[0] * ZZZ_ANIMATED_CARD_SCALE),
+            round(full_size[1] * ZZZ_ANIMATED_CARD_SCALE),
+        )
+        background = background.resize(size, Image.Resampling.LANCZOS)
+
+        # Drawn on black and white to recover the foreground's true colors and alpha, resizing is
+        # linear so it can happen before the recovery
+        layers: list[Image.Image] = []
+        for color in (BLACK, WHITE):
+            layer = Image.new("RGBA", full_size, color)
+            self._draw_foreground(layer)
+            layers.append(layer.convert("RGB").resize(size, Image.Resampling.LANCZOS))
+        foreground = Drawer.extract_layer(*layers)
+
+        x, y = (max(round(p * ZZZ_ANIMATED_CARD_SCALE), 0) for p in position)
+
+        def frames() -> Iterator[tuple[Image.Image, int]]:
+            with Image.open(animation_path) as animation:
+                for frame in ImageSequence.Iterator(animation):
+                    im = background.copy()
+                    im.alpha_composite(frame.convert("RGBA"), (x, y))
+                    im.alpha_composite(foreground)
+                    yield im, frame.info["duration"]
+
+        result = Drawer.save_animated(frames(), size)
+        if result.getbuffer().nbytes > DC_MAX_FILESIZE:
+            return self.draw()
+        return result

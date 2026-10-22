@@ -11,6 +11,7 @@ from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, MIMO_SUPPORT_GAMES, lo
 from hoyo_buddy.db.models import CustomImage, JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
+from hoyo_buddy.db.utils import is_supporter
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
@@ -366,6 +367,7 @@ class CardSettingsView(ui.LayoutView):
                 character_name=self.character_name,
                 game=self.game,
                 gacha_data=gacha_data,
+                is_supporter=await is_supporter(i.user.id),
             )
 
         container.add_item(

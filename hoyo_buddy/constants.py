@@ -558,6 +558,9 @@ ZZZ_AGENT_CORE_LEVEL_MAP = {1: "0", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "
 
 ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2: "B"}
 
+ZZZ_ANIMATED_CARD_SCALE = 0.5
+"""Scale of animated ZZZ build cards relative to the static card."""
+
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
     Locale.chinese: "CHS",

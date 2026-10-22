@@ -22,7 +22,12 @@ from hoyo_buddy.constants import (
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
-from hoyo_buddy.db.utils import get_card_settings, get_default_color, set_highlight_substats
+from hoyo_buddy.db.utils import (
+    get_card_settings,
+    get_default_color,
+    is_supporter,
+    set_highlight_substats,
+)
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -514,7 +519,12 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         )
 
     async def _draw_hb_zzz_character_card(
-        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
+        self,
+        character: Character,
+        card_settings: CardSettings,
+        draw_input: DrawInput,
+        *,
+        user_id: int,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
@@ -562,6 +572,16 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             ZZZ_AVATAR_BATTLE_TEMP_JSON
         )
 
+        # Animations are rendered from the agent's default outfit
+        animation = None
+        if (
+            template_num == 1
+            and agent.outfit_id is None
+            and card_settings.animated_image
+            and await is_supporter(user_id)
+        ):
+            animation = CARD_DATA.zzz_spine.get(str(agent.id))
+
         return await draw_zzz_build_card(
             draw_input,
             agent,
@@ -574,6 +594,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             hl_special_stats=card_settings.highlight_special_stats,
             hl_substats=card_settings.highlight_substats,
             use_m3_art=card_settings.use_m3_art,
+            animation=animation,
         )
 
     async def draw_card(
@@ -621,7 +642,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         if self.game is Game.ZZZ:
             if template == "enka1":
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
-            return await self._draw_hb_zzz_character_card(character, card_settings, draw_input)
+            return await self._draw_hb_zzz_character_card(
+                character, card_settings, draw_input, user_id=i.user.id
+            )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
         raise ValueError(msg)

@@ -32,6 +32,8 @@ class CardSettings(BaseModel):
     highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
     use_m3_art = fields.BooleanField(default=False)
     """Whether to use Mindscape 3 art for the ZZZ card."""
+    animated_image = fields.BooleanField(default=True)
+    """Whether to use the animated agent image for the ZZZ card, only for supporters."""
     game: fields.Field[Game | None] = fields.CharEnumField(Game, max_length=32, null=True)
 
     class Meta:

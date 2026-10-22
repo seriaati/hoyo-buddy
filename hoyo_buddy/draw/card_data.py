@@ -4,13 +4,20 @@ from typing import Any
 from pydantic import BaseModel
 from seria.utils import read_yaml
 
-from hoyo_buddy.models.draw import GICardData, HSRCardData, ZZZTemp1CardData, ZZZTemp2CardData
+from hoyo_buddy.models.draw import (
+    GICardData,
+    HSRCardData,
+    ZZZSpineData,
+    ZZZTemp1CardData,
+    ZZZTemp2CardData,
+)
 
 ASSET_PATH = Path("hoyo-buddy-assets/assets")
 GI_DATA = ASSET_PATH / "gi-build-card/data.yaml"
 HSR_DATA = ASSET_PATH / "hsr-build-card/data.yaml"
 ZZZ_DATA = ASSET_PATH / "zzz-build-card/agent_data.yaml"
 ZZZ_DATA2 = ASSET_PATH / "zzz-build-card/agent_data_temp2.yaml"
+ZZZ_SPINE_DATA = ASSET_PATH / "zzz-build-card/spine.yaml"
 
 
 class CardDataManager:
@@ -19,6 +26,7 @@ class CardDataManager:
         self._hsr: dict[str, HSRCardData] | None = None
         self._zzz: dict[str, ZZZTemp1CardData] | None = None
         self._zzz2: dict[str, ZZZTemp2CardData] | None = None
+        self._zzz_spine: dict[str, ZZZSpineData] | None = None
 
     def _parse_model[T: BaseModel](self, data: dict[str, Any], model: type[T]) -> dict[str, T]:
         return {k: model.model_validate(v) for k, v in data.items()}
@@ -28,6 +36,8 @@ class CardDataManager:
         self._hsr = self._parse_model(await read_yaml(HSR_DATA), HSRCardData)
         self._zzz = self._parse_model(await read_yaml(ZZZ_DATA), ZZZTemp1CardData)
         self._zzz2 = self._parse_model(await read_yaml(ZZZ_DATA2), ZZZTemp2CardData)
+        spine_data = await read_yaml(ZZZ_SPINE_DATA) if ZZZ_SPINE_DATA.exists() else {}
+        self._zzz_spine = self._parse_model(spine_data, ZZZSpineData)
 
     @property
     def zzz(self) -> dict[str, ZZZTemp1CardData]:
@@ -42,6 +52,13 @@ class CardDataManager:
             msg = "ZZZ temp2 card data is not loaded"
             raise ValueError(msg)
         return self._zzz2.copy()
+
+    @property
+    def zzz_spine(self) -> dict[str, ZZZSpineData]:
+        if self._zzz_spine is None:
+            msg = "ZZZ spine data is not loaded"
+            raise ValueError(msg)
+        return self._zzz_spine.copy()
 
     @property
     def gi(self) -> dict[str, GICardData]:

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
-from PIL import Image, ImageChops, ImageFont
+from PIL import Image, ImageChops, ImageFont, _webp  # ruff:ignore[import-private-name]
 
 from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import DC_MAX_FILESIZE
@@ -20,6 +20,8 @@ from hoyo_buddy.utils import get_static_img_path
 from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from PIL import ImageDraw
 
     from hoyo_buddy.l10n import LocaleStr
@@ -904,6 +906,38 @@ class Drawer:
             img = img.resize((int(width * step), int(height * step)), Image.Resampling.LANCZOS)
 
         return bytes_obj
+
+    @staticmethod
+    def save_animated(
+        frames: Iterable[tuple[Image.Image, int]], size: tuple[int, int], *, quality: int = 75
+    ) -> io.BytesIO:
+        """Encode RGBA frames and their durations in ms into a looping animated WEBP, one at a time.
+
+        Uses Pillow's internal WebP animation encoder (what Image.save(save_all=True) uses), since
+        save_all needs every frame in memory up front.
+        """
+        # A high max keyframe distance since most of the card is static between frames
+        encoder = _webp.WebPAnimEncoder(size, 0, 0, False, 0, 300, False, False)
+        timestamp = 0
+        for frame, duration in frames:
+            encoder.add(frame.getim(), timestamp, False, quality, 100, 0)
+            timestamp += duration
+        encoder.add(None, timestamp, False, quality, 100, 0)
+        return io.BytesIO(encoder.assemble("", "", ""))
+
+    @staticmethod
+    def extract_layer(on_black: Image.Image, on_white: Image.Image) -> Image.Image:
+        """Recover a layer's colors and alpha from the layer drawn on opaque black and white.
+
+        A layer with color c and alpha a drawn over an opaque color b gives c * a + b * (1 - a), so
+        drawing it over black gives c * a and the difference from white is 255 * (1 - a).
+        """
+        black = np.asarray(on_black.convert("RGB"), dtype=np.float32)
+        white = np.asarray(on_white.convert("RGB"), dtype=np.float32)
+        alpha = (255 - (white - black).mean(axis=2))[..., None]
+        color = np.divide(black * 255, alpha, out=np.zeros_like(black), where=alpha > 0)
+        rgba = np.concatenate((color, alpha), axis=2).clip(0, 255).round().astype(np.uint8)
+        return Image.fromarray(rgba, "RGBA")
 
     @staticmethod
     def draw_gradient_background(

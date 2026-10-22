@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import functools
 from typing import TYPE_CHECKING, Literal, cast
 
 import ambr
@@ -19,6 +20,7 @@ from hoyo_buddy.models import (
     UnownedHSRCharacter,
     ZZZDrawData,
 )
+from hoyo_buddy.utils import get_static_img_path
 
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
@@ -57,7 +59,7 @@ if TYPE_CHECKING:
         UnownedZZZCharacter,
         ZZZEnkaCharacter,
     )
-    from hoyo_buddy.models.draw import ZZZTemp1CardData
+    from hoyo_buddy.models.draw import ZZZSpineData, ZZZTemp1CardData
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -580,6 +582,7 @@ async def draw_zzz_build_card(
     hl_substats: list[int],
     hl_special_stats: bool,
     use_m3_art: bool,
+    animation: ZZZSpineData | None,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 
@@ -607,6 +610,8 @@ async def draw_zzz_build_card(
     urls.extend(draw_data.disc_icons.values())
     if agent.w_engine is not None:
         urls.append(agent.w_engine.icon)
+    if animation is not None:
+        urls.append(animation.url)
 
     agent_special_stats = agent_special_stat_map.get(str(agent.id), [])
     await download_images(urls, draw_input.session)
@@ -652,6 +657,11 @@ async def draw_zzz_build_card(
             hl_special_stats=hl_special_stats,
             hl_substats=hl_substats,
         )
+        if animation is not None and template == 1:
+            draw = functools.partial(
+                card.draw_animated, get_static_img_path(animation.url), (animation.x, animation.y)
+            )
+            return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 

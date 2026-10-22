@@ -26,6 +26,7 @@ __all__ = (
     "SingleBlock",
     "TopPadding",
     "ZZZDrawData",
+    "ZZZSpineData",
     "ZZZTemp1CardData",
     "ZZZTemp2CardData",
 )
@@ -133,6 +134,16 @@ class ZZZTemp1CardData(BaseModel):
 class ZZZTemp2CardData(ZZZTemp1CardData):
     color: str | None = None
     full_name: bool = False
+
+
+class ZZZSpineData(BaseModel):
+    """A pre-rendered animated agent image, see scripts/render_zzz_spine.py."""
+
+    url: str
+    x: int
+    """The animation's uncropped left on the static-scale card."""
+    y: int
+    """The animation's uncropped top on the static-scale card."""
 
 
 class GICardData(BaseModel):

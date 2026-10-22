@@ -44,7 +44,7 @@ try {
   const info = await page.evaluate(
     async ({ skelB64, atlasText, textures, fps, height, anim, crop }) => {
       const canvas = document.getElementById("c");
-      const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
+      const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
       const context = new spine.ManagedWebGLRenderingContext(gl);
 
       const atlas = new spine.TextureAtlas(atlasText);

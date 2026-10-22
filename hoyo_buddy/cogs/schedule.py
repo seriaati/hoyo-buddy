@@ -70,6 +70,9 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     async def cog_load(self) -> None:
+        if not self.bot.config.schedule:
+            return
+
         self.run_send_embeds.start()
         self.run_farm_checks.start()
         self.run_notes_check.start()

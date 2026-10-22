@@ -179,9 +179,6 @@ class HoyoBuddy(commands.AutoShardedBot):
         async for filepath in anyio.Path("hoyo_buddy/cogs").glob("**/*.py"):
             cog_name = anyio.Path(filepath).stem
 
-            if not self.config.schedule and cog_name == "schedule":
-                continue
-
             if not self.config.prometheus and cog_name == "prometheus":
                 continue
 

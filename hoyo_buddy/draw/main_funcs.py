@@ -90,6 +90,7 @@ async def draw_hsr_build_card(
     primary_hex: str,
     *,
     template: Literal[1, 2],
+    animation: SpineData | None,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -104,10 +105,24 @@ async def draw_hsr_build_card(
 
     if template == 2:
         urls.extend(e.icon for e in character.eidolons)
+    if animation is not None:
+        urls.append(animation.url)
 
     await download_images(urls, draw_input.session)
 
     if template == 1:
+        if animation is not None:
+            return await draw_input.loop.run_in_executor(
+                draw_input.executor,
+                funcs.hsr.draw_animated_hsr_build_card,
+                character,
+                draw_input.locale,
+                draw_input.dark_mode,
+                image_url,
+                primary_hex,
+                get_static_img_path(animation.url),
+                (animation.x, animation.y),
+            )
         return await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.hsr.draw_hsr_build_card,
@@ -129,6 +144,11 @@ async def draw_hsr_build_card(
         image_url=image_url,
         en_name=en_name,
     )
+    if animation is not None:
+        draw = functools.partial(
+            card.draw_animated, get_static_img_path(animation.url), (animation.x, animation.y)
+        )
+        return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 

@@ -555,9 +555,13 @@ class CardSettingsContainer(ui.Container):
 
     @property
     def disable_animated_image_button(self) -> bool:
-        return (
-            not self.is_supporter
-            or self.game is not Game.ZZZ
-            or self.card_settings.template != "hb1"
-            or self.card_settings.character_id not in CARD_DATA.zzz_spine
-        )
+        if not self.is_supporter:
+            return True
+
+        template = self.card_settings.template
+        character_id = self.card_settings.character_id
+        if self.game is Game.ZZZ:
+            return template != "hb1" or character_id not in CARD_DATA.zzz_spine
+        if self.game is Game.STARRAIL and template in {"hb1", "hb2"}:
+            return character_id not in CARD_DATA.hsr_spine(get_template_num(template))
+        return True

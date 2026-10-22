@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
@@ -16,6 +17,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
 
 if TYPE_CHECKING:
     import io
+    from pathlib import Path
 
     import enka
 
@@ -23,13 +25,14 @@ if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
 
-def draw_hsr_build_card(
-    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
-    locale: Locale,
-    dark_mode: bool,
-    image_url: str,
-    primary_hex: str,
-) -> io.BytesIO:
+CARD_SIZE = (2244, 1297)
+IMAGE_POS = (0, 159)
+
+
+def _get_colors(
+    primary_hex: str, *, dark_mode: bool
+) -> tuple[tuple[int, int, int], tuple[int, int, int], tuple[int, int, int]]:
+    """Get the card's primary, dark primary and light primary colors."""
     primary = Drawer.hex_to_rgb(primary_hex)
     if dark_mode:
         # blend with dark gray
@@ -39,21 +42,21 @@ def draw_hsr_build_card(
     light_primary = Drawer.blend_color(
         primary, BLACK if dark_mode else WHITE, 0.23 if dark_mode else 0.18
     )
+    return primary, dark_primary, light_primary
 
-    im = Image.new("RGBA", (2244, 1297), primary)
+
+def _draw_foreground(
+    im: Image.Image,
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+    locale: Locale,
+    *,
+    dark_mode: bool,
+    primary: tuple[int, int, int],
+    dark_primary: tuple[int, int, int],
+    light_primary: tuple[int, int, int],
+) -> None:
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode)
-
-    # character image
-    character_im = drawer.open_static(image_url)
-    character_im = drawer.modify_image_for_build_card(
-        character_im,
-        target_width=640,
-        target_height=1138,
-        mask=drawer.open_asset("img/mask.png"),
-        background_color=dark_primary,
-    )
-    im.paste(character_im, (0, 159), character_im)
 
     # base card
     card = drawer.open_asset("base/dark_card.png" if dark_mode else "base/light_card.png")
@@ -434,4 +437,96 @@ def draw_hsr_build_card(
     # logo = drawer.open_asset(f"img/{filename}")
     # im.paste(logo, (2075, 84), logo)
 
+
+def draw_hsr_build_card(
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+    locale: Locale,
+    dark_mode: bool,
+    image_url: str,
+    primary_hex: str,
+) -> io.BytesIO:
+    primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
+
+    im = Image.new("RGBA", CARD_SIZE, primary)
+    drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card", dark_mode=dark_mode)
+
+    # character image
+    character_im = drawer.open_static(image_url)
+    character_im = drawer.modify_image_for_build_card(
+        character_im,
+        target_width=640,
+        target_height=1138,
+        mask=drawer.open_asset("img/mask.png"),
+        background_color=dark_primary,
+    )
+    im.paste(character_im, IMAGE_POS, character_im)
+
+    _draw_foreground(
+        im,
+        character,
+        locale,
+        dark_mode=dark_mode,
+        primary=primary,
+        dark_primary=dark_primary,
+        light_primary=light_primary,
+    )
     return Drawer.save_image(im)
+
+
+def draw_animated_hsr_build_card(
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+    locale: Locale,
+    dark_mode: bool,
+    image_url: str,
+    primary_hex: str,
+    animation_path: Path,
+    offset: tuple[int, int],
+) -> io.BytesIO:
+    """Draw the card with an animated character image.
+
+    Args:
+        character: The character.
+        locale: The card's locale.
+        dark_mode: Whether to draw the card in dark mode.
+        image_url: URL of the static character image, for when the animation is too big.
+        primary_hex: The card's primary color.
+        animation_path: Path of the character's pre-rendered animated WEBP.
+        offset: The animation's uncropped top-left in the image mask.
+
+    Returns:
+        The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+    """
+    primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
+    mask = Drawer.open_image("hoyo-buddy-assets/assets/hsr-build-card/img/mask.png")
+
+    background = Image.new("RGBA", CARD_SIZE, primary)
+    background.paste(
+        dark_primary, (*IMAGE_POS, IMAGE_POS[0] + mask.width, IMAGE_POS[1] + mask.height), mask
+    )
+
+    def draw_foreground(im: Image.Image) -> None:
+        # Static images are darkened by Drawer.modify_image_for_build_card
+        if dark_mode:
+            overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
+            im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
+        _draw_foreground(
+            im,
+            character,
+            locale,
+            dark_mode=dark_mode,
+            primary=primary,
+            dark_primary=dark_primary,
+            light_primary=light_primary,
+        )
+
+    return Drawer.draw_animated_card(
+        background,
+        draw_foreground,
+        animation_path=animation_path,
+        offset=offset,
+        fallback=functools.partial(
+            draw_hsr_build_card, character, locale, dark_mode, image_url, primary_hex
+        ),
+        area_pos=IMAGE_POS,
+        mask=mask,
+    )

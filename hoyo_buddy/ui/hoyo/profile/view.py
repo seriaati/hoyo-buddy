@@ -442,7 +442,12 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             return BytesIO(await resp.read())
 
     async def _draw_hb_hsr_character_card(
-        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
+        self,
+        character: Character,
+        card_settings: CardSettings,
+        draw_input: DrawInput,
+        *,
+        user_id: int,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -475,8 +480,12 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         template_num = get_template_num(card_settings.template)
         template_num = cast("Literal[1, 2]", template_num)
 
+        animation = None
+        if card_settings.animated_image and await is_supporter(user_id):
+            animation = CARD_DATA.hsr_spine(template_num).get(character_id)
+
         return await draw_hsr_build_card(
-            draw_input, character, image_url, primary, template=template_num
+            draw_input, character, image_url, primary, template=template_num, animation=animation
         )
 
     async def _draw_hb_gi_character_card(
@@ -629,7 +638,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             if template == "enka1":
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
-                return await self._draw_hb_hsr_character_card(character, card_settings, draw_input)
+                return await self._draw_hb_hsr_character_card(
+                    character, card_settings, draw_input, user_id=i.user.id
+                )
             return await self._draw_src_character_card(i.client.session, character, card_settings)
 
         if self.game is Game.GENSHIN:

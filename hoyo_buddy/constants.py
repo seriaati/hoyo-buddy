@@ -731,6 +731,7 @@ def locale_to_genshin_data_lang(locale: Locale) -> str:
 
 HSR_ASSETS_URL = "https://static.nanoka.cc/assets/hsr"
 HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/{{char_id}}.webp"
+HSR_SKIN_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/avatarskin/{{skin_id}}.webp"
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/{{char_id}}.webp"
 ZZZ_M3_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_2.webp"
 ZZZ_M6_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_3.webp"

@@ -85,3 +85,4 @@ class HoyolabHSRCharacter:
     max_level: int
     rarity: int
     path: enka.hsr.Path
+    is_wearing_outfit: bool = False

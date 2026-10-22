@@ -8,7 +8,9 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import aiohttp
 import akasha
+import attr
 import enka
+import hb_data
 from discord import File
 from genshin.models import ZZZPartialAgent
 from loguru import logger
@@ -16,10 +18,14 @@ from loguru import logger
 from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
+    HSR_SKIN_ART_URL,
     LOCALE_TO_ENKA_CARDS_LANG,
     LOCALE_TO_GI_CARD_API_LANG,
     LOCALE_TO_HSR_CARD_API_LANG,
     ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    locale_to_genshin_data_lang,
+    locale_to_starrail_data_lang,
+    locale_to_zenless_data_lang,
 )
 from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
 from hoyo_buddy.db.utils import (
@@ -37,6 +43,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_zzz_build_card,
     draw_zzz_team_card,
 )
+from hoyo_buddy.draw.static import ZZZ_V2_GAME_RECORD
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.exceptions import (
@@ -64,6 +71,7 @@ from .items.card_settings_btn import CardSettingsButton
 from .items.chara_select import MAX_VALUES, CharacterSelect
 from .items.player_btn import PlayerInfoButton
 from .items.redraw_card_btn import RedrawCardButton
+from .items.skin_select import DEFAULT_SKIN_ID, SkinSelect
 
 if TYPE_CHECKING:
     import io
@@ -78,6 +86,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Character, Interaction
     from hoyo_buddy.ui import Button, Select
 
+    from .items.skin_select import Skin
+
 
 CARD_API_ENDPOINTS = {
     "encard": "http://localhost:7652/en-card",
@@ -88,6 +98,41 @@ CARD_API_ENDPOINTS = {
 ENKA_CARDS_URL = "https://cards.enka.network"
 
 TOP_PERCENT_RANK_DECIMALS = 4
+
+_URL_EXISTS: dict[str, bool] = {}
+
+SKIN_TEMPLATES: dict[Game, frozenset[str]] = {
+    Game.GENSHIN: frozenset({"hb1", "hb2"}),
+    Game.STARRAIL: frozenset({"hb1", "hb2"}),
+    Game.ZZZ: frozenset({"hb1", "hb3", "hb4"}),
+}
+"""Templates that draw the character in its outfit."""
+
+
+def _apply_zzz_skin[T: ZZZFullAgent | ZZZEnkaCharacter](agent: T, skin_id: int | None) -> T:
+    """Return a copy of the agent wearing the given outfit, or the agent itself if not set."""
+    if skin_id is None:
+        return agent
+
+    outfit_id = None if skin_id == DEFAULT_SKIN_ID else skin_id
+    if isinstance(agent, ZZZEnkaCharacter):
+        return attr.evolve(agent, outfit_id=outfit_id)
+
+    suffix = "" if outfit_id is None else f"_{outfit_id}"
+    banner_icon = (
+        ZZZ_V2_GAME_RECORD / f"role_vertical_painting/role_vertical_painting_{agent.id}{suffix}.png"
+    )
+    return agent.model_copy(update={"banner_icon": str(banner_icon)})
+
+
+async def _url_exists(session: aiohttp.ClientSession, url: str) -> bool:
+    if url not in _URL_EXISTS:
+        try:
+            async with session.head(url) as resp:
+                _URL_EXISTS[url] = resp.status == 200
+        except aiohttp.ClientError:
+            return False
+    return _URL_EXISTS[url]
 
 
 class ProfileView(ui.LayoutView, PlayerEmbedMixin):
@@ -146,6 +191,11 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._build_id: int | Literal["current"] | None = None
         self._rows: list[list[Button | Select]] = []
         self.dyk = ""
+
+        self.current_character: Character | None = None
+        self._skins: dict[str, list[Skin]] | None = None
+        self._zzz_outfit_id: int | None = None
+        """In-game outfit of the last drawn ZZZ agent."""
 
     async def _get_hsr_character_color(self, *, user_id: int, character_id: str) -> str:
         card_setting = await get_card_settings(user_id, character_id, game=self.game)
@@ -346,7 +396,10 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 ]
             )
 
-        self._rows.extend(([BuildSelect(row=3)], [CardInfoButton(row=4), ToggleUIButton()]))
+        self._rows.append([BuildSelect(row=3)])
+        if self.game in SKIN_TEMPLATES:
+            self._rows.append([SkinSelect(row=4)])
+        self._rows.append([CardInfoButton(row=4), ToggleUIButton()])
 
     def render(self, embed: discord.Embed) -> None:
         self.clear_items()
@@ -466,8 +519,11 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         if character_data is None:
             raise NoCardDataError(character.name, character_id)
 
-        image_url = card_settings.current_image or get_default_art(
-            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        skin_art = await self._get_skin_art(character, card_settings)
+        image_url = (
+            card_settings.current_image
+            or skin_art
+            or get_default_art(character, is_team=False, use_m3_art=card_settings.use_m3_art)
         )
 
         if card_settings.custom_primary_color is None:
@@ -480,8 +536,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         template_num = get_template_num(card_settings.template)
         template_num = cast("Literal[1, 2]", template_num)
 
+        # Animations are rendered from the character's default outfit
         animation = None
-        if card_settings.animated_image and await is_supporter(user_id):
+        if skin_art is None and card_settings.animated_image and await is_supporter(user_id):
             animation = CARD_DATA.hsr_spine(template_num).get(character_id)
 
         return await draw_hsr_build_card(
@@ -494,8 +551,10 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
-        image_url = card_settings.current_image or get_default_art(
-            character, is_team=False, use_m3_art=card_settings.use_m3_art
+        image_url = (
+            card_settings.current_image
+            or await self._get_skin_art(character, card_settings)
+            or get_default_art(character, is_team=False, use_m3_art=card_settings.use_m3_art)
         )
 
         template_num = get_template_num(card_settings.template)
@@ -550,6 +609,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             client = self._account.client
             client.set_lang(self.locale)
             agent = await client.get_zzz_agent_info(character.id)
+
+        self._zzz_outfit_id = agent.outfit_id
+        agent = _apply_zzz_skin(agent, card_settings.skin_id)
 
         key = str(agent.id)
         template_num = get_template_num(card_settings.template)
@@ -612,6 +674,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         """Draw build card for a single character."""
         character_id = self.character_ids[0]
         character = character or self.characters[character_id]
+        self.current_character = character
 
         # enka.cards renders only from enka.network showcase data, so HoYoLAB-sourced
         # characters can't use it; fall back to the Hoyo Buddy template.
@@ -704,6 +767,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 int(char_id): await get_card_settings(i.user.id, char_id, game=self.game)
                 for char_id in self.character_ids
             }
+            agents = [_apply_zzz_skin(a, agent_card_settings[a.id].skin_id) for a in agents]
             agent_colors: dict[int, str] = {
                 a.id: await self._get_zzz_character_color(user_id=i.user.id, character=a)
                 for a in agents
@@ -741,11 +805,14 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             )
 
         # GI and HSR
-        images = {
-            str(char.id): await get_team_image(i.user.id, str(char.id), game=self.game)
-            or get_default_art(char, is_team=True)
-            for char in characters
-        }
+        images: dict[str, str] = {}
+        for char in characters:
+            char_settings = await get_card_settings(i.user.id, str(char.id), game=self.game)
+            images[str(char.id)] = (
+                char_settings.current_team_image
+                or await self._get_skin_art(char, char_settings)
+                or get_default_art(char, is_team=True)
+            )
 
         if self.game is Game.STARRAIL:
             character_colors: dict[str, str] = {}
@@ -816,6 +883,105 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 character_id=character_id,
             )
 
+    async def _fetch_skins(self) -> dict[str, list[Skin]]:
+        if self.game is Game.GENSHIN:
+            async with hb_data.GIClient() as client:
+                gi_characters = client.get_characters(
+                    lang=hb_data.gi.Language(locale_to_genshin_data_lang(self.locale))
+                )
+            return {str(char.id): list(char.costumes) for char in gi_characters}
+
+        if self.game is Game.STARRAIL:
+            async with hb_data.HSRClient() as client:
+                hsr_characters = client.get_characters(
+                    lang=hb_data.hsr.Language(locale_to_starrail_data_lang(self.locale))
+                )
+            # The build card is laid out for the zoomed gacha art, which not every skin has yet
+            skins = [
+                skin.model_copy(update={"image": HSR_SKIN_ART_URL.format(skin_id=skin.id)})
+                for char in hsr_characters
+                for skin in char.skins
+            ]
+            async with aiohttp.ClientSession() as session:
+                exists = await asyncio.gather(*(_url_exists(session, s.image) for s in skins))
+            return {
+                str(char.id): [
+                    s
+                    for s, ok in zip(skins, exists, strict=True)
+                    if ok and s.character_id == char.id
+                ]
+                for char in hsr_characters
+            }
+
+        if self.game is Game.ZZZ:
+            async with hb_data.ZZZClient() as client:
+                zzz_characters = client.get_characters(
+                    lang=hb_data.zzz.Language(locale_to_zenless_data_lang(self.locale))
+                )
+            # Only agents with card data for the outfit can be drawn in it
+            card_data = CARD_DATA.zzz
+            return {
+                str(char.id): [skin for skin in char.skins if f"{char.id}_{skin.id}" in card_data]
+                for char in zzz_characters
+            }
+
+        return {}
+
+    async def _get_skins(self, character_id: str) -> list[Skin]:
+        if self._skins is None:
+            self._skins = await self._fetch_skins()
+        # Strip the traveler depot suffix
+        return self._skins.get(character_id.split("-", maxsplit=1)[0], [])
+
+    async def _get_in_game_skin_id(self, character: Character | None) -> int | None:
+        if self.game is Game.ZZZ:
+            return self._zzz_outfit_id
+        if isinstance(character, enka.gi.Character):
+            return character.costume_id
+        if isinstance(character, HoyolabGICharacter):
+            return character.costume.id if character.costume is not None else None
+        if isinstance(character, HoyolabHSRCharacter) and character.is_wearing_outfit:
+            # HoYoLAB only tells whether an outfit is worn, not which one
+            skins = await self._get_skins(character.id)
+            return skins[0].id if len(skins) == 1 else None
+        return None
+
+    async def _get_skin_art(self, character: Character, card_settings: CardSettings) -> str | None:
+        """Get the GI/HSR character's art for its outfit, None for the default art."""
+        skin_id = card_settings.skin_id
+        if skin_id is None:
+            skin_id = await self._get_in_game_skin_id(character)
+
+        if skin_id is None:
+            return None
+        if skin_id == DEFAULT_SKIN_ID:
+            if isinstance(character, enka.gi.Character | HoyolabGICharacter):
+                return get_default_art(
+                    character.model_copy(update={"costume": None}), is_team=False
+                )
+            return None
+
+        skins = await self._get_skins(str(character.id))
+        return next((skin.image for skin in skins if skin.id == skin_id), None)
+
+    async def _update_skin_select(self, card_settings: CardSettings, *, is_team: bool) -> None:
+        skin_select: SkinSelect = self.get_item("profile_skin_select")
+
+        skins: list[Skin] = []
+        if not is_team and card_settings.template in SKIN_TEMPLATES[self.game]:
+            skins = await self._get_skins(self.character_ids[0])
+
+        if skins:
+            if card_settings.skin_id is not None:
+                current = card_settings.skin_id
+            else:
+                current = await self._get_in_game_skin_id(self.current_character) or DEFAULT_SKIN_ID
+            skin_select.set_options(skins, current=current)
+            skin_select.translate(self.locale)
+
+        # Also update the saved state, enable_items() restores it after the loading state
+        self.item_states[skin_select.custom_id] = skin_select.disabled = not skins
+
     async def update(
         self,
         i: Interaction,
@@ -859,6 +1025,8 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             raise
 
         attachments = [File(bytes_obj, filename="card.webp")]
+        if self.game in SKIN_TEMPLATES:
+            await self._update_skin_select(card_settings, is_team=is_team)
         self.render(self.card_embed)
 
         if unset_loading_state and item is not None:

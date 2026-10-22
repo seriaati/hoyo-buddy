@@ -55,6 +55,7 @@ class HoyolabGICharacterIcon(BaseModel):
 
 
 class HoyolabGICostume(BaseModel):
+    id: int
     icon: HoyolabGICharacterIcon
 
 

@@ -290,9 +290,10 @@ class GenshinClient(ProxyGenshinClient):
                     if costume_data:
                         ui_path = costume_data["Art"].removeprefix("/ui/").removesuffix(".png")
                         costume = models.HoyolabGICostume(
+                            id=char_costume.id,
                             icon=models.HoyolabGICharacterIcon(
                                 gacha=AMBR_UI_URL.format(filename=ui_path)
-                            )
+                            ),
                         )
 
             if "10000117" in str(character.id):
@@ -461,6 +462,7 @@ class GenshinClient(ProxyGenshinClient):
                 get_ascension_from_level(c.level, ascended=True, game=Game.STARRAIL), Game.STARRAIL
             ),
             path=GPY_PATH_TO_EKNA_PATH[c.path],
+            is_wearing_outfit=c.is_wearing_outfit,
         )
 
     @staticmethod

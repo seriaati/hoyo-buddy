@@ -34,6 +34,8 @@ class CardSettings(BaseModel):
     """Whether to use Mindscape 3 art for the ZZZ card."""
     animated_image = fields.BooleanField(default=True)
     """Whether to use the animated character image for ZZZ and HSR cards, only for supporters."""
+    skin_id: fields.Field[int | None] = fields.IntField(null=True)
+    """Outfit to draw the card with, 0 for the default outfit, None to follow the in-game one."""
     game: fields.Field[Game | None] = fields.CharEnumField(Game, max_length=32, null=True)
 
     class Meta:

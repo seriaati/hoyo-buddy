@@ -22,36 +22,31 @@ if TYPE_CHECKING:
 __all__ = ("draw_genshin_card",)
 
 
-def draw_genshin_card(
+IMAGE_POS = (51, 34)
+
+
+def _draw_background(dark_mode: bool, character: Character | HoyolabGICharacter) -> Image.Image:
+    mode = "dark" if dark_mode else "light"
+    return Drawer.open_image(
+        f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png"
+    )
+
+
+def _draw_foreground(
+    im: Image.Image,
     locale: Locale,
     dark_mode: bool,
     character: Character | HoyolabGICharacter,
-    image_url: str,
-    zoom: float,
     rank: str | None,
-) -> io.BytesIO:
+) -> None:
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
-
-    # main card
-    im: Image.Image = Drawer.open_image(
-        f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png"
-    )
-    draw = ImageDraw.Draw(im)
     drawer = Drawer(
-        draw, folder="gi-build-card", dark_mode=dark_mode, locale=Locale.american_english
+        ImageDraw.Draw(im),
+        folder="gi-build-card",
+        dark_mode=dark_mode,
+        locale=Locale.american_english,
     )
-
-    # character image
-    character_im = drawer.open_static(image_url)
-    character_im = drawer.modify_image_for_build_card(
-        character_im,
-        target_width=472,
-        target_height=839,
-        mask=drawer.open_asset("mask.png"),
-        zoom=zoom,
-    )
-    im.paste(character_im, (51, 34), character_im)
 
     # stats
     fight_props_to_draw = list(STATS_ORDER).copy()
@@ -63,7 +58,7 @@ def draw_genshin_card(
 
         fight_props_to_draw.append(add_hurt_fight_prop)
 
-    draw = ImageDraw.Draw(im)
+    ImageDraw.Draw(im)
     for index, fight_prop_type in enumerate(fight_props_to_draw):
         fight_prop = character.stats.get(fight_prop_type)
         if fight_prop is None:
@@ -279,4 +274,33 @@ def draw_genshin_card(
                 color=text_color,
             )
 
+
+def draw_genshin_card(
+    locale: Locale,
+    dark_mode: bool,
+    character: Character | HoyolabGICharacter,
+    image_url: str,
+    zoom: float,
+    rank: str | None,
+) -> io.BytesIO:
+    im = _draw_background(dark_mode, character)
+    drawer = Drawer(
+        ImageDraw.Draw(im),
+        folder="gi-build-card",
+        dark_mode=dark_mode,
+        locale=Locale.american_english,
+    )
+
+    # character image
+    character_im = drawer.open_static(image_url)
+    character_im = drawer.modify_image_for_build_card(
+        character_im,
+        target_width=472,
+        target_height=839,
+        mask=drawer.open_asset("mask.png"),
+        zoom=zoom,
+    )
+    im.paste(character_im, IMAGE_POS, character_im)
+
+    _draw_foreground(im, locale, dark_mode, character, rank)
     return Drawer.save_image(im)

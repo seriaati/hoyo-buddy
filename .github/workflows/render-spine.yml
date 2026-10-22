@@ -26,6 +26,8 @@ jobs:
     timeout-minutes: 180
     env:
       IMG_UPLOAD_API_KEY: ${{ secrets.IMG_UPLOAD_API_KEY }}
+      # Discord webhook for new HSR characters whose suggested framing needs a look
+      SPINE_WEBHOOK_URL: ${{ secrets.SPINE_WEBHOOK_URL }}
       # Required by hoyo_buddy.config, unused by the scripts
       DISCORD_TOKEN: unused
       DISCORD_CLIENT_ID: "0"

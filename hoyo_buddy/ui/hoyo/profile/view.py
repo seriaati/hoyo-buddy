@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import string
+import uuid
 from io import BytesIO
 from itertools import starmap
 from typing import TYPE_CHECKING, Any, Literal, cast
@@ -191,6 +192,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._build_id: int | Literal["current"] | None = None
         self._rows: list[list[Button | Select]] = []
         self.dyk = ""
+        self._card_filename = "card.webp"
 
         self.current_character: Character | None = None
         self._skins: dict[str, list[Skin]] | None = None
@@ -364,7 +366,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
-        embed.set_image(url="attachment://card.webp")
+        embed.set_image(url=f"attachment://{self._card_filename}")
         if self._account is not None:
             embed.add_acc_info(self._account)
         else:
@@ -1024,7 +1026,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 raise ThirdPartyCardTempError from e
             raise
 
-        attachments = [File(bytes_obj, filename="card.webp")]
+        # Discord caches attachments by filename, so reusing one can show the previous card
+        self._card_filename = f"card_{uuid.uuid4().hex[:8]}.webp"
+        attachments = [File(bytes_obj, filename=self._card_filename)]
         if self.game in SKIN_TEMPLATES:
             await self._update_skin_select(card_settings, is_team=is_team)
         self.render(self.card_embed)

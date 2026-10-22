@@ -1,0 +1,9 @@
+{
+  "name": "zzz-spine-render",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@esotericsoftware/spine-webgl": "4.1.56",
+    "puppeteer-core": "25.15.0"
+  }
+}

@@ -926,4 +926,4 @@ supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the 
 supporter_embed.status_supporter: "You're a supporter, thank you!"
 supporter_embed.status_not_supporter: You're not a supporter yet.
 card_settings_animated_image: Animated image
-card_settings_animated_image_desc: "Use the character's animated art on the card, only available for supporters for characters with animated art, on Template 1 for ZZZ and Templates 1 and 2 for HSR. Use </supporter> to learn more."
+card_settings_animated_image_desc: "Use the character's animated art on the card, only available for supporters for characters with animated art, on Template 1 for GI and ZZZ and Templates 1 and 2 for HSR. GI cards use the animated Genius Invokation TCG card art. Use </supporter> to learn more."

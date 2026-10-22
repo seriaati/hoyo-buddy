@@ -1,28 +1,30 @@
 from __future__ import annotations
 
+import functools
 from typing import TYPE_CHECKING
 
 from enka.gi import FightPropType
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
-from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.drawer import BLACK, Drawer
 from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
 if TYPE_CHECKING:
     import io
+    from pathlib import Path
 
     from enka.gi import Character, Talent
-    from PIL import Image
 
     from hoyo_buddy.models import HoyolabGITalent
 
 
-__all__ = ("draw_genshin_card",)
+__all__ = ("draw_animated_genshin_card", "draw_genshin_card")
 
 
 IMAGE_POS = (51, 34)
+MASK_PATH = "hoyo-buddy-assets/assets/gi-build-card/mask.png"
 
 
 def _draw_background(dark_mode: bool, character: Character | HoyolabGICharacter) -> Image.Image:
@@ -304,3 +306,50 @@ def draw_genshin_card(
 
     _draw_foreground(im, locale, dark_mode, character, rank)
     return Drawer.save_image(im)
+
+
+def draw_animated_genshin_card(
+    locale: Locale,
+    dark_mode: bool,
+    character: Character | HoyolabGICharacter,
+    image_url: str,
+    zoom: float,
+    rank: str | None,
+    animation_path: Path,
+    offset: tuple[int, int],
+) -> io.BytesIO:
+    """Draw the card with an animated character image.
+
+    Args:
+        locale: The card's locale.
+        dark_mode: Whether to draw the card in dark mode.
+        character: The character.
+        image_url: URL of the static character image, for when the animation is too big.
+        zoom: Zoom of the static character image.
+        rank: The character's rank text, if any.
+        animation_path: Path of the character's pre-rendered animated WEBP.
+        offset: The animation's uncropped top-left in the image mask.
+
+    Returns:
+        The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+    """
+    mask = Drawer.open_image(MASK_PATH)
+
+    def draw_foreground(im: Image.Image) -> None:
+        # Static images are darkened by Drawer.modify_image_for_build_card
+        if dark_mode:
+            overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
+            im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
+        _draw_foreground(im, locale, dark_mode, character, rank)
+
+    return Drawer.draw_animated_card(
+        _draw_background(dark_mode, character),
+        draw_foreground,
+        animation_path=animation_path,
+        offset=offset,
+        fallback=functools.partial(
+            draw_genshin_card, locale, dark_mode, character, image_url, zoom, rank
+        ),
+        area_pos=IMAGE_POS,
+        mask=mask,
+    )

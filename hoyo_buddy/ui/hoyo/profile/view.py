@@ -548,14 +548,20 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         )
 
     async def _draw_hb_gi_character_card(
-        self, character: Character, card_settings: CardSettings, draw_input: DrawInput
+        self,
+        character: Character,
+        card_settings: CardSettings,
+        draw_input: DrawInput,
+        *,
+        user_id: int,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
 
+        skin_art = await self._get_skin_art(character, card_settings)
         image_url = (
             card_settings.current_image
-            or await self._get_skin_art(character, card_settings)
+            or skin_art
             or get_default_art(character, is_team=False, use_m3_art=card_settings.use_m3_art)
         )
 
@@ -576,6 +582,17 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             except Exception:
                 logger.exception("Failed to fetch character rank from Akasha API")
 
+        # Animations are rendered from the character's TCG card face, in the default outfit
+        default_art = get_default_art(character.model_copy(update={"costume": None}), is_team=False)
+        animation = None
+        if (
+            template_num == 1
+            and skin_art in {None, default_art}
+            and card_settings.animated_image
+            and await is_supporter(user_id)
+        ):
+            animation = CARD_DATA.gi_spine.get(str(character.id))
+
         return await draw_gi_build_card(
             draw_input,
             character,
@@ -586,6 +603,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             and card_settings.current_image
             in get_default_collection(str(character.id), game=self.game),
             rank=rank,
+            animation=animation,
         )
 
     async def _draw_hb_zzz_character_card(
@@ -712,7 +730,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             if template == "enka1":
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
-                return await self._draw_hb_gi_character_card(character, card_settings, draw_input)
+                return await self._draw_hb_gi_character_card(
+                    character, card_settings, draw_input, user_id=i.user.id
+                )
             return await self._draw_enka_card(i.client.session, character, card_settings)
 
         if self.game is Game.ZZZ:

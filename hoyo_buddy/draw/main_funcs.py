@@ -171,11 +171,14 @@ async def draw_gi_build_card(
     template: Literal[1, 2],
     top_crop: bool,
     rank: str | None,
+    animation: SpineData | None,
 ) -> BytesIO:
     urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
     urls.extend(talent.icon for talent in character.talents)
     urls.extend(const.icon for const in character.constellations)
+    if animation is not None:
+        urls.append(animation.url)
 
     if template == 2:
         async with ambr.AmbrAPI(session=draw_input.session) as api:
@@ -197,6 +200,20 @@ async def draw_gi_build_card(
             rank=rank,
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+    elif animation is not None:
+        await download_images(urls, draw_input.session)
+        buffer = await draw_input.loop.run_in_executor(
+            draw_input.executor,
+            funcs.genshin.draw_animated_genshin_card,
+            draw_input.locale,
+            draw_input.dark_mode,
+            character,
+            image_url,
+            zoom,
+            rank,
+            get_static_img_path(animation.url),
+            (animation.x, animation.y),
+        )
     else:
         await download_images(urls, draw_input.session)
         buffer = await draw_input.loop.run_in_executor(

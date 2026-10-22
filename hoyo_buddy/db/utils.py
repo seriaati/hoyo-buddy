@@ -271,6 +271,7 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> m
             dark_mode = False
 
         animated_images = {
+            Game.GENSHIN: user_settings.gi_animated_image,
             Game.STARRAIL: user_settings.hsr_animated_image,
             Game.ZZZ: user_settings.zzz_animated_image,
         }

@@ -280,14 +280,18 @@ class ApplyAnimatedImageToAllButton(ui.Button["CardSettingsView"]):
 
         # Set for future characters
         game = self.view.game
-        if game is Game.STARRAIL:
+        if game is Game.GENSHIN:
+            self.view.settings.gi_animated_image = self.view.card_settings.animated_image
+        elif game is Game.STARRAIL:
             self.view.settings.hsr_animated_image = self.view.card_settings.animated_image
         elif game is Game.ZZZ:
             self.view.settings.zzz_animated_image = self.view.card_settings.animated_image
         else:
             logger.error(f"Unknown game {game} for applying animated image to all characters")
 
-        await self.view.settings.save(update_fields=("hsr_animated_image", "zzz_animated_image"))
+        await self.view.settings.save(
+            update_fields=("gi_animated_image", "hsr_animated_image", "zzz_animated_image")
+        )
 
         self.emoji = emojis.CHECK
         self.label = None
@@ -586,6 +590,8 @@ class CardSettingsContainer(ui.Container):
         character_id = self.card_settings.character_id
         if self.game is Game.ZZZ:
             return template != "hb1" or character_id not in CARD_DATA.zzz_spine
+        if self.game is Game.GENSHIN:
+            return template != "hb1" or character_id not in CARD_DATA.gi_spine
         if self.game is Game.STARRAIL and template in {"hb1", "hb2"}:
             return character_id not in CARD_DATA.hsr_spine(get_template_num(template))
         return True
@@ -659,7 +665,7 @@ class BulkCardSettingsContainer(ui.Container):
                     )
                 ),
                 accessory=ApplyAnimatedImageToAllButton(
-                    disabled=not is_supporter or game not in {Game.STARRAIL, Game.ZZZ}
+                    disabled=not is_supporter or game not in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}
                 ),
             ),
         )

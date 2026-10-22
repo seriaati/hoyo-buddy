@@ -32,6 +32,7 @@ class Settings(CachedModel):
     hsr_dark_mode = fields.BooleanField(default=False)
     zzz_dark_mode = fields.BooleanField(default=False)
 
+    gi_animated_image = fields.BooleanField(default=True)
     hsr_animated_image = fields.BooleanField(default=True)
     zzz_animated_image = fields.BooleanField(default=True)
 

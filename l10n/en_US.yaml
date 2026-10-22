@@ -874,6 +874,11 @@ apply_template_to_all_chars: Apply current template to all characters
 apply_template_to_all_chars_desc: "All **future and current** characters will use **{template}**."
 apply_dark_theme_to_all_chars: Apply current dark theme option to all characters
 apply_dark_theme_to_all_chars_desc: "All **future and current** characters will have dark theme **{status}**."
+apply_animated_image_to_all_chars: Apply current animated image option to all characters
+apply_animated_image_to_all_chars_desc: "All **future and current** characters will have animated image **{status}**."
+card_settings_bulk_title: Bulk settings
+card_settings_bulk_button_desc: Apply this character's template, dark theme, and animated image options to all characters.
+card_settings_bulk_desc: "Apply {name}'s card settings to all **current and future** characters."
 apply_label: Apply
 card_settings_genshin_desc: Modify how your Genshin Impact character build cards look like
 card_settings_hsr_desc: Modify how your Honkai Star Rail character build cards look like

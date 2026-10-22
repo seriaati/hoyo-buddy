@@ -264,6 +264,55 @@ class ApplyDarkThemeToAllButton(ui.Button["CardSettingsView"]):
         await i.edit_original_response(view=self.view)
 
 
+class ApplyAnimatedImageToAllButton(ui.Button["CardSettingsView"]):
+    def __init__(self, *, disabled: bool) -> None:
+        super().__init__(
+            label=LocaleStr(key="apply_label"), style=discord.ButtonStyle.blurple, disabled=disabled
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer()
+
+        # Set for current characters
+        await CardSettings.filter(user_id=i.user.id, game=self.view.game).update(
+            animated_image=self.view.card_settings.animated_image
+        )
+
+        # Set for future characters
+        game = self.view.game
+        if game is Game.STARRAIL:
+            self.view.settings.hsr_animated_image = self.view.card_settings.animated_image
+        elif game is Game.ZZZ:
+            self.view.settings.zzz_animated_image = self.view.card_settings.animated_image
+        else:
+            logger.error(f"Unknown game {game} for applying animated image to all characters")
+
+        await self.view.settings.save(update_fields=("hsr_animated_image", "zzz_animated_image"))
+
+        self.emoji = emojis.CHECK
+        self.label = None
+        self.style = discord.ButtonStyle.green
+        await i.edit_original_response(view=self.view)
+
+
+class BulkSettingsButton(ui.Button["CardSettingsView"]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="card_settings_bulk_title"),
+            style=discord.ButtonStyle.blurple,
+            custom_id="card_settings_bulk",
+            emoji=emojis.SETTINGS,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        # Local import to avoid circular import
+        # ruff:ignore[import-outside-top-level]
+        from .view import CardSettingsCategory
+
+        self.view.category = CardSettingsCategory.BULK
+        await self.view.update(i)
+
+
 class CardTemplateSelect(ui.Select["CardSettingsView"]):
     def __init__(self, current_template: str, *, game: Game) -> None:
         options: list[ui.SelectOption] = []
@@ -478,41 +527,16 @@ class CardSettingsContainer(ui.Container):
                     current=settings.team_card_dark_mode, disabled=self.disable_dark_mode
                 ),
             ),
-            # Apply template to all characters
-            ui.Section(
-                ui.TextDisplay(
-                    LocaleStr(
-                        custom_str="### {title}\n{desc}\n{empty}",
-                        title=LocaleStr(key="apply_template_to_all_chars"),
-                        desc=LocaleStr(
-                            key="apply_template_to_all_chars_desc",
-                            template=LocaleStr(
-                                key=TEMPLATE_NAMES[get_template_name(card_settings.template)],
-                                num=get_template_num(card_settings.template),
-                            ),
-                        ),
-                        empty=EMPTY_CHAR,
-                    )
-                ),
-                accessory=ApplyTemplateToAllButton(),
-            ),
-            # Apply dark theme to all characters
+            # Bulk settings
             ui.Section(
                 ui.TextDisplay(
                     LocaleStr(
                         custom_str="### {title}\n{desc}",
-                        title=LocaleStr(key="apply_dark_theme_to_all_chars"),
-                        desc=LocaleStr(
-                            key="apply_dark_theme_to_all_chars_desc",
-                            status=LocaleStr(
-                                key="notif_modal.enabled.label"
-                                if card_settings.dark_mode
-                                else "disabled_label"
-                            ),
-                        ),
+                        title=LocaleStr(key="card_settings_bulk_title"),
+                        desc=LocaleStr(key="card_settings_bulk_button_desc"),
                     )
                 ),
-                accessory=ApplyDarkThemeToAllButton(disabled=self.disable_dark_mode),
+                accessory=BulkSettingsButton(),
             ),
             accent_color=card_settings.custom_primary_color or default_color,
         )
@@ -565,3 +589,77 @@ class CardSettingsContainer(ui.Container):
         if self.game is Game.STARRAIL and template in {"hb1", "hb2"}:
             return character_id not in CARD_DATA.hsr_spine(get_template_num(template))
         return True
+
+
+class BulkCardSettingsContainer(ui.Container):
+    def __init__(
+        self, *, card_settings: CardSettings, character_name: str, game: Game, is_supporter: bool
+    ) -> None:
+        super().__init__(
+            ui.TextDisplay(
+                LocaleStr(
+                    custom_str="# {title}\n{desc}",
+                    title=LocaleStr(key="card_settings_bulk_title"),
+                    desc=LocaleStr(key="card_settings_bulk_desc", name=character_name),
+                )
+            ),
+            # Apply template to all characters
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="apply_template_to_all_chars"),
+                        desc=LocaleStr(
+                            key="apply_template_to_all_chars_desc",
+                            template=LocaleStr(
+                                key=TEMPLATE_NAMES[get_template_name(card_settings.template)],
+                                num=get_template_num(card_settings.template),
+                            ),
+                        ),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=ApplyTemplateToAllButton(),
+            ),
+            # Apply dark theme to all characters
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="apply_dark_theme_to_all_chars"),
+                        desc=LocaleStr(
+                            key="apply_dark_theme_to_all_chars_desc",
+                            status=LocaleStr(
+                                key="notif_modal.enabled.label"
+                                if card_settings.dark_mode
+                                else "disabled_label"
+                            ),
+                        ),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=ApplyDarkThemeToAllButton(
+                    disabled=DISABLE_DARK_MODE.get((game, card_settings.template), True)
+                ),
+            ),
+            # Apply animated image to all characters
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}",
+                        title=LocaleStr(key="apply_animated_image_to_all_chars"),
+                        desc=LocaleStr(
+                            key="apply_animated_image_to_all_chars_desc",
+                            status=LocaleStr(
+                                key="notif_modal.enabled.label"
+                                if card_settings.animated_image
+                                else "disabled_label"
+                            ),
+                        ),
+                    )
+                ),
+                accessory=ApplyAnimatedImageToAllButton(
+                    disabled=not is_supporter or game not in {Game.STARRAIL, Game.ZZZ}
+                ),
+            ),
+        )

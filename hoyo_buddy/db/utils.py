@@ -270,12 +270,18 @@ async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> m
             )
             dark_mode = False
 
+        animated_images = {
+            Game.STARRAIL: user_settings.hsr_animated_image,
+            Game.ZZZ: user_settings.zzz_animated_image,
+        }
+
         try:
             card_settings = await models.CardSettings.create(
                 user_id=user_id,
                 character_id=character_id,
                 dark_mode=dark_mode,
                 template=template,
+                animated_image=animated_images.get(game, True),
                 game=game,
             )
         except IntegrityError:

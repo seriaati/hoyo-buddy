@@ -32,6 +32,9 @@ class Settings(CachedModel):
     hsr_dark_mode = fields.BooleanField(default=False)
     zzz_dark_mode = fields.BooleanField(default=False)
 
+    hsr_animated_image = fields.BooleanField(default=True)
+    zzz_animated_image = fields.BooleanField(default=True)
+
     @property
     def locale(self) -> Locale | None:
         return Locale(self.lang) if self.lang else None

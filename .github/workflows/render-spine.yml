@@ -13,6 +13,10 @@ on:
         description: "HSR character IDs separated by spaces, 'all' or 'skip'. Empty renders characters not in spine.yaml yet."
         required: false
         default: ""
+      gi:
+        description: "GI character IDs separated by spaces, 'all' or 'skip'. Empty renders characters not in spine.yaml yet."
+        required: false
+        default: ""
 
 concurrency:
   group: render-spine
@@ -62,16 +66,18 @@ jobs:
       - name: Install renderer
         run: npm ci --prefix scripts/spine
 
-      # Renders HSR even if some ZZZ agents failed
+      # Renders every game even if some characters of another failed
       - name: Render
         env:
           ZZZ: ${{ inputs.zzz }}
           HSR: ${{ inputs.hsr }}
+          GI: ${{ inputs.gi }}
         run: |
           args() { case "$1" in "") echo --new ;; all) echo --all ;; *) echo "$1" ;; esac; }
           status=0
           [ "$ZZZ" = skip ] || uv run scripts/render_zzz_spine.py $(args "$ZZZ") || status=1
           [ "$HSR" = skip ] || uv run scripts/render_hsr_spine.py $(args "$HSR") || status=1
+          [ "$GI" = skip ] || uv run scripts/render_gi_spine.py $(args "$GI") || status=1
           exit $status
 
       # Push whatever rendered, even if some characters failed

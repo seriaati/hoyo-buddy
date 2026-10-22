@@ -1,17 +1,21 @@
-name: Render ZZZ Spine animations
+name: Render Spine animations
 
 on:
   schedule:
     - cron: "0 0 * * 1"
   workflow_dispatch:
     inputs:
-      agents:
-        description: "Agent IDs separated by spaces, or 'all'. Empty renders agents not in spine.yaml yet."
+      zzz:
+        description: "ZZZ agent IDs separated by spaces, 'all' or 'skip'. Empty renders agents not in spine.yaml yet."
+        required: false
+        default: ""
+      hsr:
+        description: "HSR character IDs separated by spaces, 'all' or 'skip'. Empty renders characters not in spine.yaml yet."
         required: false
         default: ""
 
 concurrency:
-  group: render-zzz-spine
+  group: render-spine
 
 permissions:
   contents: write
@@ -19,7 +23,15 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
+    env:
+      IMG_UPLOAD_API_KEY: ${{ secrets.IMG_UPLOAD_API_KEY }}
+      # Required by hoyo_buddy.config, unused by the scripts
+      DISCORD_TOKEN: unused
+      DISCORD_CLIENT_ID: "0"
+      DISCORD_CLIENT_SECRET: unused
+      DB_URL: unused
+      FERNET_KEY: unused
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -48,36 +60,28 @@ jobs:
       - name: Install renderer
         run: npm ci --prefix scripts/spine
 
+      # Renders HSR even if some ZZZ agents failed
       - name: Render
         env:
-          AGENTS: ${{ inputs.agents }}
-          IMG_UPLOAD_API_KEY: ${{ secrets.IMG_UPLOAD_API_KEY }}
-          # Required by hoyo_buddy.config, unused by the script
-          DISCORD_TOKEN: unused
-          DISCORD_CLIENT_ID: "0"
-          DISCORD_CLIENT_SECRET: unused
-          DB_URL: unused
-          FERNET_KEY: unused
+          ZZZ: ${{ inputs.zzz }}
+          HSR: ${{ inputs.hsr }}
         run: |
-          if [ -z "$AGENTS" ]; then
-            args="--new"
-          elif [ "$AGENTS" = "all" ]; then
-            args="--all"
-          else
-            args="$AGENTS"
-          fi
-          uv run scripts/render_zzz_spine.py $args
+          args() { case "$1" in "") echo --new ;; all) echo --all ;; *) echo "$1" ;; esac; }
+          status=0
+          [ "$ZZZ" = skip ] || uv run scripts/render_zzz_spine.py $(args "$ZZZ") || status=1
+          [ "$HSR" = skip ] || uv run scripts/render_hsr_spine.py $(args "$HSR") || status=1
+          exit $status
 
-      # Push whatever rendered, even if some agents failed
+      # Push whatever rendered, even if some characters failed
       - name: Push assets
         if: ${{ !cancelled() }}
         working-directory: hoyo-buddy-assets
         run: |
-          git add assets/zzz-build-card/spine.yaml
+          git add assets/*/spine.yaml
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore(zzz): update Spine renders"
+          git commit -m "chore: update Spine renders"
           git pull --rebase
           git push
 
@@ -88,6 +92,6 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: bump hoyo-buddy-assets for ZZZ Spine renders"
+          git commit -m "chore: bump hoyo-buddy-assets for Spine renders"
           git pull --rebase --no-recurse-submodules --no-tags
           git push

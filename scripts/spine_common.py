@@ -1,7 +1,7 @@
 """Shared helpers to pre-render characters' Spine loops into animated WEBPs for animated build cards.
 
-Game scripts like render_zzz_spine.py look up characters' Spine files on nanoka and suggest
-their framings. This renders each loop with scripts/spine/render.mjs
+The game scripts (render_zzz_spine.py, render_hsr_spine.py) look up characters' Spine files on
+nanoka and suggest their framings. This renders each loop with scripts/spine/render.mjs
 (spine-webgl in headless Chrome), crops it to the card's art area and encodes it at
 ANIMATED_CARD_SCALE, uploads it to the image host and records it in the art area's spine.yaml.
 
@@ -46,8 +46,8 @@ RENDERER = Path(__file__).parent / "spine/render.mjs"
 OUTPUT_DIR = Path("scripts/output/spine")
 
 ANIMATION_OVERRIDES = {"UISpineVelina": "loop12+wl10+FK4"}
-"""Loops the renderer wouldn't pick (idle, then loop, then the only one) by Spine file name, from
-nanoka's viewer."""
+"""Loops the renderer wouldn't pick (idle, then loop, then all, then the only one) by Spine file
+name, from nanoka's viewer."""
 MAX_WEBP_QUALITY = 80
 MIN_WEBP_QUALITY = 50
 IMG_HOST_MAX_SIZE = 50 * 1024 * 1024

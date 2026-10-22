@@ -56,11 +56,11 @@ try {
       }
       const bytes = Uint8Array.from(atob(skelB64), (c) => c.charCodeAt(0));
       const data = new spine.SkeletonBinary(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(bytes);
-      // Without --anim: idle, then loop, then the only animation
+      // Without --anim: idle, then loop, then all, then the only animation
       const byName = (name) => data.animations.find((a) => a.name.toLowerCase() === name);
       const animation = anim
         ? data.findAnimation(anim)
-        : (byName("idle") ?? byName("loop") ?? (data.animations.length === 1 ? data.animations[0] : null));
+        : (byName("idle") ?? byName("loop") ?? byName("all") ?? (data.animations.length === 1 ? data.animations[0] : null));
       if (!animation) {
         throw new Error(`No animation to render, pass --anim; available: ${data.animations.map((a) => a.name)}`);
       }

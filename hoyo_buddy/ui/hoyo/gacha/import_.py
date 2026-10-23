@@ -5,23 +5,25 @@ from typing import TYPE_CHECKING, Any
 import discord
 import genshin
 
-from hoyo_buddy.constants import MW_EVENT_BANNER_TYPES
-from hoyo_buddy.db import GachaHistory, get_dyk, update_gacha_nums
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import ANDROID, COOKIE, DESKTOP, IOS, LINK, LOADING
 from hoyo_buddy.enums import Game, Platform
-from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError, UIDMismatchError
+from hoyo_buddy.exceptions import AuthkeyExtractError, FeatureNotImplementedError
 from hoyo_buddy.hoyo.clients.ambr import AmbrAPIClient
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
+from hoyo_buddy.hoyo.gacha_import import (
+    fetch_authkey,
+    fetch_genshin_records,
+    fetch_starrail_records,
+    fetch_zzz_chronicle_records,
+    fetch_zzz_records,
+    save_records,
+)
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, TextInput, URLButtonView, View
-from hoyo_buddy.utils.gacha import zzz_rank_type_to_rarity
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
-
-    from genshin.paginators import Paginator
-
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, User
@@ -32,60 +34,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 PS_CODE_URL = "https://github.com/studiobutter/gacha-stuff"
 IOS_VIDEO_URL = "https://youtu.be/WfBpraUq41c"
 ANDROID_VIDEO_URL = "https://youtu.be/CeQQoFKLwPY"
-
-
-async def _fetch_new_records[RecordT: genshin.models.Unique](
-    make_paginator: Callable[[int], Paginator[RecordT]],
-    banner_types: Iterable[int],
-    cursors: dict[str, int],
-) -> list[RecordT]:
-    """Fetch records newer than the per-banner cursors, updating `cursors` in place.
-
-    Each banner's paginator yields records newest-first, so iteration stops (and no
-    further API requests are made) once a record at or below the cursor is reached.
-    """
-    records: list[RecordT] = []
-
-    for banner_type in banner_types:
-        key = str(banner_type)
-        cutoff = cursors.get(key, 0)
-
-        async for record in make_paginator(banner_type):
-            if record.id <= cutoff:
-                break
-            cursors[key] = max(cursors.get(key, 0), record.id)
-            records.append(record)
-
-    return records
-
-
-def _zzz_signal_records(
-    signals: list[genshin.models.SignalSearch], account: HoyoAccount
-) -> list[GachaHistory]:
-    return [
-        GachaHistory(
-            wish_id=signal.id,
-            rarity=zzz_rank_type_to_rarity(signal.rarity),
-            time=signal.time,
-            banner_type=signal.banner_type,
-            item_id=signal.item_id,
-            account=account,
-            banner_id=None,
-            game=Game.ZZZ,
-        )
-        for signal in signals
-    ]
-
-
-def _check_uid(
-    record: genshin.models.Wish
-    | genshin.models.Warp
-    | genshin.models.SignalSearch
-    | genshin.models.MWWish,
-    account: HoyoAccount,
-) -> None:
-    if record.uid != account.uid:
-        raise UIDMismatchError(record.uid)
 
 
 class GachaImportView(View):
@@ -136,118 +84,30 @@ class GachaImportView(View):
 
     async def import_with_authkey(self, i: Interaction, authkey: str) -> None:
         client = GenshinClient(self.account)
-        records: list[GachaHistory] = []
         cursors = dict(self.account.gacha_cursors)
-        before = await GachaHistory.get_wish_count(self.account)
 
         if self.account.game is Game.GENSHIN:
-            wishes = await _fetch_new_records(
-                lambda b: client.wish_history(b, authkey=authkey),
-                genshin.models.GenshinBannerType,
-                cursors,
-            )
-            wishes.sort(key=lambda x: x.id)
-
             ambr = AmbrAPIClient(session=i.client.session)
-            item_ids = await ambr.fetch_item_name_to_id_map()
-
-            for wish in wishes:
-                _check_uid(wish, self.account)
-
-                banner_type = 301 if wish.banner_type == 400 else wish.banner_type
-                item_id = item_ids.get(wish.name)
-                if item_id is None:
-                    msg = f"Cannot find item ID for {wish.name}, is this an invalid item?"
-                    raise ValueError(msg)
-
-                records.append(
-                    GachaHistory(
-                        wish_id=wish.id,
-                        rarity=wish.rarity,
-                        time=wish.time,
-                        banner_type=banner_type,
-                        item_id=item_id,
-                        account=self.account,
-                        banner_id=None,
-                        game=Game.GENSHIN,
-                    )
-                )
-
-            mw_wishes = await _fetch_new_records(
-                lambda b: client.mw_wish_history(b, authkey=authkey),
-                (genshin.models.MWBannerType.STANDARD, genshin.models.MWBannerType.EVENT),
-                cursors,
+            records = await fetch_genshin_records(
+                client,
+                self.account,
+                authkey=authkey,
+                cursors=cursors,
+                item_ids=await ambr.fetch_item_name_to_id_map(),
             )
-            mw_wishes.sort(key=lambda x: x.id)
-
-            for wish in mw_wishes:
-                _check_uid(wish, self.account)
-
-                banner_type = (
-                    2000 if wish.banner_type in MW_EVENT_BANNER_TYPES else wish.banner_type
-                )
-
-                records.append(
-                    GachaHistory(
-                        wish_id=wish.id,
-                        rarity=wish.rarity,
-                        time=wish.time,
-                        banner_type=banner_type,
-                        item_id=wish.item_id,
-                        account=self.account,
-                        banner_id=wish.banner_id,
-                        game=Game.GENSHIN,
-                    )
-                )
-
         elif self.account.game is Game.STARRAIL:
-            warps = await _fetch_new_records(
-                lambda b: client.warp_history(b, authkey=authkey),
-                genshin.models.StarRailBannerType,
-                cursors,
+            records = await fetch_starrail_records(
+                client, self.account, authkey=authkey, cursors=cursors
             )
-            warps.sort(key=lambda x: x.id)
-
-            for warp in warps:
-                _check_uid(warp, self.account)
-
-                records.append(
-                    GachaHistory(
-                        wish_id=warp.id,
-                        rarity=warp.rarity,
-                        time=warp.time,
-                        banner_type=warp.banner_type,
-                        item_id=warp.item_id,
-                        account=self.account,
-                        banner_id=warp.banner_id,
-                        game=Game.STARRAIL,
-                    )
-                )
-
         elif self.account.game is Game.ZZZ:
-            signals = await _fetch_new_records(
-                lambda b: client.signal_history(b, authkey=authkey),
-                genshin.models.ZZZBannerType,
-                cursors,
+            records = await fetch_zzz_records(
+                client, self.account, authkey=authkey, cursors=cursors
             )
-            signals.sort(key=lambda x: x.id)
-
-            for signal in signals:
-                _check_uid(signal, self.account)
-
-            records.extend(_zzz_signal_records(signals, self.account))
         else:
             raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
 
-        await GachaHistory.bulk_create(records)
-
-        self.account.gacha_cursors = cursors
-        await self.account.save(update_fields=("gacha_cursors",))
-
-        after = await GachaHistory.get_wish_count(self.account)
-        await update_gacha_nums(i.client.pool, account=self.account)
-
-        await i.edit_original_response(embed=self.success_embed(after - before))
+        count = await save_records(self.account, records, cursors=cursors, pool=i.client.pool)
+        await i.edit_original_response(embed=self.success_embed(count))
 
 
 class PCButton(Button[GachaImportView]):
@@ -307,36 +167,15 @@ class HoyolabImport(Button[GachaImportView]):
             await self.view.import_with_authkey(i, await self._fetch_authkey())
 
     async def _fetch_authkey(self) -> str:
-        client = GenshinClient(self.account)
-        try:
-            return await client.fetch_authkey(self.account.uid)
-        except genshin.InvalidCookies:
-            cookies = self.account.dict_cookies
-            if "stoken" not in cookies or "ltmid_v2" not in cookies:
-                raise
-            await client.update_cookie_token()
-            return await client.fetch_authkey(self.account.uid)
+        return await fetch_authkey(GenshinClient(self.account), self.account)
 
     async def _import_from_chronicle(self, i: Interaction) -> None:
-        client = GenshinClient(self.account)
         cursors = dict(self.account.gacha_cursors)
-        signals = await _fetch_new_records(
-            lambda b: client.chronicle_signal_history(b, uid=self.account.uid),
-            genshin.models.ZZZBannerType,
-            cursors,
+        records = await fetch_zzz_chronicle_records(
+            GenshinClient(self.account), self.account, cursors=cursors
         )
-        signals.sort(key=lambda x: x.id)
-
-        before = await GachaHistory.get_wish_count(self.account)
-        await GachaHistory.bulk_create(_zzz_signal_records(signals, self.account))
-
-        self.account.gacha_cursors = cursors
-        await self.account.save(update_fields=("gacha_cursors",))
-
-        after = await GachaHistory.get_wish_count(self.account)
-        await update_gacha_nums(i.client.pool, account=self.account)
-
-        await i.edit_original_response(embed=self.view.success_embed(after - before))
+        count = await save_records(self.account, records, cursors=cursors, pool=i.client.pool)
+        await i.edit_original_response(embed=self.view.success_embed(count))
 
 
 class EnterURLModal(Modal):

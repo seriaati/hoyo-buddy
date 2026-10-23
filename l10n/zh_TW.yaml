@@ -55,6 +55,8 @@ auto_checkin_button_label: 自動每日簽到
 auto_locale_option_label: 遵循客戶端語言
 auto_redeem_footer: 使用/settings 關閉自動兌換兌換碼功能
 auto_redeem_toggle.label: 自動兌換兌換碼
+auto_gacha_import_label: 自動導入抽卡紀錄
+auto_gacha_import_footer: 使用 /settings 關閉自動導入抽卡紀錄功能
 books: 書籍
 captcha.embed.description: "點擊下方的按鈕來完成 CAPTCHA\n"
 challenge_type_select.placeholder: 選擇一個遊戲模式
@@ -185,6 +187,7 @@ farm_reminder_command_description: 在角色/武器的素材可以刷取時通�
 farm_remove_command.item_not_found: 找不到該物品
 farm_remove_command.item_not_found_description: 此物品沒有在你的刷本通知列表裡。
 farm_remove_command_description: 從刷本通知列表中移除角色/武器
+farm_view.city_select.placeholder: 選擇一個城市
 farm_view.happy_farming: 🌾 享受刷本吧！
 farm_view.set_reminder: 設置提醒
 farm_view.set_reminder.embed.description: "使用</farm reminder>指令設定刷本通知"
@@ -297,7 +300,7 @@ notes.elysian_realm: 往世樂土
 notes.elysian_realm_value: "當前積分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 後可用"
 notes_command_description: 查看即時便籤
-notif.embed.footer: 使用 /notes 來調整通知
+notif.embed.footer: 使用 /reminders 設定通知
 notif_modal.enabled.label: 已啟用
 notif_modal.type_one.description: |
   每「通知間隔」分鐘將會檢查體力一次，當體力大於或等於「閥值」後，通知將開始發送。
@@ -340,7 +343,6 @@ profile.image_settings.button.label: 圖片設定
 profile.card_template_select.diff_author.description: "由 {author1} 設計並由 {author2} 製作"
 profile.card_template_select.enka.label: "Enka Network 樣式 {num}"
 profile.card_template_select.encard.label: "ENCard 樣式 {num}"
-profile.card_template_select.enka_classic.label: 經典 Enka 樣式
 profile.card_template_select.enkacard.label: "EnkaCard 樣式 {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy 樣式 {num}"
 profile.card_template_select.placeholder: 選擇一個樣式
@@ -411,9 +413,9 @@ saturday: 星期六
 search_autocomplete_not_setup: "搜尋自動完成選項尚未設置完成，請稍後再試。"
 search_command_category_param_description: 欲搜尋的分類
 search_cmd_category_param_name: 分類
-search_command_description: 搜尋任何與遊戲相關的內容
-search_command_game_param_description: 欲搜尋的遊戲
 search_command_game_param_name: 遊戲
+search_command_gi_description: 搜尋任何與原神相關的內容
+search_command_hsr_description: 搜尋任何與崩壞：星穹鐵道相關的內容
 search_command_query_param_description: 欲搜尋的關鍵字
 search_command_query_param_name: 關鍵字
 select_account.embed.description: 選擇欲添加至 Hoyo Buddy 的帳戶
@@ -433,7 +435,6 @@ threshold.embed.description: "已達閥值 ({threshold})"
 thunder: 雷
 thursday: 星期四
 tuesday: 星期二
-unreleased_content: 尚未釋出的內容
 user_autocomplete_param_description: "用於搜尋帳戶的使用者，預設為自己"
 user_autocomplete_param_name: 使用者
 user_no_accounts_autocomplete_choice: 這位使用者沒有新增任何帳戶
@@ -467,6 +468,8 @@ not_implemented_error_title: 功能尚未實裝
 not_implemented_error_only_game_message: "此功能尚未在 `{game}` 帳戶上實裝。"
 not_implemented_error_message: "此功能尚未在 `{platform}` 上的 `{game}` 帳戶上實裝。"
 profile.build.current.label: 當前
+profile.skin_select.placeholder: 選擇造型…
+profile.skin_select.default.label: 預設
 abyss_chamber.blessing.embed.field.name: 淵月祝福
 apocalyptic_shadow: 末日幻影
 apc_shadow.highest_diff_cleared: "最高完成難度: {diff}"
@@ -591,6 +594,7 @@ gacha_import_loading_embed_title: 正在導入抽卡紀錄
 gacha_import_pc_import_embed_desc: "開啟「開始」菜單並搜尋「Powershell」，接著複製下方的程式碼並在 Powershell 中貼上。\n此腳本由 Hoyo Buddy 團隊編寫，可以安全使用。"
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: 安卓
+gacha_import_hoyolab_button_label: 從 HoYoLAB 導入
 gacha_import_pc_source_code: 原始碼
 gacha_import_loading_embed_description: "{loading_emoji} 這需要花費一些時間, 請耐心等候..."
 gacha_upload_invalid_file_error_title: 無效的檔案格式
@@ -700,6 +704,7 @@ card_settings_hl_special_stats_button_label: 標示特殊角色數值
 card_settings_hl_stats_desc: 用特殊顏色突顯角色的重點數值。
 challenge_command_abyss_desc: 生成深境螺旋卡片
 challenge_command_theater_desc: 生成幻想真境劇詩卡片
+lunar_arcana_command_description: 查看你的幻想真境劇詩「月諭聖牌」收藏
 challenge_command_moc_desc: 生成混沌回憶卡片
 challenge_command_pf_desc: 生成虛構敘事卡片
 challenge_command_apc_shadow_desc: 生成末日幻影卡片
@@ -776,6 +781,7 @@ gi_mimo_start_desc: "請先於 [HoYoLAB]({url}) 將旅行 Mimo 活動設定完�
 mimo_auto_draw_button_label: 自動抽獎
 mimo_auto_draw_desc: "Hoyo Buddy 會在積分足夠時自動抽獎；如果自動購買獎勵和自動抽獎同時啟用，會先嘗試購買，積分不足購買時則自動抽獎。"
 mimo_auto_draw_embed_desc: "Hoyo Buddy 使用 {points} 點積分幫你抽獎並獲得了以下物品。\n如果下方有顯示禮物碼，請自行使用</redeem>兌換。"
+mimo_point_history_page_footer: "第 {page} 頁"
 dismissible_hsr_temp2_desc: "你現在可以使用 Hoyo Buddy 樣式 2 來生成星穹鐵道角色卡片，在「卡片設定」中設置。推薦使用橫向圖片。"
 bounty_commission.embed.description: 懸賞委託尚未全部完成
 ridu_points.embed.description: 麗都週記任務尚未全部完成
@@ -832,28 +838,29 @@ account_settings_desc: "此處的設定對每個遊戲帳戶都是獨立的。"
 public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 1。"
 daily_checkin_desc: "自動每日簽到\n自動領取網頁簽到活動的獎勵。"
 redeem_code_desc: "自動兌換碼兌換\n自動兌換直播兌換碼和其他禮包碼。如果你沒有使用電子郵件和密碼登入，此按鈕將被停用，請參閱[常見問題](:docs/FAQ:)了解原因。"
+auto_gacha_import_desc: "自動導入抽卡紀錄\n每 6 小時自動導入新的抽卡紀錄。僅限贊助者使用（詳見 </supporter>），且僅適用於原神和絕區零的 HoYoLAB 帳戶。原神帳戶需使用電子郵件和密碼登入。"
 accompany_settings_title: "角色陪伴"
 accompany_settings_desc: "每天自動陪伴一位 HoYoLAB 角色，賺取陪伴值並解鎖桌布、貼圖等獎勵。僅適用於 HoYoLAB 帳戶。"
-accompany_button_label: "自動角色陪伴"
+accompany_button_label: 自動角色陪伴
 accompany_selected_character: "目前陪伴角色：{character}"
 accompany_no_character_selected: "在下方選擇一個角色以啟用此功能。"
-accompany_character_select_placeholder: "選擇要陪伴的角色"
-accompany_cmd_desc: "查看 HoYoLAB 陪伴角色並設定你的陪伴角色"
-accompany_cmd_character_param_name: "角色"
+accompany_character_select_placeholder: 選擇要陪伴的角色
+accompany_cmd_desc: 查看 HoYoLAB 陪伴角色並設定你的陪伴角色
+accompany_cmd_character_param_name: 角色
 accompany_cmd_character_param_desc: "要查看的角色，預設為第一個可用的角色"
-accompany_videos_label: "影片"
+accompany_videos_label: 影片
 accompany_header_stats: "{posts} 篇貼文 · {fan_arts} 張同人圖"
 accompany_header_members: "{members} 位成員"
-accompany_info_title: "你的陪伴進度"
+accompany_info_title: 你的陪伴進度
 accompany_info_body: "陪伴天數：{days}\n陪伴值：{points}（可用 {available_points}）\n今日已陪伴：{today}"
-accompany_voice_lines_title: "語音台詞"
-accompany_voice_audio_label: "播放語音"
-accompany_voice_lang_select_placeholder: "選擇語音語言"
-accompany_voice_line_select_placeholder: "選擇語音台詞"
-accompany_view_no_character_set: "你還沒有設定陪伴角色。"
-accompany_set_character_button_label: "設為陪伴角色"
-accompany_now_button_label: "立即陪伴"
-accompany_view_character_select_placeholder: "選擇要查看的角色"
+accompany_voice_lines_title: 語音台詞
+accompany_voice_audio_label: 播放語音
+accompany_voice_lang_select_placeholder: 選擇語音語言
+accompany_voice_line_select_placeholder: 選擇語音台詞
+accompany_view_no_character_set: 你還沒有設定陪伴角色。
+accompany_set_character_button_label: 設為陪伴角色
+accompany_now_button_label: 立即陪伴
+accompany_view_character_select_placeholder: 選擇要查看的角色
 user_settings_title: "使用者設定"
 user_settings_desc: "此處的設定與你的 Discord 帳戶關聯，適用於所有遊戲帳戶。"
 dark_theme_desc: "深色主題\n讓資訊圖表使用深色配色方案，並非所有資訊圖表都支援此功能。"
@@ -869,6 +876,11 @@ apply_template_to_all_chars: 將當前樣式套用至所有角色
 apply_template_to_all_chars_desc: "所有**未來和當前**的角色都將使用 **{template}**。"
 apply_dark_theme_to_all_chars: 將當前深色主題選項套用至所有角色
 apply_dark_theme_to_all_chars_desc: "所有**未來和當前**的角色都將使深色主題 **{status}**。"
+apply_animated_image_to_all_chars: 將當前動態圖片選項套用至所有角色
+apply_animated_image_to_all_chars_desc: "所有**未來和當前**角色的動態圖片都將設為 **{status}**。"
+card_settings_bulk_title: 批次設定
+card_settings_bulk_button_desc: "將此角色的樣式、深色主題和動態圖片選項套用至所有角色。"
+card_settings_bulk_desc: "將 {name} 的卡片設定套用至所有**當前和未來**的角色。"
 apply_label: 套用
 card_settings_genshin_desc: 修改你的原神角色面板卡片的外觀
 card_settings_hsr_desc: 修改你的崩壞：星穹鐵道角色面板卡片的外觀
@@ -888,3 +900,37 @@ image_settings_modifying_for_desc: "圖片為每個角色獨立保存，並在�
 image_settings_template_supported: "目前樣式支援自訂圖片。"
 image_settings_template_not_supported: "目前樣式不支援自訂圖片，因此下方選擇的圖片不會被套用。"
 image_settings_use_m3_art_desc: "使用代理人的意象影畫 3 繪圖作為卡片圖片，僅 Hoyo Buddy 樣式 2 支援。"
+lumiflux: 流明
+enemies: 敵人
+enemy_weaknesses_field_name: 弱點
+enemy_resistances_field_name: 抗性
+enemy_rewards_field_name: "獎勵（均衡等級 {level}）"
+enemy_rewards_character_exp: "角色經驗 x{exp}"
+lunar_arcana_browse_button_label: 瀏覽聖牌
+lunar_arcana_back_button_label: 返回收藏
+lunar_arcana_select_placeholder: 選擇一張聖牌…
+lunar_arcana_owned_count: "擁有：×{count}"
+lunar_arcana_card_locked: 尚未獲得
+custom_image_limit_error_title: 已達自訂圖片數量上限
+custom_image_limit_error_message: "每個角色最多可新增 {limit} 張自訂圖片。贊助者則沒有數量限制，使用 /supporter 了解更多。"
+ai_image_limit_error_title: 已達每日 AI 圖片生成上限
+ai_image_limit_error_message: "每天最多可生成 {limit} 張 AI 圖片，上限將於 {reset_time} 重置。贊助者則沒有數量限制，使用 /supporter 了解更多。"
+supporter_command_desc: 查看贊助者福利及你的贊助者狀態
+supporter_embed.title: 贊助者福利
+supporter_embed.description: "贊助者讓 Hoyo Buddy 得以持續運作和開發。為了表達感謝，贊助者可享有以下福利："
+supporter_embed.perk_auto_task_priority: "自動任務佇列的最高優先順序（每日簽到、兌換碼兌換、旅行 Mimo 等）"
+supporter_embed.perk_accounts: "帳戶數量無上限（免費：{limit} 個）"
+supporter_embed.perk_custom_images: "每個角色的自訂圖片數量無上限（免費：{limit} 張）"
+supporter_embed.perk_ai_images: "AI 圖片生成數量無上限（免費：每天 {limit} 張）"
+supporter_embed.perk_auto_gacha_import: 每 6 小時自動導入抽卡紀錄（原神和絕區零）
+supporter_embed.perk_discord_role: Discord 伺服器中的贊助者身分組
+supporter_embed.perk_discord_channel: 可進入 Discord 伺服器中的贊助者專屬頻道
+supporter_embed.status_supporter: "你是贊助者，感謝你的支持！"
+supporter_embed.status_not_supporter: 你還不是贊助者。
+card_settings_animated_image: 動態圖片
+card_settings_animated_image_desc: "在卡片上使用角色的動態立繪。此功能僅限贊助者使用，且僅適用於擁有動態立繪的角色：原神和絕區零支援樣式 1，崩壞：星穹鐵道支援樣式 1 和 2。原神卡片使用七聖召喚的動態卡面。使用 </supporter> 了解更多。"
+reminders_command_description: 設定即時便籤、刷本和網頁活動通知
+reminders_button_label: 通知
+farm_reminder_title: 刷本通知
+web_events_reminder_title: 網頁活動通知
+web_events_reminder_desc: 有新的網頁活動發布時，透過私訊通知你。

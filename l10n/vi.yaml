@@ -55,6 +55,8 @@ auto_checkin_button_label: Tự động điểm danh hằng ngày
 auto_locale_option_label: Theo ngôn ngữ ứng dụng
 auto_redeem_footer: Tắt tự động đỏi mã quà bằng/settings
 auto_redeem_toggle.label: Tự động đổi mã quà
+auto_gacha_import_label: Tự động nhập nhật ký gacha
+auto_gacha_import_footer: Tắt tự động nhập nhật ký gacha bằng /settings
 books: Sách
 captcha.embed.description: "Nhấn nút bên dưới đê hoàn thành CAPTCHA.\n"
 challenge_type_select.placeholder: Vui lòng chọn chế độ chơi
@@ -185,6 +187,7 @@ farm_reminder_command_description: Nhắc bạn khi nguyên liệu của nhân v
 farm_remove_command.item_not_found: Không tìm thấy vật phẩm này
 farm_remove_command.item_not_found_description: Mục này không có trong danh sách nhắc nhở cày.
 farm_remove_command_description: Xóa nhân vật/vũ khí trong danh sách nhắc nhở cày.
+farm_view.city_select.placeholder: Hãy chọn thành phố
 farm_view.happy_farming: 🌾 Đi cày vui vẻ!
 farm_view.set_reminder: Đặt lời nhắc
 farm_view.set_reminder.embed.description: "Để đặt lời nhắc, sử dụng lệnh </farm reminder>"
@@ -297,7 +300,7 @@ notes.elysian_realm: Vùng Đất Xưa Cũ
 notes.elysian_realm_value: "Điểm số hiện tại: {cur}/{max}"
 notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
-notif.embed.footer: Sử dụng lệnh /notes đê điều chỉnh nhắc nhở
+notif.embed.footer: Dùng /reminders để thiết lập lời nhắc
 notif_modal.enabled.label: Bật
 notif_modal.type_one.description: |
   Cứ mỗi một khoảng thời gian được định trong "giãn cách nhắc nhở", Hoyo Buddy sẽ kiểm tra mức Thể lực và bắt đầu gửi thông báo nếu Thể lực lớn hơn hoặc bằng mức "ngưỡng".
@@ -410,9 +413,9 @@ saturday: Thứ bảy
 search_autocomplete_not_setup: "Chưa thiết lập tự động điền lựa chọn tìm kiếm, vui lòng thử lại sau"
 search_command_category_param_description: Mục muốn tìm kiếm
 search_cmd_category_param_name: mục
-search_command_description: Tìm kiếm mọi thứ liên quan tới trò chơi
-search_command_game_param_description: Trò chơi muốn tìm kiếm
 search_command_game_param_name: trò-chơi
+search_command_gi_description: Tìm kiếm mọi thứ liên quan đến Genshin Impact
+search_command_hsr_description: Tìm kiếm mọi thứ liên quan đến Honkai Star Rail
 search_command_query_param_description: Truy vấn để tìm kiếm
 search_command_query_param_name: truy-vấn
 select_account.embed.description: Chọn tài khoản bạn muốn thêm vào Hoyo Buddy
@@ -432,7 +435,6 @@ threshold.embed.description: "Đã đạt ngưỡng ({threshold})"
 thunder: Lôi
 thursday: Thứ năm
 tuesday: Thứ ba
-unreleased_content: Nội dung chưa được phát hành
 user_autocomplete_param_description: "Người dùng có tài khoản muốn tìm, mặc định là bạn"
 user_autocomplete_param_name: người-dùng
 user_no_accounts_autocomplete_choice: Người dùng này không có tài khoản nào
@@ -466,6 +468,8 @@ not_implemented_error_title: Tính năng hiện chưa có
 not_implemented_error_only_game_message: "Tính năng hiện chưa có cho tài khoản `{game}` này"
 not_implemented_error_message: "Tính năng hiện chưa có cho tài khoản `{game}` cho `{platform}` này"
 profile.build.current.label: Hiện tại
+profile.skin_select.placeholder: Chọn trang phục...
+profile.skin_select.default.label: Mặc định
 abyss_chamber.blessing.embed.field.name: Uyên Nguyệt Chúc Phúc
 apocalyptic_shadow: Ảo Ảnh Tận Thế
 apc_shadow.highest_diff_cleared: "Mức độ cao nhất hoàn thành: {diff}"
@@ -590,6 +594,7 @@ gacha_import_loading_embed_title: Đang nhập Nhật ký Gacha
 gacha_import_pc_import_embed_desc: "Tìm kiếm và mở ứng dụng PowerShell trong Start Menu, sau đó sao chép và dán đoạn mã bên dưới vào.\n Script này được viết bởi đội ngữ Hoyo Buddy và an toàn để chạy và sử dụng."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
+gacha_import_hoyolab_button_label: Nhập từ HoYoLAB
 gacha_import_pc_source_code: Mã Nguồn
 gacha_import_loading_embed_description: "{loading_emoji} Việc này có thể mất nhiều thời gian, vui lòng đợi"
 gacha_upload_invalid_file_error_title: Định dang File không hợp lệ
@@ -699,6 +704,7 @@ card_settings_hl_special_stats_button_label: Thống kê nổi bật đặc bi�
 card_settings_hl_stats_desc: Nhấn mạnh các chỉ số quan trọng của nhân vật bằng màu sắc.
 challenge_command_abyss_desc: Tạo thẻ La Hoàn Thâm Cảnh
 challenge_command_theater_desc: Tạo thẻ Nhà Hát Giả Tưởng
+lunar_arcana_command_description: Xem bộ thẻ Thánh Bài Ánh Trăng Nhà Hát Giả Tưởng của bạn
 challenge_command_moc_desc: Tạo thẻ Hồi Ước Hỗn Độn
 challenge_command_pf_desc: Tạo thẻ Kể Chuyện Hư Cấu
 challenge_command_apc_shadow_desc: Tạo thẻ Ảo Ảnh Tận Thế
@@ -775,6 +781,7 @@ gi_mimo_start_desc: "Vui lòng thiết lập sự kiện Mimo Du Lịch trên [H
 mimo_auto_draw_button_label: Tự động rút thưởng
 mimo_auto_draw_desc: "Hoyo Buddy sẽ tự động đổi thường cho bạn khi nào có thể; nếu tự động mua và tự động rút thưởng đều bật, bot sẽ cố gắng mua trước và rút thưởng nếu không có đủ điểm"
 mimo_auto_draw_embed_desc: "Hoyo Buddy đã rút những món sau với {points} điểm.\nNếu bạn thấy mã quà bên dười, vui lòng đổi bằng tay với lệnh </redeem>."
+mimo_point_history_page_footer: "Trang {page}"
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
 bounty_commission.embed.description: " Tiến Độ Ủy Thác Trao Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
@@ -831,6 +838,7 @@ account_settings_desc: "Cài đặt ở đây là duy nhất cho mỗi tài kho�
 public_account_desc: "Đặt tài khoản công khai\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
 daily_checkin_desc: "Tự động điểm danh hàng ngày\nTự động nhận phần thưởng trong sự kiện điểm danh web."
 redeem_code_desc: "Tự động đổi mã\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
+auto_gacha_import_desc: "Tự động nhập nhật ký gacha\nTự động nhập nhật ký gacha mới mỗi 6 giờ. Chỉ dành cho người ủng hộ (xem </supporter>), chỉ khả dụng cho tài khoản HoYoLAB Genshin Impact và Zenless Zone Zero. Tài khoản Genshin Impact cần được đăng nhập bằng email và mật khẩu."
 accompany_settings_title: "Ghé thăm nhân vật"
 accompany_settings_desc: "Tự động ghé thăm một nhân vật HoYoLAB hằng ngày để nhận điểm ghé thăm và mở khóa các phần thưởng như hình nền và nhán dẵn. Chỉ dành cho tài khoản HoYoLAB."
 accompany_button_label: Tự động ghé thăm nhân vật
@@ -868,6 +876,11 @@ apply_template_to_all_chars: Áp dụng mẫu thẻ hiện tại cho tất cả 
 apply_template_to_all_chars_desc: "Tất cả nhân vật **tương lai và hiện tại** sẽ sử dụng **{template}**."
 apply_dark_theme_to_all_chars: Áp dụng tùy chọn chủ đề tối hiện tại cho tất cả nhân vật
 apply_dark_theme_to_all_chars_desc: "Tất cả nhân vật **tương lai và hiện tại** sẽ dùng chủ đề tối **{status}**."
+apply_animated_image_to_all_chars: Áp dụng tùy chọn ảnh động hiện tại cho tất cả nhân vật
+apply_animated_image_to_all_chars_desc: "Ảnh động của tất cả nhân vật **tương lai và hiện tại** sẽ ở trạng thái **{status}**."
+card_settings_bulk_title: Cài đặt hàng loạt
+card_settings_bulk_button_desc: "Áp dụng các tùy chọn mẫu thẻ, chủ đề tối và ảnh động của nhân vật này cho tất cả nhân vật."
+card_settings_bulk_desc: "Áp dụng cài đặt thẻ của {name} cho tất cả nhân vật **hiện tại và tương lai**."
 apply_label: Áp dụng
 card_settings_genshin_desc: Sửa đổi giao diện của thẻ build nhân vật Genshin Impact
 card_settings_hsr_desc: Sửa đổi giao diện của thẻ build nhân vật Honkai Star Rail
@@ -888,3 +901,36 @@ image_settings_template_supported: "Mẫu thẻ này hỗ trợ ảnh tùy chỉ
 image_settings_template_not_supported: "Mẫu thẻ này không hỗ trợ ảnh tùy chỉnh, nên ảnh bạn chọn sẽ không được áp dụng."
 image_settings_use_m3_art_desc: "Sử dụng ảnh Ý Cảnh 3 của Người Đại Diện là ảnh thẻ, chỉ hỗ trợ cho mẫu thẻ Hoyo Buddy 2"
 lumiflux: Lưu Minh
+enemies: Kẻ địch
+enemy_weaknesses_field_name: Điểm yếu
+enemy_resistances_field_name: Kháng Sát Thương
+enemy_rewards_field_name: "Phần thưởng (Cấp Cân Bằng {level})"
+enemy_rewards_character_exp: "EXP Nhân Vật x{exp}"
+lunar_arcana_browse_button_label: Xem thẻ
+lunar_arcana_back_button_label: Về xem bộ thẻ
+lunar_arcana_select_placeholder: Chọn thẻ...
+lunar_arcana_owned_count: "Đã có: ×{count}"
+lunar_arcana_card_locked: Chưa nhận
+custom_image_limit_error_title: Đã đạt giới hạn ảnh tự chọn
+custom_image_limit_error_message: "Bạn có thể thêm tối đa {limit} ảnh tự chọn cho mỗi nhân vật. Người ủng hộ có thể thêm bao nhiêu tùy thích, dùng /supporter để tìm hiểu thêm."
+ai_image_limit_error_title: Đã đạt giới hạn ảnh AI hằng ngày
+ai_image_limit_error_message: "Bạn có thể tạo tối đa {limit} ảnh AI mỗi ngày, giới hạn sẽ được đặt lại {reset_time}. Người ủng hộ có thể tạo bao nhiêu tùy thích, dùng /supporter để tìm hiểu thêm."
+supporter_command_desc: Xem đặc quyền người ủng hộ và trạng thái ủng hộ của bạn
+supporter_embed.title: Đặc quyền người ủng hộ
+supporter_embed.description: "Người ủng hộ giúp Hoyo Buddy tiếp tục hoạt động và phát triển. Để cảm ơn, họ nhận được các đặc quyền sau:"
+supporter_embed.perk_auto_task_priority: "Ưu tiên cao nhất trong hàng đợi tác vụ tự động (điểm danh hằng ngày, đổi mã quà, Mimo Du Lịch, v.v.)"
+supporter_embed.perk_accounts: "Không giới hạn số tài khoản (miễn phí: {limit})"
+supporter_embed.perk_custom_images: "Không giới hạn ảnh tự chọn cho mỗi nhân vật (miễn phí: {limit})"
+supporter_embed.perk_ai_images: "Không giới hạn số lần tạo ảnh AI (miễn phí: {limit} mỗi ngày)"
+supporter_embed.perk_auto_gacha_import: Tự động nhập nhật ký gacha mỗi 6 giờ (Genshin Impact và Zenless Zone Zero)
+supporter_embed.perk_discord_role: Vai trò Sponsor trong máy chủ Discord
+supporter_embed.perk_discord_channel: Quyền truy cập kênh dành riêng cho Sponsor trong máy chủ Discord
+supporter_embed.status_supporter: "Bạn là người ủng hộ, cảm ơn bạn!"
+supporter_embed.status_not_supporter: Bạn chưa phải là người ủng hộ.
+card_settings_animated_image: Ảnh động
+card_settings_animated_image_desc: "Dùng ảnh động của nhân vật trên thẻ. Chỉ dành cho người ủng hộ, áp dụng với các nhân vật có ảnh động, trên Mẫu thẻ 1 đối với GI và ZZZ, Mẫu thẻ 1 và 2 đối với HSR. Thẻ GI dùng ảnh động từ lá bài Thất Thánh Triệu Hồi. Dùng </supporter> để tìm hiểu thêm."
+reminders_command_description: "Thiết lập lời nhắc Ghi Chép Thời Gian Thực, cày nguyên liệu và sự kiện web"
+reminders_button_label: Lời nhắc
+farm_reminder_title: Nhắc nhở Cày
+web_events_reminder_title: Nhắc nhở Sự kiện Web
+web_events_reminder_desc: Thông báo cho bạn qua Tin nhắn Riêng khi có sự kiện web mới được đăng.

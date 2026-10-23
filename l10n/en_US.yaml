@@ -931,7 +931,7 @@ supporter_embed.status_supporter: "You're a supporter, thank you!"
 supporter_embed.status_not_supporter: You're not a supporter yet.
 card_settings_animated_image: Animated image
 card_settings_animated_image_desc: "Use the character's animated art on the card, only available for supporters for characters with animated art, on Template 1 for GI and ZZZ and Templates 1 and 2 for HSR. GI cards use the animated Genius Invokation TCG card art. Use </supporter> to learn more."
-reminders_command_description: Configure real-time notes, farm, and web event reminders
+reminders_command_description: "Configure real-time notes, farm, and web event reminders"
 reminders_button_label: Reminders
 farm_reminder_title: Farm Reminders
 web_events_reminder_title: Web Event Reminders

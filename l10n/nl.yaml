@@ -55,6 +55,8 @@ auto_checkin_button_label: Automatisch dagelijks inchecken
 auto_locale_option_label: Volg clienttaal
 auto_redeem_footer: Schakel automatische code-inwisseling uit met/settings
 auto_redeem_toggle.label: Automatische code-inwisseling
+auto_gacha_import_label: Automatische gacha-log-import
+auto_gacha_import_footer: Schakel automatische gacha-log-import uit met /settings
 books: Boeken
 captcha.embed.description: "Klik op de onderstaande knop om de CAPTCHA te voltooien.\n"
 challenge_type_select.placeholder: Selecteer een spelmodus
@@ -185,6 +187,7 @@ farm_reminder_command_description: Melden wanneer materialen van karakters/wapen
 farm_remove_command.item_not_found: Item niet gevonden
 farm_remove_command.item_not_found_description: Dit item staat niet in je farmherinneringslijst.
 farm_remove_command_description: Verwijder karakter/wapen uit de farmherinneringslijst
+farm_view.city_select.placeholder: Selecteer een stad
 farm_view.happy_farming: 🌾 Veel plezier met farmen!
 farm_view.set_reminder: Herinneringen Instellen
 farm_view.set_reminder.embed.description: "Om herinneringen in te stellen, gebruik het </farm reminder>-commando"
@@ -255,6 +258,7 @@ moc_card_battles_fought: "Gevochten Veldslagen: {battles}"
 moc_card_cycles_used: "Gebruikte cycli: {cycles}"
 moc_card_farthest_stage: "Verste Fase: {stage}"
 moc_quick_clear: Quick Clear
+moc_starward: Starward
 monday: Maandag
 mondstadt: Mondstadt
 nod_krai: Nod-Krai
@@ -296,7 +300,7 @@ notes.elysian_realm: Elysian Realm
 notes.elysian_realm_value: "Huidige score: {cur}/{max}"
 notes_available: "{emoji} Beschikbaar in {in_time}"
 notes_command_description: Bekijk real-time notities
-notif.embed.footer: Gebruik /notes om herinneringen te configureren
+notif.embed.footer: Gebruik /reminders om herinneringen te configureren
 notif_modal.enabled.label: Ingeschakeld
 notif_modal.type_one.description: |
   Stamina wordt elke minuut van het "meldingsinterval" gecontroleerd en er wordt een melding verzonden wanneer stamina groter is dan of gelijk is aan het "limiet".
@@ -339,7 +343,6 @@ profile.image_settings.button.label: Afbeeldingsinstellingen
 profile.card_template_select.diff_author.description: "Ontworpen door {author1} en geprogrammeerd door {author2}"
 profile.card_template_select.enka.label: "Enka Network-sjabloon {num}"
 profile.card_template_select.encard.label: "ENCard-sjabloon {num}"
-profile.card_template_select.enka_classic.label: Klassiek Enka-sjabloon
 profile.card_template_select.enkacard.label: "EnkaCard-sjabloon {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy-sjabloon {num}"
 profile.card_template_select.placeholder: Selecteer een sjabloon
@@ -410,9 +413,9 @@ saturday: Zaterdag
 search_autocomplete_not_setup: "Autocomplete-zoekkeuzes nog niet ingesteld, probeer het later nog eens."
 search_command_category_param_description: Categorie om in te zoeken
 search_cmd_category_param_name: categorie
-search_command_description: Zoek alles wat gerelateerd is aan het spel
-search_command_game_param_description: Spel om in te zoeken
 search_command_game_param_name: spel
+search_command_gi_description: Zoek alles over Genshin Impact
+search_command_hsr_description: Zoek alles over Honkai Star Rail
 search_command_query_param_description: Zoekopdracht om naar te zoeken
 search_command_query_param_name: zoekopdracht
 select_account.embed.description: Selecteer de accounts die je wilt toevoegen aan Hoyo Buddy
@@ -432,7 +435,6 @@ threshold.embed.description: "Drempel ({threshold}) is bereikt"
 thunder: Thunder
 thursday: Donderdag
 tuesday: Dinsdag
-unreleased_content: Onuitgebrachte Inhoud
 user_autocomplete_param_description: "Gebruiker om de accounts van te doorzoeken, standaard jezelf"
 user_autocomplete_param_name: gebruiker
 user_no_accounts_autocomplete_choice: Deze gebruiker heeft nog geen accounts
@@ -466,6 +468,8 @@ not_implemented_error_title: Functie Nog Niet Geïmplementeerd
 not_implemented_error_only_game_message: "Deze functie is nog niet geïmplementeerd voor `{game}`-accounts."
 not_implemented_error_message: "Deze functie is nog niet geïmplementeerd voor `{game}`-accounts op `{platform}`."
 profile.build.current.label: Huidig
+profile.skin_select.placeholder: Selecteer een skin...
+profile.skin_select.default.label: Standaard
 abyss_chamber.blessing.embed.field.name: Blessing of the Abyssal Moon
 apocalyptic_shadow: Apocalyptic Shadow
 apc_shadow.highest_diff_cleared: "Hoogste moeilijkheidsgraad gehaald: {diff}"
@@ -590,6 +594,7 @@ gacha_import_loading_embed_title: Gacha-logs importeren
 gacha_import_pc_import_embed_desc: "Zoek en open PowerShell via het startmenu en kopieer en plak de volgende code erin.\nDit script is geschreven door het Hoyo Buddy-team en is veilig te gebruiken."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
+gacha_import_hoyolab_button_label: Importeren uit HoYoLAB
 gacha_import_pc_source_code: Broncode
 gacha_import_loading_embed_description: "{loading_emoji} Dit kan even duren, wees geduldig..."
 gacha_upload_invalid_file_error_title: Ongeldig bestandsformaat
@@ -699,6 +704,7 @@ card_settings_hl_special_stats_button_label: Markeer speciale statistieken
 card_settings_hl_stats_desc: Benadruk de belangrijke statistieken van een personage met kleur.
 challenge_command_abyss_desc: Genereer Spiral Abyss-kaart
 challenge_command_theater_desc: Genereer Imaginarium Theater-kaart
+lunar_arcana_command_description: Bekijk je Lunar Arcana-kaartcollectie uit Imaginarium Theater
 challenge_command_moc_desc: Genereer Memory of Chaos-kaart
 challenge_command_pf_desc: Genereer Pure Fiction-kaart
 challenge_command_apc_shadow_desc: Genereer Apocalyptic Shadow-kaart
@@ -775,6 +781,7 @@ gi_mimo_start_desc: "Stel eerst het Traveling Mimo-evenement in op [HoYoLAB]({ur
 mimo_auto_draw_button_label: Automatische prijstrekking
 mimo_auto_draw_desc: "Hoyo Buddy zal prijzen voor je trekken wanneer dat mogelijk is. Als zowel automatisch kopen als automatisch prijzen trekken zijn ingeschakeld, zal hij eerst proberen te kopen en alleen prijzen trekken als er niet genoeg punten zijn om iets te kopen."
 mimo_auto_draw_embed_desc: "Hoyo Buddy heeft de volgende items met {points} punten verloot.\nAls je hieronder cadeaucodes ziet, kun je deze handmatig inwisselen met </redeem>."
+mimo_point_history_page_footer: "Pagina {page}"
 dismissible_hsr_temp2_desc: "Je kunt nu het nieuwe Hoyo Buddy-sjabloon 2 gebruiken voor HSR-karakterkaarten. Selecteer deze in de kaartinstellingen. Het wordt aangeraden om horizontale afbeeldingen te gebruiken voor dit sjabloon."
 bounty_commission.embed.description: Premiecommissies nog niet voltooid
 ridu_points.embed.description: Ridu-weektaken nog niet voltooid
@@ -831,28 +838,29 @@ account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
 public_account_desc: "Account instellen als openbaar\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
 daily_checkin_desc: "Automatische dagelijkse inchecken\nClaimt automatisch beloningen bij het web-incheckenevenement."
 redeem_code_desc: "Automatisch inwisselen van codes\nWisselt automatisch livestream-codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor meer informatie."
+auto_gacha_import_desc: "Automatische gacha-log-import\nImporteert elke 6 uur automatisch nieuwe gacha-logs. Alleen voor supporters (zie </supporter>), alleen beschikbaar voor HoYoLAB-accounts van Genshin Impact en Zenless Zone Zero. Genshin Impact-accounts moeten ingelogd zijn met e-mail en wachtwoord."
 accompany_settings_title: "Karakter vergezellen"
 accompany_settings_desc: "Vergezel elke dag automatisch een HoYoLAB-karakter om vergezelpunten te verdienen en beloningen zoals achtergronden en stickers te ontgrendelen. Alleen beschikbaar voor HoYoLAB-accounts."
-accompany_button_label: "Automatisch karakter vergezellen"
+accompany_button_label: Automatisch karakter vergezellen
 accompany_selected_character: "Momenteel aan het vergezellen: {character}"
 accompany_no_character_selected: "Selecteer hieronder een karakter om deze functie in te schakelen."
-accompany_character_select_placeholder: "Selecteer een karakter om te vergezellen"
-accompany_cmd_desc: "Bekijk HoYoLAB-vergezelkarakters en stel de jouwe in"
-accompany_cmd_character_param_name: "karakter"
+accompany_character_select_placeholder: Selecteer een karakter om te vergezellen
+accompany_cmd_desc: Bekijk HoYoLAB-vergezelkarakters en stel de jouwe in
+accompany_cmd_character_param_name: karakter
 accompany_cmd_character_param_desc: "Karakter om te bekijken, standaard het eerste beschikbare"
-accompany_videos_label: "Video's"
+accompany_videos_label: Video's
 accompany_header_stats: "{posts} berichten · {fan_arts} fanarts"
 accompany_header_members: "{members} leden"
-accompany_info_title: "Jouw vergezelvoortgang"
+accompany_info_title: Jouw vergezelvoortgang
 accompany_info_body: "Dagen vergezeld: {days}\nVergezelpunten: {points} ({available_points} beschikbaar)\nVandaag vergezeld: {today}"
-accompany_voice_lines_title: "Stemfragmenten"
-accompany_voice_audio_label: "Audio afspelen"
-accompany_voice_lang_select_placeholder: "Selecteer een taal voor de stem"
-accompany_voice_line_select_placeholder: "Selecteer een stemfragment"
-accompany_view_no_character_set: "Je hebt nog geen vergezelkarakter ingesteld."
-accompany_set_character_button_label: "Instellen als vergezelkarakter"
-accompany_now_button_label: "Nu vergezellen"
-accompany_view_character_select_placeholder: "Selecteer een karakter om te bekijken"
+accompany_voice_lines_title: Stemfragmenten
+accompany_voice_audio_label: Audio afspelen
+accompany_voice_lang_select_placeholder: Selecteer een taal voor de stem
+accompany_voice_line_select_placeholder: Selecteer een stemfragment
+accompany_view_no_character_set: Je hebt nog geen vergezelkarakter ingesteld.
+accompany_set_character_button_label: Instellen als vergezelkarakter
+accompany_now_button_label: Nu vergezellen
+accompany_view_character_select_placeholder: Selecteer een karakter om te bekijken
 user_settings_title: "Gebruikersinstellingen"
 user_settings_desc: "Instellingen hier zijn gekoppeld aan je Discord-account, ze gelden voor alle gameaccounts."
 dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebruiken. Niet alle infographics ondersteunen deze functie."
@@ -868,6 +876,11 @@ apply_template_to_all_chars: Pas huidig sjabloon toe op alle personages
 apply_template_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen **{template}** gebruiken."
 apply_dark_theme_to_all_chars: Pas huidige donkere thema-optie toe op alle personages
 apply_dark_theme_to_all_chars_desc: "Alle **toekomstige en huidige** personages zullen donker thema **{status}** hebben."
+apply_animated_image_to_all_chars: Pas de huidige geanimeerde-afbeeldingsoptie toe op alle personages
+apply_animated_image_to_all_chars_desc: "Geanimeerde afbeelding wordt **{status}** voor alle **toekomstige en huidige** personages."
+card_settings_bulk_title: Bulkinstellingen
+card_settings_bulk_button_desc: "Pas het sjabloon, het donkere thema en de geanimeerde-afbeeldingsoptie van dit personage toe op alle personages."
+card_settings_bulk_desc: "Pas de kaartinstellingen van {name} toe op alle **huidige en toekomstige** personages."
 apply_label: Toepassen
 card_settings_genshin_desc: Pas aan hoe je Genshin Impact-personage bouwkaarten eruitzien
 card_settings_hsr_desc: Pas aan hoe je Honkai Star Rail-personage bouwkaarten eruitzien
@@ -887,3 +900,37 @@ image_settings_modifying_for_desc: "Afbeeldingen zijn uniek per karakter en word
 image_settings_template_supported: "Het huidige sjabloon ondersteunt aangepaste afbeeldingen."
 image_settings_template_not_supported: "Het huidige sjabloon ondersteunt geen aangepaste afbeeldingen, dus de afbeelding die je hieronder selecteert wordt niet toegepast."
 image_settings_use_m3_art_desc: "Gebruik de M3-kunst van de agent als kaartafbeelding, alleen ondersteund door Hoyo Buddy-sjabloon 2."
+lumiflux: Lumiflux
+enemies: Vijanden
+enemy_weaknesses_field_name: Zwaktes
+enemy_resistances_field_name: DMG RES
+enemy_rewards_field_name: "Beloningen (Evenwichtsniveau {level})"
+enemy_rewards_character_exp: "Karakter-EXP x{exp}"
+lunar_arcana_browse_button_label: Kaarten bekijken
+lunar_arcana_back_button_label: Terug naar collectie
+lunar_arcana_select_placeholder: Selecteer een kaart...
+lunar_arcana_owned_count: "In bezit: ×{count}"
+lunar_arcana_card_locked: Nog niet verkregen
+custom_image_limit_error_title: Limiet voor aangepaste afbeeldingen bereikt
+custom_image_limit_error_message: "Je kunt maximaal {limit} aangepaste afbeeldingen per personage toevoegen. Supporters kunnen er zoveel toevoegen als ze willen, gebruik /supporter voor meer informatie."
+ai_image_limit_error_title: Dagelijkse limiet voor AI-afbeeldingen bereikt
+ai_image_limit_error_message: "Je kunt maximaal {limit} AI-afbeeldingen per dag genereren, de limiet wordt {reset_time} gereset. Supporters kunnen er zoveel genereren als ze willen, gebruik /supporter voor meer informatie."
+supporter_command_desc: Bekijk supportervoordelen en je supporterstatus
+supporter_embed.title: Supportervoordelen
+supporter_embed.description: "Supporters helpen Hoyo Buddy draaiende en in ontwikkeling te houden. Als dank krijgen ze deze voordelen:"
+supporter_embed.perk_auto_task_priority: "Hoogste prioriteit in wachtrijen voor automatische taken (dagelijks inchecken, code-inwisseling, mimo, enz.)"
+supporter_embed.perk_accounts: "Onbeperkt aantal accounts (gratis: {limit})"
+supporter_embed.perk_custom_images: "Onbeperkt aantal aangepaste afbeeldingen per personage (gratis: {limit})"
+supporter_embed.perk_ai_images: "Onbeperkt AI-afbeeldingen genereren (gratis: {limit} per dag)"
+supporter_embed.perk_auto_gacha_import: Elke 6 uur automatisch gacha-logs importeren (Genshin Impact en Zenless Zone Zero)
+supporter_embed.perk_discord_role: Sponsorrol in de Discord-server
+supporter_embed.perk_discord_channel: Toegang tot het kanaal voor sponsors in de Discord-server
+supporter_embed.status_supporter: "Je bent een supporter, bedankt!"
+supporter_embed.status_not_supporter: Je bent nog geen supporter.
+card_settings_animated_image: Geanimeerde afbeelding
+card_settings_animated_image_desc: "Gebruik de geanimeerde kunst van het personage op de kaart. Alleen beschikbaar voor supporters, voor personages met geanimeerde kunst, op sjabloon 1 voor GI en ZZZ en sjablonen 1 en 2 voor HSR. GI-kaarten gebruiken de geanimeerde kaartkunst uit Genius Invokation TCG. Gebruik </supporter> voor meer informatie."
+reminders_command_description: "Configureer herinneringen voor real-time notities, farmen en web-evenementen"
+reminders_button_label: Herinneringen
+farm_reminder_title: Farmherinneringen
+web_events_reminder_title: Web-evenementherinneringen
+web_events_reminder_desc: Stuurt je een bericht via Direct Message wanneer er nieuwe web-evenementen worden geplaatst.

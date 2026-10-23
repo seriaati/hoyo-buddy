@@ -11,6 +11,7 @@ from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, MIMO_SUPPORT_GAMES, lo
 from hoyo_buddy.db.models import CustomImage, JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
+from hoyo_buddy.db.utils import is_supporter
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import NoAccountFoundError
 from hoyo_buddy.l10n import LocaleStr
@@ -22,7 +23,7 @@ from hoyo_buddy.ui.hoyo.profile.image_settings import (
 from hoyo_buddy.ui.settings import reminder
 from hoyo_buddy.ui.settings.accompany import AccompanySettingsContainer
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
-from hoyo_buddy.ui.settings.card import CardSettingsContainer
+from hoyo_buddy.ui.settings.card import BulkCardSettingsContainer, CardSettingsContainer
 from hoyo_buddy.ui.settings.image import ImageSettingsContainer
 from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
@@ -240,6 +241,7 @@ class SettingsView(ui.LayoutView):
 class CardSettingsCategory(StrEnum):
     CARD = "profile.card_settings.button.label"
     IMAGE = "profile.image_settings.button.label"
+    BULK = "card_settings_bulk_title"
 
 
 class CardSettingsCategorySelect(ui.Select["CardSettingsView"]):
@@ -359,6 +361,13 @@ class CardSettingsView(ui.LayoutView):
                 image_type=self.image_type,
                 default_art=await self._get_default_art(),
             )
+        elif self.category is CardSettingsCategory.BULK:
+            container = BulkCardSettingsContainer(
+                card_settings=self.card_settings,
+                character_name=self.character_name,
+                game=self.game,
+                is_supporter=await is_supporter(i.user.id),
+            )
         else:
             container = CardSettingsContainer(
                 card_settings=self.card_settings,
@@ -366,6 +375,7 @@ class CardSettingsView(ui.LayoutView):
                 character_name=self.character_name,
                 game=self.game,
                 gacha_data=gacha_data,
+                is_supporter=await is_supporter(i.user.id),
             )
 
         container.add_item(

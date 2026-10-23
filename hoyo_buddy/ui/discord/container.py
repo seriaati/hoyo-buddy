@@ -93,7 +93,7 @@ class EmbedContainer[V: LayoutView](Container):
                 author = f"[{author}]({embed.author.url})"
             if emoji := GAME_ICON_EMOJIS.get(embed.author.icon_url or ""):
                 author = f"{emoji} {author}"
-            items.append(TextDisplay(author))
+            items.append(TextDisplay(f"### {author}"))
 
         lines: list[str] = []
         if embed.title:

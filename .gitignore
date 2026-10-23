@@ -114,6 +114,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
 .venv
 env/
 venv/
@@ -167,5 +168,6 @@ test.py
 test_*.py
 .hb_data/
 scripts/output/
+scripts/spine/node_modules/
 .serena/
 .claude/worktrees/

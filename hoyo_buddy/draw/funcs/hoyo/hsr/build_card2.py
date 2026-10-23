@@ -16,10 +16,13 @@ from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
     from io import BytesIO
+    from pathlib import Path
 
     import enka
 
     from hoyo_buddy.models import HoyolabHSRCharacter
+
+IMAGE_POS = (61, 65)
 
 
 class HSRBuildCard2:
@@ -45,18 +48,21 @@ class HSRBuildCard2:
         self.color5 = (128, 128, 128) if dark_mode else (160, 160, 160)
         self.color6 = (204, 204, 204) if dark_mode else (109, 109, 109)
 
-    def draw(self) -> BytesIO:
-        character = self.character
+    def _draw_background(self) -> Image.Image:
         mode = "dark" if self.dark_mode else "light"
-        im = Drawer.open_image(f"hoyo-buddy-assets/assets/hsr-build-card2/{mode}.png")
-        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card2", dark_mode=self.dark_mode)
+        return Drawer.open_image(f"hoyo-buddy-assets/assets/hsr-build-card2/{mode}.png")
 
-        # Character image
+    def _draw_character_image(self, im: Image.Image) -> None:
+        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card2", dark_mode=self.dark_mode)
         image_mask = drawer.open_asset("image_mask.png")
         image = drawer.open_static(self.image_url)
         image = drawer.resize_crop(image, image_mask.size)
         image = drawer.mask_image_with_image(image, image_mask)
-        im.alpha_composite(image, (61, 65))
+        im.alpha_composite(image, IMAGE_POS)
+
+    def _draw_foreground(self, im: Image.Image) -> None:
+        character = self.character
+        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card2", dark_mode=self.dark_mode)
 
         # Character name
         tbox = drawer.write(
@@ -360,4 +366,28 @@ class HSRBuildCard2:
             else:
                 start_pos = (start_pos[0], start_pos[1] + 425)
 
+    def draw(self) -> BytesIO:
+        im = self._draw_background()
+        self._draw_character_image(im)
+        self._draw_foreground(im)
         return Drawer.save_image(im)
+
+    def draw_animated(self, animation_path: Path, offset: tuple[int, int]) -> BytesIO:
+        """Draw the card with an animated character image.
+
+        Args:
+            animation_path: Path of the character's pre-rendered animated WEBP.
+            offset: The animation's uncropped top-left in the image mask.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        return Drawer.draw_animated_card(
+            self._draw_background(),
+            self._draw_foreground,
+            animation_path=animation_path,
+            offset=offset,
+            fallback=self.draw,
+            area_pos=IMAGE_POS,
+            mask=Drawer.open_image("hoyo-buddy-assets/assets/hsr-build-card2/image_mask.png"),
+        )

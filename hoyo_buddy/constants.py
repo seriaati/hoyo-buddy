@@ -558,6 +558,9 @@ ZZZ_AGENT_CORE_LEVEL_MAP = {1: "0", 2: "A", 3: "B", 4: "C", 5: "D", 6: "E", 7: "
 
 ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2: "B"}
 
+ANIMATED_CARD_SCALE = 0.5
+"""Scale of animated build cards relative to the static card."""
+
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",
     Locale.chinese: "CHS",
@@ -728,6 +731,7 @@ def locale_to_genshin_data_lang(locale: Locale) -> str:
 
 HSR_ASSETS_URL = "https://static.nanoka.cc/assets/hsr"
 HSR_DEFAULT_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/{{char_id}}.webp"
+HSR_SKIN_ART_URL = f"{HSR_ASSETS_URL}/avatardrawcardresult/avatarskin/{{skin_id}}.webp"
 HSR_TEAM_ICON_URL = f"{HSR_ASSETS_URL}/avatariconteam/{{char_id}}.webp"
 ZZZ_M3_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_2.webp"
 ZZZ_M6_ART_URL = "https://static.nanoka.cc/assets/zzz/Mindscape_{char_id}_3.webp"
@@ -1147,7 +1151,7 @@ def get_relic_substat_roll_num(
     return max(sum(closest_counts.values()), 1)
 
 
-DC_MAX_FILESIZE = 10 * 1024 * 1024  # 10 MB
+DC_MAX_FILESIZE = 20 * 1024 * 1024  # 20 MB
 
 NO_MASKED_LINK_GUILDS = {998109815521947678}
 """Discord servers that have masked links AutoMod rules."""

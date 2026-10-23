@@ -8,10 +8,12 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 import numpy as np
 from fontTools.ttLib import TTFont
 from loguru import logger
-from PIL import Image, ImageChops, ImageFont
+
+# ruff:ignore[import-private-name]
+from PIL import Image, ImageChops, ImageFont, ImageSequence, _webp
 
 from hoyo_buddy.cache import image_cache
-from hoyo_buddy.constants import DC_MAX_FILESIZE
+from hoyo_buddy.constants import ANIMATED_CARD_SCALE, DC_MAX_FILESIZE
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.models import TopPadding
@@ -20,6 +22,8 @@ from hoyo_buddy.utils import get_static_img_path
 from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable, Iterator
+
     from PIL import ImageDraw
 
     from hoyo_buddy.l10n import LocaleStr
@@ -894,7 +898,7 @@ class Drawer:
         """Save an image to a BytesIO object, resizing it if it exceeds the Discord file size limit."""
         while True:
             bytes_obj = io.BytesIO()
-            img.save(bytes_obj, format="PNG")
+            img.save(bytes_obj, format="WEBP", lossless=True)
             size_in_bytes = bytes_obj.tell()
 
             if size_in_bytes < DC_MAX_FILESIZE:
@@ -904,6 +908,121 @@ class Drawer:
             img = img.resize((int(width * step), int(height * step)), Image.Resampling.LANCZOS)
 
         return bytes_obj
+
+    @staticmethod
+    def save_animated(
+        frames: Iterable[tuple[Image.Image, int]], size: tuple[int, int], *, quality: int = 75
+    ) -> io.BytesIO:
+        """Encode RGBA frames and their durations in ms into a looping animated WEBP, one at a time.
+
+        Uses Pillow's internal WebP animation encoder (what Image.save(save_all=True) uses), since
+        save_all needs every frame in memory up front.
+        """
+        # A high max keyframe distance since most of the card is static between frames
+        encoder = _webp.WebPAnimEncoder(size, 0, 0, False, 0, 300, False, False)
+        timestamp = 0
+        for frame, duration in frames:
+            encoder.add(frame.getim(), timestamp, False, quality, 100, 0)
+            timestamp += duration
+        encoder.add(None, timestamp, False, quality, 100, 0)
+        return io.BytesIO(encoder.assemble("", "", ""))
+
+    @staticmethod
+    def extract_layer(on_black: Image.Image, on_white: Image.Image) -> Image.Image:
+        """Recover a layer's colors and alpha from the layer drawn on opaque black and white.
+
+        A layer with color c and alpha a drawn over an opaque color b gives c * a + b * (1 - a), so
+        drawing it over black gives c * a and the difference from white is 255 * (1 - a).
+        """
+        black = np.asarray(on_black.convert("RGB"), dtype=np.float32)
+        white = np.asarray(on_white.convert("RGB"), dtype=np.float32)
+        alpha = (255 - (white - black).mean(axis=2))[..., None]
+        color = np.divide(black * 255, alpha, out=np.zeros_like(black), where=alpha > 0)
+        rgba = np.concatenate((color, alpha), axis=2).clip(0, 255).round().astype(np.uint8)
+        return Image.fromarray(rgba, "RGBA")
+
+    @classmethod
+    def draw_animated_card(
+        cls,
+        background: Image.Image,
+        draw_foreground: Callable[[Image.Image], None],
+        *,
+        animation_path: pathlib.Path,
+        offset: tuple[int, int],
+        fallback: Callable[[], io.BytesIO],
+        area_pos: tuple[int, int] = (0, 0),
+        mask: Image.Image | None = None,
+    ) -> io.BytesIO:
+        """Draw a card with an animated image between its background and foreground, at
+        ANIMATED_CARD_SCALE.
+
+        Args:
+            background: The card's background.
+            draw_foreground: Draws the card's foreground onto an opaque image the background's size.
+            animation_path: Path of the pre-rendered animated WEBP, already scaled and cropped to the
+                art area, see scripts/spine_common.py.
+            offset: The animation's uncropped top-left in the art area.
+            fallback: Draws the static card, for when the animated one is too big for Discord.
+            area_pos: The art area's top-left on the card.
+            mask: The art area's mask, its alpha is applied to every frame.
+        """
+        scale = ANIMATED_CARD_SCALE
+        full_size = background.size
+        size = (round(full_size[0] * scale), round(full_size[1] * scale))
+
+        # The art area's edges can fall between pixels at this scale, where the frames leave part
+        # of a pixel to the background, so the first frame is drawn into it like a static image
+        with Image.open(animation_path) as animation:
+            first = animation.convert("RGBA")
+        first = first.resize(
+            (round(first.width / scale), round(first.height / scale)), Image.Resampling.LANCZOS
+        )
+        art = Image.new("RGBA", full_size)
+        art.alpha_composite(
+            first, (area_pos[0] + max(offset[0], 0), area_pos[1] + max(offset[1], 0))
+        )
+        if mask is not None:
+            area_mask = Image.new("L", full_size)
+            area_mask.paste(mask.getchannel("A"), area_pos)
+            art.putalpha(ImageChops.multiply(art.getchannel("A"), area_mask))
+        background = Image.alpha_composite(background, art).resize(size, Image.Resampling.LANCZOS)
+
+        # Drawn on black and white to recover the foreground's true colors and alpha, resizing is
+        # linear so it can happen before the recovery
+        layers: list[Image.Image] = []
+        for color in (BLACK, WHITE):
+            layer = Image.new("RGBA", full_size, color)
+            draw_foreground(layer)
+            layers.append(layer.convert("RGB").resize(size, Image.Resampling.LANCZOS))
+        foreground = cls.extract_layer(*layers)
+
+        area_x, area_y = (round(p * scale) for p in area_pos)
+        # The animation is cropped to the art area, so its cropped top-left is clamped to it
+        x, y = (max(round(p * scale), 0) for p in offset)
+
+        def frames() -> Iterator[tuple[Image.Image, int]]:
+            with Image.open(animation_path) as animation:
+                frame_mask = None
+                if mask is not None:
+                    mask_size = (round(mask.width * scale), round(mask.height * scale))
+                    frame_mask = (
+                        mask.getchannel("A")
+                        .resize(mask_size, Image.Resampling.LANCZOS)
+                        .crop((x, y, x + animation.width, y + animation.height))
+                    )
+                for frame in ImageSequence.Iterator(animation):
+                    im = frame.convert("RGBA")
+                    if frame_mask is not None:
+                        im.putalpha(ImageChops.multiply(im.getchannel("A"), frame_mask))
+                    card = background.copy()
+                    card.alpha_composite(im, (area_x + x, area_y + y))
+                    card.alpha_composite(foreground)
+                    yield card, frame.info["duration"]
+
+        result = cls.save_animated(frames(), size)
+        if result.getbuffer().nbytes > DC_MAX_FILESIZE:
+            return fallback()
+        return result
 
     @staticmethod
     def draw_gradient_background(

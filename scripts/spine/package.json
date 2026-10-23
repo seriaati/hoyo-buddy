@@ -1,0 +1,10 @@
+{
+  "name": "spine-render",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@esotericsoftware/spine-webgl": "4.1.56",
+    "puppeteer-core": "25.15.0",
+    "spine-webgl-4.0": "npm:@esotericsoftware/spine-webgl@4.0.31"
+  }
+}

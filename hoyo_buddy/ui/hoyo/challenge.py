@@ -460,7 +460,7 @@ class ChallengeView(ui.LayoutView):
             dark_mode=self.dark_mode,
             locale=locale,
             session=session,
-            filename="challenge.png",
+            filename="challenge.webp",
             executor=executor,
             loop=loop,
         )
@@ -533,7 +533,7 @@ class ChallengeView(ui.LayoutView):
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale).add_acc_info(self.account)
-        return embed.set_image(url="attachment://challenge.png")
+        return embed.set_image(url="attachment://challenge.webp")
 
     def render(self, embed: discord.Embed) -> None:
         self.clear_items()

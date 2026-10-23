@@ -22,6 +22,18 @@ Workflow (run from the repo root):
     4. uv run scripts/zzz_card_variants.py apply 1641 t1_1641 <variant>
        Writes the chosen variant into agent_data.yaml (template 1) or agent_data_temp2.yaml.
 
+Animated images (see scripts/render_zzz_spine.py) are framed separately, by their x, y and height
+in spine.yaml:
+    1. uv run scripts/zzz_card_variants.py spine-init [AGENT_ID ...] [--force]
+       Writes scripts/output/zzz_variants/spine/variants.yaml with a framing suggested from each
+       agent's static template 1 art as its `base`. Add `variants` overriding x, y or height.
+    2. uv run scripts/zzz_card_variants.py spine [AGENT_ID ...]
+       Draws each agent's static card next to the first frame of each variant's animated card on
+       contact sheets in scripts/output/zzz_variants/spine/.
+    3. uv run scripts/zzz_card_variants.py spine-apply 1511 1501:higher ...
+       Writes the variants (default: base) into spine.yaml. Then re-render them with
+       scripts/render_zzz_spine.py, since the uploaded animations are cropped to their framing.
+
 Cards are drawn with a sample agent's stats stored in scripts/data/zzz_sample_agent.json, so Enka
 doesn't need to be up. Refresh it with:
     uv run scripts/zzz_card_variants.py fetch-sample [--uid UID]
@@ -37,6 +49,7 @@ import io
 import json
 import math
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, cast
 
@@ -68,6 +81,16 @@ _apply_parser.add_argument("agent_id", type=int)
 _apply_parser.add_argument("card_id", help="e.g. t1_1641, t1_1641_3116411, t2_1641")
 _apply_parser.add_argument("variant")
 
+_spine_init_parser = _subparsers.add_parser("spine-init", help="Suggest animated image framings")
+_spine_init_parser.add_argument("agent_ids", nargs="*", help="Only these agents (default: all)")
+_spine_init_parser.add_argument("--force", action="store_true", help="Replace existing entries")
+
+_spine_parser = _subparsers.add_parser("spine", help="Render animated image framing variants")
+_spine_parser.add_argument("agent_ids", nargs="*", help="Only these agents (default: all)")
+
+_spine_apply_parser = _subparsers.add_parser("spine-apply", help="Write framings to spine.yaml")
+_spine_apply_parser.add_argument("picks", nargs="+", help="AGENT_ID or AGENT_ID:VARIANT")
+
 _args = _parser.parse_args()
 
 # Clear argv so pydantic-settings doesn't try to parse our flags as bot config.
@@ -83,6 +106,7 @@ from PIL.Image import Transpose
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from hoyo_buddy.constants import ANIMATED_CARD_SCALE
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.fonts import NUNITO_SANS_BLACK_ITALIC
 from hoyo_buddy.draw.funcs.hoyo.zzz import ZZZAgentCard
@@ -91,6 +115,7 @@ from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 from hoyo_buddy.models.draw import ZZZTemp1CardData, ZZZTemp2CardData
+from scripts import render_zzz_spine, spine_common
 
 NANOKA_URL = "https://static.nanoka.cc"
 SAMPLE_PATH = Path("scripts/data/zzz_sample_agent.json")
@@ -99,6 +124,12 @@ CARD_DATA_PATHS = {
     1: Path("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml"),
     2: Path("hoyo-buddy-assets/assets/zzz-build-card/agent_data_temp2.yaml"),
 }
+SPINE_DIR = OUTPUT_DIR / "spine"
+SPINE_SPEC_PATH = SPINE_DIR / "variants.yaml"
+SPINE_SHEET_SIZE = 4
+"""Agents per spine contact sheet."""
+SPINE_JOBS = 6
+"""Number of previews to render at once."""
 FIELD_ORDER = (
     "color",
     "flip",
@@ -611,6 +642,225 @@ async def holes(agent_id: int, card_id: str, variant: str | None, *, count: int)
         )
 
 
+def _load_spine_spec() -> dict[str, dict[str, Any]]:
+    if not SPINE_SPEC_PATH.exists():
+        msg = f"{SPINE_SPEC_PATH} doesn't exist, run `spine-init` first"
+        raise SystemExit(msg)
+    return yaml.safe_load(SPINE_SPEC_PATH.read_text(encoding="utf-8"))
+
+
+def _spine_framing(entry: dict[str, Any], variant: str) -> spine_common.Framing:
+    return spine_common.Framing(**{**entry["base"], **(entry["variants"][variant] or {})})
+
+
+async def _get_spine_files(session: aiohttp.ClientSession, spine: str) -> tuple[Path, Path]:
+    """Download an agent's Spine files once, they don't change between versions."""
+    folder = SPINE_DIR / "files" / spine
+    skel, atlas = folder / f"{spine}.skel", folder / f"{spine}.atlas"
+    if skel.exists():
+        return skel, atlas
+    folder.mkdir(parents=True, exist_ok=True)
+    return await spine_common.download_spine(session, render_zzz_spine.SPINE_URL, spine, folder)
+
+
+async def spine_init(agent_ids: list[str], *, force: bool) -> None:
+    spec: dict[str, dict[str, Any]] = (
+        yaml.safe_load(SPINE_SPEC_PATH.read_text(encoding="utf-8"))
+        if SPINE_SPEC_PATH.exists()
+        else {}
+    )
+    card_data = _load_card_data(1)
+
+    async with aiohttp.ClientSession() as session:
+        agents = await render_zzz_spine.fetch_spine_agents(session, agent_ids or None)
+        for agent_id, agent in agents.items():
+            if agent_id in spec and not force:
+                continue
+            if agent_id not in card_data:
+                print(f"Skipping {agent.name} ({agent_id}): no template 1 card data")
+                continue
+
+            skel, atlas = await _get_spine_files(session, agent.spine)
+            with tempfile.TemporaryDirectory() as tmp:
+                framing = await render_zzz_spine.suggest_framing(
+                    skel,
+                    atlas,
+                    Path(tmp),
+                    spine=agent.spine,
+                    static_art=await spine_common.download_image(session, cast("str", agent.image)),
+                    card_data=card_data[agent_id],
+                )
+            spec[agent_id] = {
+                "name": agent.name,
+                "spine": agent.spine,
+                "image": agent.image,
+                "base": framing._asdict(),
+                "variants": {"base": {}},
+            }
+            print(f"{agent.name} ({agent_id}): {framing}")
+
+    SPINE_SPEC_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SPINE_SPEC_PATH.write_text(
+        yaml.safe_dump(spec, sort_keys=False, allow_unicode=True), encoding="utf-8"
+    )
+    print(f"Wrote {SPINE_SPEC_PATH}")
+
+
+def _describe_on_card(art: Image.Image, *, x: float, y: float, scale: float) -> str:
+    """Describe whether the card's top edge cuts the art and where its head lands.
+
+    Args:
+        art: The art, as placed on the card (cropped to it for animations).
+        x: The art's left on the static-scale card.
+        y: The art's top on the static-scale card.
+        scale: Pixels on the static-scale card per pixel of the art.
+    """
+    alpha = np.asarray(art.getchannel("A"))
+    top, _, focus_x = render_zzz_spine.art_extent(alpha)
+    edge_row = round(-y / scale)  # The art's row at the card's top edge
+    cut = float((alpha[edge_row] > 128).mean()) if 0 <= edge_row < alpha.shape[0] else 0.0
+    art_top = y + top * scale
+    return f"art top y {art_top:.0f}, {cut:.0%} of top edge cut | focus x {x + focus_x * scale:.0f}"
+
+
+def _make_spine_card(
+    agent: ZZZEnkaCharacter,
+    *,
+    entry: dict[str, Any],
+    card_data: ZZZTemp1CardData,
+    disc_icons: dict[int, str],
+) -> ZZZAgentCard:
+    name_data = AgentNameData(short_name=entry["name"], full_name=entry["name"])
+    return ZZZAgentCard(
+        agent,
+        locale=Locale.american_english.value,
+        image_url=entry["image"],
+        card_data=card_data,
+        disc_icons=disc_icons,
+        name_data=name_data,
+        color=None,
+        template=1,
+        show_substat_rolls=True,
+        agent_special_stats=[],
+        hl_substats=[],
+        hl_special_stats=False,
+    )
+
+
+def _draw_spine_tiles(
+    card: ZZZAgentCard,
+    *,
+    entry: dict[str, Any],
+    card_data: ZZZTemp1CardData,
+    previews: dict[str, Image.Image],
+) -> list[tuple[str, str, Image.Image]]:
+    """Draw the static card and each variant's first animated frame on the card."""
+    art = _place_art(card_data, Drawer.open_static(entry["image"]))
+    static_desc = _describe_on_card(art, x=card_data.image_x, y=card_data.image_y, scale=1)
+    tiles: list[tuple[str, str, Image.Image]] = [
+        (f"{entry['name']} static", static_desc, Image.open(card.draw()))
+    ]
+
+    for variant, frame in previews.items():
+        framing = _spine_framing(entry, variant)
+        with tempfile.TemporaryDirectory() as tmp:
+            frame_path = Path(tmp) / "frame.webp"
+            frame.save(frame_path, lossless=True)
+            image = Image.open(card.draw_animated(frame_path, (framing.x, framing.y)))
+            image.load()
+        desc = _describe_on_card(
+            frame, x=max(framing.x, 0), y=max(framing.y, 0), scale=1 / ANIMATED_CARD_SCALE
+        )
+        overrides = entry["variants"][variant] or {}
+        changes = ", ".join(f"{k}={v}" for k, v in overrides.items()) or "base"
+        tiles.append((f"{variant}: {framing}", f"{changes}\n{desc}", image))
+    return tiles
+
+
+async def spine(agent_ids: list[str]) -> None:
+    spec = _load_spine_spec()
+    if unknown := set(agent_ids) - set(spec):
+        msg = f"Not in {SPINE_SPEC_PATH}: {', '.join(unknown)}"
+        raise SystemExit(msg)
+    keys = agent_ids or list(spec)
+    card_data = {k: ZZZTemp1CardData.model_validate(v) for k, v in _load_card_data(1).items()}
+    agent, disc_icons = await _load_sample()
+    semaphore = asyncio.Semaphore(SPINE_JOBS)
+
+    async def preview(
+        session: aiohttp.ClientSession, key: str, variant: str
+    ) -> tuple[str, str, Image.Image]:
+        async with semaphore:
+            skel, atlas = await _get_spine_files(session, spec[key]["spine"])
+            with tempfile.TemporaryDirectory() as tmp:
+                frames = await spine_common.render_card_frames(
+                    skel,
+                    atlas,
+                    Path(tmp),
+                    spine=spec[key]["spine"],
+                    framing=_spine_framing(spec[key], variant),
+                    area=render_zzz_spine.CARD_SIZE,
+                    frames=1,
+                )
+            return key, variant, frames[0]
+
+    async with aiohttp.ClientSession() as session:
+        urls = [spec[k]["image"] for k in keys] + list(disc_icons.values())
+        if agent.w_engine is not None:
+            urls.append(agent.w_engine.icon)
+        await download_images(urls, session)
+        results = await asyncio.gather(
+            *(preview(session, k, v) for k in keys for v in spec[k]["variants"])
+        )
+
+    previews: dict[str, dict[str, Image.Image]] = {}
+    for key, variant, frame in results:
+        previews.setdefault(key, {})[variant] = frame
+
+    SPINE_DIR.mkdir(parents=True, exist_ok=True)
+    for i in range(0, len(keys), SPINE_SHEET_SIZE):
+        sheet_keys = keys[i : i + SPINE_SHEET_SIZE]
+        tiles: list[tuple[str, str, Image.Image]] = []
+        for key in sheet_keys:
+            card = _make_spine_card(
+                agent, entry=spec[key], card_data=card_data[key], disc_icons=disc_icons
+            )
+            pair = _draw_spine_tiles(
+                card, entry=spec[key], card_data=card_data[key], previews=previews[key]
+            )
+            for name, desc, _ in pair:
+                print(f"{key} {name}: {desc.replace(chr(10), ' | ')}")
+            tiles.extend(pair)
+
+        sheet_path = SPINE_DIR / f"{sheet_keys[0]}-{sheet_keys[-1]}.png"
+        _make_contact_sheet(tiles).save(sheet_path)
+        print(f"Contact sheet: {sheet_path}")
+
+
+def spine_apply(picks: list[str]) -> None:
+    spec = _load_spine_spec()
+    manifest: dict[str, dict[str, Any]] = yaml.safe_load(
+        render_zzz_spine.MANIFEST_PATH.read_text(encoding="utf-8")
+    )
+    for pick in picks:
+        agent_id, _, variant = pick.partition(":")
+        variant = variant or "base"
+        if agent_id not in manifest:
+            msg = f"{agent_id} isn't in {render_zzz_spine.MANIFEST_PATH}, render it first"
+            raise SystemExit(msg)
+        if variant not in spec.get(agent_id, {}).get("variants", {}):
+            msg = f"{agent_id} has no variant {variant!r} in {SPINE_SPEC_PATH}"
+            raise SystemExit(msg)
+        manifest[agent_id].update(_spine_framing(spec[agent_id], variant)._asdict())
+        print(f"{spec[agent_id]['name']} ({agent_id}): {variant}")
+
+    render_zzz_spine.MANIFEST_PATH.write_text(
+        yaml.safe_dump(manifest, allow_unicode=True), encoding="utf-8"
+    )
+    agent_ids = " ".join(pick.partition(":")[0] for pick in picks)
+    print(f"Re-render them: uv run scripts/render_zzz_spine.py {agent_ids}")
+
+
 async def main() -> None:
     match _args.command:
         case "fetch-sample":
@@ -623,6 +873,12 @@ async def main() -> None:
             await holes(_args.agent_id, _args.card_id, _args.variant, count=_args.count)
         case "apply":
             await apply(_args.agent_id, _args.card_id, _args.variant)
+        case "spine-init":
+            await spine_init(_args.agent_ids, force=_args.force)
+        case "spine":
+            await spine(_args.agent_ids)
+        case "spine-apply":
+            spine_apply(_args.picks)
 
 
 if __name__ == "__main__":

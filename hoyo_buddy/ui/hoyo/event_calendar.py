@@ -214,7 +214,7 @@ class EventCalendarView(ui.LayoutView):
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
-                filename="rewards.png",
+                filename="rewards.webp",
             ),
             list(itertools.batched(blocks, 4)),
         )
@@ -291,7 +291,7 @@ class BannerSelector(ItemSelector):
             self.view.locale,
             title=self.get_option_name(banner),
             description=get_duration_str(banner),
-        ).set_image(url="attachment://banner_items.png")
+        ).set_image(url="attachment://banner_items.webp")
 
     async def draw_banner_items(
         self,
@@ -319,7 +319,7 @@ class BannerSelector(ItemSelector):
                 session=bot.session,
                 executor=bot.executor,
                 loop=bot.loop,
-                filename="banner_items.png",
+                filename="banner_items.webp",
             ),
             list(itertools.batched(blocks, 4)),
         )
@@ -371,7 +371,7 @@ class EventSelector(ItemSelector):
                 title=event.name,
                 description=f"{get_duration_str(event)}\n\n{event_description}",
             )
-            .set_image(url="attachment://rewards.png")
+            .set_image(url="attachment://rewards.webp")
             .add_field(
                 name=LocaleStr(key="finished_status_field_name"), value=status_str, inline=False
             )
@@ -515,7 +515,7 @@ class ChallengeSelector(ItemSelector):
             self.view.locale,
             title=self.get_option_name(challenge),
             description=get_duration_str(challenge),
-        ).set_image(url="attachment://rewards.png")
+        ).set_image(url="attachment://rewards.webp")
         if star is not None and max_star is not None:
             embed.add_field(
                 name=LocaleStr(key="music_grade", mi18n_game=Game.GENSHIN),

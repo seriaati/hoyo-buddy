@@ -129,7 +129,7 @@ class CachedModel(BaseModel):
             if cached_data is None:
                 return None
 
-            return orjson.loads(cached_data)
+            data = orjson.loads(cached_data)
         except redis.BusyLoadingError:
             return None
         except redis.RedisError as e:
@@ -138,6 +138,11 @@ class CachedModel(BaseModel):
         except Exception:
             logger.exception(f"Failed to get cache for {cls.__name__} instance")
             return None
+        else:
+            # Entries cached before a column was added would init as partial models
+            if not cls._meta.db_fields <= data.keys():
+                return None
+            return data
 
     @classmethod
     async def get(cls, *args, **kwargs) -> Self:

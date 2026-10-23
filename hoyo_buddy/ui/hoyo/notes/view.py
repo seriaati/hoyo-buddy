@@ -5,7 +5,7 @@ from itertools import starmap
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
-from discord import File
+from discord import ButtonStyle, File
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
@@ -14,6 +14,7 @@ from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, 
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
     BATTERY_CHARGE_EMOJI,
+    BELL_OUTLINE,
     PT_EMOJI,
     REALM_CURRENCY,
     RESIN,
@@ -25,7 +26,7 @@ from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui import Button, Select, SelectOption
-from hoyo_buddy.ui.settings.button import FakeSettingsButton
+from hoyo_buddy.ui.reminders.view import RemindersView
 
 if TYPE_CHECKING:
     import io
@@ -65,7 +66,7 @@ class NotesView(ui.LayoutView):
             self._rows.append([AccountSwitcher(self.accounts, self.account)])
         if buttons := self.get_open_game_buttons(self.account):
             self._rows.append(list(buttons))
-        self._rows.append([FakeSettingsButton()])
+        self._rows.append([RemindersButton()])
 
     def render(self, embed: DefaultEmbed) -> None:
         self.clear_items()
@@ -289,3 +290,17 @@ class AccountSwitcher(Select[NotesView]):
         view = self.view
         view.account = account
         await view.start(i, acc_select=self)
+
+
+class RemindersButton(Button[NotesView]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="reminders_button_label"),
+            emoji=BELL_OUTLINE,
+            style=ButtonStyle.blurple,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await i.response.defer(ephemeral=True, thinking=True)
+        view = RemindersView(author=i.user, locale=self.view.locale, account=self.view.account)
+        await view.update(i)

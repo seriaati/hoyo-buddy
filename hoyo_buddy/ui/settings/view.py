@@ -20,7 +20,6 @@ from hoyo_buddy.ui.hoyo.profile.image_settings import (
     get_default_art_fallback,
     get_zzz_default_art,
 )
-from hoyo_buddy.ui.settings import reminder
 from hoyo_buddy.ui.settings.accompany import AccompanySettingsContainer
 from hoyo_buddy.ui.settings.account import AccountSettingsContainer, MimoSettingsContainer
 from hoyo_buddy.ui.settings.card import BulkCardSettingsContainer, CardSettingsContainer
@@ -29,7 +28,6 @@ from hoyo_buddy.ui.settings.notification import (
     MimoNotificationSettingsContainer,
     NotificationSettingsContainer,
 )
-from hoyo_buddy.ui.settings.reminder import ReminderContainer
 from hoyo_buddy.ui.settings.user import UserSettingsContainer
 
 from ._common import AccountSelect
@@ -50,7 +48,6 @@ class SettingsCategory(StrEnum):
     ACCOMPANY_SETTINGS = "accompany_settings_title"
     NOTIFICATION_SETTINGS = "notification_settings_button_label"
     MIMO_NOTIFICATION_SETTINGS = "mimo_notification_settings"
-    REMINDER_SETTINGS = "reminder_settings_title"
 
 
 ACCOUNT_SELECT_CATEGORIES: set[SettingsCategory] = {
@@ -59,7 +56,6 @@ ACCOUNT_SELECT_CATEGORIES: set[SettingsCategory] = {
     SettingsCategory.ACCOMPANY_SETTINGS,
     SettingsCategory.NOTIFICATION_SETTINGS,
     SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
-    SettingsCategory.REMINDER_SETTINGS,
 }
 
 
@@ -124,9 +120,6 @@ class SettingsView(ui.LayoutView):
         if self.category is SettingsCategory.MIMO_NOTIFICATION_SETTINGS:
             return MimoNotificationSettingsContainer(account=account)
 
-        if self.category is SettingsCategory.REMINDER_SETTINGS:
-            return await ReminderContainer.for_account(account)
-
         msg = f"Unknown settings category: {self.category}"
         raise ValueError(msg)
 
@@ -170,9 +163,6 @@ class SettingsView(ui.LayoutView):
                     account = next(
                         (acc for acc in accompany_accounts if acc.current), accompany_accounts[0]
                     )
-
-                if self.category is SettingsCategory.REMINDER_SETTINGS:
-                    limit_games = reminder.SUPPORT_GAMES
 
                 if limit_games is not None:
                     limit_game_accounts = [acc for acc in accounts if acc.game in limit_games]
@@ -224,8 +214,6 @@ class SettingsView(ui.LayoutView):
                 accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
             if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
                 accounts = [acc for acc in accounts if _is_accompany_account(acc)]
-            if self.category is SettingsCategory.REMINDER_SETTINGS:
-                accounts = [acc for acc in accounts if acc.game in reminder.SUPPORT_GAMES]
 
             container.add_item(ui.ActionRow(AccountSelect(current=self.account, accounts=accounts)))
             container.add_item(

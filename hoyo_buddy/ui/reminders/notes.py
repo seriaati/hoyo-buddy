@@ -11,7 +11,7 @@ from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import TOGGLE_EMOJIS
 from hoyo_buddy.enums import Game, NotesNotifyType
 from hoyo_buddy.l10n import LocaleStr, WeekdayStr
-from hoyo_buddy.ui.settings import reminder_modals as modals
+from hoyo_buddy.ui.reminders import modals
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.types import Interaction
 
-    from .view import SettingsView  # ruff:ignore[unused-import]
+    from .view import RemindersView  # ruff:ignore[unused-import]
 
 type ReminderModal = (
     modals.TypeOneModal
@@ -169,7 +169,7 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
 SUPPORT_GAMES: set[Game] = {Game.GENSHIN, Game.STARRAIL, Game.ZZZ, Game.HONKAI}
 
 
-class ConfigureButton(ui.Button["SettingsView"]):
+class ConfigureButton(ui.Button["RemindersView"]):
     def __init__(self, notify: NotesNotify | None, notify_type: NotesNotifyType) -> None:
         super().__init__(style=discord.ButtonStyle.blurple, emoji=emojis.EDIT)
         self.notify = notify
@@ -372,7 +372,7 @@ class NotesReminderMixin:
         await notify.save()
 
 
-class BaseReminderContainer(ui.DefaultContainer["SettingsView"], NotesReminderMixin):
+class BaseReminderContainer(ui.DefaultContainer["RemindersView"], NotesReminderMixin):
     def __init__(self, items: Iterable[ReminderItem]) -> None:
         super().__init__(
             ui.TextDisplay(

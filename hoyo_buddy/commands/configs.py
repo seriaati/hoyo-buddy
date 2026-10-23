@@ -54,6 +54,7 @@ type CommandName = Literal[
     "about",
     "upload",
     "settings",
+    "reminders",
     "search genshin",
     "search hsr",
     "invite",
@@ -318,6 +319,12 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     ),
     "settings": CommandConfig(
         description=locale_str("Configure your user settings", key="settings_command_description")
+    ),
+    "reminders": CommandConfig(
+        description=locale_str(
+            "Configure real-time notes, farm, and web event reminders",
+            key="reminders_command_description",
+        )
     ),
     "invite": CommandConfig(
         description=locale_str(

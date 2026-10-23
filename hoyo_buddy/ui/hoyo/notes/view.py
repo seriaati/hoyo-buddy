@@ -73,12 +73,6 @@ class NotesView(ui.LayoutView):
         if self.dyk:
             self.add_item(ui.TextDisplay(self.dyk))
 
-    async def get_reminder_embed(self) -> DefaultEmbed:
-        embed = DefaultEmbed(self.locale, title=LocaleStr(key="reminder_settings_title"))
-        embed.add_acc_info(self.account)
-        embed.set_image(url="attachment://notes.webp")
-        return embed
-
     async def _get_notes(
         self,
     ) -> (

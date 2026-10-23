@@ -55,6 +55,8 @@ auto_checkin_button_label: 自動デイリーチェックイン
 auto_locale_option_label: クライアントの言語に従う
 auto_redeem_footer: 自動コード交換をオフにするには/settings を使用してください
 auto_redeem_toggle.label: 自動コード交換
+auto_gacha_import_label: 自動ガチャ履歴インポート
+auto_gacha_import_footer: 自動ガチャ履歴インポートをオフにするには /settings を使用してください
 books: 書籍
 captcha.embed.description: "下のボタンをクリックしてCAPTCHA認証を完了してください。\n"
 challenge_type_select.placeholder: ゲームモードを選択
@@ -183,6 +185,7 @@ farm_reminder_command_description: キャラクター/武器の素材が収集�
 farm_remove_command.item_not_found: アイテムが見つかりません
 farm_remove_command.item_not_found_description: このアイテムは育成リマインダーリストにありません。
 farm_remove_command_description: キャラクター/武器を育成リマインダーリストから削除します
+farm_view.city_select.placeholder: 都市を選択
 farm_view.happy_farming: 🌾 育成頑張ってください！
 farm_view.set_reminder: リマインダーを設定
 farm_view.set_reminder.embed.description: "リマインダーを設定するには </farm reminder> コマンドを使用してください"
@@ -295,7 +298,7 @@ notes.elysian_realm: 古の楽園
 notes.elysian_realm_value: "現在のスコア：{cur}/{max}"
 notes_available: "{emoji} {in_time} 後に利用可能"
 notes_command_description: リアルタイムノートを表示します
-notif.embed.footer: /notes を使用してリマインダーを設定します
+notif.embed.footer: リマインダーを設定するには /reminders を使用してください
 notif_modal.enabled.label: 有効
 notif_modal.type_one.description: |
   スタミナは「通知間隔」分ごとにチェックされ、スタミナが「閾値」以上になると通知が送信されます。
@@ -338,7 +341,6 @@ profile.image_settings.button.label: 画像設定
 profile.card_template_select.diff_author.description: "{author1} がデザインし、{author2} がプログラムしました"
 profile.card_template_select.enka.label: "Enka Network テンプレート {num}"
 profile.card_template_select.encard.label: "ENCard テンプレート {num}"
-profile.card_template_select.enka_classic.label: クラシック Enka テンプレート
 profile.card_template_select.enkacard.label: "EnkaCard テンプレート {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy テンプレート {num}"
 profile.card_template_select.placeholder: テンプレートを選択
@@ -409,9 +411,9 @@ saturday: 土曜日
 search_autocomplete_not_setup: "検索オートコンプリートの選択肢はまだ設定されていません。後でもう一度お試しください。"
 search_command_category_param_description: 検索するカテゴリ
 search_cmd_category_param_name: カテゴリ
-search_command_description: ゲーム関連のあらゆるものを検索します
-search_command_game_param_description: 検索するゲーム
 search_command_game_param_name: ゲーム
+search_command_gi_description: 原神に関するあらゆる情報を検索します
+search_command_hsr_description: "崩壊:スターレイルに関するあらゆる情報を検索します"
 search_command_query_param_description: 検索するクエリ
 search_command_query_param_name: クエリ
 select_account.embed.description: Hoyo Buddyに追加したいアカウントを選択します
@@ -431,7 +433,6 @@ threshold.embed.description: "しきい値 ({threshold}) に到達しました"
 thunder: 雷 (HI3)
 thursday: 木曜日
 tuesday: 火曜日
-unreleased_content: 未実装コンテンツ
 user_autocomplete_param_description: "アカウントを検索するユーザー。デフォルトはあなたです"
 user_autocomplete_param_name: ユーザー
 user_no_accounts_autocomplete_choice: このユーザーはまだアカウントを持っていません
@@ -465,6 +466,8 @@ not_implemented_error_title: 機能はまだ実装されていません
 not_implemented_error_only_game_message: "この機能は `{game}` アカウントにはまだ実装されていません。"
 not_implemented_error_message: "この機能は `{platform}` の `{game}` アカウントにはまだ実装されていません。"
 profile.build.current.label: 現在
+profile.skin_select.placeholder: 衣装を選択...
+profile.skin_select.default.label: デフォルト
 abyss_chamber.blessing.embed.field.name: 深淵の祝福
 apocalyptic_shadow: 末日の幻影
 apc_shadow.highest_diff_cleared: "クリアした最高難易度：{diff}"
@@ -589,6 +592,7 @@ gacha_import_loading_embed_title: ガチャ履歴をインポート中
 gacha_import_pc_import_embed_desc: "スタートメニューでPowerShellを検索して開き、以下のコードをコピーして貼り付けてください。\nこのスクリプトはHoyo Buddyチームによって作成されており、安全に使用できます。"
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
+gacha_import_hoyolab_button_label: HoYoLABからインポート
 gacha_import_pc_source_code: ソースコード
 gacha_import_loading_embed_description: "{loading_emoji} しばらく時間がかかる場合があります。お待ちください..."
 gacha_upload_invalid_file_error_title: 無効なファイル形式
@@ -698,6 +702,7 @@ card_settings_hl_special_stats_button_label: 特殊ステータスを強調表�
 card_settings_hl_stats_desc: キャラクターの重要なステータスを色で強調表示します。
 challenge_command_abyss_desc: 深境螺旋カードを生成します
 challenge_command_theater_desc: 幻想シアターカードを生成します
+lunar_arcana_command_description: 幻想シアターの「月諭のアルカナ」コレクションを表示します
 challenge_command_moc_desc: 混沌の記憶カードを生成します
 challenge_command_pf_desc: 虚構叙事カードを生成します
 challenge_command_apc_shadow_desc: 末日の幻影カードを生成します
@@ -774,6 +779,7 @@ gi_mimo_start_desc: "まず [HoYoLAB]({url}) で旅するMimoイベントを設�
 mimo_auto_draw_button_label: 自動抽選
 mimo_auto_draw_desc: "Hoyo Buddyは可能な限り抽選を行います。自動購入と自動抽選の両方が有効な場合、まず購入を試み、購入に十分なポイントがない場合に抽選します。"
 mimo_auto_draw_embed_desc: "Hoyo Buddyは {points} ポイントで以下のアイテムを抽選しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
+mimo_point_history_page_footer: "ページ {page}"
 dismissible_hsr_temp2_desc: "HSRキャラクターカード用に新しいHoyo Buddyテンプレート2を使用できるようになりました。カード設定で選択してください。このテンプレートには横長の画像を使用することをお勧めします。"
 bounty_commission.embed.description: 依頼任務が完了していません
 ridu_points.embed.description: エリー都週間依頼ポイントが未達成です
@@ -830,28 +836,29 @@ account_settings_desc: "ここの設定は各ゲームアカウントに固有�
 public_account_desc: "アカウントを公開に設定\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
 daily_checkin_desc: "自動デイリーチェックイン\nウェブチェックインイベントで自動的に報酬を受け取ります。"
 redeem_code_desc: "自動コード引き換え\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
+auto_gacha_import_desc: "自動ガチャ履歴インポート\n6時間ごとに新しいガチャ履歴を自動でインポートします。サポーター限定（</supporter> を参照）で、原神とゼンレスゾーンゼロのHoYoLABアカウントでのみ利用できます。原神アカウントはメールアドレスとパスワードでログインしている必要があります。"
 accompany_settings_title: "キャラクター同行"
 accompany_settings_desc: "毎日HoYoLABのキャラクターに自動で同行して同行ポイントを獲得し、壁紙やスタンプなどの報酬をアンロックします。HoYoLABアカウントのみ利用可能です。"
-accompany_button_label: "キャラクター自動同行"
+accompany_button_label: キャラクター自動同行
 accompany_selected_character: "現在の同行キャラクター：{character}"
 accompany_no_character_selected: "この機能を有効にするには、下でキャラクターを選択してください。"
-accompany_character_select_placeholder: "同行するキャラクターを選択"
-accompany_cmd_desc: "HoYoLABの同行キャラクターを閲覧し、自分の同行キャラクターを設定します"
-accompany_cmd_character_param_name: "キャラクター"
+accompany_character_select_placeholder: 同行するキャラクターを選択
+accompany_cmd_desc: HoYoLABの同行キャラクターを閲覧し、自分の同行キャラクターを設定します
+accompany_cmd_character_param_name: キャラクター
 accompany_cmd_character_param_desc: "表示するキャラクター、デフォルトは最初に利用可能なキャラクター"
-accompany_videos_label: "動画"
+accompany_videos_label: 動画
 accompany_header_stats: "投稿 {posts} 件 · ファンアート {fan_arts} 件"
 accompany_header_members: "メンバー {members} 人"
-accompany_info_title: "あなたの同行進捗"
+accompany_info_title: あなたの同行進捗
 accompany_info_body: "同行日数：{days}\n同行ポイント：{points}（利用可能：{available_points}）\n今日の同行：{today}"
-accompany_voice_lines_title: "ボイス"
-accompany_voice_audio_label: "音声を再生"
-accompany_voice_lang_select_placeholder: "音声の言語を選択"
-accompany_voice_line_select_placeholder: "ボイスを選択"
-accompany_view_no_character_set: "まだ同行キャラクターを設定していません。"
-accompany_set_character_button_label: "同行キャラクターに設定"
-accompany_now_button_label: "今すぐ同行"
-accompany_view_character_select_placeholder: "表示するキャラクターを選択"
+accompany_voice_lines_title: ボイス
+accompany_voice_audio_label: 音声を再生
+accompany_voice_lang_select_placeholder: 音声の言語を選択
+accompany_voice_line_select_placeholder: ボイスを選択
+accompany_view_no_character_set: まだ同行キャラクターを設定していません。
+accompany_set_character_button_label: 同行キャラクターに設定
+accompany_now_button_label: 今すぐ同行
+accompany_view_character_select_placeholder: 表示するキャラクターを選択
 user_settings_title: "ユーザー設定"
 user_settings_desc: "ここの設定はDiscordアカウントにリンクされており、すべてのゲームアカウントに適用されます。"
 dark_theme_desc: "ダークテーマ\nインフォグラフィックがダークカラースキームを使用するようにします。すべてのインフォグラフィックがこの機能をサポートしているわけではありません。"
@@ -867,6 +874,11 @@ apply_template_to_all_chars: 現在のテンプレートをすべてのキャラ
 apply_template_to_all_chars_desc: "すべての**将来および現在の**キャラクターが**{template}**を使用します。"
 apply_dark_theme_to_all_chars: 現在のダークテーマオプションをすべてのキャラクターに適用
 apply_dark_theme_to_all_chars_desc: "すべての**将来および現在の**キャラクターがダークテーマ**{status}**になります。"
+apply_animated_image_to_all_chars: 現在のアニメーション画像オプションをすべてのキャラクターに適用
+apply_animated_image_to_all_chars_desc: "すべての**将来および現在の**キャラクターのアニメーション画像が**{status}**になります。"
+card_settings_bulk_title: 一括設定
+card_settings_bulk_button_desc: "このキャラクターのテンプレート、ダークテーマ、アニメーション画像の設定をすべてのキャラクターに適用します。"
+card_settings_bulk_desc: "{name} のカード設定を**現在および将来の**すべてのキャラクターに適用します。"
 apply_label: 適用
 card_settings_genshin_desc: 原神のキャラクタービルドカードの見た目を変更
 card_settings_hsr_desc: "崩壊:スターレイルのキャラクタービルドカードの見た目を変更"
@@ -886,3 +898,37 @@ image_settings_modifying_for_desc: "画像はキャラクターごとに固有�
 image_settings_template_supported: "現在のテンプレートはカスタム画像に対応しています。"
 image_settings_template_not_supported: "現在のテンプレートはカスタム画像に対応していないため、下で選択した画像は適用されません。"
 image_settings_use_m3_art_desc: "エージェントのM3シネマアートをカード画像として使用します。Hoyo Buddy テンプレート 2 のみ対応。"
+lumiflux: 流明
+enemies: 敵
+enemy_weaknesses_field_name: 弱点
+enemy_resistances_field_name: 属性耐性
+enemy_rewards_field_name: "報酬（均衡レベル {level}）"
+enemy_rewards_character_exp: "キャラクター経験値 x{exp}"
+lunar_arcana_browse_button_label: カードを見る
+lunar_arcana_back_button_label: コレクションに戻る
+lunar_arcana_select_placeholder: カードを選択...
+lunar_arcana_owned_count: "所持：×{count}"
+lunar_arcana_card_locked: 未入手
+custom_image_limit_error_title: カスタム画像の上限に達しました
+custom_image_limit_error_message: "カスタム画像はキャラクターごとに {limit} 枚まで追加できます。サポーターは無制限に追加できます。詳しくは /supporter で確認してください。"
+ai_image_limit_error_title: 1日のAI画像生成上限に達しました
+ai_image_limit_error_message: "AI画像は1日に {limit} 枚まで生成できます。上限は {reset_time} にリセットされます。サポーターは無制限に生成できます。詳しくは /supporter で確認してください。"
+supporter_command_desc: サポーター特典と自分のサポーターステータスを表示します
+supporter_embed.title: サポーター特典
+supporter_embed.description: "サポーターはHoyo Buddyの運営と開発を支えています。その感謝のしるしとして、次の特典を受け取れます："
+supporter_embed.perk_auto_task_priority: "自動タスクのキューで最優先（デイリーチェックイン、コード交換、トラベリングミモなど）"
+supporter_embed.perk_accounts: "アカウント数が無制限（無料：{limit}）"
+supporter_embed.perk_custom_images: "キャラクターごとのカスタム画像が無制限（無料：{limit}）"
+supporter_embed.perk_ai_images: "AI画像生成が無制限（無料：1日 {limit} 枚）"
+supporter_embed.perk_auto_gacha_import: 6時間ごとのガチャ履歴自動インポート（原神、ゼンレスゾーンゼロ）
+supporter_embed.perk_discord_role: Discordサーバーでのスポンサーロール
+supporter_embed.perk_discord_channel: Discordサーバーのスポンサー限定チャンネルへのアクセス
+supporter_embed.status_supporter: "サポーター登録済みです。ありがとうございます！"
+supporter_embed.status_not_supporter: まだサポーターではありません。
+card_settings_animated_image: アニメーション画像
+card_settings_animated_image_desc: "キャラクターのアニメーションアートをカードに使用します。サポーター限定で、アニメーションアートがあるキャラクターのみ対象です。原神とZZZはテンプレート1、HSRはテンプレート1と2で利用できます。原神のカードには七聖召喚のアニメーションカードイラストを使用します。詳しくは </supporter> で確認してください。"
+reminders_command_description: リアルタイムノート、育成、ウェブイベントのリマインダーを設定します
+reminders_button_label: リマインダー
+farm_reminder_title: 育成リマインダー
+web_events_reminder_title: ウェブイベントリマインダー
+web_events_reminder_desc: 新しいウェブイベントが公開されたときにダイレクトメッセージで通知します。

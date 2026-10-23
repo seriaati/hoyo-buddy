@@ -55,6 +55,8 @@ auto_checkin_button_label: Reclamo de login diario automático
 auto_locale_option_label: Seguir el idioma del cliente
 auto_redeem_footer: Desactiva el canje automático de códigos con/settings
 auto_redeem_toggle.label: Canjear códigos automáticamente
+auto_gacha_import_label: Importación automática de registros del gacha
+auto_gacha_import_footer: Desactiva la importación automática de registros del gacha con /settings
 books: Libros
 captcha.embed.description: "Haz clic en el botón de abajo para completar el CAPTCHA.\n"
 challenge_type_select.placeholder: Selecciona un modo de juego
@@ -185,6 +187,7 @@ farm_reminder_command_description: Te notificará cuando los materiales de los p
 farm_remove_command.item_not_found: Ítem no encontrado
 farm_remove_command.item_not_found_description: Este ítem no está en tu lista de recordatorios para farmeo.
 farm_remove_command_description: Eliminar personaje/arma de la lista de recordatorios de farmeo.
+farm_view.city_select.placeholder: Selecciona una ciudad
 farm_view.happy_farming: 🌾 ¡Feliz farmeo!
 farm_view.set_reminder: Configurar recordatorios
 farm_view.set_reminder.embed.description: "Para configurar recordatorios, usa el comando </farm reminder>"
@@ -297,7 +300,7 @@ notes.elysian_realm: Elysian Realm
 notes.elysian_realm_value: "Score actual: {cur}/{max}"
 notes_available: "{emoji} Disponible en {in_time}"
 notes_command_description: Ver notas en tiempo real
-notif.embed.footer: Usa /notes para configurar recordatorios
+notif.embed.footer: Usa /reminders para configurar los recordatorios
 notif_modal.enabled.label: Activado
 notif_modal.type_one.description: |
   La Stamina se verifica cada "intervalo de notificación" en minutos, y las notificaciones comienzan a enviarse cuando la Stamina es mayor o igual al "limite".
@@ -340,7 +343,6 @@ profile.image_settings.button.label: Configurar imagen
 profile.card_template_select.diff_author.description: "Diseñado por {author1} y programado por {author2}"
 profile.card_template_select.enka.label: "Enka Network plantilla {num}"
 profile.card_template_select.encard.label: "Plantilla de tarjeta EN {num}"
-profile.card_template_select.enka_classic.label: Plantilla Enka clásica
 profile.card_template_select.enkacard.label: "Plantilla de tarjeta Enka {num}"
 profile.card_template_select.hb.label: "Hoyo Buddy plantilla {num}"
 profile.card_template_select.placeholder: Selecciona una plantilla
@@ -411,9 +413,9 @@ saturday: Sábado
 search_autocomplete_not_setup: "Las opciones de autocompletar de búsqueda aún no están configuradas, por favor intenta nuevamente más tarde."
 search_command_category_param_description: Buscar en la categoría
 search_cmd_category_param_name: categoría
-search_command_description: Busca cualquier cosa relacionada con el juego
-search_command_game_param_description: Buscar en el juego
 search_command_game_param_name: juego
+search_command_gi_description: Buscar cualquier cosa relacionada con Genshin Impact
+search_command_hsr_description: Buscar cualquier cosa relacionada con Honkai Star Rail
 search_command_query_param_description: Palabra clave para buscar
 search_command_query_param_name: consulta
 select_account.embed.description: Selecciona las cuentas que deseas agregar a Hoyo Buddy
@@ -433,7 +435,6 @@ threshold.embed.description: "Se ha alcanzado el límite ({threshold})"
 thunder: Rayo
 thursday: Jueves
 tuesday: Martes
-unreleased_content: Contenido no lanzado
 user_autocomplete_param_description: "Usuario para buscar las cuentas, por defecto eres tú"
 user_autocomplete_param_name: usuario
 user_no_accounts_autocomplete_choice: Este usuario aún no tiene cuentas
@@ -467,6 +468,8 @@ not_implemented_error_title: Función aún no implementada
 not_implemented_error_only_game_message: "Esta función aún no está implementada para las cuentas de {game}."
 not_implemented_error_message: "Esta función aún no está implementada para las cuentas de {game} en {platform}."
 profile.build.current.label: Actual
+profile.skin_select.placeholder: Selecciona un atuendo...
+profile.skin_select.default.label: Por defecto
 abyss_chamber.blessing.embed.field.name: Bendición de la Luna del Abismo
 apocalyptic_shadow: Espejismo Apocalíptico
 apc_shadow.highest_diff_cleared: "Dificultad más alta superada: {diff}"
@@ -591,6 +594,7 @@ gacha_import_loading_embed_title: Importando registros del gacha
 gacha_import_pc_import_embed_desc: "Busca y abre PowerShell desde el menú de inicio, luego copia y pega el siguiente código.\nEste script fue creado por el equipo de Hoyo Buddy y es seguro de usar."
 gacha_import_pc_player_button_label: Windows
 gacha_import_android_button_label: Android
+gacha_import_hoyolab_button_label: Importar desde HoYoLAB
 gacha_import_pc_source_code: Código fuente
 gacha_import_loading_embed_description: "{loading_emoji} Esto puede tardar un poco, por favor tenga paciencia..."
 gacha_upload_invalid_file_error_title: Formato de archivo no válido
@@ -700,6 +704,7 @@ card_settings_hl_special_stats_button_label: Resaltar stats especiales
 card_settings_hl_stats_desc: Destaca las estadísticas importantes de un personaje con color.
 challenge_command_abyss_desc: Generar tarjeta de Espiral del Abismo
 challenge_command_theater_desc: Generar tarjeta de Teatro Imaginario
+lunar_arcana_command_description: Ver tu colección de cartas de Arcanos lunares del Teatro Fantasía
 challenge_command_moc_desc: Generar tarjeta de Evocación Caótica
 challenge_command_pf_desc: Generar tarjeta de Pura Ficción
 challenge_command_apc_shadow_desc: Generar tarjeta de Espejismo Apocalíptico
@@ -776,6 +781,7 @@ gi_mimo_start_desc: "Por favor, primero configura a Mimo Viajero en [HoYoLAB]({u
 mimo_auto_draw_button_label: Sorteo automático
 mimo_auto_draw_desc: "Hoyo Buddy sacará premios para ti siempre que sea posible; si tanto la compra automática como el sorteo automático están habilitados, intentará comprar primero y luego sacar premios si no hay suficientes puntos para comprar."
 mimo_auto_draw_embed_desc: "Hoyo Buddy obtuvo los siguientes ítems con {points} puntos.\nSi ves códigos de regalo abajo, por favor canjéalos manualmente con </redeem>."
+mimo_point_history_page_footer: "Página {page}"
 dismissible_hsr_temp2_desc: "Ahora podés usar la nueva plantilla Hoyo Buddy 2 para las tarjetas de personajes de HSR. Seleccionala en la configuración de tarjetas. Se recomienda usar imágenes horizontales para esta plantilla."
 bounty_commission.embed.description: Encargos de cacería aún no completados
 ridu_points.embed.description: Semanario de Ridu aún no completado
@@ -832,28 +838,29 @@ account_settings_desc: "Las configuraciones hehcas son únicas para cada cuenta 
 public_account_desc: "Establecer cuenta como pública\nSi está habilitado, otras personas pueden ver los datos de tu cuenta en algunos comandos, como </profile>."
 daily_checkin_desc: "Inicio de sesión diario automático\nReclama automáticamente recompensas en el evento de inicio de sesión web."
 redeem_code_desc: "Canje automático de códigos\nCanjea automáticamente códigos de transmisión en vivo y otros códigos de regalo. El botón está deshabilitado si no has iniciado sesión con correo electrónico y contraseña, consulta las [FAQ](:docs/FAQ:) para saber por qué."
+auto_gacha_import_desc: "Importación automática de registros del gacha\nImporta automáticamente los nuevos registros del gacha cada 6 horas. Exclusivo para colaboradores (consulta </supporter>), solo disponible para cuentas de HoYoLAB de Genshin Impact y Zenless Zone Zero. Las cuentas de Genshin Impact deben haber iniciado sesión con correo y contraseña."
 accompany_settings_title: "Acompañamiento de personajes"
 accompany_settings_desc: "Acompaña automáticamente a un personaje de HoYoLAB cada día para ganar puntos de acompañamiento y desbloquear recompensas como fondos de pantalla y stickers. Solo disponible para cuentas de HoYoLAB."
-accompany_button_label: "Acompañamiento automático de personajes"
+accompany_button_label: Acompañamiento automático de personajes
 accompany_selected_character: "Acompañando actualmente a: {character}"
 accompany_no_character_selected: "Selecciona un personaje abajo para activar esta función."
-accompany_character_select_placeholder: "Selecciona un personaje para acompañar"
-accompany_cmd_desc: "Ve los personajes de acompañamiento de HoYoLAB y establece el tuyo"
-accompany_cmd_character_param_name: "personaje"
+accompany_character_select_placeholder: Selecciona un personaje para acompañar
+accompany_cmd_desc: Ve los personajes de acompañamiento de HoYoLAB y establece el tuyo
+accompany_cmd_character_param_name: personaje
 accompany_cmd_character_param_desc: "Personaje a ver, por defecto el primero disponible"
-accompany_videos_label: "Vídeos"
+accompany_videos_label: Vídeos
 accompany_header_stats: "{posts} publicaciones · {fan_arts} fan arts"
 accompany_header_members: "{members} miembros"
-accompany_info_title: "Tu progreso de acompañamiento"
+accompany_info_title: Tu progreso de acompañamiento
 accompany_info_body: "Días acompañados: {days}\nPuntos de acompañamiento: {points} ({available_points} disponibles)\nAcompañado hoy: {today}"
-accompany_voice_lines_title: "Líneas de voz"
-accompany_voice_audio_label: "Reproducir audio"
-accompany_voice_lang_select_placeholder: "Selecciona un idioma de voz"
-accompany_voice_line_select_placeholder: "Selecciona una línea de voz"
-accompany_view_no_character_set: "Aún no has establecido un personaje de acompañamiento."
-accompany_set_character_button_label: "Establecer como personaje de acompañamiento"
-accompany_now_button_label: "Acompañar ahora"
-accompany_view_character_select_placeholder: "Selecciona un personaje para ver"
+accompany_voice_lines_title: Líneas de voz
+accompany_voice_audio_label: Reproducir audio
+accompany_voice_lang_select_placeholder: Selecciona un idioma de voz
+accompany_voice_line_select_placeholder: Selecciona una línea de voz
+accompany_view_no_character_set: Aún no has establecido un personaje de acompañamiento.
+accompany_set_character_button_label: Establecer como personaje de acompañamiento
+accompany_now_button_label: Acompañar ahora
+accompany_view_character_select_placeholder: Selecciona un personaje para ver
 user_settings_title: "Configuración de usuario"
 user_settings_desc: "Las configuraciones aquí están vinculadas a tu cuenta de Discord, se aplican a todas las cuentas del juego."
 dark_theme_desc: "Tema oscuro\nHace que los infográficos usen un esquema de color oscuro, no todos los infográficos admiten esta función."
@@ -869,6 +876,11 @@ apply_template_to_all_chars: Aplicar plantilla actual a todos los personajes
 apply_template_to_all_chars_desc: "Todos los personajes **futuros y actuales** usarán **{template}**."
 apply_dark_theme_to_all_chars: Aplicar el tema oscuro actual a todos los personajes
 apply_dark_theme_to_all_chars_desc: "Todos los personajes **futuros y actuales** tendrán el tema oscuro **{status}**."
+apply_animated_image_to_all_chars: Aplicar la opción actual de imagen animada a todos los personajes
+apply_animated_image_to_all_chars_desc: "Imagen animada para todos los personajes **futuros y actuales**: **{status}**."
+card_settings_bulk_title: Configuración en masa
+card_settings_bulk_button_desc: "Aplica la plantilla, el tema oscuro y la opción de imagen animada de este personaje a todos los personajes."
+card_settings_bulk_desc: "Aplica la configuración de tarjeta de {name} a todos los personajes **actuales y futuros**."
 apply_label: Aplicar
 card_settings_genshin_desc: Modifica cómo se ven tus tarjetas de build de personajes de Genshin Impact
 card_settings_hsr_desc: Modifica cómo se ven tus tarjetas de build de personajes de Honkai Star Rail
@@ -888,3 +900,37 @@ image_settings_modifying_for_desc: "Las imágenes son únicas para cada personaj
 image_settings_template_supported: "La plantilla actual admite imágenes personalizadas."
 image_settings_template_not_supported: "La plantilla actual no admite imágenes personalizadas, por lo que la imagen que selecciones abajo no se aplicará."
 image_settings_use_m3_art_desc: "Usa la ilustración de M3 del agente como imagen de la tarjeta, solo compatible con la plantilla 2 de Hoyo Buddy."
+lumiflux: Lumiflujo
+enemies: Enemigos
+enemy_weaknesses_field_name: Debilidades
+enemy_resistances_field_name: RES a daño
+enemy_rewards_field_name: "Recompensas (Nivel de Equilibrio {level})"
+enemy_rewards_character_exp: "EXP de personaje x{exp}"
+lunar_arcana_browse_button_label: Ver cartas
+lunar_arcana_back_button_label: Volver a la colección
+lunar_arcana_select_placeholder: Selecciona una carta...
+lunar_arcana_owned_count: "Tienes: ×{count}"
+lunar_arcana_card_locked: Aún no obtenida
+custom_image_limit_error_title: Límite de imágenes personalizadas alcanzado
+custom_image_limit_error_message: "Puedes agregar hasta {limit} imágenes personalizadas por personaje. Los colaboradores pueden agregar todas las que quieran; usa /supporter para saber más."
+ai_image_limit_error_title: Límite diario de imágenes con IA alcanzado
+ai_image_limit_error_message: "Puedes generar hasta {limit} imágenes con IA al día; el límite se reinicia {reset_time}. Los colaboradores pueden generar todas las que quieran; usa /supporter para saber más."
+supporter_command_desc: Ver las ventajas de colaborador y tu estado de colaborador
+supporter_embed.title: Ventajas de colaborador
+supporter_embed.description: "Los colaboradores ayudan a que Hoyo Buddy siga funcionando y en desarrollo. Como agradecimiento, reciben estas ventajas:"
+supporter_embed.perk_auto_task_priority: "Máxima prioridad en las colas de tareas automáticas (login diario, canje de códigos, Mimo Viajero, etc.)"
+supporter_embed.perk_accounts: "Cuentas ilimitadas (gratis: {limit})"
+supporter_embed.perk_custom_images: "Imágenes personalizadas ilimitadas por personaje (gratis: {limit})"
+supporter_embed.perk_ai_images: "Generación ilimitada de imágenes con IA (gratis: {limit} al día)"
+supporter_embed.perk_auto_gacha_import: Importación automática de registros del gacha cada 6 horas (Genshin Impact y Zenless Zone Zero)
+supporter_embed.perk_discord_role: Rol de patrocinador en el servidor de Discord
+supporter_embed.perk_discord_channel: Acceso al canal exclusivo para patrocinadores en el servidor de Discord
+supporter_embed.status_supporter: "Eres colaborador, ¡gracias!"
+supporter_embed.status_not_supporter: Aún no eres colaborador.
+card_settings_animated_image: Imagen animada
+card_settings_animated_image_desc: "Usa el arte animado del personaje en la tarjeta. Solo disponible para colaboradores y para personajes con arte animado, en la plantilla 1 para GI y ZZZ, y en las plantillas 1 y 2 para HSR. Las tarjetas de GI usan el arte animado de las cartas de Invocación de los Sabios. Usa </supporter> para saber más."
+reminders_command_description: "Configurar recordatorios de notas en tiempo real, de farmeo y de eventos web"
+reminders_button_label: Recordatorios
+farm_reminder_title: Recordatorios de farmeo
+web_events_reminder_title: Recordatorios de eventos web
+web_events_reminder_desc: Te notifica por Mensaje Directo cuando se publican nuevos eventos web.

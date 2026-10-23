@@ -81,7 +81,9 @@ Tasks: TypeAlias = defaultdict[
 
 type OpenGameRegion = Literal["global", "cn", "vn", "sea", "america", "asia", "jp", "kr"]
 type OpenGameGame = Literal["ys", "cg_ys", "sr", "cg_sr", "zzz", "cg_nap", "bh3"]
-type AutoTaskType = Literal["mimo_task", "mimo_buy", "mimo_draw", "redeem", "checkin", "accompany"]
+type AutoTaskType = Literal[
+    "mimo_task", "mimo_buy", "mimo_draw", "redeem", "checkin", "accompany", "gacha_import"
+]
 type SleepTime = Literal[
     "checkin",
     "accompany",
@@ -93,6 +95,7 @@ type SleepTime = Literal[
     "mimo_shop",
     "search_autofill",
     "notes_check",
+    "gacha_import",
 ]
 
 type FontStyle = Literal[

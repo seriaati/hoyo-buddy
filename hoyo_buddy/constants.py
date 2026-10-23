@@ -1224,12 +1224,14 @@ def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
 AUTO_REDEEM_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 MIMO_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 MIMO_AUTO_DRAW_SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ)
+AUTO_GACHA_IMPORT_SUPPORT_GAMES = (Game.GENSHIN, Game.ZZZ)
 ACCOMPANY_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
     "redeem": 3600 * 2,  # 2 hours
     "mimo_task": 3600 * 4,  # 4 hours
     "mimo_buy": 3600 * 5,  # 5 hours
     "mimo_draw": 3600 * 10,  # 10 hours
+    "gacha_import": 3600 * 6,  # 6 hours
 }
 AUTO_TASK_LAST_TIME_FIELDS: dict[AutoTaskType, str] = {
     "redeem": "last_redeem_time",
@@ -1238,6 +1240,7 @@ AUTO_TASK_LAST_TIME_FIELDS: dict[AutoTaskType, str] = {
     "mimo_draw": "last_mimo_draw_time",
     "checkin": "last_checkin_time",
     "accompany": "last_accompany_time",
+    "gacha_import": "last_gacha_import_time",
 }
 AUTO_TASK_TOGGLE_FIELDS: dict[AutoTaskType, str] = {
     "redeem": "auto_redeem",
@@ -1246,6 +1249,7 @@ AUTO_TASK_TOGGLE_FIELDS: dict[AutoTaskType, str] = {
     "mimo_draw": "mimo_auto_draw",
     "checkin": "daily_checkin",
     "accompany": "accompany_checkin",
+    "gacha_import": "auto_gacha_import",
 }
 NOTIF_SETTING_FIELDS: dict[AutoTaskType, tuple[str, str]] = {
     "checkin": ("notify_on_checkin_success", "notify_on_checkin_failure"),
@@ -1254,6 +1258,7 @@ NOTIF_SETTING_FIELDS: dict[AutoTaskType, tuple[str, str]] = {
     "mimo_draw": ("mimo_draw_success", "mimo_draw_failure"),
     "redeem": ("redeem_success", "redeem_failure"),
     "accompany": ("notify_on_accompany_success", "notify_on_accompany_failure"),
+    "gacha_import": ("gacha_import_success", "gacha_import_failure"),
 }
 
 PLATFORM_TO_REGION: dict[Platform, genshin.Region] = {
@@ -1273,6 +1278,7 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "accompany": 2.5,
     "notes_check": 1.2,
     "dm": 0.1,
+    "gacha_import": 1.0,
 }
 
 CONCURRENT_TASK_NUM = 100
@@ -1285,6 +1291,7 @@ AUTO_TASK_FEATURE_KEYS: dict[AutoTaskType, str] = {
     "mimo_draw": "mimo_auto_draw_button_label",
     "checkin": "auto_checkin_button_label",
     "accompany": "accompany_button_label",
+    "gacha_import": "auto_gacha_import_label",
 }
 
 GUILD_ID = 1131592943791263745 if CONFIG.is_dev else 1000727526194298910

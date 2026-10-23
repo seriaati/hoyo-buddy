@@ -80,9 +80,19 @@ class AutoTaskMixin:
         if task_type == "accompany":
             query &= Q(accompany_role_id__isnull=False)
 
-        # Supporters have priority
         supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
         logger.debug(f"Supporter IDs: {supporter_ids}")
+
+        # Gacha import-specific: Supporter-only, Genshin accounts need cookie_token for authkeys
+        if task_type == "gacha_import":
+            query &= Q(user_id__in=supporter_ids)
+            query &= (
+                ~Q(game=Game.GENSHIN)
+                | Q(cookies__contains="cookie_token_v2")
+                | (Q(cookies__contains="ltmid_v2") & Q(cookies__contains="stoken"))
+            )
+
+        # Supporters have priority
         query_set = (
             models.HoyoAccount.filter(query)
             .annotate(is_supporter=Case(When(user_id__in=supporter_ids, then="1"), default="0"))

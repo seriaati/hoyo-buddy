@@ -56,6 +56,7 @@ class HoyoAccount(BaseModel):
     mimo_auto_buy = fields.BooleanField(default=False)
     mimo_auto_draw = fields.BooleanField(default=False)
     accompany_checkin = fields.BooleanField(default=False)
+    auto_gacha_import = fields.BooleanField(default=False)
     notifs: fields.ReverseRelation[NotesNotify]
     farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
 
@@ -71,6 +72,7 @@ class HoyoAccount(BaseModel):
     last_mimo_draw_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     last_redeem_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
     last_accompany_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
+    last_gacha_import_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
 
     # Misc
     current = fields.BooleanField(default=False)

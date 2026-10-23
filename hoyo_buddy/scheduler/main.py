@@ -10,6 +10,7 @@ from loguru import logger
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.hoyo.auto_tasks.accompany_checkin import AccompanyCheckin
+from hoyo_buddy.hoyo.auto_tasks.auto_gacha_import import AutoGachaImport
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
@@ -18,14 +19,16 @@ from hoyo_buddy.utils import get_now
 
 if TYPE_CHECKING:
     import aiohttp
+    import asyncpg
 
 INTERVAL_MIN = 10
 
 
 class Scheduler:
-    def __init__(self, session: aiohttp.ClientSession) -> None:
+    def __init__(self, session: aiohttp.ClientSession, pool: asyncpg.Pool) -> None:
         self.scheduler = AsyncIOScheduler(timezone="UTC")
         self.session = session
+        self.pool = pool
 
     @staticmethod
     async def reset_mimo_all_claimed_time() -> None:
@@ -51,6 +54,9 @@ class Scheduler:
 
         # Character accompany
         asyncio.create_task(AccompanyCheckin.execute())
+
+        # Gacha import
+        asyncio.create_task(AutoGachaImport.execute(self.session, self.pool))
 
     async def send_heartbeat(self) -> None:
         if CONFIG.scheduler_heartbeat_url is None:

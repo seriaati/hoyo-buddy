@@ -5,7 +5,12 @@ from typing import TYPE_CHECKING
 import discord
 
 from hoyo_buddy import emojis, ui
-from hoyo_buddy.constants import AUTO_REDEEM_SUPPORT_GAMES, MIMO_AUTO_DRAW_SUPPORT_GAMES
+from hoyo_buddy.constants import (
+    AUTO_GACHA_IMPORT_SUPPORT_GAMES,
+    AUTO_REDEEM_SUPPORT_GAMES,
+    MIMO_AUTO_DRAW_SUPPORT_GAMES,
+)
+from hoyo_buddy.enums import Game, Platform
 from hoyo_buddy.l10n import LocaleStr
 
 from ._common import AccountToggleButton
@@ -47,8 +52,16 @@ class MinimumPointsButton(ui.Button["SettingsView"]):
         await self.view.update(i)
 
 
+def _can_auto_import_gacha(account: HoyoAccount) -> bool:
+    return (
+        account.game in AUTO_GACHA_IMPORT_SUPPORT_GAMES
+        and account.platform is Platform.HOYOLAB
+        and (account.game is not Game.GENSHIN or account.can_use_cookie_token)
+    )
+
+
 class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount) -> None:
+    def __init__(self, *, account: HoyoAccount, is_supporter: bool) -> None:
         super().__init__(
             ui.TextDisplay(
                 LocaleStr(
@@ -96,6 +109,22 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     current=account.auto_redeem,
                     disabled=account.game not in AUTO_REDEEM_SUPPORT_GAMES
                     or not account.can_use_cookie_token,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.REFRESH,
+                        desc=LocaleStr(key="auto_gacha_import_desc"),
+                    )
+                ),
+                accessory=AccountToggleButton(
+                    attr="auto_gacha_import",
+                    current=account.auto_gacha_import,
+                    disabled=not is_supporter or not _can_auto_import_gacha(account),
                 ),
             ),
         )

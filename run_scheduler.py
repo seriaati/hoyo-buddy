@@ -1,6 +1,7 @@
 import asyncio
 
 import aiohttp
+import asyncpg
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.db.pgsql import Database
@@ -15,8 +16,13 @@ async def main() -> None:
     setup_async_event_loop()
     setup_sentry(CONFIG.scheduler_sentry_dsn)
 
-    async with Database(), translator, aiohttp.ClientSession() as session:
-        scheduler = Scheduler(session)
+    async with (
+        asyncpg.create_pool(CONFIG.db_url) as pool,
+        Database(),
+        translator,
+        aiohttp.ClientSession() as session,
+    ):
+        scheduler = Scheduler(session, pool)
         scheduler.start()
 
         try:

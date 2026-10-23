@@ -106,7 +106,9 @@ class SettingsView(ui.LayoutView):
             return UserSettingsContainer(settings=settings)
 
         if self.category is SettingsCategory.ACCOUNT_SETTINGS:
-            return AccountSettingsContainer(account=account)
+            return AccountSettingsContainer(
+                account=account, is_supporter=await is_supporter(account.user_id)
+            )
 
         if self.category is SettingsCategory.MIMO_SETTINGS:
             return MimoSettingsContainer(account=account)

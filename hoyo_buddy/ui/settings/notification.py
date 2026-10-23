@@ -105,6 +105,27 @@ class NotificationSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     current=account.notif_settings.notify_on_accompany_failure,
                 ),
             ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            # Auto gacha import notifications
+            ui.TextDisplay(
+                LocaleStr(custom_str="### {title}", title=LocaleStr(key="auto_gacha_import_label"))
+            ),
+            ui.Section(
+                ui.TextDisplay(LocaleStr(key="notify_on_success_button_label")),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.gacha_import_success",
+                    current=account.notif_settings.gacha_import_success,
+                ),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(LocaleStr(key="notify_on_failure_button_label")),
+                accessory=AccountToggleButton(
+                    attr="notif_settings.gacha_import_failure",
+                    current=account.notif_settings.gacha_import_failure,
+                ),
+            ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.large),
             ui.ActionRow(DisableAllNotificationsButton()),
         )

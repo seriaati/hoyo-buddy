@@ -177,7 +177,7 @@ class SettingsView(ui.LayoutView):
                 if limit_games is not None:
                     limit_game_accounts = [acc for acc in accounts if acc.game in limit_games]
                     if not limit_game_accounts:
-                        raise NoAccountFoundError(reminder.SUPPORT_GAMES)
+                        raise NoAccountFoundError(limit_games)
 
                     account = next(
                         (acc for acc in limit_game_accounts if acc.current), limit_game_accounts[0]

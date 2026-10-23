@@ -1,12 +1,19 @@
-name: Monthly Release
+name: Bump version
 
 on:
-  schedule:
-    - cron: "0 0 1 * *"
   workflow_dispatch:
+    inputs:
+      level:
+        description: "Version bump level"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
-  monthly-release:
+  bump-version:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,6 +25,9 @@ jobs:
         uses: seriaati/update-ver-num@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          bump_type: ${{ github.event.inputs.level }}
 
       - name: Create release
         uses: seriaati/create-release@main
+        with:
+          tool: "uv"

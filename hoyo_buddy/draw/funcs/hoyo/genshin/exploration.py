@@ -110,7 +110,9 @@ NATLAN_REPUTATION = StatLine(
 SETTLEMENTS = StatLine(
     "reputation",
     lambda _, e: LocaleStr(
-        key="exploration.settlements", levels=ExplorationCard.settlement_levels(e)
+        custom_str="{label}: {levels}",
+        label=LocaleStr(key="moon_gathering", mi18n_game=Game.GENSHIN),
+        levels=ExplorationCard.settlement_levels(e),
     ),
 )
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw, ImageFilter
 
 from hoyo_buddy.draw.drawer import Drawer
-from hoyo_buddy.enums import Locale
+from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
@@ -52,7 +52,7 @@ class LunarArcanaCollectionCard:
         unlocked, total = self._collection.unlocked, self._collection.total
 
         drawer.write(
-            LocaleStr(key="lunar_arcana_collection_title"),
+            LocaleStr(key="moon_medal_collection", mi18n_game=Game.GENSHIN),
             size=60,
             position=(MARGIN, MARGIN),
             style="bold",

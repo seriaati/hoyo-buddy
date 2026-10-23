@@ -167,7 +167,6 @@ exploration.placeholder_quote: '"Every journey has its final day.Don''t rush."
 exploration.precious_chests: Precious
 exploration.progress: "Exploration Progress: {progress}%"
 exploration.remarkable_chests: Remarkable
-exploration.settlements: "Settlements: {levels}"
 exploration.title: World Exploration
 exploration.waypoints: Waypoints Unlocked
 exploration_command_description: View your exploration statistics in Genshin Impact
@@ -907,7 +906,6 @@ enemy_weaknesses_field_name: Weaknesses
 enemy_resistances_field_name: DMG RES
 enemy_rewards_field_name: "Rewards (Equilibrium Lv. {level})"
 enemy_rewards_character_exp: "Character EXP x{exp}"
-lunar_arcana_collection_title: Lunar Arcana Collection
 lunar_arcana_browse_button_label: Browse cards
 lunar_arcana_back_button_label: Back to collection
 lunar_arcana_select_placeholder: Select a card...

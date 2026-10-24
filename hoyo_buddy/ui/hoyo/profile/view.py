@@ -111,7 +111,14 @@ SKIN_TEMPLATES: dict[Game, frozenset[str]] = {
 
 
 def _apply_zzz_skin[T: ZZZFullAgent | ZZZEnkaCharacter](agent: T, skin_id: int | None) -> T:
-    """Return a copy of the agent wearing the given outfit, or the agent itself if not set."""
+    """Return a copy of the agent wearing the given outfit, or the agent itself if not set.
+
+    Falls back to the default outfit if the outfit has no card data.
+    """
+    if skin_id is None:
+        skin_id = agent.outfit_id
+    if skin_id not in {None, DEFAULT_SKIN_ID} and f"{agent.id}_{skin_id}" not in CARD_DATA.zzz:
+        skin_id = DEFAULT_SKIN_ID
     if skin_id is None:
         return agent
 

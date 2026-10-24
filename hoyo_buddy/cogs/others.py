@@ -283,9 +283,9 @@ class Others(commands.Cog):
         await paginator.start(i, ephemeral=True)
 
     @app_commands.command(
-        name=app_commands.locale_str("supporter"), description=COMMANDS["supporter"].description
+        name=app_commands.locale_str("sponsor"), description=COMMANDS["sponsor"].description
     )
-    async def supporter_command(self, i: Interaction) -> None:
+    async def sponsor_command(self, i: Interaction) -> None:
         locale = await get_locale(i)
         perks = (
             LocaleStr(key="supporter_embed.perk_auto_task_priority"),

@@ -175,7 +175,7 @@ async def submit_accounts(
                 status_code=403,
                 detail=(
                     f"You can add up to {FREE_ACCOUNT_LIMIT} accounts. "
-                    "Supporters can add as many as they want, use /supporter to learn more."
+                    "Sponsors can add as many as they want, use /sponsor to learn more."
                 ),
             )
 

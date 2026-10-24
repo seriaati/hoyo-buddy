@@ -838,7 +838,7 @@ account_settings_desc: "Settings here are unique for each game account."
 public_account_desc: "Set account as public\nIf enabled, other people can see your account's data in some commands, like </profile>."
 daily_checkin_desc: "Auto daily check-in\nAutomatically claims rewards on the web check-in event."
 redeem_code_desc: "Auto code redemption\nAutomatically redeem live stream codes and other gift codes. Button is disabled if you're not logged in with email and password, see [FAQ](:docs/FAQ:) for why."
-auto_gacha_import_desc: "Auto gacha log import\nAutomatically import new gacha logs every 6 hours. Supporter-only (see </supporter>), only available for Genshin Impact and Zenless Zone Zero HoYoLAB accounts. Genshin Impact accounts need to be logged in with email and password."
+auto_gacha_import_desc: "Auto gacha log import\nAutomatically import new gacha logs every 6 hours. Sponsor-only (see </sponsor>), only available for Genshin Impact and Zenless Zone Zero HoYoLAB accounts. Genshin Impact accounts need to be logged in with email and password."
 accompany_settings_title: "Character Accompany"
 accompany_settings_desc: "Automatically accompany a HoYoLAB character every day to earn accompany points and unlock rewards like wallpapers and stickers. Only available for HoYoLAB accounts."
 accompany_button_label: Auto character accompany
@@ -912,12 +912,12 @@ lunar_arcana_select_placeholder: Select a card...
 lunar_arcana_owned_count: "Owned: ×{count}"
 lunar_arcana_card_locked: Not obtained yet
 custom_image_limit_error_title: Custom image limit reached
-custom_image_limit_error_message: "You can add up to {limit} custom images per character. Supporters can add as many as they want, use /supporter to learn more."
+custom_image_limit_error_message: "You can add up to {limit} custom images per character. Sponsors can add as many as they want, use </sponsor> to learn more."
 ai_image_limit_error_title: Daily AI image limit reached
-ai_image_limit_error_message: "You can generate up to {limit} AI images per day, the limit resets {reset_time}. Supporters can generate as many as they want, use /supporter to learn more."
-supporter_command_desc: View supporter perks and your supporter status
-supporter_embed.title: Supporter perks
-supporter_embed.description: "Supporters help keep Hoyo Buddy running and in development. As a thank you, they get these perks:"
+ai_image_limit_error_message: "You can generate up to {limit} AI images per day, the limit resets {reset_time}. Sponsors can generate as many as they want, use </sponsor> to learn more."
+supporter_command_desc: View sponsor perks and your sponsor status
+supporter_embed.title: Sponsor perks
+supporter_embed.description: "Sponsors help keep Hoyo Buddy running and in development. As a thank you, they get these perks:"
 supporter_embed.perk_auto_task_priority: "Top priority in auto task queues (daily check-in, code redemption, mimo, etc.)"
 supporter_embed.perk_accounts: "Unlimited accounts (free: {limit})"
 supporter_embed.perk_custom_images: "Unlimited custom images per character (free: {limit})"
@@ -925,10 +925,10 @@ supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} pe
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
 supporter_embed.perk_discord_role: Sponsor role in the Discord server
 supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server
-supporter_embed.status_supporter: "You're a supporter, thank you!"
-supporter_embed.status_not_supporter: You're not a supporter yet.
+supporter_embed.status_supporter: "You're a sponsor, thank you!"
+supporter_embed.status_not_supporter: You're not a sponsor yet.
 card_settings_animated_image: Animated image
-card_settings_animated_image_desc: "Use the character's animated art on the card, only available for supporters for characters with animated art, on Template 1 for GI and ZZZ and Templates 1 and 2 for HSR. GI cards use the animated Genius Invokation TCG card art. Use </supporter> to learn more."
+card_settings_animated_image_desc: "Use the character's animated art on the card, only available for sponsors for characters with animated art, on Template 1 for GI and ZZZ and Templates 1 and 2 for HSR. GI cards use the animated Genius Invokation TCG card art. Use </sponsor> to learn more."
 reminders_command_description: "Configure real-time notes, farm, and web event reminders"
 reminders_button_label: Reminders
 farm_reminder_title: Farm Reminders

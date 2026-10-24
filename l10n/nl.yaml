@@ -838,7 +838,7 @@ account_settings_desc: "Instellingen hier zijn uniek voor elk gameaccount."
 public_account_desc: "Account instellen als openbaar\nIndien ingeschakeld, kunnen andere mensen de gegevens van je account zien in sommige commando's, zoals </profile>."
 daily_checkin_desc: "Automatische dagelijkse inchecken\nClaimt automatisch beloningen bij het web-incheckenevenement."
 redeem_code_desc: "Automatisch inwisselen van codes\nWisselt automatisch livestream-codes en andere cadeaucodes in. Knop is uitgeschakeld als je niet bent ingelogd met e-mail en wachtwoord, zie [FAQ](:docs/FAQ:) voor meer informatie."
-auto_gacha_import_desc: "Automatische gacha-log-import\nImporteert elke 6 uur automatisch nieuwe gacha-logs. Alleen voor supporters (zie </supporter>), alleen beschikbaar voor HoYoLAB-accounts van Genshin Impact en Zenless Zone Zero. Genshin Impact-accounts moeten ingelogd zijn met e-mail en wachtwoord."
+auto_gacha_import_desc: "Automatische gacha-log-import\nImporteert elke 6 uur automatisch nieuwe gacha-logs. Alleen voor sponsors (zie </sponsor>), alleen beschikbaar voor HoYoLAB-accounts van Genshin Impact en Zenless Zone Zero. Genshin Impact-accounts moeten ingelogd zijn met e-mail en wachtwoord."
 accompany_settings_title: "Karakter vergezellen"
 accompany_settings_desc: "Vergezel elke dag automatisch een HoYoLAB-karakter om vergezelpunten te verdienen en beloningen zoals achtergronden en stickers te ontgrendelen. Alleen beschikbaar voor HoYoLAB-accounts."
 accompany_button_label: Automatisch karakter vergezellen
@@ -912,12 +912,12 @@ lunar_arcana_select_placeholder: Selecteer een kaart...
 lunar_arcana_owned_count: "In bezit: ×{count}"
 lunar_arcana_card_locked: Nog niet verkregen
 custom_image_limit_error_title: Limiet voor aangepaste afbeeldingen bereikt
-custom_image_limit_error_message: "Je kunt maximaal {limit} aangepaste afbeeldingen per personage toevoegen. Supporters kunnen er zoveel toevoegen als ze willen, gebruik /supporter voor meer informatie."
+custom_image_limit_error_message: "Je kunt maximaal {limit} aangepaste afbeeldingen per personage toevoegen. Sponsors kunnen er zoveel toevoegen als ze willen, gebruik </sponsor> voor meer informatie."
 ai_image_limit_error_title: Dagelijkse limiet voor AI-afbeeldingen bereikt
-ai_image_limit_error_message: "Je kunt maximaal {limit} AI-afbeeldingen per dag genereren, de limiet wordt {reset_time} gereset. Supporters kunnen er zoveel genereren als ze willen, gebruik /supporter voor meer informatie."
-supporter_command_desc: Bekijk supportervoordelen en je supporterstatus
-supporter_embed.title: Supportervoordelen
-supporter_embed.description: "Supporters helpen Hoyo Buddy draaiende en in ontwikkeling te houden. Als dank krijgen ze deze voordelen:"
+ai_image_limit_error_message: "Je kunt maximaal {limit} AI-afbeeldingen per dag genereren, de limiet wordt {reset_time} gereset. Sponsors kunnen er zoveel genereren als ze willen, gebruik </sponsor> voor meer informatie."
+supporter_command_desc: Bekijk sponsorvoordelen en je sponsorstatus
+supporter_embed.title: Sponsorvoordelen
+supporter_embed.description: "Sponsors helpen Hoyo Buddy draaiende en in ontwikkeling te houden. Als dank krijgen ze deze voordelen:"
 supporter_embed.perk_auto_task_priority: "Hoogste prioriteit in wachtrijen voor automatische taken (dagelijks inchecken, code-inwisseling, mimo, enz.)"
 supporter_embed.perk_accounts: "Onbeperkt aantal accounts (gratis: {limit})"
 supporter_embed.perk_custom_images: "Onbeperkt aantal aangepaste afbeeldingen per personage (gratis: {limit})"
@@ -925,10 +925,10 @@ supporter_embed.perk_ai_images: "Onbeperkt AI-afbeeldingen genereren (gratis: {l
 supporter_embed.perk_auto_gacha_import: Elke 6 uur automatisch gacha-logs importeren (Genshin Impact en Zenless Zone Zero)
 supporter_embed.perk_discord_role: Sponsorrol in de Discord-server
 supporter_embed.perk_discord_channel: Toegang tot het kanaal voor sponsors in de Discord-server
-supporter_embed.status_supporter: "Je bent een supporter, bedankt!"
-supporter_embed.status_not_supporter: Je bent nog geen supporter.
+supporter_embed.status_supporter: "Je bent een sponsor, bedankt!"
+supporter_embed.status_not_supporter: Je bent nog geen sponsor.
 card_settings_animated_image: Geanimeerde afbeelding
-card_settings_animated_image_desc: "Gebruik de geanimeerde kunst van het personage op de kaart. Alleen beschikbaar voor supporters, voor personages met geanimeerde kunst, op sjabloon 1 voor GI en ZZZ en sjablonen 1 en 2 voor HSR. GI-kaarten gebruiken de geanimeerde kaartkunst uit Genius Invokation TCG. Gebruik </supporter> voor meer informatie."
+card_settings_animated_image_desc: "Gebruik de geanimeerde kunst van het personage op de kaart. Alleen beschikbaar voor sponsors, voor personages met geanimeerde kunst, op sjabloon 1 voor GI en ZZZ en sjablonen 1 en 2 voor HSR. GI-kaarten gebruiken de geanimeerde kaartkunst uit Genius Invokation TCG. Gebruik </sponsor> voor meer informatie."
 reminders_command_description: "Configureer herinneringen voor real-time notities, farmen en web-evenementen"
 reminders_button_label: Herinneringen
 farm_reminder_title: Farmherinneringen

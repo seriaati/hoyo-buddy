@@ -838,7 +838,7 @@ account_settings_desc: "此设置是一个游戏账号对应一个设置。"
 public_account_desc: "设置账户为公开\n如果启用,其他人可以在某些命令中看到你账户的数据，比如</profile>。"
 daily_checkin_desc: "自动每日签到\n自动在网页签到活动中领取奖励。"
 redeem_code_desc: "自动兑换码\n自动兑换直播兑换码和其他兑换码。如果你未使用邮箱和密码登录，此选项将不可用。请参阅[常见问题](:docs/FAQ:)了解原因。"
-auto_gacha_import_desc: "自动导入抽卡记录\n每 6 小时自动导入新的抽卡记录。仅限支持者使用（详见 </supporter>），且仅适用于原神和绝区零的 HoYoLAB 账号。原神账号需使用邮箱和密码登录。"
+auto_gacha_import_desc: "自动导入抽卡记录\n每 6 小时自动导入新的抽卡记录。仅限赞助者使用（详见 </sponsor>），且仅适用于原神和绝区零的 HoYoLAB 账号。原神账号需使用邮箱和密码登录。"
 accompany_settings_title: "角色陪伴"
 accompany_settings_desc: "每天自动陪伴一位 HoYoLAB 角色，赚取陪伴值并解锁壁纸、表情贴纸等奖励。仅适用于 HoYoLAB 账号。"
 accompany_button_label: 自动角色陪伴
@@ -912,12 +912,12 @@ lunar_arcana_select_placeholder: 选择一张圣牌…
 lunar_arcana_owned_count: "已拥有：×{count}"
 lunar_arcana_card_locked: 尚未获得
 custom_image_limit_error_title: 已达到自定义图片上限
-custom_image_limit_error_message: "每个角色最多可添加 {limit} 张自定义图片。支持者可无限添加，使用 /supporter 了解详情。"
+custom_image_limit_error_message: "每个角色最多可添加 {limit} 张自定义图片。赞助者可无限添加，使用 </sponsor> 了解详情。"
 ai_image_limit_error_title: 已达到每日 AI 图片上限
-ai_image_limit_error_message: "你每天最多可生成 {limit} 张 AI 图片，上限将在 {reset_time} 重置。支持者可无限生成，使用 /supporter 了解详情。"
-supporter_command_desc: 查看支持者福利及你的支持者状态
-supporter_embed.title: 支持者福利
-supporter_embed.description: "支持者帮助 Hoyo Buddy 维持运行、持续开发。为表感谢，支持者可享有以下福利："
+ai_image_limit_error_message: "你每天最多可生成 {limit} 张 AI 图片，上限将在 {reset_time} 重置。赞助者可无限生成，使用 </sponsor> 了解详情。"
+supporter_command_desc: 查看赞助者福利及你的赞助者状态
+supporter_embed.title: 赞助者福利
+supporter_embed.description: "赞助者帮助 Hoyo Buddy 维持运行、持续开发。为表感谢，赞助者可享有以下福利："
 supporter_embed.perk_auto_task_priority: "自动任务队列最高优先级（每日签到、兑换码兑换、旅行 Mimo 等）"
 supporter_embed.perk_accounts: "不限账号数量（免费用户：{limit} 个）"
 supporter_embed.perk_custom_images: "每个角色不限自定义图片数量（免费用户：{limit} 张）"
@@ -925,10 +925,10 @@ supporter_embed.perk_ai_images: "不限 AI 图片生成数量（免费用户：�
 supporter_embed.perk_auto_gacha_import: 每 6 小时自动导入抽卡记录（原神和绝区零）
 supporter_embed.perk_discord_role: Discord 服务器中的赞助者身份组
 supporter_embed.perk_discord_channel: 可访问 Discord 服务器中的赞助者专属频道
-supporter_embed.status_supporter: "你是支持者，感谢你的支持！"
-supporter_embed.status_not_supporter: 你还不是支持者。
+supporter_embed.status_supporter: "你是赞助者，感谢你的支持！"
+supporter_embed.status_not_supporter: 你还不是赞助者。
 card_settings_animated_image: 动态图片
-card_settings_animated_image_desc: "在卡片上使用角色的动态立绘。仅支持者可用，且仅适用于有动态立绘的角色：原神和绝区零支持样式 1，星穹铁道支持样式 1 和 2。原神卡片使用七圣召唤的动态卡面。使用 </supporter> 了解详情。"
+card_settings_animated_image_desc: "在卡片上使用角色的动态立绘。仅赞助者可用，且仅适用于有动态立绘的角色：原神和绝区零支持样式 1，星穹铁道支持样式 1 和 2。原神卡片使用七圣召唤的动态卡面。使用 </sponsor> 了解详情。"
 reminders_command_description: 设置实时便笺、刷本和网页活动提醒
 reminders_button_label: 提醒
 farm_reminder_title: 刷本提醒

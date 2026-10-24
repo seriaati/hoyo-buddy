@@ -838,7 +838,7 @@ account_settings_desc: "Cài đặt ở đây là duy nhất cho mỗi tài kho�
 public_account_desc: "Đặt tài khoản công khai\nNếu bật, người khác có thể xem dữ liệu tài khoản của bạn trong một số lệnh, như </profile>."
 daily_checkin_desc: "Tự động điểm danh hàng ngày\nTự động nhận phần thưởng trong sự kiện điểm danh web."
 redeem_code_desc: "Tự động đổi mã\nTự động đổi mã livestream và các mã quà khác. Nút bị vô hiệu hóa nếu bạn chưa đăng nhập bằng email và mật khẩu, xem [FAQ](:docs/FAQ:) để biết tại sao."
-auto_gacha_import_desc: "Tự động nhập nhật ký gacha\nTự động nhập nhật ký gacha mới mỗi 6 giờ. Chỉ dành cho người ủng hộ (xem </supporter>), chỉ khả dụng cho tài khoản HoYoLAB Genshin Impact và Zenless Zone Zero. Tài khoản Genshin Impact cần được đăng nhập bằng email và mật khẩu."
+auto_gacha_import_desc: "Tự động nhập nhật ký gacha\nTự động nhập nhật ký gacha mới mỗi 6 giờ. Chỉ dành cho nhà tài trợ (xem </sponsor>), chỉ khả dụng cho tài khoản HoYoLAB Genshin Impact và Zenless Zone Zero. Tài khoản Genshin Impact cần được đăng nhập bằng email và mật khẩu."
 accompany_settings_title: "Ghé thăm nhân vật"
 accompany_settings_desc: "Tự động ghé thăm một nhân vật HoYoLAB hằng ngày để nhận điểm ghé thăm và mở khóa các phần thưởng như hình nền và nhán dẵn. Chỉ dành cho tài khoản HoYoLAB."
 accompany_button_label: Tự động ghé thăm nhân vật
@@ -912,12 +912,12 @@ lunar_arcana_select_placeholder: Chọn thẻ...
 lunar_arcana_owned_count: "Đã có: ×{count}"
 lunar_arcana_card_locked: Chưa nhận
 custom_image_limit_error_title: Đã đạt giới hạn ảnh tự chọn
-custom_image_limit_error_message: "Bạn có thể thêm tối đa {limit} ảnh tự chọn cho mỗi nhân vật. Người ủng hộ có thể thêm bao nhiêu tùy thích, dùng /supporter để tìm hiểu thêm."
+custom_image_limit_error_message: "Bạn có thể thêm tối đa {limit} ảnh tự chọn cho mỗi nhân vật. Nhà tài trợ có thể thêm bao nhiêu tùy thích, dùng </sponsor> để tìm hiểu thêm."
 ai_image_limit_error_title: Đã đạt giới hạn ảnh AI hằng ngày
-ai_image_limit_error_message: "Bạn có thể tạo tối đa {limit} ảnh AI mỗi ngày, giới hạn sẽ được đặt lại {reset_time}. Người ủng hộ có thể tạo bao nhiêu tùy thích, dùng /supporter để tìm hiểu thêm."
-supporter_command_desc: Xem đặc quyền người ủng hộ và trạng thái ủng hộ của bạn
-supporter_embed.title: Đặc quyền người ủng hộ
-supporter_embed.description: "Người ủng hộ giúp Hoyo Buddy tiếp tục hoạt động và phát triển. Để cảm ơn, họ nhận được các đặc quyền sau:"
+ai_image_limit_error_message: "Bạn có thể tạo tối đa {limit} ảnh AI mỗi ngày, giới hạn sẽ được đặt lại {reset_time}. Nhà tài trợ có thể tạo bao nhiêu tùy thích, dùng </sponsor> để tìm hiểu thêm."
+supporter_command_desc: Xem đặc quyền nhà tài trợ và trạng thái tài trợ của bạn
+supporter_embed.title: Đặc quyền nhà tài trợ
+supporter_embed.description: "Nhà tài trợ giúp Hoyo Buddy tiếp tục hoạt động và phát triển. Để cảm ơn, họ nhận được các đặc quyền sau:"
 supporter_embed.perk_auto_task_priority: "Ưu tiên cao nhất trong hàng đợi tác vụ tự động (điểm danh hằng ngày, đổi mã quà, Mimo Du Lịch, v.v.)"
 supporter_embed.perk_accounts: "Không giới hạn số tài khoản (miễn phí: {limit})"
 supporter_embed.perk_custom_images: "Không giới hạn ảnh tự chọn cho mỗi nhân vật (miễn phí: {limit})"
@@ -925,10 +925,10 @@ supporter_embed.perk_ai_images: "Không giới hạn số lần tạo ảnh AI (
 supporter_embed.perk_auto_gacha_import: Tự động nhập nhật ký gacha mỗi 6 giờ (Genshin Impact và Zenless Zone Zero)
 supporter_embed.perk_discord_role: Vai trò Sponsor trong máy chủ Discord
 supporter_embed.perk_discord_channel: Quyền truy cập kênh dành riêng cho Sponsor trong máy chủ Discord
-supporter_embed.status_supporter: "Bạn là người ủng hộ, cảm ơn bạn!"
-supporter_embed.status_not_supporter: Bạn chưa phải là người ủng hộ.
+supporter_embed.status_supporter: "Bạn là nhà tài trợ, cảm ơn bạn!"
+supporter_embed.status_not_supporter: Bạn chưa phải là nhà tài trợ.
 card_settings_animated_image: Ảnh động
-card_settings_animated_image_desc: "Dùng ảnh động của nhân vật trên thẻ. Chỉ dành cho người ủng hộ, áp dụng với các nhân vật có ảnh động, trên Mẫu thẻ 1 đối với GI và ZZZ, Mẫu thẻ 1 và 2 đối với HSR. Thẻ GI dùng ảnh động từ lá bài Thất Thánh Triệu Hồi. Dùng </supporter> để tìm hiểu thêm."
+card_settings_animated_image_desc: "Dùng ảnh động của nhân vật trên thẻ. Chỉ dành cho nhà tài trợ, áp dụng với các nhân vật có ảnh động, trên Mẫu thẻ 1 đối với GI và ZZZ, Mẫu thẻ 1 và 2 đối với HSR. Thẻ GI dùng ảnh động từ lá bài Thất Thánh Triệu Hồi. Dùng </sponsor> để tìm hiểu thêm."
 reminders_command_description: "Thiết lập lời nhắc Ghi Chép Thời Gian Thực, cày nguyên liệu và sự kiện web"
 reminders_button_label: Lời nhắc
 farm_reminder_title: Nhắc nhở Cày

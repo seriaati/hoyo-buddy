@@ -838,7 +838,7 @@ account_settings_desc: "此處的設定對每個遊戲帳戶都是獨立的。"
 public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 1。"
 daily_checkin_desc: "自動每日簽到\n自動領取網頁簽到活動的獎勵。"
 redeem_code_desc: "自動兌換碼兌換\n自動兌換直播兌換碼和其他禮包碼。如果你沒有使用電子郵件和密碼登入，此按鈕將被停用，請參閱[常見問題](:docs/FAQ:)了解原因。"
-auto_gacha_import_desc: "自動導入抽卡紀錄\n每 6 小時自動導入新的抽卡紀錄。僅限贊助者使用（詳見 </supporter>），且僅適用於原神和絕區零的 HoYoLAB 帳戶。原神帳戶需使用電子郵件和密碼登入。"
+auto_gacha_import_desc: "自動導入抽卡紀錄\n每 6 小時自動導入新的抽卡紀錄。僅限贊助者使用（詳見 </sponsor>），且僅適用於原神和絕區零的 HoYoLAB 帳戶。原神帳戶需使用電子郵件和密碼登入。"
 accompany_settings_title: "角色陪伴"
 accompany_settings_desc: "每天自動陪伴一位 HoYoLAB 角色，賺取陪伴值並解鎖桌布、貼圖等獎勵。僅適用於 HoYoLAB 帳戶。"
 accompany_button_label: 自動角色陪伴
@@ -912,9 +912,9 @@ lunar_arcana_select_placeholder: 選擇一張聖牌…
 lunar_arcana_owned_count: "擁有：×{count}"
 lunar_arcana_card_locked: 尚未獲得
 custom_image_limit_error_title: 已達自訂圖片數量上限
-custom_image_limit_error_message: "每個角色最多可新增 {limit} 張自訂圖片。贊助者則沒有數量限制，使用 /supporter 了解更多。"
+custom_image_limit_error_message: "每個角色最多可新增 {limit} 張自訂圖片。贊助者則沒有數量限制，使用 </sponsor> 了解更多。"
 ai_image_limit_error_title: 已達每日 AI 圖片生成上限
-ai_image_limit_error_message: "每天最多可生成 {limit} 張 AI 圖片，上限將於 {reset_time} 重置。贊助者則沒有數量限制，使用 /supporter 了解更多。"
+ai_image_limit_error_message: "每天最多可生成 {limit} 張 AI 圖片，上限將於 {reset_time} 重置。贊助者則沒有數量限制，使用 </sponsor> 了解更多。"
 supporter_command_desc: 查看贊助者福利及你的贊助者狀態
 supporter_embed.title: 贊助者福利
 supporter_embed.description: "贊助者讓 Hoyo Buddy 得以持續運作和開發。為了表達感謝，贊助者可享有以下福利："
@@ -928,7 +928,7 @@ supporter_embed.perk_discord_channel: 可進入 Discord 伺服器中的贊助者
 supporter_embed.status_supporter: "你是贊助者，感謝你的支持！"
 supporter_embed.status_not_supporter: 你還不是贊助者。
 card_settings_animated_image: 動態圖片
-card_settings_animated_image_desc: "在卡片上使用角色的動態立繪。此功能僅限贊助者使用，且僅適用於擁有動態立繪的角色：原神和絕區零支援樣式 1，崩壞：星穹鐵道支援樣式 1 和 2。原神卡片使用七聖召喚的動態卡面。使用 </supporter> 了解更多。"
+card_settings_animated_image_desc: "在卡片上使用角色的動態立繪。此功能僅限贊助者使用，且僅適用於擁有動態立繪的角色：原神和絕區零支援樣式 1，崩壞：星穹鐵道支援樣式 1 和 2。原神卡片使用七聖召喚的動態卡面。使用 </sponsor> 了解更多。"
 reminders_command_description: 設定即時便籤、刷本和網頁活動通知
 reminders_button_label: 通知
 farm_reminder_title: 刷本通知

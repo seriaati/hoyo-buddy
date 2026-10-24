@@ -838,7 +838,7 @@ account_settings_desc: "Las configuraciones hehcas son únicas para cada cuenta 
 public_account_desc: "Establecer cuenta como pública\nSi está habilitado, otras personas pueden ver los datos de tu cuenta en algunos comandos, como </profile>."
 daily_checkin_desc: "Inicio de sesión diario automático\nReclama automáticamente recompensas en el evento de inicio de sesión web."
 redeem_code_desc: "Canje automático de códigos\nCanjea automáticamente códigos de transmisión en vivo y otros códigos de regalo. El botón está deshabilitado si no has iniciado sesión con correo electrónico y contraseña, consulta las [FAQ](:docs/FAQ:) para saber por qué."
-auto_gacha_import_desc: "Importación automática de registros del gacha\nImporta automáticamente los nuevos registros del gacha cada 6 horas. Exclusivo para colaboradores (consulta </supporter>), solo disponible para cuentas de HoYoLAB de Genshin Impact y Zenless Zone Zero. Las cuentas de Genshin Impact deben haber iniciado sesión con correo y contraseña."
+auto_gacha_import_desc: "Importación automática de registros del gacha\nImporta automáticamente los nuevos registros del gacha cada 6 horas. Exclusivo para patrocinadores (consulta </sponsor>), solo disponible para cuentas de HoYoLAB de Genshin Impact y Zenless Zone Zero. Las cuentas de Genshin Impact deben haber iniciado sesión con correo y contraseña."
 accompany_settings_title: "Acompañamiento de personajes"
 accompany_settings_desc: "Acompaña automáticamente a un personaje de HoYoLAB cada día para ganar puntos de acompañamiento y desbloquear recompensas como fondos de pantalla y stickers. Solo disponible para cuentas de HoYoLAB."
 accompany_button_label: Acompañamiento automático de personajes
@@ -912,12 +912,12 @@ lunar_arcana_select_placeholder: Selecciona una carta...
 lunar_arcana_owned_count: "Tienes: ×{count}"
 lunar_arcana_card_locked: Aún no obtenida
 custom_image_limit_error_title: Límite de imágenes personalizadas alcanzado
-custom_image_limit_error_message: "Puedes agregar hasta {limit} imágenes personalizadas por personaje. Los colaboradores pueden agregar todas las que quieran; usa /supporter para saber más."
+custom_image_limit_error_message: "Puedes agregar hasta {limit} imágenes personalizadas por personaje. Los patrocinadores pueden agregar todas las que quieran; usa </sponsor> para saber más."
 ai_image_limit_error_title: Límite diario de imágenes con IA alcanzado
-ai_image_limit_error_message: "Puedes generar hasta {limit} imágenes con IA al día; el límite se reinicia {reset_time}. Los colaboradores pueden generar todas las que quieran; usa /supporter para saber más."
-supporter_command_desc: Ver las ventajas de colaborador y tu estado de colaborador
-supporter_embed.title: Ventajas de colaborador
-supporter_embed.description: "Los colaboradores ayudan a que Hoyo Buddy siga funcionando y en desarrollo. Como agradecimiento, reciben estas ventajas:"
+ai_image_limit_error_message: "Puedes generar hasta {limit} imágenes con IA al día; el límite se reinicia {reset_time}. Los patrocinadores pueden generar todas las que quieran; usa </sponsor> para saber más."
+supporter_command_desc: Ver las ventajas de patrocinador y tu estado de patrocinador
+supporter_embed.title: Ventajas de patrocinador
+supporter_embed.description: "Los patrocinadores ayudan a que Hoyo Buddy siga funcionando y en desarrollo. Como agradecimiento, reciben estas ventajas:"
 supporter_embed.perk_auto_task_priority: "Máxima prioridad en las colas de tareas automáticas (login diario, canje de códigos, Mimo Viajero, etc.)"
 supporter_embed.perk_accounts: "Cuentas ilimitadas (gratis: {limit})"
 supporter_embed.perk_custom_images: "Imágenes personalizadas ilimitadas por personaje (gratis: {limit})"
@@ -925,10 +925,10 @@ supporter_embed.perk_ai_images: "Generación ilimitada de imágenes con IA (grat
 supporter_embed.perk_auto_gacha_import: Importación automática de registros del gacha cada 6 horas (Genshin Impact y Zenless Zone Zero)
 supporter_embed.perk_discord_role: Rol de patrocinador en el servidor de Discord
 supporter_embed.perk_discord_channel: Acceso al canal exclusivo para patrocinadores en el servidor de Discord
-supporter_embed.status_supporter: "Eres colaborador, ¡gracias!"
-supporter_embed.status_not_supporter: Aún no eres colaborador.
+supporter_embed.status_supporter: "Eres patrocinador, ¡gracias!"
+supporter_embed.status_not_supporter: Aún no eres patrocinador.
 card_settings_animated_image: Imagen animada
-card_settings_animated_image_desc: "Usa el arte animado del personaje en la tarjeta. Solo disponible para colaboradores y para personajes con arte animado, en la plantilla 1 para GI y ZZZ, y en las plantillas 1 y 2 para HSR. Las tarjetas de GI usan el arte animado de las cartas de Invocación de los Sabios. Usa </supporter> para saber más."
+card_settings_animated_image_desc: "Usa el arte animado del personaje en la tarjeta. Solo disponible para patrocinadores y para personajes con arte animado, en la plantilla 1 para GI y ZZZ, y en las plantillas 1 y 2 para HSR. Las tarjetas de GI usan el arte animado de las cartas de Invocación de los Sabios. Usa </sponsor> para saber más."
 reminders_command_description: "Configurar recordatorios de notas en tiempo real, de farmeo y de eventos web"
 reminders_button_label: Recordatorios
 farm_reminder_title: Recordatorios de farmeo

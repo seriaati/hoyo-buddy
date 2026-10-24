@@ -836,7 +836,7 @@ account_settings_desc: "ここの設定は各ゲームアカウントに固有�
 public_account_desc: "アカウントを公開に設定\n有効にすると、他の人が</profile>などの一部のコマンドでアカウントのデータを見ることができます。"
 daily_checkin_desc: "自動デイリーチェックイン\nウェブチェックインイベントで自動的に報酬を受け取ります。"
 redeem_code_desc: "自動コード引き換え\nライブストリームコードやその他のギフトコードを自動的に引き換えます。メールアドレスとパスワードでログインしていない場合、ボタンは無効になります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
-auto_gacha_import_desc: "自動ガチャ履歴インポート\n6時間ごとに新しいガチャ履歴を自動でインポートします。サポーター限定（</supporter> を参照）で、原神とゼンレスゾーンゼロのHoYoLABアカウントでのみ利用できます。原神アカウントはメールアドレスとパスワードでログインしている必要があります。"
+auto_gacha_import_desc: "自動ガチャ履歴インポート\n6時間ごとに新しいガチャ履歴を自動でインポートします。スポンサー限定（</sponsor> を参照）で、原神とゼンレスゾーンゼロのHoYoLABアカウントでのみ利用できます。原神アカウントはメールアドレスとパスワードでログインしている必要があります。"
 accompany_settings_title: "キャラクター同行"
 accompany_settings_desc: "毎日HoYoLABのキャラクターに自動で同行して同行ポイントを獲得し、壁紙やスタンプなどの報酬をアンロックします。HoYoLABアカウントのみ利用可能です。"
 accompany_button_label: キャラクター自動同行
@@ -910,12 +910,12 @@ lunar_arcana_select_placeholder: カードを選択...
 lunar_arcana_owned_count: "所持：×{count}"
 lunar_arcana_card_locked: 未入手
 custom_image_limit_error_title: カスタム画像の上限に達しました
-custom_image_limit_error_message: "カスタム画像はキャラクターごとに {limit} 枚まで追加できます。サポーターは無制限に追加できます。詳しくは /supporter で確認してください。"
+custom_image_limit_error_message: "カスタム画像はキャラクターごとに {limit} 枚まで追加できます。スポンサーは無制限に追加できます。詳しくは </sponsor> で確認してください。"
 ai_image_limit_error_title: 1日のAI画像生成上限に達しました
-ai_image_limit_error_message: "AI画像は1日に {limit} 枚まで生成できます。上限は {reset_time} にリセットされます。サポーターは無制限に生成できます。詳しくは /supporter で確認してください。"
-supporter_command_desc: サポーター特典と自分のサポーターステータスを表示します
-supporter_embed.title: サポーター特典
-supporter_embed.description: "サポーターはHoyo Buddyの運営と開発を支えています。その感謝のしるしとして、次の特典を受け取れます："
+ai_image_limit_error_message: "AI画像は1日に {limit} 枚まで生成できます。上限は {reset_time} にリセットされます。スポンサーは無制限に生成できます。詳しくは </sponsor> で確認してください。"
+supporter_command_desc: スポンサー特典と自分のスポンサーステータスを表示します
+supporter_embed.title: スポンサー特典
+supporter_embed.description: "スポンサーはHoyo Buddyの運営と開発を支えています。その感謝のしるしとして、次の特典を受け取れます："
 supporter_embed.perk_auto_task_priority: "自動タスクのキューで最優先（デイリーチェックイン、コード交換、トラベリングミモなど）"
 supporter_embed.perk_accounts: "アカウント数が無制限（無料：{limit}）"
 supporter_embed.perk_custom_images: "キャラクターごとのカスタム画像が無制限（無料：{limit}）"
@@ -923,10 +923,10 @@ supporter_embed.perk_ai_images: "AI画像生成が無制限（無料：1日 {lim
 supporter_embed.perk_auto_gacha_import: 6時間ごとのガチャ履歴自動インポート（原神、ゼンレスゾーンゼロ）
 supporter_embed.perk_discord_role: Discordサーバーでのスポンサーロール
 supporter_embed.perk_discord_channel: Discordサーバーのスポンサー限定チャンネルへのアクセス
-supporter_embed.status_supporter: "サポーター登録済みです。ありがとうございます！"
-supporter_embed.status_not_supporter: まだサポーターではありません。
+supporter_embed.status_supporter: "スポンサー登録済みです。ありがとうございます！"
+supporter_embed.status_not_supporter: まだスポンサーではありません。
 card_settings_animated_image: アニメーション画像
-card_settings_animated_image_desc: "キャラクターのアニメーションアートをカードに使用します。サポーター限定で、アニメーションアートがあるキャラクターのみ対象です。原神とZZZはテンプレート1、HSRはテンプレート1と2で利用できます。原神のカードには七聖召喚のアニメーションカードイラストを使用します。詳しくは </supporter> で確認してください。"
+card_settings_animated_image_desc: "キャラクターのアニメーションアートをカードに使用します。スポンサー限定で、アニメーションアートがあるキャラクターのみ対象です。原神とZZZはテンプレート1、HSRはテンプレート1と2で利用できます。原神のカードには七聖召喚のアニメーションカードイラストを使用します。詳しくは </sponsor> で確認してください。"
 reminders_command_description: リアルタイムノート、育成、ウェブイベントのリマインダーを設定します
 reminders_button_label: リマインダー
 farm_reminder_title: 育成リマインダー

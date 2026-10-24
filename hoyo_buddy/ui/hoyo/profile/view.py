@@ -1005,6 +1005,8 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 current = card_settings.skin_id
             else:
                 current = await self._get_in_game_skin_id(self.current_character) or DEFAULT_SKIN_ID
+            if current not in {skin.id for skin in skins}:
+                current = DEFAULT_SKIN_ID
             skin_select.set_options(skins, current=current)
             skin_select.translate(self.locale)
 

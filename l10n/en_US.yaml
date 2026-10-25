@@ -820,6 +820,7 @@ hard_challenge_combat_statistics: "Combat Statistics"
 hard_challenge_strongest_strike: "Strongest Strike"
 hard_challenge_damage_dealt: "Highest Total DMG"
 hard_challenge_enemy_weakness: "Enemy Weakness & Strength"
+hard_challenge_challenge_index: "Challenge {index}"
 hard_challenge_command_desc: Generate Stygian Onslaught card
 hard_challenge: "Stygian Onslaught"
 fetching_accounts: Please wait while we are getting your accounts...

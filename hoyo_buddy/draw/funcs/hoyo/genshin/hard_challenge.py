@@ -1,25 +1,210 @@
 from __future__ import annotations
 
+import colorsys
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import genshin
 import hakushin
+import numpy as np
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     import io
+    from collections.abc import Iterator
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import HardChallengeMode
 
-LIGHT_PURPLE = (196, 181, 253)
+type RGB = tuple[int, int, int]
+
+INK: RGB = (22, 23, 26)
+
+
+@dataclass(frozen=True, kw_only=True)
+class Theme:
+    ground: RGB
+    text: RGB
+    line: RGB
+    """Mixed into the band tint for dividers, borders and subtle fills."""
+    fallback_colors: tuple[RGB, RGB]
+    header_muted: float
+    muted: float
+    divider: float
+    avatar_fill: float
+    tag_fill: tuple[RGB, float]
+    rarity_tints: dict[int, tuple[RGB, float]]
+    level_strip: float
+    scrim: RGB | None
+    """Color of the fade at the bottom of the enemy art, None to use the band tint."""
+    scrim_start: float
+    scrim_alpha: int
+
+
+DARK_THEME = Theme(
+    ground=(13, 13, 15),
+    text=WHITE,
+    line=WHITE,
+    fallback_colors=((30, 30, 34), (210, 210, 220)),
+    header_muted=0.62,
+    muted=0.62,
+    divider=0.14,
+    avatar_fill=0.1,
+    tag_fill=(WHITE, 0.08),
+    rarity_tints={4: ((200, 180, 255), 0.14), 5: ((255, 214, 150), 0.16)},
+    level_strip=0.28,
+    scrim=BLACK,
+    scrim_start=0.55,
+    scrim_alpha=140,
+)
+LIGHT_THEME = Theme(
+    ground=(246, 245, 243),
+    text=INK,
+    line=INK,
+    fallback_colors=((226, 226, 230), (60, 62, 70)),
+    header_muted=0.66,
+    muted=0.7,
+    divider=0.12,
+    avatar_fill=0.06,
+    tag_fill=(WHITE, 0.65),
+    rarity_tints={4: ((150, 130, 210), 0.22), 5: ((214, 170, 100), 0.22)},
+    level_strip=0.06,
+    scrim=None,
+    scrim_start=0.3,
+    scrim_alpha=235,
+)
+
 LEYLINE_ICON_KEYWORD = "UI_LeyLineChallenge_Icon"
-LEYLINE_ICON_SIZE = (36, 36)
-DEFAULT_ICON_SIZE = (32, 32)
+LEYLINE_ICON_SIZE = (32, 32)
+DEFAULT_ICON_SIZE = (28, 28)
+
+CARD_WIDTH = 1600
+PADDING_X = 48
+PADDING_Y = 56
+HEADER_HEIGHT = 140
+HEADER_GAP = 32
+HEADER_LEFT = PADDING_X + 8
+HEADER_RIGHT = CARD_WIDTH - PADDING_X - 8
+MEDAL_SIZE = 108
+
+BAND_SIZE = (CARD_WIDTH - PADDING_X * 2, 400)
+BAND_GAP = 16
+BAND_RADIUS = 28
+ART_WIDTH = 440
+ART_CROP = (704, 640)
+"""Center crop of the 1024px HoYoLAB enemy art, which has a lot of empty space around the enemy."""
+
+CONTENT_X = ART_WIDTH + 16
+CONTENT_RIGHT = BAND_SIZE[0] - 40
+
+TILE_SIZE = (116, 148)
+TILE_GAP = 12
+TILE_RADIUS = 18
+TEAM_Y = 142
+
+DIVIDER_X = CONTENT_X + 4 * TILE_SIZE[0] + 3 * TILE_GAP + 32
+STATS_TOP = 134
+STATS_HEIGHT = 164
+STAT_X = DIVIDER_X + 32
+STAT_AVATAR_SIZE = 56
+STAT_TEXT_X = STAT_X + STAT_AVATAR_SIZE + 14
+STAT_CENTER_Y = 171
+STAT_ROW_STEP = 90
+
+TAG_Y = 322
+TAG_HEIGHT = 42
+TAG_GAP = 10
+TAG_SIGN_SIZE = 20
+
+
+def _mix(color: RGB, base: RGB, alpha: float) -> RGB:
+    return tuple(round(b * (1 - alpha) + c * alpha) for c, b in zip(color, base, strict=True))  # pyright: ignore[reportReturnType]
+
+
+def _hls(hue: float, lightness: float, saturation: float) -> RGB:
+    return tuple(round(c * 255) for c in colorsys.hls_to_rgb(hue, lightness, saturation))  # pyright: ignore[reportReturnType]
+
+
+def _rounded_rect(
+    size: tuple[int, int],
+    *,
+    radius: int,
+    fill: RGB | tuple[int, int, int, int],
+    outline: RGB | None = None,
+    width: int = 0,
+) -> Image.Image:
+    """Draw an anti-aliased rounded rectangle by supersampling."""
+    scale = 4
+    big = Image.new("RGBA", (size[0] * scale, size[1] * scale))
+    ImageDraw.Draw(big).rounded_rectangle(
+        (0, 0, big.width - 1, big.height - 1),
+        radius=radius * scale,
+        fill=fill,
+        outline=outline,
+        width=width * scale,
+    )
+    return big.resize(size, Image.Resampling.LANCZOS)
+
+
+def _round_corners(image: Image.Image, radius: int) -> Image.Image:
+    mask = _rounded_rect(image.size, radius=radius, fill=WHITE).getchannel("A")
+    image.putalpha(mask)
+    return image
+
+
+def _linear_mask(
+    size: tuple[int, int], *, horizontal: bool, start: float, max_alpha: int
+) -> Image.Image:
+    """Alpha ramp from 0 at `start` (fraction of the axis) to `max_alpha` at the end."""
+    length = size[0] if horizontal else size[1]
+    ramp = np.clip((np.linspace(0, 1, length) - start) / (1 - start), 0, 1) * max_alpha
+    arr = np.tile(ramp, (size[1], 1)) if horizontal else np.tile(ramp[:, None], (1, size[0]))
+    return Image.fromarray(arr.astype(np.uint8), "L")
+
+
+def _extract_hue(art: Image.Image) -> tuple[float, float] | None:
+    """Return the dominant hue and mean saturation of the enemy art.
+
+    Only fully opaque pixels are sampled so the translucent swirl behind the enemy is ignored.
+    """
+    thumb = art.copy()
+    thumb.thumbnail((128, 128))
+    opaque = np.asarray(thumb.getchannel("A")) > 250
+    if not opaque.any():
+        return None
+
+    hsv = np.asarray(thumb.convert("RGB").convert("HSV"), dtype=np.float64) / 255
+    hue, sat, val = (hsv[..., i][opaque] for i in range(3))
+    weight = sat * (val > 0.2)
+    if weight.sum() == 0:
+        return None
+
+    angle = hue * 2 * np.pi
+    mean_hue = (
+        float(
+            np.arctan2((np.sin(angle) * weight).sum(), (np.cos(angle) * weight).sum()) / (2 * np.pi)
+        )
+        % 1
+    )
+    return mean_hue, float(sat.mean())
+
+
+def _get_band_colors(art: Image.Image, theme: Theme) -> tuple[RGB, RGB]:
+    """Return the band tint and the accent color for text on it, based on the enemy art."""
+    extracted = _extract_hue(art)
+    if extracted is None:
+        return theme.fallback_colors
+
+    hue, sat = extracted
+    if theme is DARK_THEME:
+        return _hls(hue, 0.13, min(sat, 0.4)), _hls(hue, 0.78, min(max(sat * 2, 0.25), 0.7))
+    return _hls(hue, 0.89, min(max(sat * 1.2, 0.4), 0.7)), _hls(
+        hue, 0.3, min(max(sat * 1.2, 0.5), 0.75)
+    )
 
 
 class HardChallengeCard:
@@ -31,447 +216,383 @@ class HardChallengeCard:
         *,
         mode: HardChallengeMode,
         stygian_detail: hakushin.gi.StygianDetail,
+        dark_mode: bool,
     ) -> None:
         self._data = data
         self._uid = uid
         self._locale = locale
         self._mode = mode
-        self._stygian_detail = stygian_detail
+        self._dark_mode = dark_mode
+        self._theme = DARK_THEME if dark_mode else LIGHT_THEME
         self._enemy_recommendations = {
             enemy_id: enemy.recommendation
-            for level in self._stygian_detail.levels.values()
+            for level in stygian_detail.levels.values()
             for enemy_id, enemy in level.enemies.items()
             if enemy.recommendation is not None
         }
+        self._difficulty_names = {
+            level.difficulty_config.level: level.difficulty_config.name
+            for level in stygian_detail.levels.values()
+        }
 
-    def _write_period(self, drawer: Drawer) -> None:
-        season = self._data.season
-        period = LocaleStr(
-            key="hard_challenge_period",
-            period=f"{season.start_at.strftime('%Y.%m.%d')} - {season.end_at.strftime('%Y.%m.%d')}",
-        )
-        drawer.write(
-            period,
-            size=40,
-            position=(754, 64),
-            color=LIGHT_PURPLE,
-            anchor="mm",
+    @property
+    def _record(self) -> genshin.models.HardChallengeData:
+        return self._data.single_player if self._mode == "single" else self._data.multi_player
+
+    def _new_drawer(self, image: Image.Image) -> Drawer:
+        return Drawer(
+            ImageDraw.Draw(image),
+            folder="hard-challenge",
+            dark_mode=self._dark_mode,
             locale=self._locale,
         )
 
-    def _write_uid(self, drawer: Drawer) -> None:
-        drawer.write(
-            f"UID: {self._uid}", size=40, position=(754, 121), color=LIGHT_PURPLE, anchor="mm"
-        )
-
-    def _write_best_record(self, drawer: Drawer, im: Image.Image) -> None:
-        best_record = (
-            self._data.single_player.best_record
-            if self._mode == "single"
-            else self._data.multi_player.best_record
-        )
+    def _draw_best_record(self, drawer: Drawer, im: Image.Image) -> None:
+        best_record = self._record.best_record
         if best_record is None:
             return
 
-        icon = drawer.open_asset(f"{best_record.icon}.png", size=(100, 100))
-        im.paste(icon, (143, 289), icon)
+        medal = drawer.open_asset(f"{best_record.icon}.png", size=(MEDAL_SIZE, MEDAL_SIZE))
+        center_y = PADDING_Y + HEADER_HEIGHT // 2
+        im.alpha_composite(medal, (HEADER_LEFT, center_y - MEDAL_SIZE // 2))
 
         mode_key = "hard_challenge_type_1" if self._mode == "single" else "hard_challenge_type_2"
-        text = LocaleStr(
-            custom_str="{title} ({mode})",
+        difficulty = self._difficulty_names.get(best_record.difficulty)
+        label = LocaleStr(
+            custom_str="{title} · {mode}"
+            if difficulty is None
+            else "{title} · {mode} · {difficulty}",
             title=LocaleStr(key="role_combat_best_record", mi18n_game=Game.GENSHIN),
             mode=LocaleStr(key=mode_key, mi18n_game=Game.GENSHIN),
+            difficulty=difficulty,
         )
+
+        text_x = HEADER_LEFT + MEDAL_SIZE + 24
         drawer.write(
-            text,
-            size=48,
-            style="black",
-            position=(274, 338),
-            color=WHITE,
-            anchor="lm",
-            locale=self._locale,
-        )
-
-        second = f"{best_record.time_used}s"
-        drawer.write(
-            second, size=80, style="black", position=(1205, 338), color=(250, 191, 37), anchor="lm"
-        )
-
-    def _draw_challenge_team(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeChallenge,
-    ) -> None:
-        team_composition = LocaleStr(key="hard_challenge_team_composition")
-        tbox = drawer.write(
-            team_composition,
-            size=40,
-            style="bold",
-            position=(pos[0] + 48, pos[1] + 328),
-            color=LIGHT_PURPLE,
-            locale=self._locale,
-        )
-
-        flair = drawer.open_asset("char_flair.png")
-        bottom = drawer.open_asset("char_bottom.png")
-        mask = drawer.open_asset("char_mask.png")
-        five_bk = drawer.open_asset("char_5.png")
-        four_bk = drawer.open_asset("char_4.png")
-
-        original_pos = (pos[0] + 48, tbox.bottom + 34)
-
-        for i, char in enumerate(challenge.team):
-            char_pos = (original_pos[0] + (i * 185), original_pos[1])
-            bk = five_bk if char.rarity == 5 else four_bk
-            im.paste(bk, char_pos, bk)
-
-            char_icon = drawer.open_static(char.icon)
-            char_icon = drawer.resize_crop(char_icon, mask.size)
-            char_icon = drawer.mask_image_with_image(char_icon, mask)
-            im.paste(char_icon, char_pos, char_icon)
-
-            im.paste(flair, (char_pos[0] + 125, char_pos[1]), flair)
-            drawer.write(
-                str(char.constellation),
-                size=24,
-                style="bold",
-                position=(char_pos[0] + 125 + flair.width / 2, char_pos[1] + flair.height / 2),
-                color=WHITE,
-                anchor="mm",
-            )
-
-            im.paste(bottom, (char_pos[0], char_pos[1] + bk.height), bottom)
-            level = f"Lv.{char.level}"
-            drawer.write(
-                level,
-                size=24,
-                style="bold",
-                position=(
-                    char_pos[0] + bk.width // 2,
-                    char_pos[1] + bk.height + bottom.height // 2,
-                ),
-                color=WHITE,
-                anchor="mm",
-            )
-
-    def _draw_challenge_stat_box(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeChallenge,
-        char: genshin.models.HardChallengeBestCharacter,
-    ) -> None:
-        is_strike = char.type is genshin.models.HardChallengeBestCharacterType.STRIKE
-
-        stat_box_pos = (pos[0] + 873, pos[1] + 415 + (0 if is_strike else 245))
-        stat_box = drawer.open_asset("stat_box.png")
-
-        char_icon = next((c.icon for c in challenge.team if c.id == char.id), None)
-        if char_icon:
-            mask = drawer.open_asset("stat_char_mask.png")
-            char_icon = drawer.open_static(char_icon, size=(126, 126), opacity=0.3)
-            char_icon = drawer.mask_image_with_image(char_icon, mask)
-            stat_box.alpha_composite(char_icon, (306, 75))
-
-        im.paste(stat_box, stat_box_pos, stat_box)
-
-        text = (
-            LocaleStr(key="hard_challenge_strongest_strike")
-            if is_strike
-            else LocaleStr(key="hard_challenge_damage_dealt")
-        )
-
-        strike_tbox = drawer.write(
-            text,
-            size=32,
+            label,
+            size=26,
             style="medium",
-            position=(pos[0] + 959, pos[1] + 468 + (0 if is_strike else 245)),
-            color=LIGHT_PURPLE,
-            anchor="lm",
-            locale=self._locale,
-            max_width=327,
-            dynamic_fontsize=True,
+            sans=True,
+            position=(text_x, center_y - 41),
+            color=_mix(self._theme.text, self._theme.ground, self._theme.header_muted),
+            anchor="ls",
         )
-
-        icon = drawer.open_asset("zap.png" if is_strike else "target.png")
-        icon_pos = (
-            strike_tbox.left - 24 - icon.width,
-            strike_tbox.top + strike_tbox.height // 2 - icon.height // 2 - 5,
-        )
-        im.paste(icon, icon_pos, icon)
         drawer.write(
-            f"{int(char.value):,}",
-            size=64,
-            style="bold",
-            position=(icon_pos[0], icon_pos[1] + icon.height + 64),
-            color=WHITE,
-            anchor="lm",
-        )
-
-    def _create_pill(
-        self,
-        drawer: Drawer,
-        *,
-        is_advantage: bool,
-        text: LocaleStr | str,
-        icons: list[Image.Image] | None = None,
-    ) -> Image.Image:
-        if is_advantage:
-            pill_color = (45, 60, 85)
-            pill_border = (42, 101, 88)
-            text_color = (74, 222, 128)
-        else:
-            pill_color = (74, 35, 81)
-            pill_border = (106, 41, 79)
-            text_color = (248, 113, 113)
-
-        tbox = drawer.write(
-            text, size=24, style="medium", position=(0, 0), no_write=True, locale=self._locale
-        )
-
-        # Create a pill
-        x_padding = 25
-        y_padding = 10
-        icon_text_padding = 5
-        pill_width = tbox.width + x_padding * 2
-        pill_height = tbox.height + y_padding * 2
-
-        if icons is not None:
-            pill_width += sum(icon.width for icon in icons) + icon_text_padding * (len(icons) - 1)
-
-        pill = Image.new("RGBA", (pill_width, pill_height))
-        draw = ImageDraw.Draw(pill)
-        draw.rounded_rectangle(
-            [(0, 0), (pill_width, pill_height)],
-            radius=20,
-            fill=pill_color,
-            outline=pill_border,
-            width=2,
-        )
-
-        if icons is not None:
-            text_x = pill_width / 2  # Default value for empty icons list
-
-            for i, icon in enumerate(icons):
-                icon_pos = (
-                    x_padding + sum(icons[j].width + icon_text_padding for j in range(i)),
-                    (pill_height - icon.height) // 2,
-                )
-                pill.paste(icon, icon_pos, icon)
-                text_x = icon_pos[0] + icon.width + icon_text_padding + tbox.width / 2
-        else:
-            text_x = pill_width / 2
-
-        Drawer(draw, folder="hard-challenge", dark_mode=True).write(
-            text,
-            size=24,
-            style="medium",
-            position=(text_x, pill_height / 2),
-            color=text_color,
-            anchor="mm",
-            locale=self._locale,
-        )
-
-        return pill
-
-    def _draw_enemy_weakness(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        recommendation: str | None,
-        *,
-        is_advantage: bool,
-        start: tuple[tuple[int, int], int] | None = None,
-    ) -> tuple[tuple[int, int], int]:
-        pill_pos, line = start if start is not None else ((pos[0] + 48, pos[1] + 752), 1)
-        if recommendation is None:
-            return pill_pos, line
-
-        max_width = pos[0] + 48 + 776
-
-        for rec in recommendation.split(" | "):
-            rec_text = rec
-            icon_urls: list[str] = []
-            presets = hakushin.utils.extract_sprite_presets(rec)
-
-            for keyword, icon_url in presets:
-                rec_text = rec_text.replace("{" + keyword + "}", "").strip()
-                icon_urls.append(icon_url)
-
-            icons: list[Image.Image] = []
-            for icon_url in icon_urls:
-                icon = (
-                    drawer.open_static(
-                        icon_url,
-                        size=LEYLINE_ICON_SIZE
-                        if LEYLINE_ICON_KEYWORD in icon_url
-                        else DEFAULT_ICON_SIZE,
-                    )
-                    if icon_url
-                    else None
-                )
-                if icon is not None:
-                    icons.append(icon)
-
-            pill = self._create_pill(drawer, is_advantage=is_advantage, text=rec_text, icons=icons)
-            if pill_pos[0] + pill.width > max_width:
-                pill_pos = (pos[0] + 48, pill_pos[1] + pill.height + 25)
-                line += 1
-
-            if line > 3:
-                break  # Only draw up to 3 lines of pills
-
-            im.paste(pill, pill_pos, pill)
-            pill_pos = (pill_pos[0] + pill.width + 16, pill_pos[1])
-
-        return pill_pos, line
-
-    def _draw_enemy_weaknesses(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        recommendation: hakushin.gi.StygianEnemyRecommendation,
-    ) -> None:
-        text = LocaleStr(key="hard_challenge_enemy_weakness")
-        drawer.write(
-            text,
-            size=40,
-            style="bold",
-            position=(pos[0] + 48, pos[1] + 667),
-            color=LIGHT_PURPLE,
-            locale=self._locale,
-        )
-
-        state = self._draw_enemy_weakness(
-            drawer, im, pos, recommendation.recommend, is_advantage=True
-        )
-        self._draw_enemy_weakness(
-            drawer, im, pos, recommendation.dont_recommend, is_advantage=False, start=state
-        )
-
-    def _draw_challenge_stats(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeChallenge,
-    ) -> None:
-        stats = LocaleStr(key="hard_challenge_combat_statistics")
-        drawer.write(
-            stats,
-            size=40,
-            style="bold",
-            position=(pos[0] + 873, pos[1] + 328),
-            color=LIGHT_PURPLE,
-            locale=self._locale,
-            max_width=404,
-            dynamic_fontsize=True,
-        )
-
-        strike = next(
-            (
-                s
-                for s in challenge.best_characters
-                if s.type is genshin.models.HardChallengeBestCharacterType.STRIKE
-            ),
-            None,
-        )
-        if strike is not None:
-            self._draw_challenge_stat_box(drawer, im, pos, challenge, strike)
-
-        damage = next(
-            (
-                s
-                for s in challenge.best_characters
-                if s.type is genshin.models.HardChallengeBestCharacterType.DAMAGE
-            ),
-            None,
-        )
-        if damage is not None:
-            self._draw_challenge_stat_box(drawer, im, pos, challenge, damage)
-
-    def _draw_challenge(
-        self,
-        drawer: Drawer,
-        im: Image.Image,
-        pos: tuple[int, int],
-        challenge: genshin.models.HardChallengeChallenge,
-    ) -> None:
-        bk = drawer.open_asset("monster_bk.png")
-        im.paste(bk, pos, bk)
-
-        monster_icon = drawer.open_static(challenge.enemy.icon, size=(769, 769))
-        color1, color2 = drawer.extract_main_colors(monster_icon)
-
-        mask = drawer.open_asset("monster_mask.png")
-        gradient = drawer.draw_gradient_background(
-            width=mask.width,
-            height=mask.height,
-            color1=color1,
-            color2=color2,
-            pos1=(0.0, 0.5),
-            pos2=(1.0, 0.5),
-        )
-        gradient_masked = drawer.mask_image_with_image(gradient, mask)
-        gradient_masked.paste(monster_icon, (-143, -214), monster_icon)
-        im.paste(gradient_masked, pos, gradient_masked)
-
-        time_used = f"{challenge.time_used}s"
-        drawer.write(
-            time_used,
+            f"{best_record.time_used}s",
             size=96,
             style="black",
-            position=(pos[0] + 1308, pos[1] + 106),
-            color=WHITE,
-            anchor="rm",
+            position=(text_x, center_y + 50),
+            color=self._theme.text,
+            anchor="ls",
         )
 
-        text = LocaleStr(key="hard_challenge_completion_time")
-        tbox = drawer.write(
+    def _draw_season(self, drawer: Drawer) -> None:
+        season = self._data.season
+        center_y = PADDING_Y + HEADER_HEIGHT // 2
+        drawer.write(
+            season.name,
+            size=38,
+            style="bold",
+            position=(HEADER_RIGHT, center_y - 9),
+            color=self._theme.text,
+            anchor="rs",
+            max_width=760,
+            dynamic_fontsize=True,
+        )
+        period = f"{season.start_at:%Y.%m.%d} - {season.end_at:%Y.%m.%d}"
+        drawer.write(
+            f"{period} · UID {self._uid}",
+            size=26,
+            sans=True,
+            position=(HEADER_RIGHT, center_y + 38),
+            color=_mix(self._theme.text, self._theme.ground, self._theme.header_muted),
+            anchor="rs",
+        )
+
+    def _draw_art(
+        self, drawer: Drawer, band: Image.Image, art: Image.Image, tint: RGB, time_used: int
+    ) -> None:
+        art = Drawer.resize_crop(art, (ART_WIDTH, BAND_SIZE[1]))
+        band.alpha_composite(art)
+
+        theme = self._theme
+        scrim = Image.new("RGBA", art.size, theme.scrim or tint)
+        scrim.putalpha(
+            _linear_mask(
+                art.size, horizontal=False, start=theme.scrim_start, max_alpha=theme.scrim_alpha
+            )
+        )
+        band.alpha_composite(scrim)
+
+        fade = Image.new("RGBA", art.size, tint)
+        fade.putalpha(_linear_mask(art.size, horizontal=True, start=0.45, max_alpha=255))
+        band.alpha_composite(fade)
+
+        drawer.write(
+            f"{time_used}s",
+            size=112,
+            style="black",
+            position=(32, BAND_SIZE[1] - 43),
+            color=theme.text,
+            anchor="ls",
+        )
+
+    def _write_band_title(
+        self,
+        drawer: Drawer,
+        challenge: genshin.models.HardChallengeChallenge,
+        index: int,
+        highlight: RGB,
+    ) -> None:
+        label = LocaleStr(
+            custom_str="{challenge} · Lv.{level}",
+            challenge=LocaleStr(key="hard_challenge_challenge_index", index=index + 1),
+            level=challenge.enemy.level,
+        )
+        drawer.write(
+            label,
+            size=22,
+            style="bold",
+            sans=True,
+            position=(CONTENT_X, 58),
+            color=highlight,
+            anchor="ls",
+        )
+        drawer.write(
+            challenge.enemy.name,
+            size=34,
+            style="bold",
+            position=(CONTENT_X, 103),
+            color=self._theme.text,
+            anchor="ls",
+            max_width=CONTENT_RIGHT - CONTENT_X,
+            dynamic_fontsize=True,
+        )
+
+    def _draw_character_tile(
+        self, character: genshin.models.HardChallengeCharacter, tint: RGB
+    ) -> Image.Image:
+        rarity_color, rarity_alpha = self._theme.rarity_tints[4 if character.rarity == 4 else 5]
+        base = _mix(rarity_color, tint, rarity_alpha)
+        width, height = TILE_SIZE
+
+        tile = Image.new("RGBA", TILE_SIZE, base)
+        draw = ImageDraw.Draw(tile)
+        draw.rectangle((0, width, width, height), fill=_mix(BLACK, base, self._theme.level_strip))
+        tile.alpha_composite(Drawer.open_static(character.icon, size=(width, width)))
+
+        drawer = self._new_drawer(tile)
+        drawer.write(
+            f"Lv.{character.level}",
+            size=20,
+            style="bold",
+            sans=True,
+            position=(width / 2, width + (height - width) / 2),
+            color=self._theme.text,
+            anchor="mm",
+        )
+
+        const = str(character.constellation)
+        tbox = drawer.write(const, size=20, style="bold", sans=True, position=(0, 0), no_write=True)
+        box_size = (max(28, tbox.width + 16), 29)
+        box = _rounded_rect(box_size, radius=8, fill=(0, 0, 0, 178))
+        box_pos = (width - 6 - box_size[0], 6)
+        tile.alpha_composite(box, box_pos)
+        drawer.write(
+            const,
+            size=20,
+            style="bold",
+            sans=True,
+            position=(box_pos[0] + box_size[0] / 2, box_pos[1] + box_size[1] / 2),
+            color=WHITE,
+            anchor="mm",
+        )
+
+        return _round_corners(tile, TILE_RADIUS)
+
+    def _draw_stat(
+        self,
+        drawer: Drawer,
+        band: Image.Image,
+        challenge: genshin.models.HardChallengeChallenge,
+        best: genshin.models.HardChallengeBestCharacter,
+        tint: RGB,
+    ) -> None:
+        is_strike = best.type is genshin.models.HardChallengeBestCharacterType.STRIKE
+        center_y = STAT_CENTER_Y + (0 if is_strike else STAT_ROW_STEP)
+
+        avatar_pos = (STAT_X, center_y - STAT_AVATAR_SIZE // 2)
+        avatar_size = (STAT_AVATAR_SIZE, STAT_AVATAR_SIZE)
+        band.alpha_composite(
+            _rounded_rect(
+                avatar_size,
+                radius=STAT_AVATAR_SIZE // 2,
+                fill=_mix(self._theme.line, tint, self._theme.avatar_fill),
+            ),
+            avatar_pos,
+        )
+        icon_url = next((c.icon for c in challenge.team if c.id == best.id), None)
+        if icon_url is not None:
+            icon = Drawer.circular_crop(Drawer.open_static(icon_url, size=avatar_size))
+            band.alpha_composite(icon, avatar_pos)
+
+        label = LocaleStr(
+            key="hard_challenge_strongest_strike" if is_strike else "hard_challenge_damage_dealt"
+        )
+        drawer.write(
+            label,
+            size=22,
+            sans=True,
+            position=(STAT_TEXT_X, center_y - 15),
+            color=_mix(self._theme.text, tint, self._theme.muted),
+            anchor="ls",
+            max_width=CONTENT_RIGHT - STAT_TEXT_X,
+            dynamic_fontsize=True,
+        )
+        drawer.write(
+            f"{int(best.value):,}",
+            size=40,
+            style="bold",
+            position=(STAT_TEXT_X, center_y + 28),
+            color=self._theme.text,
+            anchor="ls",
+        )
+
+    def _iter_tags(
+        self, recommendation: hakushin.gi.StygianEnemyRecommendation
+    ) -> Iterator[tuple[str, list[Image.Image], bool]]:
+        for text, is_advantage in (
+            (recommendation.recommend, True),
+            (recommendation.dont_recommend, False),
+        ):
+            if text is None:
+                continue
+
+            for rec in text.split(" | "):
+                rec_text = rec
+                icons: list[Image.Image] = []
+                for keyword, icon_url in hakushin.utils.extract_sprite_presets(rec):
+                    rec_text = rec_text.replace("{" + keyword + "}", "")
+                    if not icon_url:
+                        continue
+                    size = (
+                        LEYLINE_ICON_SIZE if LEYLINE_ICON_KEYWORD in icon_url else DEFAULT_ICON_SIZE
+                    )
+                    icons.append(Drawer.open_static(icon_url, size=size))
+                yield rec_text.strip(), icons, is_advantage
+
+    def _create_tag(
+        self,
+        drawer: Drawer,
+        text: str,
+        icons: list[Image.Image],
+        *,
+        is_advantage: bool,
+        tint: RGB,
+        highlight: RGB,
+    ) -> Image.Image:
+        theme = self._theme
+        muted = _mix(theme.text, tint, theme.muted)
+        text_color = theme.text if is_advantage else muted
+        tbox = drawer.write(text, size=22, style="bold", sans=True, position=(0, 0), no_write=True)
+        gap = 8
+        width = 16 + TAG_SIGN_SIZE + gap + sum(icon.width + gap for icon in icons) + tbox.width + 16
+
+        fill_color, fill_alpha = theme.tag_fill
+        tag = _rounded_rect(
+            (width, TAG_HEIGHT),
+            radius=TAG_HEIGHT // 2,
+            fill=_mix(fill_color, tint, fill_alpha) if is_advantage else tint,
+            outline=_mix(theme.line, tint, theme.divider),
+            width=2,
+        )
+        center_y = TAG_HEIGHT // 2
+        sign = drawer.open_asset(
+            "thumbs_up.png" if is_advantage else "thumbs_down.png",
+            size=(TAG_SIGN_SIZE, TAG_SIGN_SIZE),
+            mask_color=highlight if is_advantage else muted,
+        )
+        tag.alpha_composite(sign, (16, center_y - TAG_SIGN_SIZE // 2))
+
+        x = 16 + TAG_SIGN_SIZE + gap
+        for icon in icons:
+            tag.alpha_composite(icon, (x, center_y - icon.height // 2))
+            x += icon.width + gap
+
+        self._new_drawer(tag).write(
             text,
-            size=32,
-            style="medium",
-            position=(pos[0] + 1309, pos[1] + 193),
-            color=WHITE,
-            anchor="rm",
-            locale=self._locale,
+            size=22,
+            style="bold",
+            sans=True,
+            position=(x, center_y),
+            color=text_color,
+            anchor="lm",
         )
+        return tag
 
-        clock = drawer.open_asset("clock.png")
-        im.paste(
-            clock,
-            (tbox.left - 20 - clock.width, tbox.top + tbox.height // 2 - clock.height // 2),
-            clock,
+    def _draw_tags(
+        self,
+        drawer: Drawer,
+        band: Image.Image,
+        recommendation: hakushin.gi.StygianEnemyRecommendation,
+        tint: RGB,
+        highlight: RGB,
+    ) -> None:
+        x = CONTENT_X
+        for text, icons, is_advantage in self._iter_tags(recommendation):
+            tag = self._create_tag(
+                drawer, text, icons, is_advantage=is_advantage, tint=tint, highlight=highlight
+            )
+            if x + tag.width > CONTENT_RIGHT:
+                break
+            band.alpha_composite(tag, (x, TAG_Y))
+            x += tag.width + TAG_GAP
+
+    def _draw_band(
+        self, challenge: genshin.models.HardChallengeChallenge, index: int
+    ) -> Image.Image:
+        art = Drawer.middle_crop(Drawer.open_static(challenge.enemy.icon), ART_CROP)
+        tint, highlight = _get_band_colors(art, self._theme)
+
+        band = Image.new("RGBA", BAND_SIZE, tint)
+        drawer = self._new_drawer(band)
+
+        self._draw_art(drawer, band, art, tint, challenge.time_used)
+        self._write_band_title(drawer, challenge, index, highlight)
+
+        for i, character in enumerate(challenge.team):
+            tile = self._draw_character_tile(character, tint)
+            band.alpha_composite(tile, (CONTENT_X + i * (TILE_SIZE[0] + TILE_GAP), TEAM_Y))
+
+        drawer.draw.line(
+            (DIVIDER_X, STATS_TOP, DIVIDER_X, STATS_TOP + STATS_HEIGHT),
+            fill=_mix(self._theme.line, tint, self._theme.divider),
+            width=1,
         )
-
-        self._draw_challenge_team(drawer, im, pos, challenge)
-        self._draw_challenge_stats(drawer, im, pos, challenge)
+        for best in challenge.best_characters:
+            self._draw_stat(drawer, band, challenge, best, tint)
 
         recommendation = self._enemy_recommendations.get(challenge.enemy.id)
         if recommendation is not None:
-            self._draw_enemy_weaknesses(drawer, im, pos, recommendation)
+            self._draw_tags(drawer, band, recommendation, tint, highlight)
+
+        return _round_corners(band, BAND_RADIUS)
 
     def draw(self) -> io.BytesIO:
-        background = Drawer.open_image("hoyo-buddy-assets/assets/hard-challenge/bk.png")
-        drawer = Drawer(
-            ImageDraw.Draw(background), folder="hard-challenge", dark_mode=True, sans=True
-        )
+        challenges = self._record.challenges
+        bands_height = len(challenges) * (BAND_SIZE[1] + BAND_GAP) - BAND_GAP if challenges else 0
+        gap = HEADER_GAP if challenges else 0
+        height = PADDING_Y * 2 + HEADER_HEIGHT + gap + bands_height
 
-        self._write_period(drawer)
-        self._write_uid(drawer)
-        self._write_best_record(drawer, background)
+        im = Image.new("RGBA", (CARD_WIDTH, height), self._theme.ground)
+        drawer = self._new_drawer(im)
 
-        challenges = (
-            self._data.single_player.challenges
-            if self._mode == "single"
-            else self._data.multi_player.challenges
-        )
+        self._draw_best_record(drawer, im)
+        self._draw_season(drawer)
+
+        y = PADDING_Y + HEADER_HEIGHT + HEADER_GAP
         for i, challenge in enumerate(challenges):
-            self._draw_challenge(drawer, background, pos=(77, 492 + i * 1005), challenge=challenge)
+            im.alpha_composite(self._draw_band(challenge, i), (PADDING_X, y))
+            y += BAND_SIZE[1] + BAND_GAP
 
-        return drawer.save_image(background)
+        return drawer.save_image(im)

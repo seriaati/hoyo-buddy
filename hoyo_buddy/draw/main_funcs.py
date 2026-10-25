@@ -938,7 +938,12 @@ async def draw_hard_challenge(
     await download_images(urls, draw_input.session)
 
     card = funcs.genshin.HardChallengeCard(
-        data, uid, draw_input.locale, mode=mode, stygian_detail=stygian_detail
+        data,
+        uid,
+        draw_input.locale,
+        mode=mode,
+        stygian_detail=stygian_detail,
+        dark_mode=draw_input.dark_mode,
     )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)

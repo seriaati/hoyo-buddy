@@ -1225,6 +1225,14 @@ def get_open_game_url(*, region: OpenGameRegion, game: OpenGameGame) -> URL:
 AUTO_REDEEM_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 MIMO_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 MIMO_AUTO_DRAW_SUPPORT_GAMES = (Game.STARRAIL, Game.ZZZ)
+MIMO_AUTO_FINISH_TASK_TYPES: Final[set[int | genshin.models.MimoTaskType]] = {
+    genshin.models.MimoTaskType.FINISHABLE,
+    genshin.models.MimoTaskType.TRAILER,
+    genshin.models.MimoTaskType.VISIT,
+    genshin.models.MimoTaskType.VIEW_TOPIC,
+    genshin.models.MimoTaskType.GI_COMMUNITY,
+    genshin.models.MimoTaskType.GI_VIDEO,
+}
 AUTO_GACHA_IMPORT_SUPPORT_GAMES = (Game.GENSHIN, Game.ZZZ)
 ACCOMPANY_SUPPORT_GAMES = (Game.GENSHIN, Game.STARRAIL, Game.ZZZ)
 AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {

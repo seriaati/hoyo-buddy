@@ -24,6 +24,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_HOYO_LANG,
     MANIKEN_BOY_GACHA_ART,
     MANIKEN_GIRL_GACHA_ART,
+    MIMO_AUTO_FINISH_TASK_TYPES,
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
@@ -793,14 +794,7 @@ class GenshinClient(ProxyGenshinClient):
             if task.status is not genshin.models.MimoTaskStatus.ONGOING:
                 continue
 
-            if task.type in {
-                genshin.models.MimoTaskType.FINISHABLE,
-                genshin.models.MimoTaskType.TRAILER,
-                genshin.models.MimoTaskType.VISIT,
-                genshin.models.MimoTaskType.VIEW_TOPIC,
-                genshin.models.MimoTaskType.GI_COMMUNITY,
-                genshin.models.MimoTaskType.GI_VIDEO,
-            }:
+            if task.type in MIMO_AUTO_FINISH_TASK_TYPES:
                 try:
                     await self.finish_mimo_task(task.id, game_id=game_id, version_id=version_id)
                     await sleep("mimo_task")

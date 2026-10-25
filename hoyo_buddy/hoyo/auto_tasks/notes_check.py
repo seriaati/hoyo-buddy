@@ -9,6 +9,7 @@ import discord
 import genshin
 from genshin.models import HonkaiNotes, StarRailNote, VideoStoreState, ZZZNotes
 from genshin.models import Notes as GenshinNotes
+from genshin.models.zzz.chronicle.notes import BenchState, ExpeditionState, ShelveStoreState
 
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import NotesNotify, draw_locale
@@ -40,6 +41,15 @@ if TYPE_CHECKING:
     from hoyo_buddy.embeds import ErrorEmbed
 
 Notes: TypeAlias = GenshinNotes | HonkaiNotes | StarRailNote | ZZZNotes
+
+TEMPLE_IDLE_STATE_KEYS: dict[ExpeditionState | BenchState | ShelveStoreState | str, str] = {
+    ExpeditionState.CAN_SEND: "can_expedition",
+    ExpeditionState.ENDED: "can_receive",
+    BenchState.CAN_PRODUCE: "can_produce",
+    ShelveStoreState.CAN_SELL: "can_sell",
+    ShelveStoreState.SOLD_OUT: "wait_restock",
+}
+"""Suibian Temple states that need the player's attention, mapped to their mi18n keys."""
 
 
 class NotesChecker:
@@ -205,6 +215,15 @@ class NotesChecker:
                     title=LocaleStr(key="weekly_task_point", mi18n_game=Game.ZZZ),
                     description=LocaleStr(key="ridu_points.embed.description"),
                 )
+            case NotesNotifyType.SUIBIAN_TEMPLE:
+                assert isinstance(notes, ZZZNotes)
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(key="taoist_title", mi18n_game=Game.ZZZ),
+                    description=LocaleStr(key="suibian_temple.embed.description"),
+                )
+                for state in cls._get_idle_temple_states(notes):
+                    embed.add_description(state)
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -479,6 +498,46 @@ class NotesChecker:
         return None
 
     @classmethod
+    def _get_idle_temple_states(cls, notes: ZZZNotes) -> list[LocaleStr]:
+        """Get the Suibian Temple activities that need the player's attention."""
+        temple = notes.temple_running
+        if temple.auto_work is not None:
+            if temple.auto_work.auto_work_ended:
+                return [
+                    LocaleStr(
+                        custom_str="- {label}: {state}",
+                        label=LocaleStr(key="auto_hosting", mi18n_game=Game.ZZZ),
+                        state=LocaleStr(key="finished", mi18n_game=Game.ZZZ),
+                    )
+                ]
+            return []
+
+        activities = (
+            ("bangboo_expedition", temple.expedition_state),
+            ("production", temple.bench_state),
+            ("sale", temple.shelve_state),
+        )
+        return [
+            LocaleStr(
+                custom_str="- {label}: {state}",
+                label=LocaleStr(key=label, mi18n_game=Game.ZZZ),
+                state=LocaleStr(key=state_key, mi18n_game=Game.ZZZ),
+            )
+            for label, state in activities
+            if (state_key := TEMPLE_IDLE_STATE_KEYS.get(state)) is not None
+        ]
+
+    @classmethod
+    async def _process_suibian_temple(cls, notify: NotesNotify, notes: ZZZNotes) -> None:
+        """Process Suibian Temple notification."""
+        if not cls._get_idle_temple_states(notes):
+            return await cls._reset_notif_count(notify)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes)
+        return None
+
+    @classmethod
     async def _process_notify(
         cls,
         notify: NotesNotify,
@@ -528,6 +587,9 @@ class NotesChecker:
             case NotesNotifyType.RIDU_POINTS:
                 assert isinstance(notes, ZZZNotes)
                 await cls._process_ridu_points(notify, notes)
+            case NotesNotifyType.SUIBIAN_TEMPLE:
+                assert isinstance(notes, ZZZNotes)
+                await cls._process_suibian_temple(notify, notes)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:

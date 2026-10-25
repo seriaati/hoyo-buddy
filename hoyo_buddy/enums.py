@@ -58,6 +58,8 @@ class NotesNotifyType(IntEnum):
     """ZZZ bounty commissions"""
     RIDU_POINTS = 19
     """ZZZ Ridu weekly points"""
+    SUIBIAN_TEMPLE = 20
+    """ZZZ Suibian Temple Management"""
 
 
 class TalentBoost(IntEnum):

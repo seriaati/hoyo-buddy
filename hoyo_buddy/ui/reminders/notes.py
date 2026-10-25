@@ -57,6 +57,7 @@ NOTIFY_TYPE_TO_MODAL_TYPE: dict[NotesNotifyType, type[ReminderModal]] = {
     NotesNotifyType.STAMINA: modals.TypeOneModal,
     NotesNotifyType.RIDU_POINTS: modals.TypeFourModal,
     NotesNotifyType.ZZZ_BOUNTY: modals.TypeFourModal,
+    NotesNotifyType.SUIBIAN_TEMPLE: modals.TypeTwoModal,
 }
 
 NOTIFY_TYPE_MODAL_KWARGS: dict[NotesNotifyType | tuple[NotesNotifyType, ...], dict[str, Any]] = {
@@ -143,6 +144,12 @@ NOTIFY_TYPE_MODAL_KWARGS: dict[NotesNotifyType | tuple[NotesNotifyType, ...], di
         ),
         "min_notify_interval": 60,
     },
+    NotesNotifyType.SUIBIAN_TEMPLE: {
+        "title": LocaleStr(
+            key="reminder_modal.title", notify=LocaleStr(key="taoist_title", mi18n_game=Game.ZZZ)
+        ),
+        "min_notify_interval": 30,
+    },
 }
 
 NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
@@ -163,6 +170,7 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
     NotesNotifyType.VIDEO_STORE: 30,
     NotesNotifyType.RIDU_POINTS: 60,
     NotesNotifyType.ZZZ_BOUNTY: 60,
+    NotesNotifyType.SUIBIAN_TEMPLE: 30,
     NotesNotifyType.STAMINA: 10,
 }
 
@@ -506,6 +514,7 @@ class ZZZReminderContainer(BaseReminderContainer):
         video_store_notify: NotesNotify | None,
         ridu_points_notify: NotesNotify | None,
         bounty_comm_notify: NotesNotify | None,
+        suibian_temple_notify: NotesNotify | None,
     ) -> None:
         items: tuple[ReminderItem, ...] = (
             ReminderItem(
@@ -539,6 +548,11 @@ class ZZZReminderContainer(BaseReminderContainer):
                 title=LocaleStr(key="bounty_commission", mi18n_game=Game.ZZZ),
                 notify=bounty_comm_notify,
                 notify_type=NotesNotifyType.ZZZ_BOUNTY,
+            ),
+            ReminderItem(
+                title=LocaleStr(key="taoist_title", mi18n_game=Game.ZZZ),
+                notify=suibian_temple_notify,
+                notify_type=NotesNotifyType.SUIBIAN_TEMPLE,
             ),
         )
         super().__init__(items)
@@ -618,6 +632,9 @@ class ReminderContainer:
                 ),
                 bounty_comm_notify=await NotesNotify.get_or_none(
                     account=account, type=NotesNotifyType.ZZZ_BOUNTY
+                ),
+                suibian_temple_notify=await NotesNotify.get_or_none(
+                    account=account, type=NotesNotifyType.SUIBIAN_TEMPLE
                 ),
             )
 

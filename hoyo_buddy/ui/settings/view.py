@@ -111,7 +111,10 @@ class SettingsView(ui.LayoutView):
 
         if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
             return await AccompanySettingsContainer.create(
-                account=account, locale=self.locale, page_index=self.accompany_page_index
+                account=account,
+                locale=self.locale,
+                page_index=self.accompany_page_index,
+                is_supporter=await is_supporter(account.user_id),
             )
 
         if self.category is SettingsCategory.NOTIFICATION_SETTINGS:

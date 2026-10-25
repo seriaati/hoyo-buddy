@@ -6,7 +6,7 @@ import discord
 from loguru import logger
 
 from hoyo_buddy import ui
-from hoyo_buddy.constants import locale_to_hoyo_lang
+from hoyo_buddy.constants import SPONSOR_ACCOMPANY_CHARACTER_LIMIT, locale_to_hoyo_lang
 from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils.misc import is_valid_hex_color, shorten_preserving_newlines
@@ -33,6 +33,7 @@ class AccompanyView(ui.LayoutView):
         account: HoyoAccount,
         characters: Sequence[genshin.models.AccompanyCharacter],
         character: genshin.models.AccompanyCharacter,
+        is_supporter: bool,
         author: User,
         locale: Locale,
     ) -> None:
@@ -41,6 +42,7 @@ class AccompanyView(ui.LayoutView):
         self.account = account
         self.characters = characters
         self.character = character
+        self.is_supporter = is_supporter
         self.details: genshin.models.AccompanyCharacterDetails | None = None
 
         self.character_page_index = 0
@@ -73,6 +75,7 @@ class AccompanyView(ui.LayoutView):
                 voice_index=self.voice_index,
                 voice_page_index=self.voice_page_index,
                 character_page_index=self.character_page_index,
+                is_supporter=self.is_supporter,
             )
         )
 
@@ -103,6 +106,7 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         voice_index: int,
         voice_page_index: int,
         character_page_index: int,
+        is_supporter: bool,
     ) -> None:
         info, profile = character.info, character.profile
         items: list[ContainerItem] = [
@@ -131,7 +135,7 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         items.extend(
             (
                 discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
-                *self._build_set_character_items(account, characters, character),
+                *self._build_set_character_items(account, characters, character, is_supporter),
                 discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
                 ui.ActionRow(
                     CharacterSwitchSelect(
@@ -261,28 +265,34 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         account: HoyoAccount,
         characters: Sequence[genshin.models.AccompanyCharacter],
         character: genshin.models.AccompanyCharacter,
+        is_supporter: bool,
     ) -> tuple[
         ui.TextDisplay, discord.ui.Separator, ui.ActionRow, discord.ui.Separator, ui.Section
     ]:
-        current_character = next(
-            (c for c in characters if c.info.role_id == account.accompany_role_id), None
-        )
+        selected_role_ids = [
+            c["role_id"] for c in account.get_accompany_characters(is_supporter=is_supporter)
+        ]
+        characters_by_id = {c.info.role_id: c for c in characters}
+        selected = [characters_by_id[r] for r in selected_role_ids if r in characters_by_id]
         return (
             ui.TextDisplay(
                 LocaleStr(
                     custom_str="### {title}\n{desc}",
                     title=LocaleStr(key="accompany_settings_title"),
                     desc=LocaleStr(
-                        key="accompany_selected_character", character=current_character.info.name
+                        key="accompany_selected_character",
+                        character=", ".join(c.info.name for c in selected),
                     )
-                    if current_character is not None
+                    if selected
                     else LocaleStr(key="accompany_view_no_character_set"),
                 )
             ),
             discord.ui.Separator(spacing=discord.SeparatorSpacing.small, visible=False),
             ui.ActionRow(
                 SetAccompanyCharacterButton(
-                    disabled=account.accompany_role_id == character.info.role_id
+                    is_supporter=is_supporter,
+                    is_selected=character.info.role_id in selected_role_ids,
+                    is_full=len(account.accompany_characters) >= SPONSOR_ACCOMPANY_CHARACTER_LIMIT,
                 )
             ),
             discord.ui.Separator(spacing=discord.SeparatorSpacing.small, visible=False),
@@ -295,7 +305,7 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
                     )
                 ),
                 accessory=AutoAccompanyToggleButton(
-                    current=account.accompany_checkin, disabled=account.accompany_role_id is None
+                    current=account.accompany_checkin, disabled=not account.accompany_characters
                 ),
             ),
         )
@@ -422,19 +432,37 @@ class AccompanyNowButton(ui.Button["AccompanyView"]):
 
 
 class SetAccompanyCharacterButton(ui.Button["AccompanyView"]):
-    def __init__(self, *, disabled: bool) -> None:
-        super().__init__(
-            label=LocaleStr(key="accompany_set_character_button_label"),
-            style=discord.ButtonStyle.primary,
-            disabled=disabled,
-        )
+    def __init__(self, *, is_supporter: bool, is_selected: bool, is_full: bool) -> None:
+        self.is_supporter = is_supporter
+        self.is_selected = is_selected
+
+        if not is_supporter:
+            label = LocaleStr(key="accompany_set_character_button_label")
+            style, disabled = discord.ButtonStyle.primary, is_selected
+        elif is_selected:
+            label = LocaleStr(key="accompany_remove_character_button_label")
+            style, disabled = discord.ButtonStyle.danger, False
+        else:
+            label = LocaleStr(key="accompany_add_character_button_label")
+            style, disabled = discord.ButtonStyle.primary, is_full
+
+        super().__init__(label=label, style=style, disabled=disabled)
 
     async def callback(self, i: Interaction) -> None:
         account = self.view.account
-        character = self.view.character
-        account.accompany_role_id = character.info.role_id
-        account.accompany_topic_id = character.info.topic_id
-        await account.save(update_fields=("accompany_role_id", "accompany_topic_id"))
+        info = self.view.character.info
+        entry = {"role_id": info.role_id, "topic_id": info.topic_id}
+
+        if not self.is_supporter:
+            account.accompany_characters = [entry]
+        elif self.is_selected:
+            account.accompany_characters = [
+                c for c in account.accompany_characters if c["role_id"] != info.role_id
+            ]
+        else:
+            account.accompany_characters = [*account.accompany_characters, entry]
+
+        await account.save(update_fields=("accompany_characters",))
         await self.view.update(i)
 
 

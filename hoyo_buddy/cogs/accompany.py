@@ -16,7 +16,7 @@ from hoyo_buddy.constants import (
     get_rename_kwargs,
     locale_to_hoyo_lang,
 )
-from hoyo_buddy.db import get_locale
+from hoyo_buddy.db import get_locale, is_supporter
 from hoyo_buddy.db.models import HoyoAccount, JSONFile
 from hoyo_buddy.exceptions import AutocompleteNotDoneYetError, InvalidQueryError
 from hoyo_buddy.hoyo.clients.gpy import ProxyGenshinClient
@@ -168,7 +168,12 @@ class Accompany(commands.Cog):
             chosen = chosen_
 
         view = AccompanyView(
-            account=account, characters=characters, character=chosen, author=i.user, locale=locale
+            account=account,
+            characters=characters,
+            character=chosen,
+            is_supporter=await is_supporter(account.user_id),
+            author=i.user,
+            locale=locale,
         )
         await view.start(i)
 

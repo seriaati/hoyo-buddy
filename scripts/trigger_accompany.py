@@ -4,13 +4,13 @@ Usage:
     uv run scripts/trigger_accompany.py [--uid UID]
 
 Without --uid: runs the full AccompanyCheckin.execute(), honoring all queue
-filters (HoYoLAB + Genshin/HSR/ZZZ, accompany_checkin enabled, a character
-selected, and not already run today in UTC+8), then prints the accompany
+filters (HoYoLAB + Genshin/HSR/ZZZ, accompany_checkin enabled, at least one
+character selected, and not already run today in UTC+8), then prints the accompany
 embeds it created.
 
 With --uid: directly calls AccompanyCheckin._accompany() on that single
 account, bypassing the queue filters so it can be re-run freely, and prints
-the resulting embed.
+the resulting embeds.
 
 The task writes results to the discordembed table; the actual DM is sent
 later by EmbedSender on the bot process.
@@ -68,12 +68,12 @@ async def main() -> None:
 
         logger.info(
             f"Direct accompany for {account} | game={account.game} region={account.region} "
-            f"role_id={account.accompany_role_id}"
+            f"characters={account.accompany_characters}"
         )
-        embed = await AccompanyCheckin._accompany(account)  # noqa: SLF001
-        if embed is None:
+        embeds = await AccompanyCheckin._accompany(account)  # noqa: SLF001
+        if not embeds:
             logger.info("Already accompanied today or no points gained, no notification")
-        else:
+        for embed in embeds:
             logger.info(f"Result embed: {embed.to_dict()}")
 
 

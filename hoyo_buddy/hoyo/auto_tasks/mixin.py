@@ -78,7 +78,7 @@ class AutoTaskMixin:
 
         # Accompany-specific: Only process accounts that have a character selected
         if task_type == "accompany":
-            query &= Q(accompany_role_id__isnull=False)
+            query &= ~Q(accompany_characters=[])
 
         supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
         logger.debug(f"Supporter IDs: {supporter_ids}")

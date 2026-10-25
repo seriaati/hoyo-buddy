@@ -60,9 +60,9 @@ class HoyoAccount(BaseModel):
     notifs: fields.ReverseRelation[NotesNotify]
     farm_notifs: fields.BackwardOneToOneRelation[FarmNotify]
 
-    # Character accompany (HoYoLAB only): the character chosen for the auto accompany task
-    accompany_role_id: fields.Field[int | None] = fields.IntField(null=True)
-    accompany_topic_id: fields.Field[int | None] = fields.IntField(null=True)
+    # Character accompany (HoYoLAB only): the characters chosen for the auto accompany task,
+    # each as {"role_id": int, "topic_id": int}. Only the first one is used for non-sponsors.
+    accompany_characters: fields.Field[list[dict[str, int]]] = fields.JSONField(default=[])
 
     # Last completed time for each auto task
     # Future me: Make sure to change AUTO_TASK_LAST_TIME_FIELDS in constants.py if you modify this section
@@ -121,6 +121,10 @@ class HoyoAccount(BaseModel):
     @cached_property
     def dict_cookies(self) -> dict[str, str]:
         return genshin.parse_cookie(self.cookies)
+
+    def get_accompany_characters(self, *, is_supporter: bool) -> list[dict[str, int]]:
+        """Characters to auto accompany, non-sponsors are limited to the first one."""
+        return self.accompany_characters if is_supporter else self.accompany_characters[:1]
 
     @cached_property
     def can_use_cookie_token(self) -> bool:

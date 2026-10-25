@@ -10,6 +10,7 @@ from loguru import logger
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, CONCURRENT_TASK_NUM, MAX_PROXY_ERROR_NUM
 from hoyo_buddy.db.models import DiscordEmbed
+from hoyo_buddy.db.utils import is_supporter
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.utils import capture_exception, error_handler, get_now, sleep
@@ -70,7 +71,7 @@ class AccompanyCheckin(AutoTaskMixin):
 
             try:
                 await account.fetch_related("user", "user__settings")
-                embed = await cls._accompany(account)
+                embeds = await cls._accompany(account)
             except Exception as e:
                 with error_handler():
                     if cls._error_counts[account.id] >= MAX_PROXY_ERROR_NUM:
@@ -89,7 +90,7 @@ class AccompanyCheckin(AutoTaskMixin):
                         await queue.put(account)
             else:
                 cls._count += 1
-                if embed is not None:
+                for embed in embeds:
                     await DiscordEmbed.create(
                         embed, user_id=account.user.id, account_id=account.id, task_type="accompany"
                     )
@@ -101,33 +102,41 @@ class AccompanyCheckin(AutoTaskMixin):
                 queue.task_done()
 
     @classmethod
-    async def _accompany(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
+    async def _accompany(cls, account: HoyoAccount) -> list[DefaultEmbed | ErrorEmbed]:
         locale = account.user.settings.locale or Locale.american_english
+        characters = account.get_accompany_characters(
+            is_supporter=await is_supporter(account.user_id)
+        )
+        embeds: list[DefaultEmbed | ErrorEmbed] = []
 
-        try:
-            client = account.client
-            client.use_proxy = True
-            client.set_lang(locale)
+        client = account.client
+        client.use_proxy = True
+        client.set_lang(locale)
 
-            details = await client.get_accompany_character_details(
-                topic_id=account.accompany_topic_id  # pyright: ignore[reportArgumentType]
-            )
-            if details.accompany_info.accompanied_today:
-                return None
+        for index, character in enumerate(characters):
+            if index > 0:
+                await sleep("accompany")
 
-            result = await client.accompany_character(
-                role_id=account.accompany_role_id,  # pyright: ignore[reportArgumentType]
-                topic_id=account.accompany_topic_id,  # pyright: ignore[reportArgumentType]
-            )
-            if result.points_increased == 0:
-                return None
+            try:
+                details = await client.get_accompany_character_details(
+                    topic_id=character["topic_id"]
+                )
+                if details.accompany_info.accompanied_today:
+                    continue
 
-            embed = client.get_accompany_embed(result, details.info.name, locale)
-        except Exception as e:
-            embed, recognized = get_error_embed(e, locale)
-            if not recognized:
-                raise
-            embed.add_acc_info(account, blur=False)
-            return embed
-        else:
-            return embed
+                result = await client.accompany_character(
+                    role_id=character["role_id"], topic_id=character["topic_id"]
+                )
+                if result.points_increased == 0:
+                    continue
+
+                embeds.append(client.get_accompany_embed(result, details.info.name, locale))
+            except Exception as e:
+                embed, recognized = get_error_embed(e, locale)
+                if not recognized:
+                    raise
+                embed.add_acc_info(account, blur=False)
+                embeds.append(embed)
+                break
+
+        return embeds

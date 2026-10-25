@@ -17,6 +17,7 @@ from hoyo_buddy.constants import (
     FREE_CUSTOM_IMAGE_LIMIT,
     IMAGE_EXTENSIONS,
     INSTALL_URL,
+    SPONSOR_ACCOMPANY_CHARACTER_LIMIT,
     get_docs_url,
 )
 from hoyo_buddy.db import Settings as UserSettings
@@ -293,6 +294,9 @@ class Others(commands.Cog):
             LocaleStr(key="supporter_embed.perk_custom_images", limit=FREE_CUSTOM_IMAGE_LIMIT),
             LocaleStr(key="supporter_embed.perk_ai_images", limit=FREE_AI_IMAGE_DAILY_LIMIT),
             LocaleStr(key="supporter_embed.perk_auto_gacha_import"),
+            LocaleStr(
+                key="supporter_embed.perk_multi_accompany", limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT
+            ),
             LocaleStr(key="supporter_embed.perk_discord_role"),
             LocaleStr(key="supporter_embed.perk_discord_channel"),
         )

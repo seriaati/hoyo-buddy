@@ -841,6 +841,7 @@ accompany_button_label: Auto character accompany
 accompany_selected_character: "Currently accompanying: {character}"
 accompany_no_character_selected: "Select a character below to enable this feature."
 accompany_character_select_placeholder: Select a character to accompany
+accompany_characters_select_placeholder: "Select up to {limit} characters to accompany"
 accompany_cmd_desc: View HoYoLAB accompany characters and set yours
 accompany_cmd_character_param_name: character
 accompany_cmd_character_param_desc: "Character to view, defaults to the first available one"
@@ -855,6 +856,8 @@ accompany_voice_lang_select_placeholder: Select a voice language
 accompany_voice_line_select_placeholder: Select a voice line
 accompany_view_no_character_set: You haven't set an accompany character yet.
 accompany_set_character_button_label: Set as accompany character
+accompany_add_character_button_label: Add to auto accompany
+accompany_remove_character_button_label: Remove from auto accompany
 accompany_now_button_label: Accompany now
 accompany_view_character_select_placeholder: Select a character to view
 user_settings_title: "User Settings"
@@ -919,6 +922,7 @@ supporter_embed.perk_accounts: "Unlimited accounts (free: {limit})"
 supporter_embed.perk_custom_images: "Unlimited custom images per character (free: {limit})"
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
+supporter_embed.perk_multi_accompany: "Auto accompany up to {limit} characters per account (free: 1)"
 supporter_embed.perk_discord_role: Sponsor role in the Discord server
 supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server
 supporter_embed.status_supporter: "You're a sponsor, thank you!"

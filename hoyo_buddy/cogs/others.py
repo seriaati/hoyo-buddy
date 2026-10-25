@@ -11,12 +11,11 @@ from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import IMAGE_EXTENSIONS, INSTALL_URL, get_docs_url
+from hoyo_buddy.constants import INSTALL_URL, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.utils import get_locale
-from hoyo_buddy.exceptions import NotAnImageError
 from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.ui.sponsor import get_sponsor_perks_message
 from hoyo_buddy.utils.misc import get_changelog_url, parse_changelog, shorten_preserving_newlines
@@ -26,7 +25,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..types import Interaction
 from ..ui import Button, View
-from ..utils import ephemeral, get_discord_user_md_link, upload_image
+from ..utils import ephemeral, get_discord_user_md_link
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
@@ -210,21 +209,6 @@ class Others(commands.Cog):
         view.message = await i.edit_original_response(
             embed=embed, attachments=[image_], view=view, content=await get_dyk(i)
         )
-
-    @app_commands.command(
-        name=app_commands.locale_str("upload"), description=COMMANDS["upload"].description
-    )
-    @app_commands.rename(image=app_commands.locale_str("image", key="upload_cmd_image_param_name"))
-    @app_commands.describe(
-        image=app_commands.locale_str("Image to upload", key="upload_cmd_image_param_desc")
-    )
-    async def upload_command(self, i: Interaction, image: discord.Attachment) -> None:
-        if not any(image.filename.endswith(ext) for ext in IMAGE_EXTENSIONS):
-            raise NotAnImageError
-
-        await i.response.defer(ephemeral=ephemeral(i))
-        url = await upload_image(i.client.session, image_url=image.url)
-        await i.followup.send(f"<{url}>", ephemeral=True)
 
     @app_commands.command(
         name=app_commands.locale_str("invite"), description=COMMANDS["invite"].description

@@ -52,7 +52,6 @@ type CommandName = Literal[
     "profile zzz",
     "accounts",
     "about",
-    "upload",
     "settings",
     "reminders",
     "search genshin",
@@ -279,12 +278,6 @@ COMMANDS: dict[CommandName, CommandConfig] = {
     ),
     "about": CommandConfig(
         description=locale_str("About the bot", key="about_command_description")
-    ),
-    "upload": CommandConfig(
-        description=locale_str(
-            "Upload an image and get a link to it, which can be used in custom image in /profile",
-            key="upload_cmd_desc",
-        )
     ),
     "profile genshin": CommandConfig(
         games=(Game.GENSHIN,),

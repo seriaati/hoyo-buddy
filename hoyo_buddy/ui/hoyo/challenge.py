@@ -61,7 +61,9 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import Buff, ChallengeWithLang, HardChallengeMode, Interaction
 
 ShowUIDChallenge: TypeAlias = (
-    ShiyuDefense
+    SpiralAbyss
+    | ImgTheaterData
+    | ShiyuDefense
     | ShiyuDefenseV2
     | DeadlyAssault
     | HardChallenge
@@ -469,7 +471,7 @@ class ChallengeView(ui.LayoutView):
 
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_funcs.draw_spiral_abyss_card(
-                draw_input, self.challenge, self.characters
+                draw_input, self.challenge, self.characters, uid
             )
         if isinstance(self.challenge, StarRailChallenge):
             return await draw_funcs.draw_moc_card(
@@ -490,6 +492,7 @@ class ChallengeView(ui.LayoutView):
                 self.challenge,
                 {chara.id: chara.constellation for chara in self.characters},
                 traveler.element if traveler is not None else None,
+                uid,
             )
         if isinstance(self.challenge, DeadlyAssault):
             return await draw_funcs.draw_assault_card(draw_input, self.challenge, uid)

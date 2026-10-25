@@ -312,7 +312,10 @@ async def draw_hsr_characters_card(
 
 
 async def draw_spiral_abyss_card(
-    draw_input: DrawInput, abyss: SpiralAbyss, characters: Sequence[genshin.models.Character]
+    draw_input: DrawInput,
+    abyss: SpiralAbyss,
+    characters: Sequence[genshin.models.Character],
+    uid: int | None,
 ) -> File:
     async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
@@ -347,6 +350,7 @@ async def draw_spiral_abyss_card(
         character_icons=character_icons,
         character_ranks=character_ranks,
         traveler_element=traveler.element if traveler is not None else None,
+        uid=uid,
     )
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
@@ -421,6 +425,7 @@ async def draw_img_theater_card(
     data: ImgTheaterData,
     chara_consts: dict[int, int],
     traveler_element: str | None,
+    uid: int | None,
 ) -> File:
     async with ambr.AmbrAPI(session=draw_input.session) as api:
         character_icons = {
@@ -447,7 +452,7 @@ async def draw_img_theater_card(
     buffer = await draw_input.loop.run_in_executor(
         draw_input.executor,
         funcs.genshin.ImgTheaterCard(
-            data, chara_consts, character_icons, draw_input.locale, traveler_element
+            data, chara_consts, character_icons, draw_input.locale, traveler_element, uid
         ).draw,
     )
 

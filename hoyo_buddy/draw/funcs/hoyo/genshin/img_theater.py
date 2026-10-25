@@ -25,12 +25,14 @@ class ImgTheaterCard:
         character_icons: dict[str, str],
         locale: str,
         traveler_element: str | None,
+        uid: int | None,
     ) -> None:
         self._theater = theater
         self._chara_consts = chara_consts
         self._character_icons = character_icons
         self._dark_mode = True  # To write white colored texts
         self._traveler_element = traveler_element
+        self._uid = uid
 
         self._asset_dir = "hoyo-buddy-assets/assets/img-theater"
         self._drawer: Drawer
@@ -55,8 +57,11 @@ class ImgTheaterCard:
             total_cast_time = "N/A"
 
         schedule = self._theater.schedule
+        period = f"{schedule.start_datetime.strftime('%Y/%m/%d')} ~ {schedule.end_datetime.strftime('%Y/%m/%d')}"
+        if self._uid is not None:
+            period += f"  ·  UID: {self._uid}"
         lines = (
-            f"{schedule.start_datetime.strftime('%Y/%m/%d')} ~ {schedule.end_datetime.strftime('%Y/%m/%d')}",
+            period,
             LocaleStr(
                 key="total_coin_consumed",
                 mi18n_game=Game.GENSHIN,

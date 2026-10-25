@@ -26,12 +26,14 @@ class SpiralAbyssCard:
         character_icons: dict[str, str],
         character_ranks: dict[int, int],
         traveler_element: str | None,
+        uid: int | None,
     ) -> None:
         self._data = data
         self._locale = locale
         self._character_icons = character_icons
         self._character_ranks = character_ranks
         self._traveler_element = traveler_element
+        self._uid = uid
 
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -46,6 +48,10 @@ class SpiralAbyssCard:
             max_width=1622,
             dynamic_fontsize=True,
         )
+        if self._uid is not None:
+            self.drawer.write(
+                f"UID: {self._uid}", size=48, style="medium", position=(3026, 305), anchor="rm"
+            )
 
     def write_damage_info(self) -> None:
         self.drawer.write(

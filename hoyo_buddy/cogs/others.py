@@ -11,21 +11,14 @@ from loguru import logger
 
 from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import (
-    FREE_ACCOUNT_LIMIT,
-    FREE_AI_IMAGE_DAILY_LIMIT,
-    FREE_CUSTOM_IMAGE_LIMIT,
-    IMAGE_EXTENSIONS,
-    INSTALL_URL,
-    SPONSOR_ACCOMPANY_CHARACTER_LIMIT,
-    get_docs_url,
-)
+from hoyo_buddy.constants import IMAGE_EXTENSIONS, INSTALL_URL, get_docs_url
 from hoyo_buddy.db import Settings as UserSettings
-from hoyo_buddy.db import get_dyk, is_supporter
+from hoyo_buddy.db import get_dyk
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.utils import get_locale
 from hoyo_buddy.exceptions import NotAnImageError
 from hoyo_buddy.ui.paginator import Page, PaginatorView
+from hoyo_buddy.ui.sponsor import get_sponsor_perks_message
 from hoyo_buddy.utils.misc import get_changelog_url, parse_changelog, shorten_preserving_newlines
 
 from ..embeds import DefaultEmbed
@@ -288,37 +281,7 @@ class Others(commands.Cog):
     )
     async def sponsor_command(self, i: Interaction) -> None:
         locale = await get_locale(i)
-        perks = (
-            LocaleStr(key="supporter_embed.perk_auto_task_priority"),
-            LocaleStr(key="supporter_embed.perk_accounts", limit=FREE_ACCOUNT_LIMIT),
-            LocaleStr(key="supporter_embed.perk_custom_images", limit=FREE_CUSTOM_IMAGE_LIMIT),
-            LocaleStr(key="supporter_embed.perk_ai_images", limit=FREE_AI_IMAGE_DAILY_LIMIT),
-            LocaleStr(key="supporter_embed.perk_auto_gacha_import"),
-            LocaleStr(
-                key="supporter_embed.perk_multi_accompany", limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT
-            ),
-            LocaleStr(key="supporter_embed.perk_discord_role"),
-            LocaleStr(key="supporter_embed.perk_discord_channel"),
-        )
-        description = LocaleStr(key="supporter_embed.description").translate(locale)
-        description += "\n" + "\n".join(f"- {perk.translate(locale)}" for perk in perks)
-
-        status_key = (
-            "supporter_embed.status_supporter"
-            if await is_supporter(i.user.id)
-            else "supporter_embed.status_not_supporter"
-        )
-        description += f"\n\n**{LocaleStr(key=status_key).translate(locale)}**"
-
-        embed = DefaultEmbed(
-            locale=locale, title=LocaleStr(key="supporter_embed.title"), description=description
-        )
-        view = View(locale=locale, author=None)
-        view.add_item(
-            Button(
-                label=LocaleStr(key="about_command.support"), url="https://link.seria.moe/donate"
-            )
-        )
+        embed, view = await get_sponsor_perks_message(i.user.id, locale)
         await i.response.send_message(embed=embed, view=view, ephemeral=True)
 
 

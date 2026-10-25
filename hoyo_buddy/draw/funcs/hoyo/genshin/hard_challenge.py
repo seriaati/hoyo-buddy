@@ -27,6 +27,7 @@ INK: RGB = (22, 23, 26)
 
 @dataclass(frozen=True, kw_only=True)
 class Theme:
+    dark: bool
     ground: RGB
     text: RGB
     line: RGB
@@ -46,6 +47,7 @@ class Theme:
 
 
 DARK_THEME = Theme(
+    dark=True,
     ground=(13, 13, 15),
     text=WHITE,
     line=WHITE,
@@ -62,6 +64,7 @@ DARK_THEME = Theme(
     scrim_alpha=140,
 )
 LIGHT_THEME = Theme(
+    dark=False,
     ground=(246, 245, 243),
     text=INK,
     line=INK,
@@ -200,7 +203,7 @@ def _get_band_colors(art: Image.Image, theme: Theme) -> tuple[RGB, RGB]:
         return theme.fallback_colors
 
     hue, sat = extracted
-    if theme is DARK_THEME:
+    if theme.dark:
         return _hls(hue, 0.13, min(sat, 0.4)), _hls(hue, 0.78, min(max(sat * 2, 0.25), 0.7))
     return _hls(hue, 0.89, min(max(sat * 1.2, 0.4), 0.7)), _hls(
         hue, 0.3, min(max(sat * 1.2, 0.5), 0.75)

@@ -60,6 +60,8 @@ class NotesNotifyType(IntEnum):
     """ZZZ Ridu weekly points"""
     SUIBIAN_TEMPLE = 20
     """ZZZ Suibian Temple Management"""
+    MIMO_TASK = 21
+    """Traveling Mimo tasks"""
 
 
 class TalentBoost(IntEnum):

@@ -786,6 +786,7 @@ dismissible_hsr_temp2_desc: "You can now use the new Hoyo Buddy template 2 for H
 bounty_commission.embed.description: Bounty commissions not completed yet
 ridu_points.embed.description: Ridu weekly tasks not completed yet
 suibian_temple.embed.description: Suibian Temple needs your attention
+mimo_task.embed.description: Traveling Mimo tasks are not completed yet
 changelog_embed_title: Changelog
 web_events_notify_toggle_label: Notify on new web events
 web_events_cmd_desc: View ongoing web events and set notifier

@@ -7,12 +7,22 @@ from typing import TYPE_CHECKING, ClassVar, TypeAlias
 
 import discord
 import genshin
-from genshin.models import HonkaiNotes, StarRailNote, VideoStoreState, ZZZNotes
+from genshin.models import (
+    HonkaiNotes,
+    MimoTask,
+    MimoTaskStatus,
+    MimoTaskType,
+    StarRailNote,
+    VideoStoreState,
+    ZZZNotes,
+)
 from genshin.models import Notes as GenshinNotes
 from genshin.models.zzz.chronicle.notes import BenchState, ExpeditionState, ShelveStoreState
+from seria.utils import create_bullet_list
 
 from hoyo_buddy.bot.error_handler import get_error_embed
-from hoyo_buddy.db import NotesNotify, draw_locale
+from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, MIMO_AUTO_FINISH_TASK_TYPES
+from hoyo_buddy.db import HoyoAccount, NotesNotify, draw_locale
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, Locale, NotesNotifyType
@@ -30,7 +40,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui import View
 from hoyo_buddy.ui.hoyo.notes.view import NotesView
-from hoyo_buddy.utils import get_now, sleep
+from hoyo_buddy.utils import get_mimo_task_str, get_now, sleep
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -50,6 +60,9 @@ TEMPLE_IDLE_STATE_KEYS: dict[ExpeditionState | BenchState | ShelveStoreState | s
     ShelveStoreState.SOLD_OUT: "wait_restock",
 }
 """Suibian Temple states that need the player's attention, mapped to their mi18n keys."""
+
+MIMO_DAILY_TASK_TIME_TYPE = 1
+MIMO_WEEKLY_TASK_TIME_TYPE = 2
 
 
 class NotesChecker:
@@ -78,7 +91,11 @@ class NotesChecker:
 
     @classmethod
     def _get_notify_embed(
-        cls, notify: NotesNotify, notes: Notes | None, locale: Locale
+        cls,
+        notify: NotesNotify,
+        notes: Notes | None,
+        locale: Locale,
+        mimo_tasks: Sequence[MimoTask] | None = None,
     ) -> DefaultEmbed:
         match notify.type:
             case NotesNotifyType.RESIN:
@@ -224,6 +241,22 @@ class NotesChecker:
                 )
                 for state in cls._get_idle_temple_states(notes):
                     embed.add_description(state)
+            case NotesNotifyType.MIMO_TASK:
+                assert mimo_tasks is not None
+                embed = DefaultEmbed(
+                    locale,
+                    title=LocaleStr(
+                        custom_str="{mimo_title} {label}",
+                        mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+                        label=LocaleStr(key="mimo_tasks_button_label"),
+                    ),
+                    description=LocaleStr(key="mimo_task.embed.description"),
+                )
+                embed.add_description(
+                    create_bullet_list(
+                        [get_mimo_task_str(task, notify.account.game) for task in mimo_tasks]
+                    )
+                )
 
         embed.add_acc_info(notify.account, blur=False)
         embed.set_footer(text=LocaleStr(key="notif.embed.footer"))
@@ -239,12 +272,18 @@ class NotesChecker:
         await notify.save(update_fields=("current_notif_count", "est_time"))
 
     @classmethod
-    async def _notify_user(cls, notify: NotesNotify, notes: Notes | None) -> None:
+    async def _notify_user(
+        cls,
+        notify: NotesNotify,
+        notes: Notes | None,
+        *,
+        mimo_tasks: Sequence[MimoTask] | None = None,
+    ) -> None:
         try:
             locale = await cls._get_locale(notify)
             account = notify.account
 
-            embed = cls._get_notify_embed(notify, notes, locale)
+            embed = cls._get_notify_embed(notify, notes, locale, mimo_tasks)
             draw_input = DrawInput(
                 dark_mode=account.user.settings.dark_mode,
                 locale=draw_locale(locale, account),
@@ -538,6 +577,57 @@ class NotesChecker:
         return None
 
     @classmethod
+    def _get_incomplete_mimo_tasks(
+        cls, account: HoyoAccount, tasks: Sequence[MimoTask]
+    ) -> list[MimoTask]:
+        """Get the daily Mimo tasks the player has to complete manually.
+
+        Weekly tasks are included only on the last day of the week.
+        """
+        time_types = {MIMO_DAILY_TASK_TIME_TYPE}
+        if account.server_reset_datetime.weekday() == 0:
+            time_types.add(MIMO_WEEKLY_TASK_TIME_TYPE)
+
+        auto_types: set[int | MimoTaskType] = (
+            {*MIMO_AUTO_FINISH_TASK_TYPES, MimoTaskType.COMMENT}
+            if account.mimo_auto_task
+            else set()
+        )
+        return [
+            task
+            for task in tasks
+            if task.status is MimoTaskStatus.ONGOING
+            and task.time_type in time_types
+            and task.type not in auto_types
+        ]
+
+    @classmethod
+    async def _process_mimo_task_notify(cls, notify: NotesNotify) -> None:
+        """Process Traveling Mimo task notification."""
+        if notify.last_check_time is not None and get_now().day != notify.last_check_time.day:
+            return await cls._reset_notif_count(notify)
+
+        account = notify.account
+        client = account.client
+        client.set_lang(await cls._get_locale(notify))
+
+        try:
+            game_id, version_id = await client._get_mimo_game_data(
+                HB_GAME_TO_GPY_GAME[account.game]
+            )
+        except ValueError:  # Traveling Mimo is unavailable for this game
+            return None
+
+        tasks = await client.get_mimo_tasks(game_id=game_id, version_id=version_id)
+        incomplete_tasks = cls._get_incomplete_mimo_tasks(account, tasks)
+        if not incomplete_tasks:
+            return await cls._reset_notif_count(notify, est_time=account.server_reset_datetime)
+
+        if notify.current_notif_count < notify.max_notif_count:
+            await cls._notify_user(notify, notes=None, mimo_tasks=incomplete_tasks)
+        return None
+
+    @classmethod
     async def _process_notify(
         cls,
         notify: NotesNotify,
@@ -590,6 +680,8 @@ class NotesChecker:
             case NotesNotifyType.SUIBIAN_TEMPLE:
                 assert isinstance(notes, ZZZNotes)
                 await cls._process_suibian_temple(notify, notes)
+            case NotesNotifyType.MIMO_TASK:
+                await cls._process_mimo_task_notify(notify)
 
     @classmethod
     async def _handle_notify_error(cls, notify: NotesNotify, e: Exception) -> None:
@@ -702,6 +794,8 @@ class NotesChecker:
                     if notify.type is NotesNotifyType.PLANAR_FISSURE:
                         events = (await notify.account.client.get_starrail_event_calendar()).events
                         notes = None
+                    elif notify.type is NotesNotifyType.MIMO_TASK:
+                        events = notes = None
                     else:
                         events = None
                         if notify.account.uid not in notes_cache[notify.account.game]:

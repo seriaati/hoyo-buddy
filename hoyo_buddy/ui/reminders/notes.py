@@ -4,9 +4,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import discord
+import genshin
 from loguru import logger
 
 from hoyo_buddy import emojis, ui
+from hoyo_buddy.constants import MIMO_SUPPORT_GAMES
 from hoyo_buddy.db import NotesNotify
 from hoyo_buddy.emojis import TOGGLE_EMOJIS
 from hoyo_buddy.enums import Game, NotesNotifyType
@@ -58,7 +60,14 @@ NOTIFY_TYPE_TO_MODAL_TYPE: dict[NotesNotifyType, type[ReminderModal]] = {
     NotesNotifyType.RIDU_POINTS: modals.TypeFourModal,
     NotesNotifyType.ZZZ_BOUNTY: modals.TypeFourModal,
     NotesNotifyType.SUIBIAN_TEMPLE: modals.TypeTwoModal,
+    NotesNotifyType.MIMO_TASK: modals.TypeThreeModal,
 }
+
+MIMO_TASK_REMINDER_TITLE = LocaleStr(
+    custom_str="{mimo_title} {label}",
+    mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+    label=LocaleStr(key="mimo_tasks_button_label"),
+)
 
 NOTIFY_TYPE_MODAL_KWARGS: dict[NotesNotifyType | tuple[NotesNotifyType, ...], dict[str, Any]] = {
     NotesNotifyType.RESIN: {
@@ -150,6 +159,10 @@ NOTIFY_TYPE_MODAL_KWARGS: dict[NotesNotifyType | tuple[NotesNotifyType, ...], di
         ),
         "min_notify_interval": 30,
     },
+    NotesNotifyType.MIMO_TASK: {
+        "title": LocaleStr(key="reminder_modal.title", notify=MIMO_TASK_REMINDER_TITLE),
+        "min_notify_interval": 30,
+    },
 }
 
 NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
@@ -171,6 +184,7 @@ NOTIFY_TYPE_CHECK_INTERVALS: dict[NotesNotifyType, int] = {
     NotesNotifyType.RIDU_POINTS: 60,
     NotesNotifyType.ZZZ_BOUNTY: 60,
     NotesNotifyType.SUIBIAN_TEMPLE: 30,
+    NotesNotifyType.MIMO_TASK: 30,
     NotesNotifyType.STAMINA: 10,
 }
 
@@ -573,6 +587,23 @@ class HonkaiReminderContainer(BaseReminderContainer):
 class ReminderContainer:
     @staticmethod
     async def for_account(account: HoyoAccount) -> BaseReminderContainer:
+        container = await ReminderContainer._for_game(account)
+        if account.game in MIMO_SUPPORT_GAMES and account.region is genshin.Region.OVERSEAS:
+            container._add_reminder_items(
+                (
+                    ReminderItem(
+                        title=MIMO_TASK_REMINDER_TITLE,
+                        notify=await NotesNotify.get_or_none(
+                            account=account, type=NotesNotifyType.MIMO_TASK
+                        ),
+                        notify_type=NotesNotifyType.MIMO_TASK,
+                    ),
+                )
+            )
+        return container
+
+    @staticmethod
+    async def _for_game(account: HoyoAccount) -> BaseReminderContainer:
         game = account.game
         if game is Game.GENSHIN:
             return GenshinReminderContainer(

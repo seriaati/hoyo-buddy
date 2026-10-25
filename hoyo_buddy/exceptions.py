@@ -92,7 +92,14 @@ class NSFWPromptError(HoyoBuddyError):
         )
 
 
-class CustomImageLimitError(HoyoBuddyError):
+class SponsorPerkError(HoyoBuddyError):
+    """A free user reached a sponsor perk, shown with a button to view all sponsor perks."""
+
+    def __init__(self, *, title: LocaleStr | None = None, message: LocaleStr) -> None:
+        super().__init__(title=title or LocaleStr(key="sponsor_perk_error_title"), message=message)
+
+
+class CustomImageLimitError(SponsorPerkError):
     def __init__(self, limit: int) -> None:
         super().__init__(
             title=LocaleStr(key="custom_image_limit_error_title"),
@@ -100,7 +107,7 @@ class CustomImageLimitError(HoyoBuddyError):
         )
 
 
-class AIImageLimitError(HoyoBuddyError):
+class AIImageLimitError(SponsorPerkError):
     def __init__(self, limit: int, reset_time: datetime) -> None:
         super().__init__(
             title=LocaleStr(key="ai_image_limit_error_title"),

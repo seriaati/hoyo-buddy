@@ -11,7 +11,7 @@ from hoyo_buddy.db.models import CardSettings
 from hoyo_buddy.db.utils import get_default_color
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game
-from hoyo_buddy.exceptions import InvalidColorError
+from hoyo_buddy.exceptions import InvalidColorError, SponsorPerkError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.profile.templates import (
     DISABLE_COLOR,
@@ -117,10 +117,14 @@ class SubstatRollButton(ui.EmojiToggleButton["CardSettingsView"]):
 
 
 class AnimatedImageButton(ui.EmojiToggleButton["CardSettingsView"]):
-    def __init__(self, *, current: bool, disabled: bool) -> None:
+    def __init__(self, *, current: bool, disabled: bool, is_supporter: bool) -> None:
         super().__init__(current=current, disabled=disabled)
+        self.is_supporter = is_supporter
 
     async def callback(self, i: Interaction) -> None:
+        if not self.is_supporter:
+            raise SponsorPerkError(message=LocaleStr(key="animated_image_sponsor_perk_message"))
+
         self.current = not self.current
         self.update_style()
 
@@ -265,12 +269,16 @@ class ApplyDarkThemeToAllButton(ui.Button["CardSettingsView"]):
 
 
 class ApplyAnimatedImageToAllButton(ui.Button["CardSettingsView"]):
-    def __init__(self, *, disabled: bool) -> None:
+    def __init__(self, *, disabled: bool, is_supporter: bool) -> None:
         super().__init__(
             label=LocaleStr(key="apply_label"), style=discord.ButtonStyle.blurple, disabled=disabled
         )
+        self.is_supporter = is_supporter
 
     async def callback(self, i: Interaction) -> None:
+        if not self.is_supporter:
+            raise SponsorPerkError(message=LocaleStr(key="animated_image_sponsor_perk_message"))
+
         await i.response.defer()
 
         # Set for current characters
@@ -367,7 +375,6 @@ class CardSettingsContainer(ui.Container):
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
-        self.is_supporter = is_supporter
         self.template = (game, card_settings.template)
         self.game = game
         self.character_id = card_settings.character_id
@@ -470,8 +477,9 @@ class CardSettingsContainer(ui.Container):
                     )
                 ),
                 accessory=AnimatedImageButton(
-                    current=card_settings.animated_image,
+                    current=card_settings.animated_image and is_supporter,
                     disabled=self.disable_animated_image_button,
+                    is_supporter=is_supporter,
                 ),
             ),
             # Highlight substat selector
@@ -583,9 +591,6 @@ class CardSettingsContainer(ui.Container):
 
     @property
     def disable_animated_image_button(self) -> bool:
-        if not self.is_supporter:
-            return True
-
         template = self.card_settings.template
         character_id = self.card_settings.character_id
         if self.game is Game.ZZZ:
@@ -665,7 +670,8 @@ class BulkCardSettingsContainer(ui.Container):
                     )
                 ),
                 accessory=ApplyAnimatedImageToAllButton(
-                    disabled=not is_supporter or game not in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}
+                    disabled=game not in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ},
+                    is_supporter=is_supporter,
                 ),
             ),
         )

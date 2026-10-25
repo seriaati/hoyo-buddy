@@ -19,6 +19,7 @@ from ..exceptions import (
     InvalidQueryError,
     MissingPermissionsError,
     NoAccountFoundError,
+    SponsorPerkError,
 )
 from ..l10n import EnumStr, LocaleStr
 from ..utils import get_now
@@ -166,7 +167,10 @@ def get_error_embed(error: Exception, locale: Locale) -> tuple[ErrorEmbed | Defa
         elif error.code == 200000:
             error = BlockedByAutoModError()
 
-    if isinstance(error, HoyoBuddyError):
+    if isinstance(error, SponsorPerkError):
+        embed_type = "default"
+        embed = DefaultEmbed(locale, title=error.title, description=error.message)
+    elif isinstance(error, HoyoBuddyError):
         embed = ErrorEmbed(locale, title=error.title, description=error.message)
         if isinstance(error, NoAccountFoundError):
             game_strs = [

@@ -11,6 +11,7 @@ from hoyo_buddy.constants import (
     MIMO_AUTO_DRAW_SUPPORT_GAMES,
 )
 from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.exceptions import SponsorPerkError
 from hoyo_buddy.l10n import LocaleStr
 
 from ._common import AccountToggleButton
@@ -58,6 +59,17 @@ def _can_auto_import_gacha(account: HoyoAccount) -> bool:
         and account.platform is Platform.HOYOLAB
         and (account.game is not Game.GENSHIN or account.can_use_cookie_token)
     )
+
+
+class AutoGachaImportToggleButton(AccountToggleButton):
+    def __init__(self, *, current: bool, disabled: bool, is_supporter: bool) -> None:
+        super().__init__(attr="auto_gacha_import", current=current, disabled=disabled)
+        self.is_supporter = is_supporter
+
+    async def callback(self, i: Interaction) -> None:
+        if not self.is_supporter:
+            raise SponsorPerkError(message=LocaleStr(key="auto_gacha_import_sponsor_perk_message"))
+        await super().callback(i)
 
 
 class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
@@ -121,10 +133,10 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
                         desc=LocaleStr(key="auto_gacha_import_desc"),
                     )
                 ),
-                accessory=AccountToggleButton(
-                    attr="auto_gacha_import",
+                accessory=AutoGachaImportToggleButton(
                     current=account.auto_gacha_import,
-                    disabled=not is_supporter or not _can_auto_import_gacha(account),
+                    disabled=not _can_auto_import_gacha(account),
+                    is_supporter=is_supporter,
                 ),
             ),
         )

@@ -931,6 +931,11 @@ supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the 
 supporter_embed.how_to: "Donate any amount, monthly or one-time, to become a sponsor. You stay a sponsor forever, even after your donation ends."
 supporter_embed.status_supporter: "You're a sponsor, thank you!"
 supporter_embed.status_not_supporter: You're not a sponsor yet.
+sponsor_perks_button_label: View sponsor perks
+sponsor_perk_error_title: Sponsor perk
+animated_image_sponsor_perk_message: Animated character art on build cards is a sponsor perk.
+auto_gacha_import_sponsor_perk_message: Automatic gacha log imports are a sponsor perk.
+multi_accompany_sponsor_perk_message: "Auto accompanying more than one character is a sponsor perk. Sponsors can auto accompany up to {limit} characters per account."
 card_settings_animated_image: Animated image
 card_settings_animated_image_desc: "Use the character's animated art on the card, only available for sponsors for characters with animated art, on Template 1 for GI and ZZZ and Templates 1 and 2 for HSR. GI cards use the animated Genius Invokation TCG card art. Use </sponsor> to learn more."
 reminders_command_description: "Configure real-time notes, farm, and web event reminders"

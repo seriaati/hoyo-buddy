@@ -8,6 +8,7 @@ from loguru import logger
 from hoyo_buddy import ui
 from hoyo_buddy.constants import SPONSOR_ACCOMPANY_CHARACTER_LIMIT, locale_to_hoyo_lang
 from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION
+from hoyo_buddy.exceptions import SponsorPerkError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils.misc import is_valid_hex_color, shorten_preserving_newlines
 
@@ -293,7 +294,14 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
                     is_supporter=is_supporter,
                     is_selected=character.info.role_id in selected_role_ids,
                     is_full=len(account.accompany_characters) >= SPONSOR_ACCOMPANY_CHARACTER_LIMIT,
-                )
+                ),
+                *(
+                    [SponsorAddAccompanyCharacterButton()]
+                    if not is_supporter
+                    and selected_role_ids
+                    and character.info.role_id not in selected_role_ids
+                    else []
+                ),
             ),
             discord.ui.Separator(spacing=discord.SeparatorSpacing.small, visible=False),
             ui.Section(
@@ -464,6 +472,18 @@ class SetAccompanyCharacterButton(ui.Button["AccompanyView"]):
 
         await account.save(update_fields=("accompany_characters",))
         await self.view.update(i)
+
+
+class SponsorAddAccompanyCharacterButton(ui.Button["AccompanyView"]):
+    def __init__(self) -> None:
+        super().__init__(label=LocaleStr(key="accompany_add_character_button_label"))
+
+    async def callback(self, _: Interaction) -> None:
+        raise SponsorPerkError(
+            message=LocaleStr(
+                key="multi_accompany_sponsor_perk_message", limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT
+            )
+        )
 
 
 class AutoAccompanyToggleButton(ui.EmojiToggleButton["AccompanyView"]):

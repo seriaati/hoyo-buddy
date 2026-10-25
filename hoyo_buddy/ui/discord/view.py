@@ -4,13 +4,16 @@ import contextlib
 from typing import TYPE_CHECKING, Any, Self
 
 import discord
+from discord.utils import MISSING
 from loguru import logger
 
 from hoyo_buddy import emojis
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.embeds import ErrorEmbed
+from hoyo_buddy.exceptions import SponsorPerkError
 from hoyo_buddy.l10n import LocaleStr, translator
+from hoyo_buddy.ui.sponsor import SponsorPerksView
 
 from .action_row import ActionRow
 from .button import Button
@@ -83,7 +86,8 @@ class ViewMixin:
         with contextlib.suppress(Exception):
             await item.unset_loading_state(i)  # pyright: ignore[reportAttributeAccessIssue]
             await self.absolute_edit(i)
-        await self.absolute_send(i, embed=embed, ephemeral=True)
+        view = SponsorPerksView(locale) if isinstance(error, SponsorPerkError) else MISSING
+        await self.absolute_send(i, embed=embed, view=view, ephemeral=True)
 
     async def interaction_check(self, i: Interaction) -> bool:
         if self.author is None:

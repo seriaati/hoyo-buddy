@@ -16,8 +16,9 @@ from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
+    from hoyo_buddy.types import Interaction
 
-__all__ = ("get_sponsor_perks_message",)
+__all__ = ("SponsorPerksView", "get_sponsor_perks_message")
 
 DONATE_URL = "https://link.seria.moe/donate"
 
@@ -59,3 +60,24 @@ async def get_sponsor_perks_message(
         )
     )
     return embed, view
+
+
+class SponsorPerksButton(discord.ui.Button["SponsorPerksView"]):
+    def __init__(self, locale: Locale) -> None:
+        super().__init__(
+            label=LocaleStr(key="sponsor_perks_button_label").translate(locale),
+            style=discord.ButtonStyle.blurple,
+        )
+        self.locale = locale
+
+    async def callback(self, i: Interaction) -> None:
+        embed, view = await get_sponsor_perks_message(i.user.id, self.locale)
+        await i.response.send_message(embed=embed, view=view, ephemeral=True)
+
+
+class SponsorPerksView(discord.ui.View):
+    """Attached to sponsor perk prompts so users can see every perk they'd get."""
+
+    def __init__(self, locale: Locale) -> None:
+        super().__init__()
+        self.add_item(SponsorPerksButton(locale))

@@ -7,6 +7,7 @@ from seria.utils import create_bullet_list
 
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import GIFT_OUTLINE, LOADING, REDEEM_GIFT
+from hoyo_buddy.enums import Game as GameEnum
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui import Button, Label, Modal, TextInput, View
 
@@ -97,7 +98,8 @@ class RedeemUI(View):
 
     def _add_items(self) -> None:
         self.add_item(RedeemCodesButton())
-        self.add_item(RedeemAllAvailableCodesButton())
+        if self.account.game is not GameEnum.TOT:
+            self.add_item(RedeemAllAvailableCodesButton())
 
     async def redeem_codes(self, i: Interaction, *, codes: list[str], button: Button) -> None:
         await button.set_loading_state(i, embed=self.cooldown_embed)

@@ -227,7 +227,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         ),
     ),
     "redeem": CommandConfig(
-        games=AUTO_REDEEM_SUPPORT_GAMES,
+        games=(*AUTO_REDEEM_SUPPORT_GAMES, Game.TOT),
         platform=Platform.HOYOLAB,
         description=locale_str(
             "Redeem codes for in-game rewards", key="redeem_command_description"

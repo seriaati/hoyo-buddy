@@ -21,7 +21,7 @@ from hoyo_buddy.utils.misc import handle_autocomplete_errors
 from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
-from ..enums import GeetestType
+from ..enums import Game, GeetestType
 from ..exceptions import CantRedeemCodeError, InvalidQueryError
 from ..hoyo.transformers import HoyoAccountTransformer
 from ..types import Interaction, User
@@ -179,8 +179,12 @@ class Hoyo(commands.Cog):
 
         await account.fetch_related("notif_settings")
         locale = await get_locale(i)
-        available_codes = await RedeemUI.fetch_available_codes(
-            i.client.session, game=HB_GAME_TO_GPY_GAME[account.game]
+        available_codes = (
+            []
+            if account.game is Game.TOT
+            else await RedeemUI.fetch_available_codes(
+                i.client.session, game=HB_GAME_TO_GPY_GAME[account.game]
+            )
         )
         view = RedeemUI(account, available_codes, author=i.user, locale=locale)
         await i.followup.send(embed=view.start_embed, view=view, content=await get_dyk(i))

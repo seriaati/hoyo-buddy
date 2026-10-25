@@ -10,7 +10,12 @@ from tortoise.expressions import F
 
 from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import FREE_AI_IMAGE_DAILY_LIMIT, FREE_CUSTOM_IMAGE_LIMIT
+from hoyo_buddy.constants import (
+    CUSTOM_IMAGE_MAX_SIZE_MB,
+    FREE_AI_IMAGE_DAILY_LIMIT,
+    FREE_CUSTOM_IMAGE_LIMIT,
+    IMAGE_EXTENSIONS,
+)
 from hoyo_buddy.db import CustomImage, User
 from hoyo_buddy.db.utils import get_default_color, is_supporter
 from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
@@ -18,7 +23,10 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import (
     AIImageLimitError,
     CustomImageLimitError,
+    ImageFileTooLargeError,
     InvalidImageURLError,
+    InvalidInputError,
+    NotAnImageError,
     NSFWPromptError,
 )
 from hoyo_buddy.l10n import LocaleStr
@@ -162,9 +170,14 @@ class AddImageModal(ui.Modal):
         text=LocaleStr(key="nickname_modal_label"),
         component=ui.TextInput(required=False, max_length=100),
     )
+    image_file: ui.Label[ui.FileUpload] = ui.Label(
+        text=LocaleStr(key="profile.add_image_modal.image_file.label"),
+        component=ui.FileUpload(file_types=["image"], required=False),
+    )
     image_url: ui.Label[ui.TextInput] = ui.Label(
         text=LocaleStr(key="profile.add_image_modal.image_url.label"),
-        component=ui.TextInput(placeholder="https://example.com/image.png"),
+        description=LocaleStr(key="profile.add_image_modal.image_url.description"),
+        component=ui.TextInput(placeholder="https://example.com/image.png", required=False),
     )
 
     def __init__(self) -> None:
@@ -190,23 +203,22 @@ class AddImageButton(ui.Button["CardSettingsView"]):
         if timed_out:
             return
 
+        files = modal.image_file.component.values
+        image_url = modal.image_url.value.strip()
+        if not files and not image_url:
+            raise InvalidInputError(LocaleStr(key="profile.add_image_modal.no_image"))
+
         await self.set_loading_state(i)
 
-        image_url = modal.image_url.value.strip()
-
-        # Check if the image URL is valid
-        passed = is_image_url(image_url)
-        if not passed:
-            raise InvalidImageURLError
-        passed = await test_url_validity(image_url, i.client.session)
-        if not passed:
-            raise InvalidImageURLError
-
-        if not image_url.startswith("https://img.seria.moe/"):
-            try:
-                image_url = await upload_image(i.client.session, image_url=image_url)
-            except Exception as e:
-                raise InvalidImageURLError from e
+        if files:
+            file = files[0]
+            if not file.filename.lower().endswith(IMAGE_EXTENSIONS):
+                raise NotAnImageError
+            if file.size > CUSTOM_IMAGE_MAX_SIZE_MB * 1024 * 1024:
+                raise ImageFileTooLargeError(CUSTOM_IMAGE_MAX_SIZE_MB)
+            image_url = await upload_image(i.client.session, image_url=file.url)
+        else:
+            image_url = await self._upload_image_url(i, image_url)
 
         await CustomImage.create(
             user_id=i.user.id,
@@ -216,6 +228,20 @@ class AddImageButton(ui.Button["CardSettingsView"]):
         )
         await self.view.set_current_image(image_url)
         await self.view.update(i)
+
+    @staticmethod
+    async def _upload_image_url(i: Interaction, image_url: str) -> str:
+        if not is_image_url(image_url):
+            raise InvalidImageURLError
+        if not await test_url_validity(image_url, i.client.session):
+            raise InvalidImageURLError
+
+        if image_url.startswith("https://img.seria.moe/"):
+            return image_url
+        try:
+            return await upload_image(i.client.session, image_url=image_url)
+        except Exception as e:
+            raise InvalidImageURLError from e
 
 
 class GenerateAIArtModal(ui.Modal):
@@ -450,9 +476,7 @@ class ImageSettingsContainer(ui.Container):
             # Current image
             ui.TextDisplay(
                 LocaleStr(
-                    custom_str="### {title}\n{desc}",
-                    title=LocaleStr(key="card_settings.current_image"),
-                    desc=LocaleStr(key="card_settings.description"),
+                    custom_str="### {title}", title=LocaleStr(key="card_settings.current_image")
                 )
             ),
             ui.ActionRow(ImageTypeSelect(image_type)),

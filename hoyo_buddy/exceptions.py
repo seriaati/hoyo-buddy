@@ -271,10 +271,10 @@ class BlockedByAutoModError(HoyoBuddyError):
 
 
 class ImageFileTooLargeError(HoyoBuddyError):
-    def __init__(self) -> None:
+    def __init__(self, size: int = 20) -> None:
         super().__init__(
             title=LocaleStr(key="image_file_too_large_error_title"),
-            message=LocaleStr(key="image_file_too_large_error_message", size=20),
+            message=LocaleStr(key="image_file_too_large_error_message", size=size),
         )
 
 

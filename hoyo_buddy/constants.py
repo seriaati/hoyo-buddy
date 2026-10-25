@@ -37,6 +37,7 @@ if TYPE_CHECKING:
 STATIC_FOLDER = pathlib.Path("./.static")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+CUSTOM_IMAGE_MAX_SIZE_MB = 10
 DB_SMALLINT_MAX = 32767
 
 FREE_ACCOUNT_LIMIT = 6

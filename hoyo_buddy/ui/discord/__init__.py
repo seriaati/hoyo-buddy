@@ -1,6 +1,7 @@
 from .action_row import *
 from .button import *
 from .container import *
+from .file_upload import *
 from .label import *
 from .modal import *
 from .section import *

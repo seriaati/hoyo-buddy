@@ -12,6 +12,8 @@ from .text_input import TextInput
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Locale
 
+    from .file_upload import FileUpload
+
 __all__ = ("Label",)
 
 
@@ -20,7 +22,7 @@ class Label[T](discord.ui.Label):
         self,
         *,
         text: LocaleStr | str,
-        component: Select | TextInput,
+        component: Select | TextInput | FileUpload,
         description: str | LocaleStr | None = None,
     ) -> None:
         super().__init__(

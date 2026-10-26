@@ -91,6 +91,7 @@ async def draw_hsr_build_card(
     *,
     template: Literal[1, 2],
     animation: SpineData | None,
+    uid: int | None,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -122,6 +123,7 @@ async def draw_hsr_build_card(
                 primary_hex,
                 get_static_img_path(animation.url),
                 (animation.x, animation.y),
+                uid,
             )
         return await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -131,6 +133,7 @@ async def draw_hsr_build_card(
             draw_input.dark_mode,
             image_url,
             primary_hex,
+            uid,
         )
 
     async with YattaAPIClient(session=draw_input.session) as api:
@@ -143,6 +146,7 @@ async def draw_hsr_build_card(
         dark_mode=draw_input.dark_mode,
         image_url=image_url,
         en_name=en_name,
+        uid=uid,
     )
     if animation is not None:
         draw = functools.partial(
@@ -172,6 +176,7 @@ async def draw_gi_build_card(
     top_crop: bool,
     rank: str | None,
     animation: SpineData | None,
+    uid: int | None,
 ) -> BytesIO:
     urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
@@ -198,6 +203,7 @@ async def draw_gi_build_card(
             english_name=ambr_char.name,
             top_crop=top_crop,
             rank=rank,
+            uid=uid,
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     elif animation is not None:
@@ -211,6 +217,7 @@ async def draw_gi_build_card(
             image_url,
             zoom,
             rank,
+            uid,
             get_static_img_path(animation.url),
             (animation.x, animation.y),
         )
@@ -225,6 +232,7 @@ async def draw_gi_build_card(
             image_url,
             zoom,
             rank,
+            uid,
         )
     return buffer
 
@@ -625,6 +633,7 @@ async def draw_zzz_build_card(
     hl_special_stats: bool,
     use_m3_art: bool,
     animation: SpineData | None,
+    uid: int | None,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
 
@@ -670,6 +679,7 @@ async def draw_zzz_build_card(
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats={agent.id: hl_special_stats},
             agent_hl_substat_map={agent.id: hl_substats},
+            uid=uid,
         )
     elif template == 4:
         card = funcs.zzz.ZZZAgentCard4(
@@ -683,6 +693,7 @@ async def draw_zzz_build_card(
             agent_special_stats=agent_special_stats,
             hl_substats=hl_substats,
             hl_special_stats=hl_special_stats,
+            uid=uid,
         )
     else:
         card = funcs.zzz.ZZZAgentCard(
@@ -698,6 +709,7 @@ async def draw_zzz_build_card(
             agent_special_stats=agent_special_stats,
             hl_special_stats=hl_special_stats,
             hl_substats=hl_substats,
+            uid=uid,
         )
         if animation is not None and template == 1:
             draw = functools.partial(
@@ -776,6 +788,7 @@ async def draw_zzz_team_card(
         agent_special_stat_map=agent_special_stat_map,
         hl_special_stats=hl_special_stats,
         agent_hl_substat_map=agent_hl_substat_map,
+        uid=None,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

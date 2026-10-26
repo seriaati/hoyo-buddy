@@ -39,6 +39,7 @@ class ZZZAgentCard4:
         agent_special_stats: list[int],
         hl_substats: list[int],
         hl_special_stats: bool,
+        uid: int | None,
     ) -> None:
         self._agent = agent
         self._locale = locale
@@ -50,6 +51,7 @@ class ZZZAgentCard4:
         self._agent_special_stats = agent_special_stats
         self._hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
+        self._uid = uid
 
         self.im: Image.Image = None  # pyright: ignore[reportAttributeAccessIssue]
         self.drawer: Drawer = None  # pyright: ignore[reportAttributeAccessIssue]
@@ -434,5 +436,15 @@ class ZZZAgentCard4:
         self._draw_stats()
         self._draw_weapon()
         self._draw_discs()
+
+        if self._uid is not None:
+            self.drawer.write(
+                f"UID: {self._uid}",
+                size=44,
+                style="black_italic",
+                color=(20, 20, 20),
+                position=(3812, 54),
+                anchor="rm",
+            )
 
         return Drawer.save_image(im)

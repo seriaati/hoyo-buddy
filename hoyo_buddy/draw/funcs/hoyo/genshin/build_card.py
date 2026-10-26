@@ -40,6 +40,7 @@ def _draw_foreground(
     dark_mode: bool,
     character: Character | HoyolabGICharacter,
     rank: str | None,
+    uid: int | None,
 ) -> None:
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
@@ -208,6 +209,10 @@ def _draw_foreground(
             locale=locale,
         )
 
+    # uid
+    if uid is not None:
+        _draw_uid(im, drawer, uid, dark_mode=dark_mode, text_color=text_color, rank=rank)
+
     # artifacts
     # start pos (68, 970)
     # 5x1 grid, x offset between each item is 296
@@ -277,6 +282,36 @@ def _draw_foreground(
             )
 
 
+def _draw_uid(
+    im: Image.Image,
+    drawer: Drawer,
+    uid: int,
+    *,
+    dark_mode: bool,
+    text_color: tuple[int, int, int],
+    rank: str | None,
+) -> None:
+    """Draw the UID in the empty rank cell, or in a top-right badge when the rank takes the cell."""
+    text = f"UID: {uid}"
+    if rank is None:
+        drawer.write(
+            text, size=30, style="medium", position=(1213, 858), color=text_color, anchor="mm"
+        )
+        return
+
+    tbox = drawer.write(
+        text, size=30, style="bold", position=(1486, 50), anchor="rm", no_write=True
+    )
+    badge = Image.new("RGBA", im.size)
+    ImageDraw.Draw(badge).rounded_rectangle(
+        (tbox.left - 22, 20, 1508, 80),
+        8,
+        fill=(5, 6, 6, 204) if dark_mode else (255, 255, 255, 204),
+    )
+    im.alpha_composite(badge)
+    drawer.write(text, size=30, style="bold", position=(1486, 50), color=text_color, anchor="rm")
+
+
 def draw_genshin_card(
     locale: Locale,
     dark_mode: bool,
@@ -284,6 +319,7 @@ def draw_genshin_card(
     image_url: str,
     zoom: float,
     rank: str | None,
+    uid: int | None,
 ) -> io.BytesIO:
     im = _draw_background(dark_mode, character)
     drawer = Drawer(
@@ -304,7 +340,7 @@ def draw_genshin_card(
     )
     im.paste(character_im, IMAGE_POS, character_im)
 
-    _draw_foreground(im, locale, dark_mode, character, rank)
+    _draw_foreground(im, locale, dark_mode, character, rank, uid)
     return Drawer.save_image(im)
 
 
@@ -315,6 +351,7 @@ def draw_animated_genshin_card(
     image_url: str,
     zoom: float,
     rank: str | None,
+    uid: int | None,
     animation_path: Path,
     offset: tuple[int, int],
 ) -> io.BytesIO:
@@ -327,6 +364,7 @@ def draw_animated_genshin_card(
         image_url: URL of the static character image, for when the animation is too big.
         zoom: Zoom of the static character image.
         rank: The character's rank text, if any.
+        uid: The UID to show on the card, if any.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
 
@@ -340,7 +378,7 @@ def draw_animated_genshin_card(
         if dark_mode:
             overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
             im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
-        _draw_foreground(im, locale, dark_mode, character, rank)
+        _draw_foreground(im, locale, dark_mode, character, rank, uid)
 
     return Drawer.draw_animated_card(
         _draw_background(dark_mode, character),
@@ -348,7 +386,7 @@ def draw_animated_genshin_card(
         animation_path=animation_path,
         offset=offset,
         fallback=functools.partial(
-            draw_genshin_card, locale, dark_mode, character, image_url, zoom, rank
+            draw_genshin_card, locale, dark_mode, character, image_url, zoom, rank, uid
         ),
         area_pos=IMAGE_POS,
         mask=mask,

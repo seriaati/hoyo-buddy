@@ -510,6 +510,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         draw_input: DrawInput,
         *,
         user_id: int,
+        uid: int | None,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -551,7 +552,13 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             animation = CARD_DATA.hsr_spine(template_num).get(character_id)
 
         return await draw_hsr_build_card(
-            draw_input, character, image_url, primary, template=template_num, animation=animation
+            draw_input,
+            character,
+            image_url,
+            primary,
+            template=template_num,
+            animation=animation,
+            uid=uid,
         )
 
     async def _draw_hb_gi_character_card(
@@ -561,6 +568,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         draw_input: DrawInput,
         *,
         user_id: int,
+        uid: int | None,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
@@ -611,6 +619,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             in get_default_collection(str(character.id), game=self.game),
             rank=rank,
             animation=animation,
+            uid=uid,
         )
 
     async def _draw_hb_zzz_character_card(
@@ -620,6 +629,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         draw_input: DrawInput,
         *,
         user_id: int,
+        uid: int | None,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
@@ -693,6 +703,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             hl_substats=card_settings.highlight_substats,
             use_m3_art=card_settings.use_m3_art,
             animation=animation,
+            uid=uid,
         )
 
     async def draw_card(
@@ -723,13 +734,15 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             executor=i.client.executor,
             loop=i.client.loop,
         )
+        settings = await Settings.get(user_id=i.user.id)
+        uid = self.uid if settings.show_uid else None
 
         if self.game is Game.STARRAIL:
             if template == "enka1":
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(
-                    character, card_settings, draw_input, user_id=i.user.id
+                    character, card_settings, draw_input, user_id=i.user.id, uid=uid
                 )
             return await self._draw_src_character_card(i.client.session, character, card_settings)
 
@@ -738,7 +751,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
-                    character, card_settings, draw_input, user_id=i.user.id
+                    character, card_settings, draw_input, user_id=i.user.id, uid=uid
                 )
             return await self._draw_enka_card(i.client.session, character, card_settings)
 
@@ -746,7 +759,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             if template == "enka1":
                 return await self._draw_enka_cards_card(i.client.session, character, card_settings)
             return await self._draw_hb_zzz_character_card(
-                character, card_settings, draw_input, user_id=i.user.id
+                character, card_settings, draw_input, user_id=i.user.id, uid=uid
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"

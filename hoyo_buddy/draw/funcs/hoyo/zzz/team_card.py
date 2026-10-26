@@ -40,6 +40,7 @@ class ZZZTeamCard:
         agent_special_stat_map: dict[str, list[int]],
         agent_hl_substat_map: dict[int, list[int]],
         hl_special_stats: dict[int, bool],
+        uid: int | None,
     ) -> None:
         self._locale = locale
         self._dark_mode = False
@@ -52,6 +53,7 @@ class ZZZTeamCard:
         self._agent_special_stat_map = agent_special_stat_map
         self._agent_hl_substat_map = agent_hl_substat_map
         self._hl_special_stats = hl_special_stats
+        self._uid = uid
 
     def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -384,6 +386,21 @@ class ZZZTeamCard:
         )
         return text_im.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
 
+    @staticmethod
+    def _add_uid_footer(im: Image.Image, uid: int) -> Image.Image:
+        card = Image.new("RGBA", (im.width, im.height + 40), (237, 237, 237, 255))
+        card.alpha_composite(im)
+        drawer = Drawer(ImageDraw.Draw(card), folder="zzz-team-card", dark_mode=False, sans=True)
+        drawer.write(
+            f"UID: {uid}",
+            size=22,
+            position=(card.width - 20, im.height + 20),
+            color=(20, 20, 20),
+            style="bold_italic",
+            anchor="rm",
+        )
+        return card
+
     def draw(self) -> BytesIO:
         im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")
         if len(self._agents) == 2:
@@ -399,5 +416,7 @@ class ZZZTeamCard:
         if len(self._agents) == 1:
             # Template 3
             im = im.crop((54, 48, 1395, 357))
+            if self._uid is not None:
+                im = self._add_uid_footer(im, self._uid)
 
         return Drawer.save_image(im)

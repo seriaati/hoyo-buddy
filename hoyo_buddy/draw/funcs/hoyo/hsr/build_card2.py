@@ -34,12 +34,14 @@ class HSRBuildCard2:
         dark_mode: bool,
         image_url: str,
         en_name: str,
+        uid: int | None,
     ) -> None:
         self.character = character
         self.locale = Locale(locale)
         self.dark_mode = dark_mode
         self.image_url = image_url
         self.en_name = en_name
+        self.uid = uid
 
         self.color1 = (232, 232, 232) if dark_mode else (94, 94, 94)
         self.color2 = (199, 199, 199) if dark_mode else (156, 156, 156)
@@ -365,6 +367,16 @@ class HSRBuildCard2:
                 start_pos = (start_pos[0] + 438, 1045)
             else:
                 start_pos = (start_pos[0], start_pos[1] + 425)
+
+        if self.uid is not None:
+            drawer.write(
+                f"UID: {self.uid}",
+                position=(im.width / 2, 1872),
+                size=32,
+                color=self.color2,
+                style="medium",
+                anchor="mm",
+            )
 
     def draw(self) -> BytesIO:
         im = self._draw_background()

@@ -54,6 +54,7 @@ def _draw_foreground(
     primary: tuple[int, int, int],
     dark_primary: tuple[int, int, int],
     light_primary: tuple[int, int, int],
+    uid: int | None,
 ) -> None:
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode)
@@ -117,6 +118,19 @@ def _draw_foreground(
         style="medium",
         anchor="mm",
     )
+
+    # uid
+    if uid is not None:
+        tbox = drawer.write(
+            f"UID: {uid}", size=40, position=(52, 80), style="bold", anchor="lm", no_write=True
+        )
+        box = (24, tbox.top - 12, tbox.right + 28, tbox.bottom + 12)
+        draw.rounded_rectangle(
+            box, (box[3] - box[1]) // 2, (13, 13, 13) if dark_mode else (252, 252, 252)
+        )
+        drawer.write(
+            f"UID: {uid}", size=40, position=(52, 80), color=primary, style="bold", anchor="lm"
+        )
 
     # traces
     width = 564
@@ -444,6 +458,7 @@ def draw_hsr_build_card(
     dark_mode: bool,
     image_url: str,
     primary_hex: str,
+    uid: int | None,
 ) -> io.BytesIO:
     primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
 
@@ -469,6 +484,7 @@ def draw_hsr_build_card(
         primary=primary,
         dark_primary=dark_primary,
         light_primary=light_primary,
+        uid=uid,
     )
     return Drawer.save_image(im)
 
@@ -481,6 +497,7 @@ def draw_animated_hsr_build_card(
     primary_hex: str,
     animation_path: Path,
     offset: tuple[int, int],
+    uid: int | None,
 ) -> io.BytesIO:
     """Draw the card with an animated character image.
 
@@ -492,6 +509,7 @@ def draw_animated_hsr_build_card(
         primary_hex: The card's primary color.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
+        uid: The UID to show on the card, if any.
 
     Returns:
         The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
@@ -517,6 +535,7 @@ def draw_animated_hsr_build_card(
             primary=primary,
             dark_primary=dark_primary,
             light_primary=light_primary,
+            uid=uid,
         )
 
     return Drawer.draw_animated_card(
@@ -525,7 +544,7 @@ def draw_animated_hsr_build_card(
         animation_path=animation_path,
         offset=offset,
         fallback=functools.partial(
-            draw_hsr_build_card, character, locale, dark_mode, image_url, primary_hex
+            draw_hsr_build_card, character, locale, dark_mode, image_url, primary_hex, uid
         ),
         area_pos=IMAGE_POS,
         mask=mask,

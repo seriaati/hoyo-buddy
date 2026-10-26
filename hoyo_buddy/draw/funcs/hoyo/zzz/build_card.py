@@ -44,6 +44,7 @@ class ZZZAgentCard:
         agent_special_stats: list[int],
         hl_substats: list[int],
         hl_special_stats: bool,
+        uid: int | None,
     ) -> None:
         self._agent = agent
         self._locale = locale
@@ -57,6 +58,7 @@ class ZZZAgentCard:
         self._agent_special_stats = agent_special_stats
         self.hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
+        self._uid = uid
 
     def _draw_background(self) -> Image.Image:
         # Base
@@ -214,6 +216,23 @@ class ZZZAgentCard:
                 text, size=55, position=start_pos, color=(20, 20, 20), style="bold", anchor="mm"
             )
             start_pos = (2809, 397 + 98) if i == 2 else (start_pos[0] + 205, start_pos[1])
+
+        # UID
+        if self._uid is not None:
+            text = f"UID: {self._uid}"
+            tbox = drawer.write(
+                text, size=36, position=(3253, 0), style="bold_italic", anchor="rm", no_write=True
+            )
+            box = (tbox.left - 30, 340 - tbox.height - 20, 3283, 340)
+            draw.rounded_rectangle(box, (box[3] - box[1]) // 2, (215, 215, 215))
+            drawer.write(
+                text,
+                size=36,
+                position=(3253, (box[1] + box[3]) / 2),
+                color=(20, 20, 20),
+                style="bold_italic",
+                anchor="rm",
+            )
 
         # Stats
         start_pos = (2720, 616)

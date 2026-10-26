@@ -143,6 +143,7 @@ def _build_card(
             agent_special_stat_map={},
             agent_hl_substat_map={agent.id: []},
             hl_special_stats={agent.id: False},
+            uid=None,
         )
     if template == 4:
         return ZZZAgentCard4(
@@ -156,6 +157,7 @@ def _build_card(
             agent_special_stats=[],
             hl_substats=[],
             hl_special_stats=False,
+            uid=None,
         )
     return ZZZAgentCard(
         agent,
@@ -170,6 +172,7 @@ def _build_card(
         agent_special_stats=[],
         hl_substats=[],
         hl_special_stats=False,
+        uid=None,
     )
 
 

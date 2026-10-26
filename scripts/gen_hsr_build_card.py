@@ -105,6 +105,7 @@ async def main() -> None:
         dark_mode=args.dark,
         image_url=image_url,
         primary_hex=primary_hex,
+        uid=None,
     )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

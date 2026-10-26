@@ -489,6 +489,7 @@ def _draw_variant(
         agent_special_stats=[],
         hl_substats=[],
         hl_special_stats=False,
+        uid=None,
     ).draw()
     return Image.open(result)
 
@@ -744,6 +745,7 @@ def _make_spine_card(
         agent_special_stats=[],
         hl_substats=[],
         hl_special_stats=False,
+        uid=None,
     )
 
 

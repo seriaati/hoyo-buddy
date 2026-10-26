@@ -33,6 +33,7 @@ class GITempTwoBuildCard:
         english_name: str,
         top_crop: bool,
         rank: str | None,
+        uid: int | None,
         zoom: float = 1.0,
     ) -> None:
         self._locale = locale
@@ -44,6 +45,7 @@ class GITempTwoBuildCard:
         self._zoom = zoom
         self._top_crop = top_crop
         self._rank = rank
+        self._uid = uid
 
     def draw(self) -> BytesIO:
         character = self._character
@@ -381,5 +383,15 @@ class GITempTwoBuildCard:
                     )
 
             start_pos = (1500, 1470) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
+
+        if self._uid is not None:
+            drawer.write(
+                f"UID: {self._uid}",
+                size=32,
+                style="medium",
+                color=color_3,
+                position=(im.width / 2, 1873),
+                anchor="mm",
+            )
 
         return Drawer.save_image(im)

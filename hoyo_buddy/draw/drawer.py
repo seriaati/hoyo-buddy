@@ -10,7 +10,7 @@ from fontTools.ttLib import TTFont
 from loguru import logger
 
 # ruff:ignore[import-private-name]
-from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageSequence, _webp
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageSequence, _webp
 
 from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import (
@@ -1011,20 +1011,26 @@ class Drawer:
         size = (round(full_size[0] * scale), round(full_size[1] * scale))
 
         # The art area's edges can fall between pixels at this scale, where the frames leave part
-        # of a pixel to the background, so the first frame is drawn into it like a static image
+        # of a pixel to the background, so the first frame is drawn into a band along them like a
+        # static image. Only the band, since the rest would show through where the frames move.
         with Image.open(animation_path) as animation:
             first = animation.convert("RGBA")
         first = first.resize(
             (round(first.width / scale), round(first.height / scale)), Image.Resampling.LANCZOS
         )
+        first_pos = (area_pos[0] + max(offset[0], 0), area_pos[1] + max(offset[1], 0))
         art = Image.new("RGBA", full_size)
-        art.alpha_composite(
-            first, (area_pos[0] + max(offset[0], 0), area_pos[1] + max(offset[1], 0))
-        )
+        art.alpha_composite(first, first_pos)
+        area_mask = Image.new("L", full_size)
+        area_mask.paste(255, (*first_pos, first_pos[0] + first.width, first_pos[1] + first.height))
         if mask is not None:
-            area_mask = Image.new("L", full_size)
-            area_mask.paste(mask.getchannel("A"), area_pos)
-            art.putalpha(ImageChops.multiply(art.getchannel("A"), area_mask))
+            mask_alpha = Image.new("L", full_size)
+            mask_alpha.paste(mask.getchannel("A"), area_pos)
+            area_mask = ImageChops.multiply(area_mask, mask_alpha)
+        # A band one scaled pixel wide
+        inner = area_mask.filter(ImageFilter.MinFilter(round(2 / scale) + 1))
+        band = ImageChops.subtract(area_mask, inner)
+        art.putalpha(ImageChops.multiply(art.getchannel("A"), band))
         background = Image.alpha_composite(background, art).resize(size, Image.Resampling.LANCZOS)
 
         # Drawn on black and white to recover the foreground's true colors and alpha, resizing is

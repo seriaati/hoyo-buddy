@@ -6,7 +6,7 @@ import hb_data
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
 
-from hoyo_buddy.constants import locale_to_hoyo_lang
+from hoyo_buddy.constants import locale_to_genshin_data_lang, locale_to_hoyo_lang
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES, translator
@@ -43,13 +43,14 @@ async def _load_gacha_data(game: Game, locale: Locale) -> GachaData:
     data: GachaData = await JSONFile.read(filename, default={})
 
     if game is Game.GENSHIN:
+        data_lang = hb_data.gi.Language(locale_to_genshin_data_lang(locale))
         async with hb_data.GIClient() as client:
-            mw_costumes = client.get_mw_costumes()
-            mw_items = client.get_mw_items()
-            for costume in mw_costumes:
-                data[str(costume.id)] = {"name": costume.name, "icon": ""}
-            for item in mw_items:
-                data[str(item.id)] = {"name": item.name, "icon": ""}
+            mw_costumes = client.get_mw_costumes(lang=data_lang)
+            mw_items = client.get_mw_items(lang=data_lang)
+            for entry in [*mw_costumes, *mw_items]:
+                data[str(entry.id)] = {"name": entry.name}
+                if entry.icon is not None:
+                    data[str(entry.id)]["icon"] = entry.icon
 
     return data
 

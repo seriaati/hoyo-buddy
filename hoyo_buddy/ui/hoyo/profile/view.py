@@ -563,6 +563,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             template=template_num,
             animation=animation,
             uid=uid,
+            show_substat_rolls=card_settings.show_substat_rolls,
         )
 
     async def _draw_hb_gi_character_card(
@@ -624,6 +625,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             rank=rank,
             animation=animation,
             uid=uid,
+            show_substat_rolls=card_settings.show_substat_rolls,
         )
 
     async def _draw_hb_zzz_character_card(

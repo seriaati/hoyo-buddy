@@ -106,6 +106,7 @@ async def main() -> None:
         image_url=image_url,
         primary_hex=primary_hex,
         uid=None,
+        show_substat_rolls=True,
     )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

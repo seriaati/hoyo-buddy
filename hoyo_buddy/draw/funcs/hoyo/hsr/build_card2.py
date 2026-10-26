@@ -10,7 +10,9 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     LevelBubble,
     get_character_skills,
     get_character_stats,
+    get_max_substat_rolls,
     get_stat_icon,
+    get_substat_rolls,
 )
 from hoyo_buddy.enums import Locale
 
@@ -35,6 +37,7 @@ class HSRBuildCard2:
         image_url: str,
         en_name: str,
         uid: int | None,
+        show_substat_rolls: bool,
     ) -> None:
         self.character = character
         self.locale = Locale(locale)
@@ -42,6 +45,7 @@ class HSRBuildCard2:
         self.image_url = image_url
         self.en_name = en_name
         self.uid = uid
+        self.show_substat_rolls = show_substat_rolls
 
         self.color1 = (232, 232, 232) if dark_mode else (94, 94, 94)
         self.color2 = (199, 199, 199) if dark_mode else (156, 156, 156)
@@ -345,6 +349,7 @@ class HSRBuildCard2:
             # Relic sub stats
             sub_stats = relic.sub_stats
             sub_pos = (start_pos[0] + 21, start_pos[1] + 207)
+            sub_stat_rolls = get_substat_rolls(relic)
 
             for sub_index, sub_stat in enumerate(sub_stats):
                 sub_stat_icon = get_stat_icon(sub_stat, size=(55, 55), mask_color=self.color6)
@@ -357,6 +362,17 @@ class HSRBuildCard2:
                     style="medium",
                     anchor="lm",
                 )
+                if self.show_substat_rolls:
+                    drawer.draw_roll_track(
+                        im,
+                        (sub_pos[0], sub_pos[1] + 62),
+                        (150, 5),
+                        rolls=sub_stat_rolls[sub_index],
+                        max_rolls=get_max_substat_rolls(relic),
+                        color=self.color1,
+                        empty_color=self.color6,
+                        gap=6,
+                    )
 
                 if sub_index == 1:
                     sub_pos = (start_pos[0] + 21, sub_pos[1] + 80)

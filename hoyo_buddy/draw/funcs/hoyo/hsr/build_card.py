@@ -12,7 +12,9 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     SmallBubble,
     get_character_skills,
     get_character_stats,
+    get_max_substat_rolls,
     get_stat_icon,
+    get_substat_rolls,
 )
 
 if TYPE_CHECKING:
@@ -55,6 +57,7 @@ def _draw_foreground(
     dark_primary: tuple[int, int, int],
     light_primary: tuple[int, int, int],
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> None:
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode)
@@ -422,6 +425,7 @@ def _draw_foreground(
             stat_x = relic_icon_right_pos + 8  # main stat icon right pos
             stat_y = icon_y + icon.height + 10  # main stat icon bottom pos
             stat_y_padding = 10
+            sub_stat_rolls = get_substat_rolls(relic)
 
             for i, stat in enumerate(relic.sub_stats):
                 icon = get_stat_icon(stat, size=(40, 40), mask_color=dark_primary)
@@ -436,6 +440,17 @@ def _draw_foreground(
                     size=24,
                     color=dark_primary,
                 )
+                if show_substat_rolls:
+                    Drawer.draw_roll_track(
+                        im,
+                        (stat_x, stat_y + 43),
+                        (104, 3),
+                        rolls=sub_stat_rolls[i],
+                        max_rolls=get_max_substat_rolls(relic),
+                        color=primary,
+                        empty_color=dark_primary,
+                        gap=4,
+                    )
                 stat_x = sub_stat_icon_right_pos + 81
                 if i == 1:
                     stat_x = relic_icon_right_pos + 8
@@ -459,6 +474,7 @@ def draw_hsr_build_card(
     image_url: str,
     primary_hex: str,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> io.BytesIO:
     primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
 
@@ -485,6 +501,7 @@ def draw_hsr_build_card(
         dark_primary=dark_primary,
         light_primary=light_primary,
         uid=uid,
+        show_substat_rolls=show_substat_rolls,
     )
     return Drawer.save_image(im)
 
@@ -500,6 +517,7 @@ def draw_animated_hsr_build_card(
     quality: int,
     method: int,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> io.BytesIO:
     """Draw the card with an animated character image.
 
@@ -514,6 +532,7 @@ def draw_animated_hsr_build_card(
         quality: WEBP quality.
         method: WEBP method.
         uid: The UID to show on the card, if any.
+        show_substat_rolls: Whether to draw the relic sub stats' rolls.
 
     Returns:
         The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
@@ -540,6 +559,7 @@ def draw_animated_hsr_build_card(
             dark_primary=dark_primary,
             light_primary=light_primary,
             uid=uid,
+            show_substat_rolls=show_substat_rolls,
         )
 
     return Drawer.draw_animated_card(
@@ -548,7 +568,14 @@ def draw_animated_hsr_build_card(
         animation_path=animation_path,
         offset=offset,
         fallback=functools.partial(
-            draw_hsr_build_card, character, locale, dark_mode, image_url, primary_hex, uid
+            draw_hsr_build_card,
+            character,
+            locale,
+            dark_mode,
+            image_url,
+            primary_hex,
+            uid,
+            show_substat_rolls,
         ),
         area_pos=IMAGE_POS,
         mask=mask,

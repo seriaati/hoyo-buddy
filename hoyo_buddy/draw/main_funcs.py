@@ -92,6 +92,7 @@ async def draw_hsr_build_card(
     template: Literal[1, 2],
     animation: SpineData | None,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -126,6 +127,7 @@ async def draw_hsr_build_card(
                 animation.quality,
                 animation.method,
                 uid,
+                show_substat_rolls,
             )
         return await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -136,6 +138,7 @@ async def draw_hsr_build_card(
             image_url,
             primary_hex,
             uid,
+            show_substat_rolls,
         )
 
     async with YattaAPIClient(session=draw_input.session) as api:
@@ -149,6 +152,7 @@ async def draw_hsr_build_card(
         image_url=image_url,
         en_name=en_name,
         uid=uid,
+        show_substat_rolls=show_substat_rolls,
     )
     if animation is not None:
         draw = functools.partial(
@@ -183,6 +187,7 @@ async def draw_gi_build_card(
     rank: str | None,
     animation: SpineData | None,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> BytesIO:
     urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
@@ -210,6 +215,7 @@ async def draw_gi_build_card(
             top_crop=top_crop,
             rank=rank,
             uid=uid,
+            show_substat_rolls=show_substat_rolls,
         )
         buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     elif animation is not None:
@@ -224,6 +230,7 @@ async def draw_gi_build_card(
             zoom,
             rank,
             uid,
+            show_substat_rolls,
             get_static_img_path(animation.url),
             (animation.x, animation.y),
             animation.quality,
@@ -241,6 +248,7 @@ async def draw_gi_build_card(
             zoom,
             rank,
             uid,
+            show_substat_rolls,
         )
     return buffer
 

@@ -582,8 +582,8 @@ class CardSettingsContainer(ui.Container):
     def disable_substat_roll_button(self) -> bool:
         if self.game is Game.ZZZ:
             return False
-        # enka.cards supports substat rolls for GI and HSR
-        return get_template_name(self.card_settings.template) != "enka"
+        # Hoyo Buddy and enka.cards templates support substat rolls for GI and HSR
+        return get_template_name(self.card_settings.template) not in {"hb", "enka"}
 
     @property
     def disable_highlight_substat_selector(self) -> bool:

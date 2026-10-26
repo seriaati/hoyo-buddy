@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING
 from enka.gi import FightPropType
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS
 from hoyo_buddy.draw.drawer import BLACK, Drawer
-from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER
+from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER, get_substat_rolls
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
@@ -41,6 +42,7 @@ def _draw_foreground(
     character: Character | HoyolabGICharacter,
     rank: str | None,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> None:
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
@@ -265,6 +267,7 @@ def _draw_foreground(
 
         # sub stats
         # 2x2 grid
+        sub_stat_rolls = get_substat_rolls(artifact)
         for sub_index, sub_stat in enumerate(artifact.sub_stats):
             sub_x_offset = x_pos + 30 + 116 * (sub_index % 2)
             sub_y_offset = 1120 + 54 * (sub_index // 2)
@@ -280,6 +283,18 @@ def _draw_foreground(
                 position=(sub_x_offset + 35, sub_y_offset - 2),
                 color=text_color,
             )
+
+            if show_substat_rolls:
+                Drawer.draw_roll_track(
+                    im,
+                    (sub_x_offset, sub_y_offset + 32),
+                    (96, 3),
+                    rolls=sub_stat_rolls[sub_index],
+                    max_rolls=MAX_SUBSTAT_ROLLS[artifact.rarity],
+                    color=text_color,
+                    empty_color=text_color,
+                    gap=4,
+                )
 
 
 def _draw_uid(
@@ -320,6 +335,7 @@ def draw_genshin_card(
     zoom: float,
     rank: str | None,
     uid: int | None,
+    show_substat_rolls: bool,
 ) -> io.BytesIO:
     im = _draw_background(dark_mode, character)
     drawer = Drawer(
@@ -340,7 +356,7 @@ def draw_genshin_card(
     )
     im.paste(character_im, IMAGE_POS, character_im)
 
-    _draw_foreground(im, locale, dark_mode, character, rank, uid)
+    _draw_foreground(im, locale, dark_mode, character, rank, uid, show_substat_rolls)
     return Drawer.save_image(im)
 
 
@@ -352,6 +368,7 @@ def draw_animated_genshin_card(
     zoom: float,
     rank: str | None,
     uid: int | None,
+    show_substat_rolls: bool,
     animation_path: Path,
     offset: tuple[int, int],
     quality: int,
@@ -367,6 +384,7 @@ def draw_animated_genshin_card(
         zoom: Zoom of the static character image.
         rank: The character's rank text, if any.
         uid: The UID to show on the card, if any.
+        show_substat_rolls: Whether to draw the artifact sub stats' rolls.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
         quality: WEBP quality.
@@ -382,7 +400,7 @@ def draw_animated_genshin_card(
         if dark_mode:
             overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
             im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
-        _draw_foreground(im, locale, dark_mode, character, rank, uid)
+        _draw_foreground(im, locale, dark_mode, character, rank, uid, show_substat_rolls)
 
     return Drawer.draw_animated_card(
         _draw_background(dark_mode, character),
@@ -390,7 +408,15 @@ def draw_animated_genshin_card(
         animation_path=animation_path,
         offset=offset,
         fallback=functools.partial(
-            draw_genshin_card, locale, dark_mode, character, image_url, zoom, rank, uid
+            draw_genshin_card,
+            locale,
+            dark_mode,
+            character,
+            image_url,
+            zoom,
+            rank,
+            uid,
+            show_substat_rolls,
         ),
         area_pos=IMAGE_POS,
         mask=mask,

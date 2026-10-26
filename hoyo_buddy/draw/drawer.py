@@ -10,7 +10,7 @@ from fontTools.ttLib import TTFont
 from loguru import logger
 
 # ruff:ignore[import-private-name]
-from PIL import Image, ImageChops, ImageFont, ImageSequence, _webp
+from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageSequence, _webp
 
 from hoyo_buddy.cache import image_cache
 from hoyo_buddy.constants import (
@@ -28,8 +28,6 @@ from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
-
-    from PIL import ImageDraw
 
     from hoyo_buddy.l10n import LocaleStr
     from hoyo_buddy.models import DynamicBKInput
@@ -788,6 +786,35 @@ class Drawer:
     def mask_image_with_image(image: Image.Image, mask: Image.Image) -> Image.Image:
         overlay = Image.new("RGBA", mask.size)
         return Image.composite(image, overlay, mask)
+
+    @staticmethod
+    def draw_roll_track(
+        im: Image.Image,
+        pos: tuple[int, int],
+        size: tuple[int, int],
+        *,
+        rolls: int,
+        max_rolls: int,
+        color: tuple[int, int, int],
+        empty_color: tuple[int, int, int],
+        gap: int,
+    ) -> None:
+        """Draw a sub stat's rolls as a track of max_rolls slots, one filled slot per roll."""
+        scale = 4  # Supersample for anti-aliased slot ends
+        width, height = size
+        layer = Image.new("RGBA", (width * scale, height * scale))
+        draw = ImageDraw.Draw(layer)
+        slot_width = (width - gap * (max_rolls - 1)) / max_rolls
+
+        for i in range(max_rolls):
+            x = i * (slot_width + gap)
+            draw.rounded_rectangle(
+                (x * scale, 0, (x + slot_width) * scale - 1, height * scale - 1),
+                radius=height * scale / 2,
+                fill=(*color, 255) if i < rolls else (*empty_color, 60),
+            )
+
+        im.alpha_composite(layer.resize(size, Image.Resampling.LANCZOS), pos)
 
     @classmethod
     def create_pattern_blob(

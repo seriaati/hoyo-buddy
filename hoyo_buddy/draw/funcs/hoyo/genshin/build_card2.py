@@ -4,12 +4,18 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import convert_gi_element_to_enka
+from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS, convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
-from .common import ADD_HURT_ELEMENTS, ARTIFACT_POS, ELEMENT_BG_COLORS, STATS_ORDER
+from .common import (
+    ADD_HURT_ELEMENTS,
+    ARTIFACT_POS,
+    ELEMENT_BG_COLORS,
+    STATS_ORDER,
+    get_substat_rolls,
+)
 
 if TYPE_CHECKING:
     from io import BytesIO
@@ -34,6 +40,7 @@ class GITempTwoBuildCard:
         top_crop: bool,
         rank: str | None,
         uid: int | None,
+        show_substat_rolls: bool,
         zoom: float = 1.0,
     ) -> None:
         self._locale = locale
@@ -46,6 +53,7 @@ class GITempTwoBuildCard:
         self._top_crop = top_crop
         self._rank = rank
         self._uid = uid
+        self._show_substat_rolls = show_substat_rolls
 
     def draw(self) -> BytesIO:
         character = self._character
@@ -360,6 +368,7 @@ class GITempTwoBuildCard:
                 im.alpha_composite(icon, (tbox.left - icon.width - 10, start_pos[1] + 125))
 
                 ss_start_pos = (start_pos[0] + 39, start_pos[1] + 212)
+                sub_stat_rolls = get_substat_rolls(artifact)
                 for j, sub_stat in enumerate(artifact.sub_stats):
                     icon = drawer.open_asset(
                         f"stats/{sub_stat.type.name}.png", size=(35, 35), mask_color=color_3
@@ -376,6 +385,17 @@ class GITempTwoBuildCard:
                         ),
                         anchor="lm",
                     )
+                    if self._show_substat_rolls:
+                        drawer.draw_roll_track(
+                            im,
+                            (ss_start_pos[0], ss_start_pos[1] + 44),
+                            (142, 5),
+                            rolls=sub_stat_rolls[j],
+                            max_rolls=MAX_SUBSTAT_ROLLS[artifact.rarity],
+                            color=color_1,
+                            empty_color=color_3,
+                            gap=6,
+                        )
                     ss_start_pos = (
                         (start_pos[0] + 39, start_pos[1] + 291)
                         if j == 1

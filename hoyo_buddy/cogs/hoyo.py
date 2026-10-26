@@ -10,6 +10,7 @@ from hoyo_buddy.commands.configs import COMMANDS
 from hoyo_buddy.commands.events import EventsCommand
 from hoyo_buddy.db import HoyoAccount, Settings, get_dyk, get_locale
 from hoyo_buddy.dismissibles import show_anniversary_dismissible, show_dismissible
+from hoyo_buddy.ui.hoyo.diary import DiaryView
 from hoyo_buddy.ui.hoyo.genshin.exploration import ExplorationView
 from hoyo_buddy.ui.hoyo.genshin.lunar_arcana import LunarArcanaView
 from hoyo_buddy.ui.hoyo.mimo import MimoView
@@ -298,6 +299,28 @@ class Hoyo(commands.Cog):
 
         await show_anniversary_dismissible(i)
 
+    @app_commands.command(
+        name=app_commands.locale_str("diary"), description=COMMANDS["diary"].description
+    )
+    @app_commands.rename(**get_rename_kwargs(account=True))
+    @app_commands.describe(**get_describe_kwargs(account=True))
+    async def diary_command(
+        self,
+        i: Interaction,
+        account: app_commands.Transform[
+            HoyoAccount | None, HoyoAccountTransformer(COMMANDS["diary"].games)
+        ] = None,
+    ) -> None:
+        await i.response.defer(ephemeral=ephemeral(i))
+
+        account = account or await self.bot.get_account(
+            i.user.id, COMMANDS["diary"].games, COMMANDS["diary"].platform
+        )
+        view = DiaryView(account, author=i.user, locale=await get_locale(i))
+        await view.start(i)
+
+        await show_anniversary_dismissible(i)
+
     @geetest_command.autocomplete("type_")
     @handle_autocomplete_errors
     async def geetest_type_autocomplete(
@@ -317,6 +340,7 @@ class Hoyo(commands.Cog):
     @checkin_command.autocomplete("account")
     @geetest_command.autocomplete("account")
     @web_events_command.autocomplete("account")
+    @diary_command.autocomplete("account")
     @handle_autocomplete_errors
     async def acc_autocomplete(
         self, i: Interaction, current: str

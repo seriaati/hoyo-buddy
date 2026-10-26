@@ -943,3 +943,8 @@ reminders_button_label: Reminders
 farm_reminder_title: Farm Reminders
 web_events_reminder_title: Web Event Reminders
 web_events_reminder_desc: Notify you via Direct Message when new web events are posted.
+diary_cmd_desc: View your monthly currency income
+diary_primogems: Primogems
+diary_mora: Mora
+diary_primogem_sources: Primogem Sources
+diary_last_month: "Last month: {amount}"

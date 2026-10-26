@@ -44,6 +44,7 @@ type CommandName = Literal[
     "events",
     "mimo",
     "web-events",
+    "diary",
     "accompany",
     "lb akasha",
     "lb view",
@@ -255,6 +256,11 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str(
             "View ongoing web events and set notifier", key="web_events_cmd_desc"
         ),
+    ),
+    "diary": CommandConfig(
+        games=(Game.GENSHIN, Game.ZZZ),
+        platform=Platform.HOYOLAB,
+        description=locale_str("View your monthly currency income", key="diary_cmd_desc"),
     ),
     "accompany": CommandConfig(
         games=ACCOMPANY_SUPPORT_GAMES,

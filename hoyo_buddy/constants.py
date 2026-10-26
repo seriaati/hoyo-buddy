@@ -830,6 +830,10 @@ def get_disc_substat_roll_num(
     return round(prop_value / value)
 
 
+MAX_DISC_SUBSTAT_ROLLS: dict[Literal["B", "A", "S"], int] = {"B": 2, "A": 4, "S": 6}
+"""Most times a ZZZ disc sub stat can be rolled, by rarity, see MAX_SUBSTAT_ROLLS."""
+
+
 CODE_CHANNEL_IDS = {
     Game.GENSHIN: 1310017049896026135,
     Game.STARRAIL: 1310017113695457300,

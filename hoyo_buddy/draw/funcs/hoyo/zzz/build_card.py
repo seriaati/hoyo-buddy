@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 from PIL.Image import Transpose
 
 from hoyo_buddy.constants import (
+    MAX_DISC_SUBSTAT_ROLLS,
     ZZZ_AGENT_CORE_LEVEL_MAP,
     get_disc_substat_roll_num,
     is_hl_disc_substat,
@@ -427,12 +428,15 @@ class ZZZAgentCard:
                         )
 
                         if self._show_substat_rolls:
-                            roll_num = get_disc_substat_roll_num(disc.rarity, sub_stat)
-                            roll_num_img = drawer.open_asset(
-                                f"rolls/{roll_num}.png", size=(103, 2), mask_color=color
-                            )
-                            im.alpha_composite(
-                                roll_num_img, (sub_stat_pos[0], sub_stat_pos[1] + 32)
+                            drawer.draw_roll_track(
+                                im,
+                                (sub_stat_pos[0], sub_stat_pos[1] + 32),
+                                (103, 3),
+                                rolls=get_disc_substat_roll_num(disc.rarity, sub_stat),
+                                max_rolls=MAX_DISC_SUBSTAT_ROLLS[disc.rarity],
+                                color=color,
+                                empty_color=color,
+                                gap=3,
                             )
 
                     if j == 1:

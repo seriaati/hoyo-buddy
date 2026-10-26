@@ -8,6 +8,7 @@ from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import (
+    MAX_DISC_SUBSTAT_ROLLS,
     ZZZ_AGENT_CORE_LEVEL_MAP,
     get_disc_substat_roll_num,
     is_hl_disc_substat,
@@ -236,15 +237,15 @@ class ZZZTeamCard:
                         )
 
                         if self._show_substat_rolls[agent.id]:
-                            roll_num = get_disc_substat_roll_num(disc.rarity, stat)
-                            roll_num_img = drawer.open_asset(
-                                f"rolls/{roll_num}.png",
-                                size=(55, 1),
-                                folder="zzz-build-card",
-                                mask_color=color,
-                            )
-                            im.alpha_composite(
-                                roll_num_img, (stat_start_pos[0], stat_start_pos[1] + 18)
+                            drawer.draw_roll_track(
+                                im,
+                                (stat_start_pos[0], stat_start_pos[1] + 18),
+                                (55, 2),
+                                rolls=get_disc_substat_roll_num(disc.rarity, stat),
+                                max_rolls=MAX_DISC_SUBSTAT_ROLLS[disc.rarity],
+                                color=color,
+                                empty_color=color,
+                                gap=2,
                             )
 
                     if j == 1:

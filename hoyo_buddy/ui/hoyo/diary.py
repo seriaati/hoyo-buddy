@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 
 ROWS_PER_PAGE = 20
 ZZZ_LOG_PAGE_SIZE = 100
-BAR_LENGTH = 10
 
 TITLES: dict[Game, LocaleStr] = {
     Game.GENSHIN: LocaleStr(key="genshin_tool_travelers_note", mi18n_game=Game.GENSHIN),
@@ -72,11 +71,6 @@ def _month_name(month: str) -> LocaleStr:
 def _zzz_prev_month(month: str) -> str:
     year, month_ = int(month[:4]), int(month[4:])
     return f"{year - 1}12" if month_ == 1 else f"{year}{month_ - 1:02d}"
-
-
-def _bar(percent: int) -> str:
-    filled = round(min(percent, 100) / 100 * BAR_LENGTH)
-    return "▰" * filled + "▱" * (BAR_LENGTH - filled)
 
 
 def _rate(current: int, last: int) -> str | None:
@@ -252,8 +246,7 @@ class DiaryView(ui.LayoutPaginatorView):
         month = self._translate(_month_name(self.month))
         currencies = "\n".join(self._currency_text(c) for c in summary.currencies)
         sources = "\n".join(
-            f"`{_bar(s.percent)}` {s.percent}% · {self._translate(s.name)} · {s.amount:,}"
-            for s in summary.sources
+            f"{s.percent}% · {self._translate(s.name)} · {s.amount:,}" for s in summary.sources
         )
 
         self.clear_items()

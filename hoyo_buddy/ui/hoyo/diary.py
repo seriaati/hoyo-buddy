@@ -10,7 +10,7 @@ from seria.utils import split_list_to_chunks
 
 from hoyo_buddy import ui
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import BACK, POLYCHROME_EMOJI, PRIMOGEM_EMOJI
+from hoyo_buddy.emojis import BACK, GAME_ICON_EMOJIS, POLYCHROME_EMOJI, PRIMOGEM_EMOJI
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, translator
 
@@ -249,13 +249,16 @@ class DiaryView(ui.LayoutPaginatorView):
             f"{s.percent}% · {self._translate(s.name)} · {s.amount:,}" for s in summary.sources
         )
 
+        header = f"{GAME_ICON_EMOJIS[self.account.game_icon]} {self.account.blurred_display}"
+
         self.clear_items()
         self.add_item(
             ui.DefaultContainer(
-                ui.TextDisplay(f"-# {self.account.blurred_display}"),
-                ui.TextDisplay(f"## {title} · {month}\n{currencies}"),
+                ui.TextDisplay(f"### {header}"),
+                ui.TextDisplay(f"# {title} · {month}\n{currencies}"),
                 discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
-                ui.TextDisplay(f"### {self._translate(summary.sources_title)}\n{sources}"),
+                ui.TextDisplay(f"## {self._translate(summary.sources_title)}\n{sources}"),
+                discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
                 ui.ActionRow(MonthSelect(summary.months, self.month)),
                 ui.ActionRow(LogButton()),
             )

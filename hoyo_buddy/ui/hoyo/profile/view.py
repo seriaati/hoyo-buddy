@@ -72,6 +72,7 @@ from .items.card_settings_btn import CardSettingsButton
 from .items.chara_select import MAX_VALUES, CharacterSelect
 from .items.player_btn import PlayerInfoButton
 from .items.redraw_card_btn import RedrawCardButton
+from .items.show_uid_btn import ShowUIDButton
 from .items.skin_select import DEFAULT_SKIN_ID, SkinSelect
 
 if TYPE_CHECKING:
@@ -198,6 +199,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
         self._rows: list[list[Button | Select]] = []
+        self._show_uid = False
         self.dyk = ""
         self._card_filename = "card.webp"
 
@@ -408,7 +410,9 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._rows.append([BuildSelect(row=3)])
         if self.game in SKIN_TEMPLATES:
             self._rows.append([SkinSelect(row=4)])
-        self._rows.append([CardInfoButton(row=4), ToggleUIButton()])
+        self._rows.append(
+            [CardInfoButton(row=4), ShowUIDButton(self._show_uid, row=4), ToggleUIButton()]
+        )
 
     def render(self, embed: discord.Embed) -> None:
         self.clear_items()
@@ -1073,6 +1077,12 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         attachments = [File(bytes_obj, filename=self._card_filename)]
         if self.game in SKIN_TEMPLATES:
             await self._update_skin_select(card_settings, is_team=is_team)
+
+        # The UID is only drawn on single-character Hoyo Buddy templates
+        show_uid_btn: ShowUIDButton = self.get_item("profile_show_uid")
+        self.item_states["profile_show_uid"] = show_uid_btn.disabled = (
+            is_team or "hb" not in card_settings.template
+        )
         self.render(self.card_embed)
 
         if unset_loading_state and item is not None:
@@ -1082,6 +1092,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
     async def start(self, i: Interaction) -> None:
         self._set_characters()
+        self._show_uid = (await Settings.get(user_id=i.user.id)).show_uid
         self._add_items()
 
         if self.game is Game.ZZZ:

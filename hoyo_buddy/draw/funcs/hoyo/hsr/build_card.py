@@ -497,6 +497,8 @@ def draw_animated_hsr_build_card(
     primary_hex: str,
     animation_path: Path,
     offset: tuple[int, int],
+    quality: int,
+    method: int,
     uid: int | None,
 ) -> io.BytesIO:
     """Draw the card with an animated character image.
@@ -509,6 +511,8 @@ def draw_animated_hsr_build_card(
         primary_hex: The card's primary color.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
+        quality: WEBP quality.
+        method: WEBP method.
         uid: The UID to show on the card, if any.
 
     Returns:
@@ -548,4 +552,6 @@ def draw_animated_hsr_build_card(
         ),
         area_pos=IMAGE_POS,
         mask=mask,
+        quality=quality,
+        method=method,
     )

@@ -448,12 +448,16 @@ class ZZZAgentCard:
         self._draw_foreground(im)
         return Drawer.save_image(im)
 
-    def draw_animated(self, animation_path: Path, offset: tuple[int, int]) -> BytesIO:
+    def draw_animated(
+        self, animation_path: Path, offset: tuple[int, int], *, quality: int, method: int
+    ) -> BytesIO:
         """Draw the card with an animated agent image.
 
         Args:
             animation_path: Path of the agent's pre-rendered animated WEBP.
             offset: The animation's uncropped top-left on the static-scale card.
+            quality: WEBP quality.
+            method: WEBP method.
 
         Returns:
             The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
@@ -464,4 +468,6 @@ class ZZZAgentCard:
             animation_path=animation_path,
             offset=offset,
             fallback=self.draw,
+            quality=quality,
+            method=method,
         )

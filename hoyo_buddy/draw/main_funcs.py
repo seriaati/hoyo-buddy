@@ -123,6 +123,8 @@ async def draw_hsr_build_card(
                 primary_hex,
                 get_static_img_path(animation.url),
                 (animation.x, animation.y),
+                animation.quality,
+                animation.method,
                 uid,
             )
         return await draw_input.loop.run_in_executor(
@@ -150,7 +152,11 @@ async def draw_hsr_build_card(
     )
     if animation is not None:
         draw = functools.partial(
-            card.draw_animated, get_static_img_path(animation.url), (animation.x, animation.y)
+            card.draw_animated,
+            get_static_img_path(animation.url),
+            (animation.x, animation.y),
+            quality=animation.quality,
+            method=animation.method,
         )
         return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -220,6 +226,8 @@ async def draw_gi_build_card(
             uid,
             get_static_img_path(animation.url),
             (animation.x, animation.y),
+            animation.quality,
+            animation.method,
         )
     else:
         await download_images(urls, draw_input.session)
@@ -713,7 +721,11 @@ async def draw_zzz_build_card(
         )
         if animation is not None and template == 1:
             draw = functools.partial(
-                card.draw_animated, get_static_img_path(animation.url), (animation.x, animation.y)
+                card.draw_animated,
+                get_static_img_path(animation.url),
+                (animation.x, animation.y),
+                quality=animation.quality,
+                method=animation.method,
             )
             return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)

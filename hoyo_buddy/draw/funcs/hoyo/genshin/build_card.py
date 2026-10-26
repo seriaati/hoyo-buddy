@@ -354,6 +354,8 @@ def draw_animated_genshin_card(
     uid: int | None,
     animation_path: Path,
     offset: tuple[int, int],
+    quality: int,
+    method: int,
 ) -> io.BytesIO:
     """Draw the card with an animated character image.
 
@@ -367,6 +369,8 @@ def draw_animated_genshin_card(
         uid: The UID to show on the card, if any.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
+        quality: WEBP quality.
+        method: WEBP method.
 
     Returns:
         The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
@@ -390,4 +394,6 @@ def draw_animated_genshin_card(
         ),
         area_pos=IMAGE_POS,
         mask=mask,
+        quality=quality,
+        method=method,
     )

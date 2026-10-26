@@ -13,7 +13,12 @@ from loguru import logger
 from PIL import Image, ImageChops, ImageFont, ImageSequence, _webp
 
 from hoyo_buddy.cache import image_cache
-from hoyo_buddy.constants import ANIMATED_CARD_SCALE, DC_MAX_FILESIZE
+from hoyo_buddy.constants import (
+    ANIMATED_CARD_METHOD,
+    ANIMATED_CARD_QUALITY,
+    ANIMATED_CARD_SCALE,
+    DC_MAX_FILESIZE,
+)
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import translator
 from hoyo_buddy.models import TopPadding
@@ -911,7 +916,11 @@ class Drawer:
 
     @staticmethod
     def save_animated(
-        frames: Iterable[tuple[Image.Image, int]], size: tuple[int, int], *, quality: int = 75
+        frames: Iterable[tuple[Image.Image, int]],
+        size: tuple[int, int],
+        *,
+        quality: int = ANIMATED_CARD_QUALITY,
+        method: int = ANIMATED_CARD_METHOD,
     ) -> io.BytesIO:
         """Encode RGBA frames and their durations in ms into a looping animated WEBP, one at a time.
 
@@ -922,9 +931,9 @@ class Drawer:
         encoder = _webp.WebPAnimEncoder(size, 0, 0, False, 0, 300, False, False)
         timestamp = 0
         for frame, duration in frames:
-            encoder.add(frame.getim(), timestamp, False, quality, 100, 0)
+            encoder.add(frame.getim(), timestamp, False, quality, 100, method)
             timestamp += duration
-        encoder.add(None, timestamp, False, quality, 100, 0)
+        encoder.add(None, timestamp, False, quality, 100, method)
         return io.BytesIO(encoder.assemble("", "", ""))
 
     @staticmethod
@@ -952,6 +961,8 @@ class Drawer:
         fallback: Callable[[], io.BytesIO],
         area_pos: tuple[int, int] = (0, 0),
         mask: Image.Image | None = None,
+        quality: int = ANIMATED_CARD_QUALITY,
+        method: int = ANIMATED_CARD_METHOD,
     ) -> io.BytesIO:
         """Draw a card with an animated image between its background and foreground, at
         ANIMATED_CARD_SCALE.
@@ -965,6 +976,8 @@ class Drawer:
             fallback: Draws the static card, for when the animated one is too big for Discord.
             area_pos: The art area's top-left on the card.
             mask: The art area's mask, its alpha is applied to every frame.
+            quality: WEBP quality.
+            method: WEBP method.
         """
         scale = ANIMATED_CARD_SCALE
         full_size = background.size
@@ -1019,7 +1032,7 @@ class Drawer:
                     card.alpha_composite(foreground)
                     yield card, frame.info["duration"]
 
-        result = cls.save_animated(frames(), size)
+        result = cls.save_animated(frames(), size, quality=quality, method=method)
         if result.getbuffer().nbytes > DC_MAX_FILESIZE:
             return fallback()
         return result

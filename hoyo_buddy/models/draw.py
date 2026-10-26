@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 from attr import dataclass
 from pydantic import BaseModel, Field
 
+from hoyo_buddy.constants import ANIMATED_CARD_METHOD, ANIMATED_CARD_QUALITY
+
 if TYPE_CHECKING:
     import asyncio
     import concurrent.futures
@@ -144,6 +146,10 @@ class SpineData(BaseModel):
     """The animation's uncropped left in the card's art area, on the static-scale card."""
     y: int
     """The animation's uncropped top in the card's art area, on the static-scale card."""
+    quality: int = ANIMATED_CARD_QUALITY
+    """WEBP quality of the animated card, picked so it fits Discord's limit."""
+    method: int = ANIMATED_CARD_METHOD
+    """WEBP method of the animated card, picked so it fits Discord's limit."""
 
 
 class GICardData(BaseModel):

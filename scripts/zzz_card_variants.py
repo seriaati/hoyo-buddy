@@ -106,7 +106,7 @@ from PIL.Image import Transpose
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from hoyo_buddy.constants import ANIMATED_CARD_SCALE
+from hoyo_buddy.constants import ANIMATED_CARD_METHOD, ANIMATED_CARD_QUALITY, ANIMATED_CARD_SCALE
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.fonts import NUNITO_SANS_BLACK_ITALIC
 from hoyo_buddy.draw.funcs.hoyo.zzz import ZZZAgentCard
@@ -768,7 +768,14 @@ def _draw_spine_tiles(
         with tempfile.TemporaryDirectory() as tmp:
             frame_path = Path(tmp) / "frame.webp"
             frame.save(frame_path, lossless=True)
-            image = Image.open(card.draw_animated(frame_path, (framing.x, framing.y)))
+            image = Image.open(
+                card.draw_animated(
+                    frame_path,
+                    (framing.x, framing.y),
+                    quality=ANIMATED_CARD_QUALITY,
+                    method=ANIMATED_CARD_METHOD,
+                )
+            )
             image.load()
         desc = _describe_on_card(
             frame, x=max(framing.x, 0), y=max(framing.y, 0), scale=1 / ANIMATED_CARD_SCALE

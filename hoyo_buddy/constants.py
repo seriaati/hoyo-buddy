@@ -562,6 +562,11 @@ ZZZ_RARITY_NUM_TO_RARITY: dict[int, Literal["B", "A", "S"]] = {4: "S", 3: "A", 2
 
 ANIMATED_CARD_SCALE = 0.5
 """Scale of animated build cards relative to the static card."""
+ANIMATED_CARD_QUALITY = 75
+"""Default WEBP quality of animated build cards."""
+ANIMATED_CARD_METHOD = 0
+"""Default WEBP method of animated build cards, the fastest. Higher methods compress better but
+encode slower."""
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",

@@ -384,12 +384,16 @@ class HSRBuildCard2:
         self._draw_foreground(im)
         return Drawer.save_image(im)
 
-    def draw_animated(self, animation_path: Path, offset: tuple[int, int]) -> BytesIO:
+    def draw_animated(
+        self, animation_path: Path, offset: tuple[int, int], *, quality: int, method: int
+    ) -> BytesIO:
         """Draw the card with an animated character image.
 
         Args:
             animation_path: Path of the character's pre-rendered animated WEBP.
             offset: The animation's uncropped top-left in the image mask.
+            quality: WEBP quality.
+            method: WEBP method.
 
         Returns:
             The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
@@ -400,6 +404,8 @@ class HSRBuildCard2:
             animation_path=animation_path,
             offset=offset,
             fallback=self.draw,
+            quality=quality,
+            method=method,
             area_pos=IMAGE_POS,
             mask=Drawer.open_image("hoyo-buddy-assets/assets/hsr-build-card2/image_mask.png"),
         )

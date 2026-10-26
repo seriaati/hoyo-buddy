@@ -62,8 +62,13 @@ def _mask_size(path: Path) -> tuple[int, int]:
         return mask.size
 
 
-TARGET = Target("gi", CARD_DATA_PATH / "spine.yaml", _mask_size(CARD_DATA_PATH / "mask.png"), 0.85)
-"""Template 1 cards' art area, the size of its image mask. Card size ratio measured 0.69-0.82."""
+TARGET = Target(
+    "gi",
+    CARD_DATA_PATH / "spine.yaml",
+    _mask_size(CARD_DATA_PATH / "mask.png"),
+    CARD_DATA_PATH / "mask.png",
+)
+"""Template 1 cards' art area, the size of its image mask."""
 
 
 async def fetch_spine_characters(

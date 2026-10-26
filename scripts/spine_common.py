@@ -3,7 +3,8 @@
 The game scripts (render_zzz_spine.py, render_hsr_spine.py, render_gi_spine.py) look up characters'
 Spine files and suggest their framings. This renders each loop with scripts/spine/render.mjs
 (spine-webgl in headless Chrome), crops it to the card's art area and encodes it at
-ANIMATED_CARD_SCALE, uploads it to the image host and records it in the art area's spine.yaml.
+ANIMATED_CARD_SCALE, uploads it to the image host and records it in the art area's spine.yaml,
+along with the animated card's WEBP quality and method that keep it under Discord's limit.
 
 Each entry's framing is the animation's uncropped top-left (x, y) in the art area and its height,
 on the static-scale card, and whether it's mirrored (flip). Since the asset is cropped to the art
@@ -33,7 +34,13 @@ from PIL.Image import Transpose
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.constants import ANIMATED_CARD_SCALE, DC_MAX_FILESIZE
+from hoyo_buddy.constants import (
+    ANIMATED_CARD_METHOD,
+    ANIMATED_CARD_QUALITY,
+    ANIMATED_CARD_SCALE,
+    DC_MAX_FILESIZE,
+)
+from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.utils import upload_image
 
 if TYPE_CHECKING:
@@ -52,6 +59,19 @@ MAX_WEBP_QUALITY = 80
 MIN_WEBP_QUALITY = 50
 IMG_HOST_MAX_SIZE = 50 * 1024 * 1024
 FPS = 30
+CARD_ENCODINGS = (
+    (ANIMATED_CARD_QUALITY, ANIMATED_CARD_METHOD),
+    (ANIMATED_CARD_QUALITY, 2),
+    (ANIMATED_CARD_QUALITY, 4),
+    (70, 4),
+    (65, 4),
+    (60, 4),
+)
+"""Animated card WEBP qualities and methods to try in order. Higher methods take the bot longer to
+encode, method 2 about 20% longer than method 0 and 4 about 80%."""
+CARD_SIZE_BUDGET = DC_MAX_FILESIZE - 1024 * 1024
+"""Animated card size to stay under on a plain background, leaving room for the real card's
+background and foreground, which measured within 0.6MB of it."""
 ATLAS_PAGE_RE = re.compile(r"^[^:]+\.(png|webp|jpg)$", re.IGNORECASE)
 
 
@@ -89,8 +109,8 @@ class Target(NamedTuple):
     manifest: Path
     area: tuple[int, int]
     """The art area's size on the static-scale card."""
-    card_size_ratio: float
-    """Animated card size relative to its animation's size, measured on a few cards."""
+    mask: Path | None = None
+    """The art area's mask, see Drawer.draw_animated_card."""
 
 
 class SpineFiles(NamedTuple):
@@ -334,19 +354,43 @@ def save_webp(frames: list[Image.Image], fps: int) -> tuple[bytes, int]:
         quality -= 5
 
 
-def encode_webp(frames: list[Image.Image], *, card_size_ratio: float) -> tuple[bytes, int, int]:
-    """Encode frames into an animated WEBP, halving the frame rate if the animated card would be
-    too big for Discord.
+def measure_card(
+    path: Path, target: Target, framing: Framing, *, quality: int, method: int
+) -> int | None:
+    """Measure the animated card's size, drawn like the bot does on a plain background.
 
     Returns:
-        The WEBP bytes, its frame rate and the quality used.
+        The size in bytes, or None if it's over Discord's limit.
     """
-    fps = FPS
-    data, quality = save_webp(frames, fps)
-    if len(data) * card_size_ratio > DC_MAX_FILESIZE:
-        fps //= 2
-        data, quality = save_webp(frames[::2], fps)
-    return data, fps, quality
+    card = Drawer.draw_animated_card(
+        Image.new("RGBA", target.area, WHITE),
+        lambda _: None,
+        animation_path=path,
+        offset=(framing.x, framing.y),
+        fallback=io.BytesIO,  # Empty, since it's only drawn when the card is over the limit
+        mask=Drawer.open_image(target.mask) if target.mask is not None else None,
+        quality=quality,
+        method=method,
+    )
+    return card.getbuffer().nbytes or None
+
+
+def pick_card_encoding(data: bytes, target: Target, framing: Framing) -> tuple[int, int]:
+    """Pick the first of CARD_ENCODINGS that keeps the animated card under CARD_SIZE_BUDGET.
+
+    Returns:
+        The WEBP quality and method.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "animation.webp"
+        path.write_bytes(data)
+        for quality, method in CARD_ENCODINGS:
+            size = measure_card(path, target, framing, quality=quality, method=method)
+            if size is not None and size <= CARD_SIZE_BUDGET:
+                return quality, method
+
+    msg = "The animated card is too big for Discord at every encoding, try a smaller framing"
+    raise ValueError(msg)
 
 
 async def delete_image(session: aiohttp.ClientSession, url: str) -> None:
@@ -392,14 +436,13 @@ async def render_target(  # ruff:ignore[too-many-arguments]
         area=target.area,
         args=files.args,
     )
-    data, fps, quality = await asyncio.to_thread(
-        encode_webp, frames, card_size_ratio=target.card_size_ratio
-    )
+    data, quality = await asyncio.to_thread(save_webp, frames, FPS)
+    card_quality, card_method = await asyncio.to_thread(pick_card_encoding, data, target, framing)
 
     size_mb = len(data) / 1024 / 1024
     logger.info(
-        f"{character.name} ({character_id}) {target.name}: "
-        f"{fps}fps, {size_mb:.1f}MB at q{quality}, {framing}"
+        f"{character.name} ({character_id}) {target.name}: {size_mb:.1f}MB at q{quality}, "
+        f"card at q{card_quality} m{card_method}, {framing}"
     )
 
     if dry_run:
@@ -413,7 +456,13 @@ async def render_target(  # ruff:ignore[too-many-arguments]
     if old_url := entry.get("url"):
         await delete_image(session, old_url)
 
-    manifest[character_id] = {"name": character.name, "url": url, **framing._asdict()}
+    manifest[character_id] = {
+        "name": character.name,
+        "url": url,
+        **framing._asdict(),
+        "quality": card_quality,
+        "method": card_method,
+    }
     target.manifest.write_text(yaml.safe_dump(manifest, allow_unicode=True), encoding="utf-8")
     logger.info(f"Uploaded {url}")
 

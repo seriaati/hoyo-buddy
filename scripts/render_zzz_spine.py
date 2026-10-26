@@ -46,8 +46,8 @@ MANIFEST_PATH = Path("hoyo-buddy-assets/assets/zzz-build-card/spine.yaml")
 CARD_DATA_PATH = Path("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml")
 
 CARD_SIZE = (3324, 1286)
-TARGET = Target("zzz", MANIFEST_PATH, CARD_SIZE, card_size_ratio=0.6)
-"""Template 1 cards, the art area is the whole card. Card size ratio measured 0.52-0.55."""
+TARGET = Target("zzz", MANIFEST_PATH, CARD_SIZE)
+"""Template 1 cards, the art area is the whole card."""
 REFERENCE_HEIGHT = 1500
 """Height the animation is rendered at to compare it with the static art."""
 MIN_REGISTRATION_IOU = 0.5

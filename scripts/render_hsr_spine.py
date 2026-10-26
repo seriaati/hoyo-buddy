@@ -57,8 +57,6 @@ REFERENCE_HEIGHT = 1500
 MIN_REGISTRATION_SCORE = 0.5
 """Below it, the animation likely isn't laid out like the static art, so its suggested framing
 needs a look."""
-CARD_SIZE_RATIO = 0.5
-"""Measured 0.37-0.43."""
 MASKS = {
     1: ASSET_PATH / "hsr-build-card/img/mask.png",
     2: ASSET_PATH / "hsr-build-card2/image_mask.png",
@@ -75,12 +73,8 @@ def _mask_size(path: Path) -> tuple[int, int]:
 
 
 TARGETS = {
-    1: Target(
-        "hsr1", ASSET_PATH / "hsr-build-card/spine.yaml", _mask_size(MASKS[1]), CARD_SIZE_RATIO
-    ),
-    2: Target(
-        "hsr2", ASSET_PATH / "hsr-build-card2/spine.yaml", _mask_size(MASKS[2]), CARD_SIZE_RATIO
-    ),
+    1: Target("hsr1", ASSET_PATH / "hsr-build-card/spine.yaml", _mask_size(MASKS[1]), MASKS[1]),
+    2: Target("hsr2", ASSET_PATH / "hsr-build-card2/spine.yaml", _mask_size(MASKS[2]), MASKS[2]),
 }
 """Templates' art areas, the size of their image masks."""
 

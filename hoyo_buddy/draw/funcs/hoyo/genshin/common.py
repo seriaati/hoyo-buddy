@@ -1,6 +1,9 @@
+from collections import Counter
 from typing import Final
 
 import enka
+
+from hoyo_buddy.models import HoyolabGIArtifact
 
 ELEMENT_BG_COLORS: Final[dict[bool, dict[enka.gi.Element, str]]] = {
     False: {
@@ -59,3 +62,27 @@ ARTIFACT_POS: Final[dict[enka.gi.EquipmentType, int]] = {
     enka.gi.EquipmentType.GOBLET: 4,
     enka.gi.EquipmentType.CIRCLET: 5,
 }
+ARTIFACT_AFFIX_PROP_TYPES: Final[dict[int, enka.gi.StatType]] = {
+    2: enka.gi.StatType.FIGHT_PROP_HP,
+    3: enka.gi.StatType.FIGHT_PROP_HP_PERCENT,
+    5: enka.gi.StatType.FIGHT_PROP_ATTACK,
+    6: enka.gi.StatType.FIGHT_PROP_ATTACK_PERCENT,
+    8: enka.gi.StatType.FIGHT_PROP_DEFENSE,
+    9: enka.gi.StatType.FIGHT_PROP_DEFENSE_PERCENT,
+    20: enka.gi.StatType.FIGHT_PROP_CRITICAL,
+    22: enka.gi.StatType.FIGHT_PROP_CRITICAL_HURT,
+    23: enka.gi.StatType.FIGHT_PROP_CHARGE_EFFICIENCY,
+    24: enka.gi.StatType.FIGHT_PROP_ELEMENT_MASTERY,
+}
+"""Artifact sub stat affix IDs' prop codes, e.g. 501204 is a CRIT Rate (20) roll of tier 4."""
+
+
+def get_substat_rolls(artifact: enka.gi.Artifact | HoyolabGIArtifact) -> list[int]:
+    """Get how many times each of the artifact's sub stats was rolled, in sub stat order."""
+    if isinstance(artifact, HoyolabGIArtifact):
+        return [stat.rolls for stat in artifact.sub_stats]
+
+    counts = Counter(
+        ARTIFACT_AFFIX_PROP_TYPES.get(id_ // 10 % 100) for id_ in artifact.sub_stat_ids
+    )
+    return [counts[stat.type] for stat in artifact.sub_stats]

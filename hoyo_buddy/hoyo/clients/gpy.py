@@ -250,7 +250,9 @@ class GenshinClient(ProxyGenshinClient):
                 ),
                 sub_stats=[
                     models.HoyolabGIStat(
-                        type=convert_fight_prop(sub_stat.info.type), formatted_value=sub_stat.value
+                        type=convert_fight_prop(sub_stat.info.type),
+                        formatted_value=sub_stat.value,
+                        rolls=sub_stat.times + 1,
                     )
                     for sub_stat in artifact.sub_stats
                 ],
@@ -425,6 +427,7 @@ class GenshinClient(ProxyGenshinClient):
                         type=sub_property.property_type,
                         icon=prop_icons[sub_property.property_type],
                         formatted_value=sub_property.value,
+                        rolls=sub_property.times,
                     )
                     for sub_property in relic.properties
                     if sub_property.property_type in prop_icons

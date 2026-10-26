@@ -44,6 +44,7 @@ class Stat:
     type: int
     icon: str
     formatted_value: str
+    rolls: int = 0
 
 
 @dataclass(kw_only=True)

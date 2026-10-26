@@ -18,6 +18,7 @@ __all__ = (
 class HoyolabGIStat(BaseModel):
     type: enka.gi.FightPropType
     formatted_value: str
+    rolls: int = 0
 
 
 class HoyolabGIWeapon(BaseModel):

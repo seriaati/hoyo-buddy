@@ -1158,6 +1158,15 @@ def get_relic_substat_roll_num(
     return max(sum(closest_counts.values()), 1)
 
 
+MAX_SUBSTAT_ROLLS: dict[int, int] = {5: 6, 4: 4, 3: 2, 2: 1, 1: 1}
+"""Most times a GI artifact or HSR relic sub stat can be rolled, by rarity.
+
+The highest rarity starts with up to 4 sub stats and gets 5 upgrades, which can all go to one sub
+stat. Each lower rarity starts with one less sub stat and gets one less upgrade, and upgrades add
+missing sub stats before raising existing ones.
+"""
+
+
 DC_MAX_FILESIZE = 20 * 1024 * 1024  # 20 MB
 
 NO_MASKED_LINK_GUILDS = {998109815521947678}

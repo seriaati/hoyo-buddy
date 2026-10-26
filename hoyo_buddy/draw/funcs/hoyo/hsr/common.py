@@ -7,7 +7,7 @@ import enka
 from discord.utils import get as dget
 
 from hoyo_buddy import models as hb_models
-from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS
+from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS, MAX_SUBSTAT_ROLLS
 from hoyo_buddy.draw.drawer import Drawer
 
 if TYPE_CHECKING:
@@ -482,6 +482,22 @@ PATH_BUBBLES = {
 # fmt: on
 
 type StatOrTrace = enka.hsr.Stat | hb_models.Stat | enka.hsr.character.Trace | hb_models.Trace
+
+
+def get_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> list[int]:
+    """Get how many times each of the relic's sub stats was rolled, in sub stat order."""
+    if isinstance(relic, enka.hsr.Relic):
+        return [affix.cnt for affix in relic.sub_affix_list]
+    return [stat.rolls for stat in relic.sub_stats]
+
+
+def get_max_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> int:
+    """Get the most times one of the relic's sub stats can be rolled."""
+    if isinstance(relic, enka.hsr.Relic):
+        # enka-py's rarity falls back to 3 for relics missing from its data, relic IDs start
+        # with rarity + 1
+        return MAX_SUBSTAT_ROLLS[int(str(relic.id)[0]) - 1]
+    return MAX_SUBSTAT_ROLLS[relic.rarity]
 
 
 def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:

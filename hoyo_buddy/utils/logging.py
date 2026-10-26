@@ -1,7 +1,9 @@
 import inspect
+import json
 import logging
 import random
 import sys
+import traceback
 from typing import Any
 
 from loguru import logger
@@ -63,6 +65,32 @@ def _production_log_filter(record: dict[str, Any]) -> bool:
     return True
 
 
+def _json_formatter(record: dict[str, Any]) -> str:
+    payload: dict[str, Any] = {
+        "time": record["time"].isoformat(),
+        "level": record["level"].name,
+        "logger": record["name"],
+        "function": record["function"],
+        "line": record["line"],
+        "message": record["message"],
+        "pid": record["process"].id,
+        **record["extra"],
+    }
+
+    exc = record["exception"]
+    if exc is not None and exc.type is not None:
+        payload["exception"] = {
+            "type": exc.type.__name__,
+            "value": str(exc.value),
+            "traceback": "".join(traceback.format_exception(exc.type, exc.value, exc.traceback)),
+        }
+
+    # Stored outside record["extra"] so other sinks (e.g. Sentry) don't pick it up,
+    # and referenced via the template because loguru parses returned strings as markup
+    record["_json"] = json.dumps(payload, default=str, ensure_ascii=False)
+    return "{_json}\n"
+
+
 def setup_logging(log_dir: str) -> None:
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if CONFIG.is_dev else "INFO")
@@ -92,8 +120,7 @@ def setup_logging(log_dir: str) -> None:
         "compression": CONFIG.log_compression,
         "level": CONFIG.log_level,
         "enqueue": True,
-        "diagnose": CONFIG.is_dev,
-        "backtrace": CONFIG.is_dev,
+        "format": _json_formatter,
     }
 
     if not CONFIG.is_dev:

@@ -818,6 +818,7 @@ async def draw_hsr_team_card(
     characters: Sequence[HoyolabHSRCharacter | enka.hsr.Character],
     character_images: dict[str, str],
     character_colors: dict[str, str],
+    show_substat_rolls: dict[str, bool],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -834,6 +835,7 @@ async def draw_hsr_team_card(
         characters=characters,
         character_images=character_images,
         character_colors=character_colors,
+        show_substat_rolls=show_substat_rolls,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
@@ -842,6 +844,7 @@ async def draw_gi_team_card(
     draw_input: DrawInput,
     characters: Sequence[enka.gi.Character | HoyolabGICharacter],
     character_images: dict[str, str],
+    show_substat_rolls: dict[str, bool],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -857,6 +860,7 @@ async def draw_gi_team_card(
         dark_mode=draw_input.dark_mode,
         characters=characters,
         character_images=character_images,
+        show_substat_rolls=show_substat_rolls,
     )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 

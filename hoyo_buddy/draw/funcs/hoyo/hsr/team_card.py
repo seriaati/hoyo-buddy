@@ -11,7 +11,9 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     SmallBubble,
     get_character_skills,
     get_character_stats,
+    get_max_substat_rolls,
     get_stat_icon,
+    get_substat_rolls,
 )
 from hoyo_buddy.enums import Locale
 
@@ -35,11 +37,13 @@ class HSRTeamCard:
         characters: Sequence[HSRCharacter | enka.hsr.Character],
         character_images: dict[str, str],
         character_colors: dict[str, Any],
+        show_substat_rolls: dict[str, bool],
     ) -> None:
         self._locale = locale
         self._characters = characters
         self._character_images = character_images
         self._character_colors = character_colors
+        self._show_substat_rolls = show_substat_rolls
 
     def _draw_character_card(self, character: HSRCharacter | enka.hsr.Character) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/card.png")
@@ -244,7 +248,8 @@ class HSRTeamCard:
                 )
 
                 # Relic sub stats
-                sub_start_pos = (start_pos[0] - 133, start_pos[1] + 27)
+                sub_start_pos = (start_pos[0] - 133, start_pos[1] + 18)
+                sub_stat_rolls = get_substat_rolls(relic)
                 for j, sub_stat in enumerate(relic.sub_stats):
                     icon = get_stat_icon(sub_stat, size=(20, 20))
                     im.alpha_composite(icon, sub_start_pos)
@@ -258,9 +263,20 @@ class HSRTeamCard:
                         style="regular",
                         anchor="lm",
                     )
+                    if self._show_substat_rolls[str(character.id)]:
+                        drawer.draw_roll_track(
+                            im,
+                            (sub_start_pos[0], sub_start_pos[1] + 23),
+                            (62, 2),
+                            rolls=sub_stat_rolls[j],
+                            max_rolls=get_max_substat_rolls(relic),
+                            color=WHITE,
+                            empty_color=WHITE,
+                            gap=2,
+                        )
 
                     sub_start_pos = (
-                        (start_pos[0] - 133, sub_start_pos[1] + 25)
+                        (start_pos[0] - 133, sub_start_pos[1] + 32)
                         if j == 1
                         else (sub_start_pos[0] + 70, sub_start_pos[1])
                     )

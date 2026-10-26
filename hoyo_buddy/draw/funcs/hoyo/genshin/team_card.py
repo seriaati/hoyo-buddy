@@ -5,12 +5,18 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import convert_gi_element_to_enka
+from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS, convert_gi_element_to_enka
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
 
-from .common import ADD_HURT_ELEMENTS, ELEMENT_BG_COLORS, ELEMENT_COLORS, STATS_ORDER
+from .common import (
+    ADD_HURT_ELEMENTS,
+    ELEMENT_BG_COLORS,
+    ELEMENT_COLORS,
+    STATS_ORDER,
+    get_substat_rolls,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -32,11 +38,13 @@ class GITeamCard:
         dark_mode: bool,
         characters: Sequence[enka.gi.Character | HoyolabGICharacter],
         character_images: dict[str, str],
+        show_substat_rolls: dict[str, bool],
     ) -> None:
         self._locale = locale
         self._dark_mode = dark_mode
         self._characters = characters
         self._character_images = character_images
+        self._show_substat_rolls = show_substat_rolls
         self._theme = "dark" if dark_mode else "light"
 
     def _draw_character_card(
@@ -306,7 +314,8 @@ class GITeamCard:
                     im.alpha_composite(icon, (tbox.left - icon.width - 5, start_pos[1] + 47))
 
                     # Sub stats
-                    sub_stat_start_pos = (start_pos[0] + 17, start_pos[1] + 90)
+                    sub_stat_start_pos = (start_pos[0] + 17, start_pos[1] + 82)
+                    sub_stat_rolls = get_substat_rolls(artifact)
                     for j, sub_stat in enumerate(artifact.sub_stats):
                         icon = drawer.open_asset(
                             f"stats/{sub_stat.type.name}.png", size=(16, 16), mask_color=color_2
@@ -323,6 +332,17 @@ class GITeamCard:
                             color=color_2,
                             anchor="lm",
                         )
+                        if self._show_substat_rolls[str(character.id)]:
+                            drawer.draw_roll_track(
+                                im,
+                                (sub_stat_start_pos[0], sub_stat_start_pos[1] + 22),
+                                (66, 2),
+                                rolls=sub_stat_rolls[j],
+                                max_rolls=MAX_SUBSTAT_ROLLS[artifact.rarity],
+                                color=color_2,
+                                empty_color=color_2,
+                                gap=2,
+                            )
 
                         sub_stat_start_pos = (
                             (start_pos[0] + 17, sub_stat_start_pos[1] + 34)

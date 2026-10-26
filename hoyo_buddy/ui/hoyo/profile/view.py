@@ -854,8 +854,10 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
         # GI and HSR
         images: dict[str, str] = {}
+        show_rolls: dict[str, bool] = {}
         for char in characters:
             char_settings = await get_card_settings(i.user.id, str(char.id), game=self.game)
+            show_rolls[str(char.id)] = char_settings.show_substat_rolls
             images[str(char.id)] = (
                 char_settings.current_team_image
                 or await self._get_skin_art(char, char_settings)
@@ -897,6 +899,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 characters,  # pyright: ignore [reportArgumentType]
                 images,
                 character_colors,
+                show_rolls,
             )
 
         if self.game is Game.GENSHIN:
@@ -905,6 +908,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 draw_input,
                 characters,  # pyright: ignore [reportArgumentType]
                 images,
+                show_rolls,
             )
 
         raise FeatureNotImplementedError(game=self.game)

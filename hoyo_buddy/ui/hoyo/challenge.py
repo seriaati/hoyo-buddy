@@ -33,7 +33,7 @@ from hoyo_buddy.constants import (
     TRAVELER_IDS,
     locale_to_hakushin_lang,
 )
-from hoyo_buddy.db import ChallengeHistory, draw_locale, get_dyk
+from hoyo_buddy.db import ChallengeHistory, Settings, draw_locale, get_dyk
 from hoyo_buddy.draw import main_funcs as draw_funcs
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import ChallengeType, Game
@@ -192,6 +192,7 @@ class ChallengeView(ui.LayoutView):
         dark_mode: bool,
         challenge_type: ChallengeType,
         *,
+        show_uid: bool,
         author: User | Member,
         locale: Locale,
     ) -> None:
@@ -212,7 +213,7 @@ class ChallengeView(ui.LayoutView):
         self.characters: Sequence[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
         self.uid = account.uid
-        self.show_uid = False
+        self.show_uid = show_uid
         self._rows: list[list[Button | Select]] = []
         self.dyk = ""
 
@@ -531,7 +532,7 @@ class ChallengeView(ui.LayoutView):
         if self.challenge_type is ChallengeType.HARD_CHALLENGE:
             self._rows.append([HardChallengeModeSingle(), HardChallengeModeMulti()])
 
-        self._rows.append([ViewBuffs(), ShowUID()])
+        self._rows.append([ViewBuffs(), ShowUID(self.show_uid)])
 
     @property
     def card_embed(self) -> DefaultEmbed:
@@ -700,12 +701,16 @@ class ViewBuffs(Button[ChallengeView]):
 
 
 class ShowUID(ToggleButton[ChallengeView]):
-    def __init__(self) -> None:
-        super().__init__(False, LocaleStr(key="show_uid"), row=4, custom_id="show_uid")
+    def __init__(self, current: bool) -> None:
+        super().__init__(current, LocaleStr(key="show_uid"), row=4, custom_id="show_uid")
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
         self.view.show_uid = self.current_toggle
+
+        settings = await Settings.get(user_id=i.user.id)
+        settings.show_uid = self.current_toggle
+        await settings.save(update_fields=("show_uid",))
         await self.set_loading_state(i)
         await self.view.update(self, i)
 

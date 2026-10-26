@@ -27,6 +27,7 @@ class Settings(CachedModel):
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
     team_card_dark_mode = fields.BooleanField(default=False)
     enable_dyk = fields.BooleanField(default=True)
+    show_uid = fields.BooleanField(default=False)
 
     gi_dark_mode = fields.BooleanField(default=False)
     hsr_dark_mode = fields.BooleanField(default=False)

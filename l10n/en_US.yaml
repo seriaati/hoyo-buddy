@@ -867,6 +867,7 @@ dark_theme_desc: "Dark theme\nMake infographics use a dark color scheme, not all
 language_desc: "Language\nHoyo Buddy will respond to you in this language. Some texts might still be in English, see [FAQ](:docs/FAQ:) for why."
 language_select_placeholder: Select a language
 settings_dyk_desc: "\"Did you know?\" messages\nShow random useful tips when you use bot commands."
+settings_show_uid_desc: "Show UID\nShow your UID on </profile> and challenge cards."
 layout_view_edited: "Interactive components have been disabled to save system resources, rerun the command if you want to use them."
 mimo_title: Traveling Mimo Settings
 mimo_minimum_point_label: Minimum points to keep

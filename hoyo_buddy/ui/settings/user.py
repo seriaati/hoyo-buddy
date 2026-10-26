@@ -38,6 +38,17 @@ class DYKTolggle(ui.EmojiToggleButton["SettingsView"]):
         await i.response.edit_message(view=self.view)
 
 
+class ShowUIDToggle(ui.EmojiToggleButton["SettingsView"]):
+    async def callback(self, i: Interaction) -> None:
+        self.current = not self.current
+        self.update_style()
+
+        self.view.settings.show_uid = self.current
+        await self.view.settings.save(update_fields=("show_uid",))
+
+        await i.response.edit_message(view=self.view)
+
+
 class LanguageSelect(ui.Select["SettingsView"]):
     def __init__(self, current_locale: Locale | None) -> None:
         super().__init__(
@@ -114,6 +125,18 @@ class UserSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     )
                 ),
                 accessory=DYKTolggle(current=settings.enable_dyk),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {emoji} {desc}",
+                        emoji=emojis.SHOW_UI,
+                        desc=LocaleStr(key="settings_show_uid_desc"),
+                    )
+                ),
+                accessory=ShowUIDToggle(current=settings.show_uid),
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),

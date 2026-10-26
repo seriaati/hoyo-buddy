@@ -34,6 +34,11 @@ class ChallengeCommand:
         locale = await get_locale(i)
 
         view = ChallengeView(
-            account, settings.dark_mode, challenge_type, author=i.user, locale=locale
+            account,
+            settings.dark_mode,
+            challenge_type,
+            show_uid=settings.show_uid,
+            author=i.user,
+            locale=locale,
         )
         await view.start(i)

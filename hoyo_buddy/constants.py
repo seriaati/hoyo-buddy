@@ -1007,6 +1007,7 @@ HEADINGS = {
 
 
 def get_docs_url(page: str, *, locale: Locale) -> str:
+    page = page.lower()  # Doc slugs are lowercase (e.g. FAQ -> faq)
     heading = page.split("#", 1)[1] if "#" in page else ""
     if heading in HEADINGS:
         page = page.replace(heading, HEADINGS[heading].get(locale, heading))

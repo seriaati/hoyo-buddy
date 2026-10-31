@@ -23,6 +23,7 @@ from loguru import logger
 
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
+    ANIMATED_IMAGE_EXTENSIONS,
     HB_BIRTHDAY,
     IMAGE_EXTENSIONS,
     LOCALE_TO_DOCS_LANG,
@@ -59,7 +60,7 @@ async def test_url_validity(url: str, session: aiohttp.ClientSession) -> bool:
 
 def is_image_url(url: str) -> bool:
     """Test if a URL is an image URL."""
-    return url.endswith(IMAGE_EXTENSIONS)
+    return url.endswith((*IMAGE_EXTENSIONS, *ANIMATED_IMAGE_EXTENSIONS))
 
 
 def is_valid_hex_color(color: str) -> bool:

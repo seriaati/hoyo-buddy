@@ -37,7 +37,17 @@ if TYPE_CHECKING:
 STATIC_FOLDER = pathlib.Path("./.static")
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+ANIMATED_IMAGE_EXTENSIONS = (".gif", ".mp4")
+MAYBE_ANIMATED_IMAGE_EXTENSIONS = (".gif", ".webp", ".mp4")
 CUSTOM_IMAGE_MAX_SIZE_MB = 10
+ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB = 25
+ANIMATED_CUSTOM_IMAGE_MAX_DURATION = 10
+"""Max duration of animated custom images in seconds, longer uploads are cut."""
+ANIMATED_CUSTOM_IMAGE_MAX_FPS = 30
+"""Max frame rate of animated custom images, which also caps their frame count."""
+ANIMATED_CUSTOM_IMAGE_MAX_SIDE = 1280
+"""Max width and height of animated custom images, larger uploads are scaled down."""
+ANIMATED_CUSTOM_IMAGE_QUALITY = 80
 DB_SMALLINT_MAX = 32767
 
 FREE_ACCOUNT_LIMIT = 6

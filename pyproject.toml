@@ -44,6 +44,7 @@ dependencies = [
   "starlette>=0.41.0",
   "qrcode>=8.0",
   "uvicorn>=0.42.0",
+  "av>=19.0.2",
 ]
 description = "A feature-rich Discord bot for Hoyoverse gamers."
 license = { file = "LICENSE" }

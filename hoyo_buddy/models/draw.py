@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 __all__ = (
     "AgentNameData",
+    "CustomAnimation",
     "DoubleBlock",
     "DrawInput",
     "DynamicBKInput",
@@ -150,6 +151,18 @@ class SpineData(BaseModel):
     """WEBP quality of the animated card, picked so it fits Discord's limit."""
     method: int = ANIMATED_CARD_METHOD
     """WEBP method of the animated card, picked so it fits Discord's limit."""
+
+
+class CustomAnimation(BaseModel):
+    """A sponsor's animated custom image, see hoyo_buddy/draw/animation.py."""
+
+    url: str
+    zoom: int
+    """Zoom in percent, 100 covers the card's image mask."""
+    focus_x: int
+    """Horizontal position in the image mask in percent."""
+    focus_y: int
+    """Vertical position in the image mask in percent."""
 
 
 class GICardData(BaseModel):

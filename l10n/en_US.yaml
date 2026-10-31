@@ -335,6 +335,7 @@ prev_page_option_label: Previous page
 notify_feature: This notes reminder
 profile.add_image.button.label: Add custom image
 profile.add_image_modal.image_file.label: Image file
+profile.add_image_modal.image_file.description: "Sponsors can also upload GIFs, animated WEBPs and MP4s, the first 10 seconds are used"
 profile.add_image_modal.image_url.label: Image URL
 profile.add_image_modal.image_url.description: Or paste a direct link to an image instead of uploading a file
 profile.add_image_modal.no_image: Upload an image file or enter an image URL.
@@ -945,6 +946,7 @@ supporter_embed.perk_auto_task_priority: "Top priority in auto task queues (dail
 supporter_embed.perk_accounts: "Unlimited accounts (free: {limit})"
 supporter_embed.perk_custom_images: "Unlimited custom images per character (free: {limit})"
 supporter_embed.perk_animated_image: "Animated character art on build cards (Genshin Impact, Honkai: Star Rail and Zenless Zone Zero)"
+supporter_embed.perk_animated_custom_images: "Upload your own GIFs, animated WEBPs and MP4s as animated character art on build cards"
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
 supporter_embed.perk_multi_accompany: "Auto accompany up to {limit} characters per account (free: 1)"
@@ -956,6 +958,14 @@ supporter_embed.status_not_supporter: You're not a sponsor yet.
 sponsor_perks_button_label: View sponsor perks
 sponsor_perk_error_title: Sponsor perk
 animated_image_sponsor_perk_message: Animated character art on build cards is a sponsor perk.
+animated_custom_image_sponsor_perk_message: Uploading GIFs, animated WEBPs and MP4s as character art is a sponsor perk.
+animation_position_button_label: Position
+animation_position_modal.zoom.label: Zoom (%)
+animation_position_modal.zoom.description: At 100, the animation fills the card's image area
+animation_position_modal.focus_x.label: Horizontal position (%)
+animation_position_modal.focus_x.description: 0 shows the animation's left edge, 100 its right edge
+animation_position_modal.focus_y.label: Vertical position (%)
+animation_position_modal.focus_y.description: 0 shows the animation's top edge, 100 its bottom edge
 auto_gacha_import_sponsor_perk_message: Automatic gacha log imports are a sponsor perk.
 multi_accompany_sponsor_perk_message: "Auto accompanying more than one character is a sponsor perk. Sponsors can auto accompany up to {limit} characters per account."
 card_settings_animated_image: Animated image

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
+import aiohttp
 import discord
 from loguru import logger
 from seria.utils import read_json
@@ -11,14 +12,18 @@ from tortoise.expressions import F
 from hoyo_buddy import ui
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
+    ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB,
+    ANIMATED_IMAGE_EXTENSIONS,
     CUSTOM_IMAGE_MAX_SIZE_MB,
     FREE_AI_IMAGE_DAILY_LIMIT,
     FREE_CUSTOM_IMAGE_LIMIT,
     IMAGE_EXTENSIONS,
+    MAYBE_ANIMATED_IMAGE_EXTENSIONS,
 )
 from hoyo_buddy.db import CustomImage, User
 from hoyo_buddy.db.utils import get_default_color, is_supporter
-from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO_ADD
+from hoyo_buddy.draw.animation import convert_animation, is_animated
+from hoyo_buddy.emojis import ADD, DELETE, EDIT, PHOTO, PHOTO_ADD
 from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import (
     AIImageLimitError,
@@ -28,6 +33,7 @@ from hoyo_buddy.exceptions import (
     InvalidInputError,
     NotAnImageError,
     NSFWPromptError,
+    SponsorPerkError,
 )
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_collection
@@ -44,6 +50,9 @@ if TYPE_CHECKING:
     from .view import CardSettingsView  # ruff:ignore[unused-import]
 
 type ImageType = Literal["build_card_image", "team_card_image"]
+
+ANIMATION_MIN_ZOOM = 10
+ANIMATION_MAX_ZOOM = 400
 
 
 async def check_custom_image_limit(user_id: int, character_id: str) -> None:
@@ -172,7 +181,8 @@ class AddImageModal(ui.Modal):
     )
     image_file: ui.Label[ui.FileUpload] = ui.Label(
         text=LocaleStr(key="profile.add_image_modal.image_file.label"),
-        component=ui.FileUpload(file_types=["image"], required=False),
+        description=LocaleStr(key="profile.add_image_modal.image_file.description"),
+        component=ui.FileUpload(file_types=["image", "video"], required=False),
     )
     image_url: ui.Label[ui.TextInput] = ui.Label(
         text=LocaleStr(key="profile.add_image_modal.image_url.label"),
@@ -211,23 +221,91 @@ class AddImageButton(ui.Button["CardSettingsView"]):
         await self.set_loading_state(i)
 
         if files:
-            file = files[0]
-            if not file.filename.lower().endswith(IMAGE_EXTENSIONS):
-                raise NotAnImageError
-            if file.size > CUSTOM_IMAGE_MAX_SIZE_MB * 1024 * 1024:
-                raise ImageFileTooLargeError(CUSTOM_IMAGE_MAX_SIZE_MB)
-            image_url = await upload_image(i.client.session, image_url=file.url)
+            image_url, animated = await self._upload_file(i, files[0])
         else:
-            image_url = await self._upload_image_url(i, image_url)
+            image_url, animated = await self._upload_url(i, image_url)
 
         await CustomImage.create(
             user_id=i.user.id,
             character_id=self.view.card_settings.character_id,
             url=image_url,
             name=modal.name.value or None,
+            animated=animated,
         )
         await self.view.set_current_image(image_url)
         await self.view.update(i)
+
+    @staticmethod
+    async def _upload_animation(i: Interaction, data: bytes) -> str | None:
+        """Convert an animated upload to an animated WEBP and upload it, a sponsor perk.
+
+        Returns:
+            The animated WEBP's URL, or None if the upload isn't animated.
+        """
+        if not is_animated(data):
+            return None
+        if not await is_supporter(i.user.id):
+            raise SponsorPerkError(
+                message=LocaleStr(key="animated_custom_image_sponsor_perk_message")
+            )
+
+        try:
+            webp = await i.client.loop.run_in_executor(i.client.executor, convert_animation, data)
+        except (ValueError, OSError) as e:
+            raise NotAnImageError from e
+        return await upload_image(i.client.session, image=webp)
+
+    async def _upload_file(self, i: Interaction, file: discord.Attachment) -> tuple[str, bool]:
+        """Upload an image file.
+
+        Returns:
+            The image's URL and whether it's animated.
+        """
+        filename = file.filename.lower()
+        if not filename.endswith((*IMAGE_EXTENSIONS, *ANIMATED_IMAGE_EXTENSIONS)):
+            raise NotAnImageError
+
+        if filename.endswith(MAYBE_ANIMATED_IMAGE_EXTENSIONS):
+            if file.size > ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB * 1024 * 1024:
+                raise ImageFileTooLargeError(ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB)
+            url = await self._upload_animation(i, await file.read())
+            if url is not None:
+                return url, True
+
+        if file.size > CUSTOM_IMAGE_MAX_SIZE_MB * 1024 * 1024:
+            raise ImageFileTooLargeError(CUSTOM_IMAGE_MAX_SIZE_MB)
+        return await upload_image(i.client.session, image_url=file.url), False
+
+    async def _upload_url(self, i: Interaction, image_url: str) -> tuple[str, bool]:
+        """Upload an image from its URL.
+
+        Returns:
+            The image's URL and whether it's animated.
+        """
+        if not is_image_url(image_url):
+            raise InvalidImageURLError
+
+        if image_url.lower().endswith(MAYBE_ANIMATED_IMAGE_EXTENSIONS):
+            url = await self._upload_animation(i, await self._download(i, image_url))
+            if url is not None:
+                return url, True
+        return await self._upload_image_url(i, image_url), False
+
+    @staticmethod
+    async def _download(i: Interaction, url: str) -> bytes:
+        max_size = ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB * 1024 * 1024
+        data = bytearray()
+        try:
+            async with i.client.session.get(url) as resp:
+                if resp.status != 200:
+                    raise InvalidImageURLError
+                async for chunk in resp.content.iter_chunked(1024 * 1024):
+                    data.extend(chunk)
+                    if len(data) > max_size:
+                        raise ImageFileTooLargeError(ANIMATED_CUSTOM_IMAGE_MAX_SIZE_MB)
+        except aiohttp.ClientError as e:
+            raise InvalidImageURLError from e
+        return bytes(data)
 
     @staticmethod
     async def _upload_image_url(i: Interaction, image_url: str) -> str:
@@ -371,6 +449,62 @@ class RemoveImageButton(ui.Button["CardSettingsView"]):
         await self.view.update(i)
 
 
+class AnimationPositionModal(ui.Modal):
+    zoom: ui.Label[ui.TextInput] = ui.Label(
+        text=LocaleStr(key="animation_position_modal.zoom.label"),
+        description=LocaleStr(key="animation_position_modal.zoom.description"),
+        component=ui.TextInput(
+            is_digit=True, min_value=ANIMATION_MIN_ZOOM, max_value=ANIMATION_MAX_ZOOM, max_length=3
+        ),
+    )
+    focus_x: ui.Label[ui.TextInput] = ui.Label(
+        text=LocaleStr(key="animation_position_modal.focus_x.label"),
+        description=LocaleStr(key="animation_position_modal.focus_x.description"),
+        component=ui.TextInput(is_digit=True, min_value=0, max_value=100, max_length=3),
+    )
+    focus_y: ui.Label[ui.TextInput] = ui.Label(
+        text=LocaleStr(key="animation_position_modal.focus_y.label"),
+        description=LocaleStr(key="animation_position_modal.focus_y.description"),
+        component=ui.TextInput(is_digit=True, min_value=0, max_value=100, max_length=3),
+    )
+
+    def __init__(self, image: CustomImage) -> None:
+        super().__init__(title=LocaleStr(key="animation_position_button_label"))
+        self.zoom.default = str(image.zoom)
+        self.focus_x.default = str(image.focus_x)
+        self.focus_y.default = str(image.focus_y)
+
+
+class AnimationPositionButton(ui.Button["CardSettingsView"]):
+    def __init__(self, *, disabled: bool) -> None:
+        super().__init__(
+            label=LocaleStr(key="animation_position_button_label"),
+            custom_id="profile_animation_position",
+            emoji=PHOTO,
+            disabled=disabled,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        image = next(
+            (img for img in self.view.custom_images if img.url == self.view.current_image), None
+        )
+        if image is None:
+            return
+
+        modal = AnimationPositionModal(image)
+        modal.translate(self.view.locale)
+        await i.response.send_modal(modal)
+        timed_out = await modal.wait()
+        if timed_out:
+            return
+
+        image.zoom = int(modal.zoom.value)
+        image.focus_x = int(modal.focus_x.value)
+        image.focus_y = int(modal.focus_y.value)
+        await image.save(update_fields=("zoom", "focus_x", "focus_y"))
+        await self.view.update(i)
+
+
 class UseM3ArtButton(ui.EmojiToggleButton["CardSettingsView"]):
     def __init__(self, *, current: bool, disabled: bool) -> None:
         super().__init__(current=current, disabled=disabled, custom_id="profile_use_m3_art")
@@ -406,6 +540,9 @@ class ImageSettingsContainer(ui.Container):
         )
         default_collection = get_default_collection(card_settings.character_id, game=game)
         is_custom = current_image is not None and current_image not in default_collection
+        is_animated = image_type == "build_card_image" and any(
+            img.animated and img.url == current_image for img in custom_images
+        )
         preview_url = current_image or default_art
         icon_url = get_gacha_icon(item_id=int(card_settings.character_id), gacha_data=gacha_data)
 
@@ -493,6 +630,7 @@ class ImageSettingsContainer(ui.Container):
                 GenerateAIArtButton(disabled=self.disable_ai),
                 EditImageButton(disabled=not is_custom),
                 RemoveImageButton(disabled=not is_custom),
+                AnimationPositionButton(disabled=not is_animated),
             ),
             *m3_art,
             accent_color=card_settings.custom_primary_color or default_color,

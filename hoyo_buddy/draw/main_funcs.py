@@ -2,20 +2,29 @@ from __future__ import annotations
 
 import contextlib
 import functools
-from typing import TYPE_CHECKING, Literal, cast
+from typing import TYPE_CHECKING, Literal, NamedTuple, cast
 
 import ambr
 import hakushin
 import hb_data
 from discord import File
 
-from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS, ZZZ_TEAM_IMAGE_OVERRIDES
+from hoyo_buddy.constants import (
+    ANIMATED_CARD_METHOD,
+    ANIMATED_CARD_QUALITY,
+    HSR_DEFAULT_ART_URL,
+    TRAVELER_IDS,
+    ZZZ_TEAM_IMAGE_OVERRIDES,
+)
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.draw.animation import frame_animation
+from hoyo_buddy.draw.card_data import ASSET_PATH
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
+    CustomAnimation,
     SingleBlock,
     UnownedGICharacter,
     UnownedHSRCharacter,
@@ -28,6 +37,7 @@ from .static import ZZZ_V2_GAME_RECORD, download_images
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
+    from pathlib import Path
 
     import enka
     import genshin
@@ -65,6 +75,46 @@ if TYPE_CHECKING:
     from hoyo_buddy.types import HardChallengeMode
 
 
+ZZZ_ANIMATION_MASKS = {
+    1: "zzz-build-card/card_base1.png",  # The art area is the whole card
+    3: "zzz-team-card/chara_img.png",
+    4: "zzz-build-card4/img_mask.png",
+}
+"""ZZZ build card templates' image masks, by the templates that support animations."""
+
+
+class Animation(NamedTuple):
+    path: Path
+    offset: tuple[int, int]
+    """The animation's uncropped top-left in the card's image mask."""
+    quality: int
+    method: int
+
+
+async def resolve_animation(
+    draw_input: DrawInput, animation: SpineData | CustomAnimation, *, mask: str
+) -> Animation:
+    """Get a pre-rendered animation, or frame a custom one in the card's image mask.
+
+    Args:
+        draw_input: The draw input.
+        animation: The downloaded animation.
+        mask: The card's image mask, relative to the assets folder.
+    """
+    path = get_static_img_path(animation.url)
+    if isinstance(animation, CustomAnimation):
+        frame = functools.partial(
+            frame_animation,
+            path,
+            ASSET_PATH / mask,
+            zoom=animation.zoom,
+            focus=(animation.focus_x, animation.focus_y),
+        )
+        path, offset = await draw_input.loop.run_in_executor(draw_input.executor, frame)
+        return Animation(path, offset, ANIMATED_CARD_QUALITY, ANIMATED_CARD_METHOD)
+    return Animation(path, (animation.x, animation.y), animation.quality, animation.method)
+
+
 async def draw_item_list_card(
     draw_input: DrawInput, items: list[ItemWithDescription] | list[ItemWithTrailing]
 ) -> File:
@@ -92,7 +142,7 @@ async def draw_hsr_build_card(
     primary_hex: str,
     *,
     template: Literal[1, 2],
-    animation: SpineData | None,
+    animation: SpineData | CustomAnimation | None,
     uid: int | None,
     show_substat_rolls: bool,
 ) -> BytesIO:
@@ -116,6 +166,9 @@ async def draw_hsr_build_card(
 
     if template == 1:
         if animation is not None:
+            anim = await resolve_animation(
+                draw_input, animation, mask="hsr-build-card/img/mask.png"
+            )
             return await draw_input.loop.run_in_executor(
                 draw_input.executor,
                 funcs.hsr.draw_animated_hsr_build_card,
@@ -124,10 +177,10 @@ async def draw_hsr_build_card(
                 draw_input.dark_mode,
                 image_url,
                 primary_hex,
-                get_static_img_path(animation.url),
-                (animation.x, animation.y),
-                animation.quality,
-                animation.method,
+                anim.path,
+                anim.offset,
+                anim.quality,
+                anim.method,
                 uid,
                 show_substat_rolls,
             )
@@ -157,12 +210,9 @@ async def draw_hsr_build_card(
         show_substat_rolls=show_substat_rolls,
     )
     if animation is not None:
+        anim = await resolve_animation(draw_input, animation, mask="hsr-build-card2/image_mask.png")
         draw = functools.partial(
-            card.draw_animated,
-            get_static_img_path(animation.url),
-            (animation.x, animation.y),
-            quality=animation.quality,
-            method=animation.method,
+            card.draw_animated, anim.path, anim.offset, quality=anim.quality, method=anim.method
         )
         return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
@@ -187,7 +237,7 @@ async def draw_gi_build_card(
     template: Literal[1, 2],
     top_crop: bool,
     rank: str | None,
-    animation: SpineData | None,
+    animation: SpineData | CustomAnimation | None,
     uid: int | None,
     show_substat_rolls: bool,
 ) -> BytesIO:
@@ -219,9 +269,18 @@ async def draw_gi_build_card(
             uid=uid,
             show_substat_rolls=show_substat_rolls,
         )
-        buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
+        draw = card.draw
+        if animation is not None:
+            anim = await resolve_animation(
+                draw_input, animation, mask="gi-build-card2/img_mask.png"
+            )
+            draw = functools.partial(
+                card.draw_animated, anim.path, anim.offset, quality=anim.quality, method=anim.method
+            )
+        buffer = await draw_input.loop.run_in_executor(draw_input.executor, draw)
     elif animation is not None:
         await download_images(urls, draw_input.session)
+        anim = await resolve_animation(draw_input, animation, mask="gi-build-card/mask.png")
         buffer = await draw_input.loop.run_in_executor(
             draw_input.executor,
             funcs.genshin.draw_animated_genshin_card,
@@ -233,10 +292,10 @@ async def draw_gi_build_card(
             rank,
             uid,
             show_substat_rolls,
-            get_static_img_path(animation.url),
-            (animation.x, animation.y),
-            animation.quality,
-            animation.method,
+            anim.path,
+            anim.offset,
+            anim.quality,
+            anim.method,
         )
     else:
         await download_images(urls, draw_input.session)
@@ -650,7 +709,7 @@ async def draw_zzz_build_card(
     hl_substats: list[int],
     hl_special_stats: bool,
     use_m3_art: bool,
-    animation: SpineData | None,
+    animation: SpineData | CustomAnimation | None,
     uid: int | None,
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data([agent], template=template, use_m3_art=use_m3_art)
@@ -729,15 +788,13 @@ async def draw_zzz_build_card(
             hl_substats=hl_substats,
             uid=uid,
         )
-        if animation is not None and template == 1:
-            draw = functools.partial(
-                card.draw_animated,
-                get_static_img_path(animation.url),
-                (animation.x, animation.y),
-                quality=animation.quality,
-                method=animation.method,
-            )
-            return await draw_input.loop.run_in_executor(draw_input.executor, draw)
+
+    if animation is not None and template in ZZZ_ANIMATION_MASKS:
+        anim = await resolve_animation(draw_input, animation, mask=ZZZ_ANIMATION_MASKS[template])
+        draw = functools.partial(
+            card.draw_animated, anim.path, anim.offset, quality=anim.quality, method=anim.method
+        )
+        return await draw_input.loop.run_in_executor(draw_input.executor, draw)
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 

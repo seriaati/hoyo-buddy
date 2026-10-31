@@ -28,7 +28,7 @@ from hoyo_buddy.constants import (
     locale_to_starrail_data_lang,
     locale_to_zenless_data_lang,
 )
-from hoyo_buddy.db import JSONFile, Settings, draw_locale, get_dyk
+from hoyo_buddy.db import CustomImage, JSONFile, Settings, draw_locale, get_dyk
 from hoyo_buddy.db.utils import (
     get_card_settings,
     get_default_color,
@@ -57,7 +57,13 @@ from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.models import DrawInput, HoyolabGICharacter, HoyolabHSRCharacter, ZZZEnkaCharacter
+from hoyo_buddy.models import (
+    CustomAnimation,
+    DrawInput,
+    HoyolabGICharacter,
+    HoyolabHSRCharacter,
+    ZZZEnkaCharacter,
+)
 from hoyo_buddy.types import Builds, HoyolabCharacter
 from hoyo_buddy.ui import ToggleUIButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
@@ -550,9 +556,14 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         template_num = get_template_num(card_settings.template)
         template_num = cast("Literal[1, 2]", template_num)
 
+        animation = await self._get_custom_animation(card_settings, user_id)
         # Animations are rendered from the character's default outfit
-        animation = None
-        if skin_art is None and card_settings.animated_image and await is_supporter(user_id):
+        if (
+            animation is None
+            and skin_art is None
+            and card_settings.animated_image
+            and await is_supporter(user_id)
+        ):
             animation = CARD_DATA.hsr_spine(template_num).get(character_id)
 
         return await draw_hsr_build_card(
@@ -604,9 +615,10 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
         # Animations are rendered from the character's TCG card face, in the default outfit
         default_art = get_default_art(character.model_copy(update={"costume": None}), is_team=False)
-        animation = None
+        animation = await self._get_custom_animation(card_settings, user_id)
         if (
-            template_num == 1
+            animation is None
+            and template_num == 1
             and skin_art in {None, default_art}
             and card_settings.animated_image
             and await is_supporter(user_id)
@@ -686,10 +698,15 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             ZZZ_AVATAR_BATTLE_TEMP_JSON
         )
 
+        animation = (
+            await self._get_custom_animation(card_settings, user_id)
+            if template_num in {3, 4}
+            else None
+        )
         # Animations are rendered from the agent's default outfit
-        animation = None
         if (
-            template_num == 1
+            animation is None
+            and template_num == 1
             and agent.outfit_id is None
             and card_settings.animated_image
             and await is_supporter(user_id)
@@ -997,6 +1014,26 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             skins = await self._get_skins(character.id)
             return skins[0].id if len(skins) == 1 else None
         return None
+
+    @staticmethod
+    async def _get_custom_animation(
+        card_settings: CardSettings, user_id: int
+    ) -> CustomAnimation | None:
+        """Get the sponsor's animated custom image the card is drawn with, if any."""
+        if card_settings.current_image is None or not card_settings.animated_image:
+            return None
+
+        image = await CustomImage.get_or_none(
+            user_id=user_id,
+            character_id=card_settings.character_id,
+            url=card_settings.current_image,
+            animated=True,
+        )
+        if image is None or not await is_supporter(user_id):
+            return None
+        return CustomAnimation(
+            url=image.url, zoom=image.zoom, focus_x=image.focus_x, focus_y=image.focus_y
+        )
 
     async def _get_skin_art(self, character: Character, card_settings: CardSettings) -> str | None:
         """Get the GI/HSR character's art for its outfit, None for the default art."""

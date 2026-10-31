@@ -456,13 +456,15 @@ class ZZZGachaSummaryCard:
             border=CHIP_BORDER,
             border_width=2,
         )
+        # Center it and allow 1px slack, since rounding max_width down would shrink the font
         self._write(
             chip_text,
-            x=chip_left + 18,
+            x=(chip_left + CONTENT_RIGHT) / 2,
             baseline=_center_baseline(cy, 16),
             size=16,
             style="bold",
-            max_width=text_width,
+            anchor="ms",
+            max_width=text_width + 1,
         )
 
         uid = f"UID {self.summary.uid}"

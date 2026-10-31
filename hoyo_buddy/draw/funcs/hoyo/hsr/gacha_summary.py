@@ -310,6 +310,9 @@ class _Renderer:
         self.im.paste(color, (x, y, x + mask.width, y + mask.height), mask)
 
     def rect(self, x0: float, y0: float, x1: float, y1: float, color: RGBA) -> None:
+        # Zero-width bars (e.g. 0 pity) round to an inverted box that Pillow rejects
+        if _s(x1) <= _s(x0) or _s(y1) <= _s(y0):
+            return
         self.d.rectangle((_s(x0), _s(y0), _s(x1) - 1, _s(y1) - 1), fill=color)
 
     def stars(self, right: float, top: float, size: float, count: int = 5) -> None:

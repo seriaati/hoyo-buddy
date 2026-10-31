@@ -400,8 +400,8 @@ class ZZZGachaSummaryCard:
         else:
             kind = self._t(KIND_KEYS[latest.kind], mi18n_game=Game.ZZZ)
             self._draw_outlined_text(kind.upper(), top=640, size=230)
-            self._draw_glow(1240, 380, 170)
-            box = (1050, 190, 380, 380)
+            self._draw_glow(1240, 380, 210)
+            box = (1005, 145, 470, 470)
 
         art = Drawer.open_static(latest.art_url)
         if art.getbbox() is None:

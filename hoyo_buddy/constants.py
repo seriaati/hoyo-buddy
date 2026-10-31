@@ -757,7 +757,7 @@ UIGF_GAME_KEYS: Final[dict[Game, str]] = {
 
 
 BANNER_WIN_RATE_TITLES: Final[dict[Game, dict[int, str]]] = {
-    Game.GENSHIN: {301: "50/50", 302: "50/50", 500: "50/50"},
+    Game.GENSHIN: {301: "50/50", 302: "75/25", 500: "50/50"},
     Game.STARRAIL: {11: "50/50", 12: "75/25", 21: "50/50", 22: "75/25"},
     Game.ZZZ: {2: "50/50", 3: "75/25", 102: "50/50", 103: "75/25"},
 }

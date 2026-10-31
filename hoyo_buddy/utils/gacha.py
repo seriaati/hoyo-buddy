@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Literal
 
 import aiohttp
 import chompjs
@@ -10,7 +9,7 @@ from loguru import logger
 
 from hoyo_buddy.constants import STANDARD_ITEMS_FILENAME
 from hoyo_buddy.db.models import GachaHistory, HoyoAccount, JSONFile
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import FiftyFiftyResult, Game
 from hoyo_buddy.models.gacha import GIBanner, HSRBanner, ZZZBanner
 
 HSR_BANNER_URL = "https://starrailstation.com/api/v1/warp_config"
@@ -129,13 +128,22 @@ class GachaStatsResult:
 
 
 async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[int, int]:
+    results = [r for _, r in await calc_five_star_results(account=account, banner_type=banner_type)]
+    wins = results.count(FiftyFiftyResult.WON)
+    return wins, wins + results.count(FiftyFiftyResult.LOST)
+
+
+async def calc_five_star_results(
+    *, account: HoyoAccount, banner_type: int
+) -> list[tuple[GachaHistory, FiftyFiftyResult]]:
+    """Return every 5-star pull on the banner, oldest first, with its 50/50 result."""
     five_stars = (
         await GachaHistory.filter(account=account, rarity=5, banner_type=banner_type)
         .order_by("wish_id")
-        .only("item_id", "time", "banner_id")
+        .only("item_id", "time", "banner_id", "num_since_last")
     )
     if not five_stars:
-        return 0, 0
+        return []
 
     gi_banners: list[GIBanner] = []
     item_names: dict[int, str] = {}
@@ -159,7 +167,8 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
 
     standard_items = await get_standard_items(account.game)
 
-    is_standards: list[bool] = []
+    results: list[tuple[GachaHistory, FiftyFiftyResult]] = []
+    guaranteed = False
     for item in five_stars:
         if account.game is Game.GENSHIN:
             is_standard = check_gi_item_is_standard(item, gi_banners, item_names, standard_items)
@@ -171,18 +180,14 @@ async def calc_50_50_stats(*, account: HoyoAccount, banner_type: int) -> tuple[i
             logger.error(f"Unknown game for checking is_standard: {account.game}")
             continue
 
-        is_standards.append(is_standard)
+        if guaranteed:
+            result = FiftyFiftyResult.GUARANTEED
+        else:
+            result = FiftyFiftyResult.LOST if is_standard else FiftyFiftyResult.WON
+        results.append((item, result))
+        guaranteed = is_standard
 
-    status: list[Literal[50, 100]] = [50]
-    wins = 0
-
-    for i, is_standard in enumerate(is_standards):
-        status.append(100 if is_standard else 50)
-        if status[i] == 50 and not is_standard:
-            wins += 1
-    del status[-1]
-
-    return wins, status.count(50)
+    return results
 
 
 async def calculate_gacha_stats(

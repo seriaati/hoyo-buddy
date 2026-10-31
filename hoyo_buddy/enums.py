@@ -216,3 +216,9 @@ class Locale(StrEnum):
 
     # Not supported by Discord
     arabic = "ar"
+
+
+class FiftyFiftyResult(StrEnum):
+    WON = "won"
+    LOST = "lost"
+    GUARANTEED = "guaranteed"

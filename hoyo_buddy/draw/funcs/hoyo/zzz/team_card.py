@@ -21,10 +21,14 @@ from .common import SKILL_ORDER, STAT_ICONS, get_props
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
+    from pathlib import Path
 
     from genshin.models import ZZZFullAgent
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
+
+SINGLE_AGENT_BOX = (54, 48, 1395, 357)
+"""Where a single agent's card is on the background, for template 3."""
 
 
 class ZZZTeamCard:
@@ -56,7 +60,7 @@ class ZZZTeamCard:
         self._hl_special_stats = hl_special_stats
         self._uid = uid
 
-    def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
+    def _draw_card_background(self, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
         draw = ImageDraw.Draw(card)
         drawer = Drawer(draw, folder="zzz-team-card", dark_mode=self._dark_mode, sans=True)
@@ -79,6 +83,13 @@ class ZZZTeamCard:
             color=blob_color, rotation=0, pattern=pattern, blob=left_blob
         )
         card.alpha_composite(left_blob, (13, -30))
+        return card
+
+    def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
+        card = self._draw_card_background(blob_color)
+        drawer = Drawer(
+            ImageDraw.Draw(card), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
+        )
 
         chara_img_bg = drawer.open_asset("chara_img.png")
         chara_img = drawer.open_static(image_url)
@@ -86,10 +97,6 @@ class ZZZTeamCard:
         chara_img = drawer.mask_image_with_image(chara_img, chara_img_bg)
         chara_img_bg.alpha_composite(chara_img)
         card.alpha_composite(chara_img_bg)
-
-        top_layer = drawer.open_asset("top_layer.png")
-        card.alpha_composite(top_layer, (268, 19))
-
         return card
 
     def _draw_agent_card(self, agent: ZZZFullAgent | ZZZEnkaCharacter) -> Image.Image:
@@ -97,9 +104,18 @@ class ZZZTeamCard:
             image_url=self._agent_images[agent.id],
             blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id]),
         )
+        self._draw_agent_foreground(im, agent)
+        return im
+
+    def _draw_agent_foreground(
+        self, im: Image.Image, agent: ZZZFullAgent | ZZZEnkaCharacter
+    ) -> None:
         drawer = Drawer(
             ImageDraw.Draw(im), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
         )
+
+        top_layer = drawer.open_asset("top_layer.png")
+        im.alpha_composite(top_layer, (268, 19))
 
         # Agent long name
         name_data = self._name_datas.get(agent.id)
@@ -133,8 +149,6 @@ class ZZZTeamCard:
 
         # Disc drives
         self._draw_disc_drives(agent, im, drawer)
-
-        return im
 
     def _draw_disc_drives(
         self, agent: ZZZFullAgent | ZZZEnkaCharacter, im: Image.Image, drawer: Drawer
@@ -416,8 +430,44 @@ class ZZZTeamCard:
 
         if len(self._agents) == 1:
             # Template 3
-            im = im.crop((54, 48, 1395, 357))
+            im = im.crop(SINGLE_AGENT_BOX)
             if self._uid is not None:
                 im = self._add_uid_footer(im, self._uid)
 
         return Drawer.save_image(im)
+
+    def draw_animated(
+        self, animation_path: Path, offset: tuple[int, int], *, quality: int, method: int
+    ) -> BytesIO:
+        """Draw a single agent's card (template 3) with an animated agent image.
+
+        Args:
+            animation_path: Path of the animation, framed in the image mask.
+            offset: The animation's uncropped top-left in the image mask.
+            quality: WEBP quality.
+            method: WEBP method.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        agent = self._agents[0]
+        mask = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/chara_img.png")
+        card = self._draw_card_background(Drawer.hex_to_rgb(self._agent_colors[agent.id]))
+        card.alpha_composite(mask)
+
+        background = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")
+        background = background.crop(SINGLE_AGENT_BOX)
+        background.alpha_composite(card)
+        if self._uid is not None:
+            background = self._add_uid_footer(background, self._uid)
+
+        return Drawer.draw_animated_card(
+            background,
+            lambda im: self._draw_agent_foreground(im, agent),
+            animation_path=animation_path,
+            offset=offset,
+            fallback=self.draw,
+            mask=mask,
+            quality=quality,
+            method=method,
+        )

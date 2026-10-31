@@ -20,10 +20,13 @@ from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
     from io import BytesIO
+    from pathlib import Path
 
     from genshin.models import ZZZFullAgent
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
+
+IMAGE_POS = (190, 99)
 
 
 class ZZZAgentCard4:
@@ -116,8 +119,13 @@ class ZZZAgentCard4:
         img = drawer.ratio_resize(img, height=img_mask.height)
         img = drawer.resize_crop(img, img_mask.size)
         img = drawer.mask_image_with_image(img, img_mask)
-        im.alpha_composite(img_bk, (190, 99))
-        im.alpha_composite(img, (190, 99))
+        im.alpha_composite(img_bk, IMAGE_POS)
+        im.alpha_composite(img, IMAGE_POS)
+
+    def _draw_img_flairs(self) -> None:
+        im = self.im
+        drawer = self.drawer
+        img_height = drawer.open_asset("img_mask.png").height
 
         m_flair = drawer.open_asset("m_flair.png")
         im.alpha_composite(m_flair, (885, 99))
@@ -149,7 +157,7 @@ class ZZZAgentCard4:
                 size=280,
                 style="black_italic",
                 color=(20, 20, 20),
-                position=(190, 99 + img.height + 20),
+                position=(190, 99 + img_height + 20),
                 anchor="lt",
                 locale=Locale.american_english,
                 no_write=True,
@@ -427,14 +435,15 @@ class ZZZAgentCard4:
                         gap=8,
                     )
 
-    def draw(self) -> BytesIO:
-        self.im = im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
+    def _set_im(self, im: Image.Image) -> None:
+        self.im = im
         self.drawer = Drawer(
             ImageDraw.Draw(im), folder="zzz-build-card4", dark_mode=False, sans=True
         )
 
-        self._draw_card_base()
-        self._draw_img()
+    def _draw_foreground(self, im: Image.Image) -> None:
+        self._set_im(im)
+        self._draw_img_flairs()
         self._draw_skills()
         self._draw_stats()
         self._draw_weapon()
@@ -450,4 +459,41 @@ class ZZZAgentCard4:
                 anchor="rm",
             )
 
+    def draw(self) -> BytesIO:
+        im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
+        self._set_im(im)
+        self._draw_card_base()
+        self._draw_img()
+        self._draw_foreground(im)
         return Drawer.save_image(im)
+
+    def draw_animated(
+        self, animation_path: Path, offset: tuple[int, int], *, quality: int, method: int
+    ) -> BytesIO:
+        """Draw the card with an animated agent image.
+
+        Args:
+            animation_path: Path of the animation, framed in the image mask.
+            offset: The animation's uncropped top-left in the image mask.
+            quality: WEBP quality.
+            method: WEBP method.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        background = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
+        self._set_im(background)
+        self._draw_card_base()
+        background.alpha_composite(self.drawer.open_asset("img_bk.png"), IMAGE_POS)
+
+        return Drawer.draw_animated_card(
+            background,
+            self._draw_foreground,
+            animation_path=animation_path,
+            offset=offset,
+            fallback=self.draw,
+            area_pos=IMAGE_POS,
+            mask=self.drawer.open_asset("img_mask.png"),
+            quality=quality,
+            method=method,
+        )

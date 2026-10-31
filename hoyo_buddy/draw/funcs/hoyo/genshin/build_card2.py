@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS, convert_gi_element_to_enka
-from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.drawer import BLACK, Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
@@ -19,6 +19,7 @@ from .common import (
 
 if TYPE_CHECKING:
     from io import BytesIO
+    from pathlib import Path
 
     import enka
 
@@ -26,6 +27,9 @@ if TYPE_CHECKING:
 
 
 __all__ = ("GITempTwoBuildCard",)
+
+IMAGE_POS = (79, 66)
+MASK_PATH = "hoyo-buddy-assets/assets/gi-build-card2/img_mask.png"
 
 
 class GITempTwoBuildCard:
@@ -55,24 +59,21 @@ class GITempTwoBuildCard:
         self._uid = uid
         self._show_substat_rolls = show_substat_rolls
 
-    def draw(self) -> BytesIO:
+    def _open_card(self) -> Image.Image:
+        return Drawer.open_image(f"hoyo-buddy-assets/assets/gi-build-card2/{self._theme}_card.png")
+
+    @property
+    def _element_color(self) -> tuple[int, int, int]:
         character = self._character
-        color_1 = (230, 230, 230) if self._dark_mode else (94, 94, 94)
-        color_2 = (141, 141, 141) if self._dark_mode else (206, 206, 206)
-        color_3 = (243, 243, 243) if self._dark_mode else (156, 156, 156)
-        color_4 = (110, 110, 110) if self._dark_mode else (238, 238, 238)
-
-        im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-build-card2/{self._theme}_card.png")
-        drawer = Drawer(ImageDraw.Draw(im), folder="gi-build-card2", dark_mode=self._dark_mode)
-
-        # Character image
         element = (
             convert_gi_element_to_enka(character.element)
             if isinstance(character.element, GenshinElement)
             else character.element
         )
-        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
+        return Drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
 
+    def _draw_character_image(self, im: Image.Image) -> None:
+        drawer = Drawer(ImageDraw.Draw(im), folder="gi-build-card2", dark_mode=self._dark_mode)
         img_mask = drawer.open_asset("img_mask.png")
         img = drawer.open_static(self._character_image)
         img = drawer.modify_image_for_build_card(
@@ -80,12 +81,20 @@ class GITempTwoBuildCard:
             target_width=img_mask.width,
             target_height=img_mask.height,
             mask=img_mask,
-            background_color=element_color,
+            background_color=self._element_color,
             zoom=self._zoom,
             top_crop=self._top_crop,
         )
         img = drawer.mask_image_with_image(img, img_mask)
-        im.alpha_composite(img, (79, 66))
+        im.alpha_composite(img, IMAGE_POS)
+
+    def _draw_foreground(self, im: Image.Image) -> None:
+        character = self._character
+        color_1 = (230, 230, 230) if self._dark_mode else (94, 94, 94)
+        color_2 = (141, 141, 141) if self._dark_mode else (206, 206, 206)
+        color_3 = (243, 243, 243) if self._dark_mode else (156, 156, 156)
+        color_4 = (110, 110, 110) if self._dark_mode else (238, 238, 238)
+        drawer = Drawer(ImageDraw.Draw(im), folder="gi-build-card2", dark_mode=self._dark_mode)
 
         # Character level
         tbox = drawer.write(
@@ -414,4 +423,48 @@ class GITempTwoBuildCard:
                 anchor="mm",
             )
 
+    def draw(self) -> BytesIO:
+        im = self._open_card()
+        self._draw_character_image(im)
+        self._draw_foreground(im)
         return Drawer.save_image(im)
+
+    def draw_animated(
+        self, animation_path: Path, offset: tuple[int, int], *, quality: int, method: int
+    ) -> BytesIO:
+        """Draw the card with an animated character image.
+
+        Args:
+            animation_path: Path of the animation, framed in the image mask.
+            offset: The animation's uncropped top-left in the image mask.
+            quality: WEBP quality.
+            method: WEBP method.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        mask = Drawer.open_image(MASK_PATH)
+        background = self._open_card()
+        background.alpha_composite(
+            Drawer.mask_image_with_image(Image.new("RGBA", mask.size, self._element_color), mask),
+            IMAGE_POS,
+        )
+
+        def draw_foreground(im: Image.Image) -> None:
+            # Static images are darkened by Drawer.modify_image_for_build_card
+            if self._dark_mode:
+                overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
+                im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
+            self._draw_foreground(im)
+
+        return Drawer.draw_animated_card(
+            background,
+            draw_foreground,
+            animation_path=animation_path,
+            offset=offset,
+            fallback=self.draw,
+            area_pos=IMAGE_POS,
+            mask=mask,
+            quality=quality,
+            method=method,
+        )

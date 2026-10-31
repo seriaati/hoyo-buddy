@@ -400,8 +400,8 @@ class _Renderer:
         self.im.paste(card, (_s(cx) - card.width // 2, _s(cy) - card.height // 2), card)
 
     def _draw_light_cone_art(self, item: GachaSummaryItem) -> None:
-        self.glow(1150, 330, 285, GOLD_LIGHT[:3], 0.28)
-        self._draw_tilted_card(Drawer.open_static(item.art_url), 1150, 330, (316, 440))
+        self.glow(1240, 330, 285, GOLD_LIGHT[:3], 0.28)
+        self._draw_tilted_card(Drawer.open_static(item.art_url), 1240, 330, (316, 440))
 
     def _draw_fades(self) -> None:
         width, height = self.im.size
@@ -418,9 +418,10 @@ class _Renderer:
     def _draw_logo(self) -> None:
         name_w = self.measure("Hoyo Buddy", 18, 700)
         x = WIDTH - PAD_X - name_w - 10 - 37
+        y = PAD_Y - 16
         logo = self.drawer.open_asset("hb_logo.png", size=(_s(37), _s(40)))
-        self.paste(_with_opacity(logo, 0.7), x, PAD_Y)
-        self.text_mid("Hoyo Buddy", x + 47, PAD_Y + 20, 18, 700, _white(0.7))
+        self.paste(_with_opacity(logo, 0.7), x, y)
+        self.text_mid("Hoyo Buddy", x + 47, y + 20, 18, 700, _white(0.7))
 
     # Left column
 

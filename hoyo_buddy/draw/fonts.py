@@ -262,3 +262,18 @@ GOTHIC_FONT_MAPPING: FontMapping = {
         "black": ZENMARUGOTHIC_BLACK,
     }
 }
+
+NOTO_SANS_FONT_MAPPING: FontMapping = {
+    **{
+        locales: font_map
+        for locales, font_map in SANS_FONT_MAPPING.items()
+        if locales != SUPPORTED_BY_NUNITO
+    },
+    SUPPORTED_BY_NUNITO: {
+        "light": NOTOSANS_LIGHT,
+        "regular": NOTOSANS_REGULAR,
+        "medium": NOTOSANS_MEDIUM,
+        "bold": NOTOSANS_BOLD,
+        "black": NOTOSANS_BLACK,
+    },
+}

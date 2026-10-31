@@ -117,12 +117,14 @@ class Drawer:
         dark_mode: bool,
         locale: Locale = Locale.american_english,
         sans: bool | None = None,
+        font_mapping: FontMapping | None = None,
     ) -> None:
         self.draw = draw
         self.folder = folder
         self.dark_mode = dark_mode
         self.locale = locale
         self.sans = sans
+        self.font_mapping = font_mapping
 
     @classmethod
     def calc_dynamic_fontsize(
@@ -358,7 +360,9 @@ class Drawer:
             msg = "Cannot use sans and gothic fonts at the same time"
             raise ValueError(msg)
 
-        if sans:
+        if self.font_mapping is not None:
+            mapping = self.font_mapping
+        elif sans:
             mapping = SANS_FONT_MAPPING
         elif gothic:
             mapping = GOTHIC_FONT_MAPPING

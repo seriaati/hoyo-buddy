@@ -958,14 +958,14 @@ supporter_embed.status_not_supporter: You're not a sponsor yet.
 sponsor_perks_button_label: View sponsor perks
 sponsor_perk_error_title: Sponsor perk
 animated_image_sponsor_perk_message: Animated character art on build cards is a sponsor perk.
-animated_custom_image_sponsor_perk_message: Uploading GIFs, animated WEBPs and MP4s as character art is a sponsor perk.
+animated_custom_image_sponsor_perk_message: "Uploading GIFs, animated WEBPs and MP4s as character art is a sponsor perk."
 animation_position_button_label: Position
 animation_position_modal.zoom.label: Zoom (%)
-animation_position_modal.zoom.description: At 100, the animation fills the card's image area
+animation_position_modal.zoom.description: "At 100, the animation fills the card's image area"
 animation_position_modal.focus_x.label: Horizontal position (%)
-animation_position_modal.focus_x.description: 0 shows the animation's left edge, 100 its right edge
+animation_position_modal.focus_x.description: "0 shows the animation's left edge, 100 its right edge"
 animation_position_modal.focus_y.label: Vertical position (%)
-animation_position_modal.focus_y.description: 0 shows the animation's top edge, 100 its bottom edge
+animation_position_modal.focus_y.description: "0 shows the animation's top edge, 100 its bottom edge"
 auto_gacha_import_sponsor_perk_message: Automatic gacha log imports are a sponsor perk.
 multi_accompany_sponsor_perk_message: "Auto accompanying more than one character is a sponsor perk. Sponsors can auto accompany up to {limit} characters per account."
 card_settings_animated_image: Animated image

@@ -12,6 +12,7 @@ from discord import File
 from hoyo_buddy.constants import HSR_DEFAULT_ART_URL, TRAVELER_IDS, ZZZ_TEAM_IMAGE_OVERRIDES
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
+from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
     AgentNameData,
@@ -60,6 +61,7 @@ if TYPE_CHECKING:
         ZZZEnkaCharacter,
     )
     from hoyo_buddy.models.draw import SpineData, ZZZTemp1CardData
+    from hoyo_buddy.models.gacha_summary import GachaSummary
     from hoyo_buddy.types import HardChallengeMode
 
 
@@ -1033,5 +1035,30 @@ async def draw_shiyu_v2_card(
     card = funcs.zzz.ShiyuV2Card(shiyu, uid=uid, locale=draw_input.locale)
     buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
+    buffer.seek(0)
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_gacha_summary_card(draw_input: DrawInput, summary: GachaSummary) -> File:
+    if summary.game is Game.GENSHIN:
+        await funcs.genshin.resolve_gi_gacha_summary_art(summary, draw_input.session)
+        card = funcs.genshin.GIGachaSummaryCard(summary, locale=draw_input.locale)
+    elif summary.game is Game.STARRAIL:
+        await funcs.hsr.resolve_hsr_gacha_summary_art(summary, draw_input.session)
+        card = funcs.hsr.HSRGachaSummaryCard(summary, locale=draw_input.locale)
+    elif summary.game is Game.ZZZ:
+        await funcs.zzz.resolve_zzz_gacha_summary_art(summary, draw_input.session)
+        card = funcs.zzz.ZZZGachaSummaryCard(summary, locale=draw_input.locale)
+    else:
+        msg = f"Unsupported game for gacha summary card: {summary.game}"
+        raise ValueError(msg)
+
+    items = [summary.latest, *summary.previous] if summary.latest is not None else []
+    urls = [summary.avatar_url]
+    for item in items:
+        urls.extend((item.art_url, item.icon_url))
+    await download_images(urls, draw_input.session)
+
+    buffer = await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
     buffer.seek(0)
     return File(buffer, filename=draw_input.filename)

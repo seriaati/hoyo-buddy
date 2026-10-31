@@ -768,6 +768,12 @@ BANNER_FIVE_STAR_GUARANTEE_NUMS: Final[dict[Game, dict[int, int]]] = {
     Game.ZZZ: {2: 90, 3: 80, 1: 90, 5: 80, 102: 90, 103: 80},
 }
 
+BANNER_FIVE_STAR_SOFT_PITY_NUMS: Final[dict[Game, dict[int, int]]] = {
+    Game.GENSHIN: {301: 74, 302: 63, 200: 74, 500: 74},
+    Game.STARRAIL: {11: 74, 12: 66, 1: 74, 21: 74, 22: 66},
+    Game.ZZZ: {2: 74, 3: 64, 1: 74, 102: 74, 103: 64},
+}
+
 STANDARD_ITEMS_FILENAME: Final[str] = "standard_items.json"
 
 CHARACTER_MAX_LEVEL: Final[dict[Game, int]] = {

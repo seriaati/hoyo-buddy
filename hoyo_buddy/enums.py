@@ -222,3 +222,9 @@ class FiftyFiftyResult(StrEnum):
     WON = "won"
     LOST = "lost"
     GUARANTEED = "guaranteed"
+
+
+class GachaItemKind(StrEnum):
+    CHARACTER = "character"
+    WEAPON = "weapon"
+    BANGBOO = "bangboo"

@@ -632,6 +632,28 @@ gacha_log_global_stats_title: Global Stats
 gacha_log_global_stats_lifetime: "Lifetime pulls: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★ luck: {luck}"
 win_rate_global_stats: "{title} Win rate: {win_rate}"
+gacha_summary.latest: "Latest {rarity}"
+gacha_summary.previous: "Previous {rarity}"
+gacha_summary.pulls: pulls
+gacha_summary.won: Won
+gacha_summary.lost: Lost
+gacha_summary.guaranteed: Guaranteed
+gacha_summary.won_title: "Won {title}"
+gacha_summary.lost_title: "Lost {title}"
+gacha_summary.pity: "{rarity} pity"
+gacha_summary.next: "Next {rarity}"
+gacha_summary.next_not_guaranteed: "{title} · not guaranteed"
+gacha_summary.next_is: "Next {rarity} is a {title}"
+gacha_summary.next_is_guaranteed: "Next {rarity} is guaranteed"
+gacha_summary.banner_pulls: Banner pulls
+gacha_summary.lifetime_pulls: Lifetime pulls
+gacha_summary.win_rate: "{title} win rate"
+gacha_summary.avg_pulls: "Avg pulls per {rarity}"
+gacha_summary.lifetime_spent: Lifetime spent
+gacha_summary.total: "{total} total"
+gacha_summary.wins_of_total: "{wins} of {total}"
+gacha_summary.s_rank: S-Rank
+gacha_summary.a_rank: A-Rank
 gacha_log_view_full: View gacha logs
 gacha_view_command_description: View imported gacha logs
 gacha_log_view_banner_type_selector_placeholder: Select a banner type...

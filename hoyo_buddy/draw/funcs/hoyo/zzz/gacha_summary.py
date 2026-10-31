@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+import functools
 import math
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 import aiohttp
 import hakushin
 import numpy as np
+import yaml
 from loguru import logger
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import WHITE, Drawer
 from hoyo_buddy.enums import FiftyFiftyResult, GachaItemKind, Game, Locale
 from hoyo_buddy.l10n import LocaleStr
+from hoyo_buddy.models.draw import ZZZTemp1CardData
 
 if TYPE_CHECKING:
     from io import BytesIO
@@ -50,6 +54,24 @@ CONTENT_WIDTH = 800
 CONTENT_RIGHT = LEFT + CONTENT_WIDTH
 STRIPE_ANGLE = math.radians(14)
 
+AGENT_HEIGHT = 960
+AGENT_MAX_WIDTH = 820
+AGENT_CENTER_X = 1242
+AGENT_MIN_LEFT = CONTENT_RIGHT + 16
+AGENT_TOP = -10
+# Right of the stats, the hero area fades in from the background over this range,
+# so big agent art never covers the stats
+HERO_LEFT = 820
+AGENT_FADE_START = CONTENT_RIGHT + 8
+AGENT_FADE_END = AGENT_FADE_START + 160
+
+# Agents are framed with the ZZZ build card (template 1) data, which is tuned so every agent
+# looks the same size. These map its coordinates onto this card, keeping Miyabi's framing.
+TEMP1_DATA_PATH = Path("hoyo-buddy-assets/assets/zzz-build-card/agent_data.yaml")
+TEMP1_SCALE = 960 / 2710
+TEMP1_ANCHOR_X = 1058 + 1931 / 2
+TEMP1_OFFSET_Y = AGENT_TOP + 69 * TEMP1_SCALE
+
 KIND_KEYS: dict[GachaItemKind, str] = {
     GachaItemKind.CHARACTER: "agent",
     GachaItemKind.WEAPON: "roles_weapon",
@@ -83,6 +105,16 @@ def _rgba(color: RGB, alpha: int = 255) -> tuple[int, int, int, int]:
 
 def _scale_alpha(mask: Image.Image, factor: float) -> Image.Image:
     return Image.fromarray((np.asarray(mask) * factor).astype(np.uint8))
+
+
+@functools.cache
+def _load_temp1_frames() -> dict[str, ZZZTemp1CardData]:
+    try:
+        data: dict[str, Any] = yaml.safe_load(TEMP1_DATA_PATH.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError) as e:
+        logger.warning(f"Failed to load ZZZ template 1 card data: {e}")
+        return {}
+    return {str(k): ZZZTemp1CardData.model_validate(v) for k, v in data.items()}
 
 
 def _fit(image: Image.Image, width: int, height: int) -> Image.Image:
@@ -359,7 +391,7 @@ class ZZZGachaSummaryCard:
         draw = ImageDraw.Draw(dots)
         step, radius = _s(14), 2.3 * SCALE
         alpha = round(255 * 0.09)
-        for cx in range(_s(820) + step // 2, self._im.width, step):
+        for cx in range(_s(HERO_LEFT) + step // 2, self._im.width, step):
             for cy in range(step // 2, self._im.height, step):
                 draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), fill=alpha)
         self._im.paste(_rgba(WHITE), (0, 0), dots)
@@ -379,7 +411,7 @@ class ZZZGachaSummaryCard:
         font = self._font(text, size, "black_italic")
         mask = Image.new("L", self._im.size, 0)
         ImageDraw.Draw(mask).text(
-            (_s(820), _s(_baseline(top, size, 1))),
+            (_s(HERO_LEFT), _s(_baseline(top, size, 1))),
             text,
             font=font,
             fill=0,
@@ -394,26 +426,88 @@ class ZZZGachaSummaryCard:
         if latest is None:
             return
 
-        if latest.kind is GachaItemKind.CHARACTER:
+        is_agent = latest.kind is GachaItemKind.CHARACTER
+        if is_agent:
             self._draw_outlined_text(latest.name.upper(), top=600, size=300)
-            box = (900, -10, 684, 960)
         else:
             kind = self._t(KIND_KEYS[latest.kind], mi18n_game=Game.ZZZ)
             self._draw_outlined_text(kind.upper(), top=640, size=230)
             self._draw_glow(1240, 380, 210)
-            box = (1005, 145, 470, 470)
 
         art = Drawer.open_static(latest.art_url)
-        if art.getbbox() is None:
+        bbox = art.getbbox()
+        if bbox is None:
             return
 
-        x, y, width, height = box
-        art = _fit(art, _s(width), _s(height))
-        left = _s(x) + (_s(width) - art.width) / 2
-        top = _s(y) + (_s(height) - art.height) / 2
+        if is_agent:
+            frame = _load_temp1_frames().get(str(latest.item_id))
+            if frame is not None:
+                art, left, top = self._place_agent_framed(art, frame)
+            else:
+                art, left, top = self._place_agent(art.crop(bbox))
+            art, left, top = self._crop_to_card(art, left, top)
+        else:
+            x, y, width, height = 1005, 145, 470, 470
+            art = _fit(art, _s(width), _s(height))
+            left = _s(x) + (_s(width) - art.width) / 2
+            top = _s(y) + (_s(height) - art.height) / 2
         sticker = _sticker(art, outline=_s(2), shadow=(_s(5), _s(6)))
         pad = _s(2) + _s(6)
         self._paste(sticker, left - pad, top - pad)
+        if is_agent:
+            self._fade_hero_left()
+
+    @staticmethod
+    def _place_agent_framed(
+        art: Image.Image, frame: ZZZTemp1CardData
+    ) -> tuple[Image.Image, float, float]:
+        width, height = frame.image_w * TEMP1_SCALE, frame.image_h * TEMP1_SCALE
+        art = Drawer.resize_crop(art, (_s(width), _s(height)))
+        # Where the template's anchor falls in the art, as a fraction of its width
+        anchor = (TEMP1_ANCHOR_X - frame.image_x) / frame.image_w
+        if frame.flip:
+            anchor = 1 - anchor
+        left = _s(AGENT_CENTER_X - anchor * width)
+        top = _s(TEMP1_OFFSET_Y + frame.image_y * TEMP1_SCALE)
+        return art, left, top
+
+    @staticmethod
+    def _place_agent(art: Image.Image) -> tuple[Image.Image, float, float]:
+        """Fallback for agents without template 1 data: scale to a shared height, only
+        shrinking very wide art (e.g. wings).
+        """
+        ratio = min(_s(AGENT_HEIGHT) / art.height, _s(AGENT_MAX_WIDTH) / art.width)
+        size = (max(1, round(art.width * ratio)), max(1, round(art.height * ratio)))
+        art = art.resize(size, Image.Resampling.LANCZOS)
+        centered = min(_s(AGENT_CENTER_X) - art.width / 2, _s(WIDTH) - art.width)
+        left = max(_s(AGENT_MIN_LEFT), centered)
+        top = _s(AGENT_TOP) + (_s(AGENT_HEIGHT) - art.height) / 2
+        return art, left, top
+
+    @staticmethod
+    def _crop_to_card(art: Image.Image, left: float, top: float) -> tuple[Image.Image, int, int]:
+        """Drop the parts of the art that land outside the hero area, keeping a margin for the
+        sticker outline and shadow."""
+        margin = _s(8)
+        x0 = max(round(left), _s(AGENT_FADE_START) - margin)
+        y0 = max(round(top), -margin)
+        x1 = min(round(left) + art.width, _s(WIDTH) + margin)
+        y1 = min(round(top) + art.height, _s(HEIGHT) + margin)
+        if x1 <= x0 or y1 <= y0:
+            return art.crop((0, 0, 1, 1)), x0, y0
+        box = (x0 - round(left), y0 - round(top), x1 - round(left), y1 - round(top))
+        return art.crop(box), x0, y0
+
+    def _fade_hero_left(self) -> None:
+        """Fade everything right of the stats (art, stripes, dots) in from the background,
+        instead of making the art see-through, so nothing shows through the faded part."""
+        x0, start, end = _s(HERO_LEFT), _s(AGENT_FADE_START), _s(AGENT_FADE_END)
+        xs = np.arange(x0, end, dtype=np.float32)
+        ramp = np.clip((xs - start) / (end - start), 0, 1)
+        ramp = ramp * ramp * (3 - 2 * ramp)  # Smoothstep, so neither end of the fade shows a line
+        alpha = ((1 - ramp) * 255).astype(np.uint8)
+        mask = Image.fromarray(np.tile(alpha, (self._im.height, 1)))
+        self._fill_mask(BG, (x0, 0), mask)
 
     def _draw_glow(self, cx: float, cy: float, radius: float) -> None:
         """Radial dark glow, from 55% black at the center to transparent at 70% of the radius."""

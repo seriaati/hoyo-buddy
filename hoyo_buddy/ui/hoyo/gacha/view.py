@@ -86,10 +86,12 @@ class ViewGachaLogView(ui.LayoutView):
             locale=self.locale,
             avatar_url=self._avatar_url,
         )
-        embed = self.get_stats_embed(summary)
         if not self.shows_card:
-            return embed, None
+            return self.get_stats_embed(summary), None
 
+        # The card already shows every stat, so the embed only carries the title
+        embed = DefaultEmbed(self.locale, title=LocaleStr(key="gacha_log_stats_title"))
+        embed.add_acc_info(self.account)
         file_ = await draw_gacha_summary_card(
             DrawInput(
                 dark_mode=False,

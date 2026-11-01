@@ -300,6 +300,8 @@ notes.elysian_realm: Elysian Realm
 notes.elysian_realm_value: "Current score: {cur}/{max}"
 notes_available: "{emoji} Available in {in_time}"
 notes_command_description: View real-time notes
+notes_overview_option_label: Overview
+notes_overview.full_time: "Full {time}"
 notif.embed.footer: Use /reminders to configure reminders
 notif_modal.enabled.label: Enabled
 notif_modal.type_one.description: |

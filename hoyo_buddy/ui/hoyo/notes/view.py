@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
 from itertools import starmap
 from typing import TYPE_CHECKING, TypeAlias
 
 import genshin
-from discord import ButtonStyle, File
+from discord import ButtonStyle, File, SeparatorSpacing
+from discord.ui import Separator
+from discord.utils import escape_markdown, format_dt
 
 from hoyo_buddy import ui
+from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.constants import AVAILABLE_OPEN_GAMES, get_open_game_url
 from hoyo_buddy.db import draw_locale, get_dyk
 from hoyo_buddy.draw.main_funcs import draw_gi_notes_card, draw_hsr_notes_card, draw_zzz_notes_card
@@ -15,6 +19,8 @@ from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import (
     BATTERY_CHARGE_EMOJI,
     BELL_OUTLINE,
+    CLOSE,
+    GAME_ICON_EMOJIS,
     PT_EMOJI,
     REALM_CURRENCY,
     RESIN,
@@ -27,6 +33,7 @@ from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
 from hoyo_buddy.ui import Button, Select, SelectOption
 from hoyo_buddy.ui.reminders.view import RemindersView
+from hoyo_buddy.utils import capture_exception
 
 if TYPE_CHECKING:
     import io
@@ -40,6 +47,10 @@ if TYPE_CHECKING:
 NotesWithCard: TypeAlias = (
     genshin.models.Notes | genshin.models.StarRailNote | genshin.models.ZZZNotes
 )
+AnyNotes: TypeAlias = NotesWithCard | genshin.models.HonkaiNotes
+
+OVERVIEW_VALUE = "overview"
+MAX_CONCURRENT_FETCHES = 4
 
 
 class NotesView(ui.LayoutView):
@@ -51,9 +62,11 @@ class NotesView(ui.LayoutView):
         dark_mode: bool,
         author: User | Member | None,
         locale: Locale,
+        overview: bool = False,
     ) -> None:
         super().__init__(author=author, locale=locale)
         self.account = account
+        self.overview = overview
         self.dark_mode = dark_mode
         self.accounts = accounts
         self.bytes_obj: io.BytesIO | None = None
@@ -63,7 +76,11 @@ class NotesView(ui.LayoutView):
     def _add_items(self) -> None:
         self._rows = []
         if self.accounts is not None:
-            self._rows.append([AccountSwitcher(self.accounts, self.account)])
+            self._rows.append(
+                [AccountSwitcher(self.accounts, self.account, overview=self.overview)]
+            )
+        if self.overview:
+            return
         if buttons := self.get_open_game_buttons(self.account):
             self._rows.append(list(buttons))
         self._rows.append([RemindersButton()])
@@ -74,24 +91,80 @@ class NotesView(ui.LayoutView):
         if self.dyk:
             self.add_item(ui.TextDisplay(self.dyk))
 
-    async def _get_notes(
-        self,
-    ) -> (
-        genshin.models.Notes
-        | genshin.models.StarRailNote
-        | genshin.models.ZZZNotes
-        | genshin.models.HonkaiNotes
-    ):
-        if self.account.game is Game.GENSHIN:
-            return await self.account.client.get_genshin_notes()
-        if self.account.game is Game.ZZZ:
-            return await self.account.client.get_zzz_notes()
-        if self.account.game is Game.STARRAIL:
-            return await self.account.client.get_starrail_notes()
-        if self.account.game is Game.HONKAI:
-            return await self.account.client.get_honkai_notes()
+    def _render_overview(self, lines: list[str]) -> None:
+        self.clear_items()
+        self.add_item(
+            ui.DefaultContainer(
+                ui.TextDisplay("\n\n".join(lines)),
+                Separator(spacing=SeparatorSpacing.large),
+                *starmap(ui.ActionRow, self._rows),
+            )
+        )
+        if self.dyk:
+            self.add_item(ui.TextDisplay(self.dyk))
 
-        raise FeatureNotImplementedError(platform=self.account.platform, game=self.account.game)
+    @staticmethod
+    async def _get_notes(account: HoyoAccount) -> AnyNotes:
+        if account.game is Game.GENSHIN:
+            return await account.client.get_genshin_notes()
+        if account.game is Game.ZZZ:
+            return await account.client.get_zzz_notes()
+        if account.game is Game.STARRAIL:
+            return await account.client.get_starrail_notes()
+        if account.game is Game.HONKAI:
+            return await account.client.get_honkai_notes()
+
+        raise FeatureNotImplementedError(platform=account.platform, game=account.game)
+
+    async def _get_overview_lines(self, accounts: list[HoyoAccount]) -> list[str]:
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_FETCHES)
+
+        async def fetch(account: HoyoAccount) -> AnyNotes:
+            async with semaphore:
+                return await self._get_notes(account)
+
+        results = await asyncio.gather(*map(fetch, accounts), return_exceptions=True)
+
+        lines: list[str] = []
+        for account, result in zip(accounts, results, strict=True):
+            header = f"{GAME_ICON_EMOJIS[account.game_icon]} **{escape_markdown(account.blurred_display)}**"
+            if isinstance(result, Exception):
+                embed, recognized = get_error_embed(result, self.locale)
+                if not recognized:
+                    capture_exception(result)
+                lines.append(f"{header}\n{CLOSE} {embed.title}")
+            elif isinstance(result, BaseException):
+                raise result
+            else:
+                lines.append(f"{header}\n{self._get_stamina_line(result)}")
+        return lines
+
+    def _get_stamina_line(self, notes: AnyNotes) -> str:
+        if isinstance(notes, genshin.models.Notes):
+            emoji, cur, max_ = RESIN, notes.current_resin, notes.max_resin
+            seconds = notes.remaining_resin_recovery_time.total_seconds()
+        elif isinstance(notes, genshin.models.StarRailNote):
+            emoji, cur, max_ = TRAILBLAZE_POWER, notes.current_stamina, notes.max_stamina
+            seconds = notes.stamina_recover_time.total_seconds()
+        elif isinstance(notes, genshin.models.ZZZNotes):
+            emoji, cur, max_ = (
+                BATTERY_CHARGE_EMOJI,
+                notes.battery_charge.current,
+                notes.battery_charge.max,
+            )
+            seconds = notes.battery_charge.seconds_till_full
+        else:
+            emoji, cur, max_ = "", notes.current_stamina, notes.max_stamina
+            seconds = notes.stamina_recover_time
+
+        if seconds > 0:
+            full_at = datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=seconds)
+            status = LocaleStr(key="notes_overview.full_time", time=format_dt(full_at, "R"))
+        else:
+            status = LocaleStr(key="note_already_full", mi18n_game=Game.STARRAIL)
+
+        prefix = f"{emoji} " if emoji else ""
+        return f"{prefix}**{cur}/{max_}** · {status.translate(self.locale)}"
 
     async def _draw_notes_card(self, notes: NotesWithCard, draw_input: DrawInput) -> io.BytesIO:
         if isinstance(notes, genshin.models.Notes):
@@ -210,8 +283,25 @@ class NotesView(ui.LayoutView):
 
     async def start(self, i: Interaction, *, acc_select: AccountSwitcher | None = None) -> None:
         self._add_items()
+        if acc_select is None:
+            self.dyk = await get_dyk(i)
 
-        notes = await self._get_notes()
+        if self.overview and self.accounts is not None:
+            self._render_overview(await self._get_overview_lines(self.accounts))
+            files: list[File] = []
+        else:
+            files = await self._render_account(i)
+
+        if acc_select is not None:
+            acc_select._update_view(self)
+            await acc_select.unset_loading_state(i, attachments=files)
+        else:
+            await i.followup.send(view=self, files=files)
+
+        self.message = await i.original_response()
+
+    async def _render_account(self, i: Interaction) -> list[File]:
+        notes = await self._get_notes(self.account)
         embed = self._get_notes_embed(notes)
 
         if isinstance(notes, NotesWithCard):
@@ -229,17 +319,8 @@ class NotesView(ui.LayoutView):
         else:
             file_ = None
 
-        files = [file_] if file_ is not None else []
-        if acc_select is not None:
-            self.render(embed)
-            acc_select._update_view(self)
-            await acc_select.unset_loading_state(i, attachments=files)
-        else:
-            self.dyk = await get_dyk(i)
-            self.render(embed)
-            await i.followup.send(view=self, files=files)
-
-        self.message = await i.original_response()
+        self.render(embed)
+        return [file_] if file_ is not None else []
 
     @staticmethod
     def get_open_game_buttons(account: HoyoAccount, *, row: int = 0) -> list[Button]:
@@ -261,24 +342,39 @@ class NotesView(ui.LayoutView):
 
 
 class AccountSwitcher(Select[NotesView]):
-    def __init__(self, accounts: list[HoyoAccount], account: HoyoAccount) -> None:
-        super().__init__(
-            placeholder=LocaleStr(key="account_select_placeholder"),
-            options=[
+    def __init__(
+        self, accounts: list[HoyoAccount], account: HoyoAccount, *, overview: bool
+    ) -> None:
+        options = [
+            SelectOption(
+                label=acc.blurred_display,
+                value=f"{acc.uid}_{acc.game}",
+                emoji=get_game_emoji(acc.game),
+                default=not overview and acc == account,
+            )
+            for acc in accounts
+        ]
+        if len(accounts) > 1:
+            options.insert(
+                0,
                 SelectOption(
-                    label=acc.blurred_display,
-                    value=f"{acc.uid}_{acc.game}",
-                    emoji=get_game_emoji(acc.game),
-                    default=acc == account,
-                )
-                for acc in accounts
-            ],
-        )
+                    label=LocaleStr(key="notes_overview_option_label"),
+                    value=OVERVIEW_VALUE,
+                    default=overview,
+                ),
+            )
+        super().__init__(placeholder=LocaleStr(key="account_select_placeholder"), options=options)
 
     async def callback(self, i: Interaction) -> None:
         assert self.view.accounts is not None
 
         await self.set_loading_state(i)
+        view = self.view
+        if self.values[0] == OVERVIEW_VALUE:
+            view.overview = True
+            await view.start(i, acc_select=self)
+            return
+
         uid, game = self.values[0].split("_")
         account = next(
             (acc for acc in self.view.accounts if acc.uid == int(uid) and acc.game == game), None
@@ -287,7 +383,7 @@ class AccountSwitcher(Select[NotesView]):
             msg = f"Account not found for {uid} in {game}"
             raise ValueError(msg)
 
-        view = self.view
+        view.overview = False
         view.account = account
         await view.start(i, acc_select=self)
 

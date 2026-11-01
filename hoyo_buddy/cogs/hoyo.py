@@ -85,10 +85,11 @@ class Hoyo(commands.Cog):
         await i.response.defer(ephemeral=ephemeral(i))
 
         user = user or i.user
+        accounts = await self.bot.get_accounts(user.id, COMMANDS["notes"].games)
+        overview = account is None and len(accounts) > 1
         account = account or await self.bot.get_account(
             user.id, COMMANDS["notes"].games, COMMANDS["notes"].platform
         )
-        accounts = await self.bot.get_accounts(user.id, COMMANDS["notes"].games)
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(
@@ -97,6 +98,7 @@ class Hoyo(commands.Cog):
             dark_mode=settings.dark_mode,
             author=i.user,
             locale=await get_locale(i),
+            overview=overview,
         )
         await view.start(i)
 

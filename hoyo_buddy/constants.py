@@ -1334,6 +1334,7 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "mimo_shop": 0.5,
     "mimo_comment": 2.0,
     "mimo_lottery": 0.5,
+    "mimo_snipe": 0.3,
     "search_autofill": 0.1,
     "checkin": 2.5,
     "accompany": 2.5,

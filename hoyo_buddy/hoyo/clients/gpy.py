@@ -45,10 +45,11 @@ from hoyo_buddy.enums import Game, GenshinElement, Locale
 from hoyo_buddy.exceptions import HoyoBuddyError
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
-from hoyo_buddy.utils import sleep
+from hoyo_buddy.utils import capture_exception, get_now, sleep
 from hoyo_buddy.utils.game import get_ascension_from_level, get_max_level_from_ascension
 
 if TYPE_CHECKING:
+    import datetime
     from collections.abc import Mapping, Sequence
 
     import yatta
@@ -919,5 +920,51 @@ class GenshinClient(ProxyGenshinClient):
 
                 bought.append((item, code))
                 points -= item.cost
+
+        return await self._localize_mimo_items(bought, game_id=game_id, version_id=version_id)
+
+    async def snipe_mimo_valuables(
+        self,
+        items: Sequence[genshin.models.MimoShopItem],
+        *,
+        game_id: int,
+        version_id: int,
+        points: int,
+        deadline: datetime.datetime,
+    ) -> list[tuple[genshin.models.MimoShopItem, str]]:
+        """Keep trying to buy the items until they're all bought or the deadline passes.
+
+        Items are "out of stock" until the restock happens, so that error is retried.
+        """
+        bought: list[tuple[genshin.models.MimoShopItem, str]] = []
+        pending = list(items)
+
+        while pending and get_now() < deadline:
+            for item in pending.copy():
+                if item.cost > points:
+                    pending.remove(item)
+                    continue
+
+                try:
+                    code = await self.buy_mimo_shop_item(
+                        item.id, game_id=game_id, version_id=version_id
+                    )
+                except genshin.GenshinException as e:
+                    if e.retcode == -502006:  # Out of stock
+                        continue
+                    if e.retcode in {-502004, -502005}:  # Limit reached, insufficient points
+                        pending.remove(item)
+                        continue
+                    if not bought:
+                        raise
+                    capture_exception(e)
+                    pending.clear()
+                    break
+
+                bought.append((item, code))
+                points -= item.cost
+                pending.remove(item)
+
+            await sleep("mimo_snipe")
 
         return await self._localize_mimo_items(bought, game_id=game_id, version_id=version_id)

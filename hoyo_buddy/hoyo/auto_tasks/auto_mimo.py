@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 from collections import defaultdict
 from typing import TYPE_CHECKING, ClassVar, Literal
 
@@ -36,6 +37,14 @@ if TYPE_CHECKING:
     from hoyo_buddy.embeds import ErrorEmbed
     from hoyo_buddy.enums import Game
     from hoyo_buddy.types import AutoTaskType
+
+
+def is_mimo_item_obtainable(item: genshin.models.MimoShopItem) -> bool:
+    """Whether the item can be bought now or after its next restock."""
+    return item.status in {
+        genshin.models.MimoShopItemStatus.EXCHANGEABLE,
+        genshin.models.MimoShopItemStatus.NOT_EXCHANGEABLE,
+    } or item.next_refresh_time > datetime.timedelta(0)
 
 
 class AutoMimoMixin(AutoTaskMixin):
@@ -176,6 +185,41 @@ class AutoMimoMixin(AutoTaskMixin):
         else:
             return embed
 
+    @staticmethod
+    async def _get_buy_embed(
+        account: HoyoAccount, bought: list[tuple[genshin.models.MimoShopItem, str]], locale: Locale
+    ) -> DefaultEmbed:
+        client = account.client
+        mimo_point_emoji = MIMO_POINT_EMOJIS[account.game]
+        bought_strs: list[str] = []
+        for item, code in bought:
+            bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
+            success = False
+            if account.can_use_cookie_token:
+                _, success = await client.redeem_code(code, locale=locale)
+
+            if not success:
+                bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
+            bought_strs.append(bought_str)
+
+            await sleep("redeem")
+
+        embed = DefaultEmbed(
+            locale,
+            title=LocaleStr(
+                custom_str="{mimo_title} {label}",
+                mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
+                label=LocaleStr(key="mimo_auto_buy_button_label"),
+            ),
+            description=LocaleStr(
+                key="mimo_auto_buy_embed_desc",
+                item=len(bought),
+                points=sum(item.cost for item, _ in bought),
+            ),
+        )
+        embed.add_description(f"{create_bullet_list(bought_strs)}")
+        return embed
+
     @classmethod
     async def _buy_mimo_valuables(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or Locale.american_english
@@ -196,34 +240,7 @@ class AutoMimoMixin(AutoTaskMixin):
             if not bought:
                 return None
 
-            mimo_point_emoji = MIMO_POINT_EMOJIS[account.game]
-            bought_strs: list[str] = []
-            for item, code in bought:
-                bought_str = f"{item.name} - {item.cost} {mimo_point_emoji}"
-                success = False
-                if account.can_use_cookie_token:
-                    _, success = await client.redeem_code(code, locale=locale)
-
-                if not success:
-                    bought_str += f" ({convert_code_to_redeem_url(code, game=account.game)})"
-                bought_strs.append(bought_str)
-
-                await sleep("redeem")
-
-            embed = DefaultEmbed(
-                locale,
-                title=LocaleStr(
-                    custom_str="{mimo_title} {label}",
-                    mimo_title=LocaleStr(key="point_detail_tag_mimo", mi18n_game="mimo"),
-                    label=LocaleStr(key="mimo_auto_buy_button_label"),
-                ),
-                description=LocaleStr(
-                    key="mimo_auto_buy_embed_desc",
-                    item=len(bought),
-                    points=sum(item.cost for item in [b[0] for b in bought]),
-                ),
-            )
-            embed.add_description(f"{create_bullet_list(bought_strs)}")
+            embed = await cls._get_buy_embed(account, bought, locale)
         except Exception as e:
             embed, recognized = get_error_embed(e, locale)
             if not recognized:

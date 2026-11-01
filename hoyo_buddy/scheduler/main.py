@@ -14,6 +14,7 @@ from hoyo_buddy.hoyo.auto_tasks.auto_gacha_import import AutoGachaImport
 from hoyo_buddy.hoyo.auto_tasks.auto_mimo import AutoMimoBuy, AutoMimoDraw, AutoMimoTask
 from hoyo_buddy.hoyo.auto_tasks.auto_redeem import AutoRedeem
 from hoyo_buddy.hoyo.auto_tasks.daily_checkin import DailyCheckin
+from hoyo_buddy.hoyo.auto_tasks.mimo_snipe import MimoRestockSnipe
 from hoyo_buddy.hoyo.auto_tasks.update_standard_items import UpdateStandardItems
 from hoyo_buddy.utils import get_now
 
@@ -71,6 +72,14 @@ class Scheduler:
             "interval",
             minutes=INTERVAL_MIN,
             id="auto_tasks",
+            next_run_time=get_now(datetime.UTC),
+        )
+        self.scheduler.add_job(
+            MimoRestockSnipe.schedule,
+            "interval",
+            hours=1,
+            id="mimo_restock_snipe",
+            args=[self.scheduler],
             next_run_time=get_now(datetime.UTC),
         )
         self.scheduler.add_job(

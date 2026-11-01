@@ -93,6 +93,7 @@ type SleepTime = Literal[
     "mimo_comment",
     "mimo_lottery",
     "mimo_shop",
+    "mimo_snipe",
     "search_autofill",
     "notes_check",
     "gacha_import",

@@ -30,6 +30,7 @@ __all__ = (
     "SpineData",
     "TopPadding",
     "ZZZDrawData",
+    "ZZZTeamFocus",
     "ZZZTemp1CardData",
     "ZZZTemp2CardData",
 )
@@ -137,6 +138,17 @@ class ZZZTemp1CardData(BaseModel):
 class ZZZTemp2CardData(ZZZTemp1CardData):
     color: str | None = None
     full_name: bool = False
+
+
+class ZZZTeamFocus(BaseModel):
+    """Where an agent sits horizontally in the team card's image, see scripts/zzz_team_focus.py.
+    In percent like CSS's object-position, 0 keeps the art's left edge.
+    """
+
+    image: int = 50
+    """Focus of the agent's static team art."""
+    animation: int = 50
+    """Focus of the agent's pre-rendered animation, see spine.yaml."""
 
 
 class SpineData(BaseModel):

@@ -22,7 +22,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.draw.animation import frame_animation
-from hoyo_buddy.draw.card_data import ASSET_PATH
+from hoyo_buddy.draw.card_data import ASSET_PATH, CARD_DATA
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
@@ -90,23 +90,13 @@ TEAM_ANIMATION_MASKS = {
     Game.STARRAIL: "hsr-team-card/img_mask.png",
     Game.ZZZ: "zzz-team-card/chara_img.png",
 }
-TEAM_SPINE_FRAMING: dict[Game, tuple[int, int, int]] = {
+TEAM_SPINE_FOCUS: dict[Game, tuple[int, int]] = {
     # The build cards' art areas are taller than the masks, with the head near the top
-    Game.GENSHIN: (100, 50, 0),
-    Game.STARRAIL: (100, 50, 0),
-    # The build card's art area is the whole card, so the mask shows the middle of the agent
-    Game.ZZZ: (100, 50, 50),
+    Game.GENSHIN: (50, 0),
+    Game.STARRAIL: (50, 0),
 }
-"""Zoom and focus of pre-rendered animations, cropped to build cards' art areas, in team cards'
-image masks, see frame_animation."""
-TEAM_SPINE_FRAMING_OVERRIDES: dict[Game, dict[str, tuple[int, int, int]]] = {
-    Game.ZZZ: {
-        "1201": (100, 85, 50),  # Harumasa
-        "1511": (100, 90, 50),  # Nangong Yu
-        "1551": (100, 25, 50),  # Pyrois
-    }
-}
-"""TEAM_SPINE_FRAMING for animations off-center in the build card's art area, by character ID."""
+"""Focus of pre-rendered animations, cropped to build cards' art areas, in team cards' image
+masks, see frame_animation. ZZZ's are per agent, see CardDataManager.zzz_team_focus."""
 
 
 class Animation(NamedTuple):
@@ -151,7 +141,7 @@ async def resolve_team_animations[K: str | int](
     draw_input: DrawInput, animations: Mapping[K, SpineData | CustomAnimation], *, game: Game
 ) -> dict[K, tuple[Path, tuple[int, int]]]:
     """Frame animations in a team card's image masks at ANIMATED_TEAM_CARD_SCALE, pre-rendered
-    ones by TEAM_SPINE_FRAMING.
+    ones by TEAM_SPINE_FOCUS.
 
     Returns:
         The framed animations' paths and uncropped top-lefts in the mask, by character ID.
@@ -160,10 +150,14 @@ async def resolve_team_animations[K: str | int](
     for character_id, animation in animations.items():
         custom = animation
         if not isinstance(animation, CustomAnimation):
-            zoom, focus_x, focus_y = TEAM_SPINE_FRAMING_OVERRIDES.get(game, {}).get(
-                str(character_id), TEAM_SPINE_FRAMING[game]
+            if game is Game.ZZZ:
+                # The art area is the whole card, so the mask shows a slice of the agent
+                focus = (CARD_DATA.zzz_team_focus(int(character_id)).animation, 50)
+            else:
+                focus = TEAM_SPINE_FOCUS[game]
+            custom = CustomAnimation(
+                url=animation.url, zoom=100, focus_x=focus[0], focus_y=focus[1]
             )
-            custom = CustomAnimation(url=animation.url, zoom=zoom, focus_x=focus_x, focus_y=focus_y)
         framed.append(
             resolve_animation(
                 draw_input,
@@ -815,6 +809,11 @@ async def draw_zzz_build_card(
             agents=[agent],
             agent_colors={agent.id: custom_color or card_data.color},
             agent_images={agent.id: image},
+            agent_image_focuses={
+                agent.id: 50
+                if custom_image
+                else CARD_DATA.zzz_team_focus(agent.id, agent.outfit_id).image
+            },
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
             show_substat_rolls={agent.id: show_substat_rolls},
@@ -909,6 +908,7 @@ async def draw_zzz_team_card(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     agent_colors: dict[int, str],
     agent_custom_images: dict[int, str],
+    agent_image_focuses: dict[int, int],
     show_substat_rolls: dict[int, bool],
     agent_special_stat_map: dict[str, list[int]],
     agent_hl_substat_map: dict[int, list[int]],
@@ -928,6 +928,7 @@ async def draw_zzz_team_card(
         agents=agents,
         agent_colors=agent_colors,
         agent_images=agent_custom_images,
+        agent_image_focuses=agent_image_focuses,
         name_datas=draw_data.name_data,
         disc_icons=draw_data.disc_icons,
         show_substat_rolls=show_substat_rolls,

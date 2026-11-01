@@ -137,6 +137,7 @@ def _build_card(
             agents=[agent],
             agent_colors={agent.id: color or card_data.color},
             agent_images={agent.id: image_url},
+            agent_image_focuses={agent.id: 50},
             name_datas={agent.id: name_data} if name_data is not None else {},
             disc_icons=disc_icons,
             show_substat_rolls={agent.id: True},

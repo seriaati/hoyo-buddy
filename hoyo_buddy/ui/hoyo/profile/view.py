@@ -859,6 +859,13 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 )
                 for a in agents
             }
+            # Only the default art has a focus, custom images are centered
+            image_focuses = {
+                a.id: 50
+                if agent_card_settings[a.id].current_team_image
+                else CARD_DATA.zzz_team_focus(a.id, a.outfit_id).image
+                for a in agents
+            }
             agent_animations: dict[int, SpineData | CustomAnimation] = {}
             if animated:
                 for a in agents:
@@ -873,6 +880,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 agents,
                 agent_colors,
                 {int(k): v for k, v in images.items()},
+                image_focuses,
                 show_substat_rolls=show_substat_rolls,
                 agent_special_stat_map=await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON),
                 hl_special_stats=hl_special_stats,

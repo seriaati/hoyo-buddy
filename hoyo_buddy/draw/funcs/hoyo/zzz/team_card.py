@@ -42,6 +42,7 @@ class ZZZTeamCard:
         agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
         agent_colors: dict[int, str],
         agent_images: dict[int, str],
+        agent_image_focuses: dict[int, int],
         name_datas: dict[int, AgentNameData],
         disc_icons: dict[int, str],
         show_substat_rolls: dict[int, bool],
@@ -55,6 +56,7 @@ class ZZZTeamCard:
         self._agents = agents
         self._agent_colors = agent_colors
         self._agent_images = agent_images
+        self._agent_image_focuses = agent_image_focuses
         self._name_datas = name_datas
         self._disc_icons = disc_icons
         self._show_substat_rolls = show_substat_rolls
@@ -88,7 +90,9 @@ class ZZZTeamCard:
         card.alpha_composite(left_blob, (13, -30))
         return card
 
-    def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
+    def _draw_card(
+        self, *, image_url: str, focus_x: int, blob_color: tuple[int, int, int]
+    ) -> Image.Image:
         card = self._draw_card_background(blob_color)
         drawer = Drawer(
             ImageDraw.Draw(card), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
@@ -96,7 +100,7 @@ class ZZZTeamCard:
 
         chara_img_bg = drawer.open_asset("chara_img.png")
         chara_img = drawer.open_static(image_url)
-        chara_img = drawer.resize_crop(chara_img, chara_img_bg.size)
+        chara_img = drawer.resize_crop(chara_img, chara_img_bg.size, focus_x=focus_x)
         chara_img = drawer.mask_image_with_image(chara_img, chara_img_bg)
         chara_img_bg.alpha_composite(chara_img)
         card.alpha_composite(chara_img_bg)
@@ -105,6 +109,7 @@ class ZZZTeamCard:
     def _draw_agent_card(self, agent: ZZZFullAgent | ZZZEnkaCharacter) -> Image.Image:
         im = self._draw_card(
             image_url=self._agent_images[agent.id],
+            focus_x=self._agent_image_focuses.get(agent.id, 50),
             blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id]),
         )
         self._draw_agent_foreground(im, agent)

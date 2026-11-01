@@ -9,6 +9,7 @@ from hoyo_buddy.models.draw import (
     GICardData,
     HSRCardData,
     SpineData,
+    ZZZTeamFocus,
     ZZZTemp1CardData,
     ZZZTemp2CardData,
 )
@@ -24,6 +25,7 @@ HSR_SPINE_DATA = {
 ZZZ_DATA = ASSET_PATH / "zzz-build-card/agent_data.yaml"
 ZZZ_DATA2 = ASSET_PATH / "zzz-build-card/agent_data_temp2.yaml"
 ZZZ_SPINE_DATA = ASSET_PATH / "zzz-build-card/spine.yaml"
+ZZZ_TEAM_FOCUS = ASSET_PATH / "zzz-team-card/focus.yaml"
 
 
 class CardDataManager:
@@ -35,6 +37,7 @@ class CardDataManager:
         self._zzz: dict[str, ZZZTemp1CardData] | None = None
         self._zzz2: dict[str, ZZZTemp2CardData] | None = None
         self._zzz_spine: dict[str, SpineData] | None = None
+        self._zzz_team_focus: dict[str, ZZZTeamFocus] | None = None
 
     def _parse_model[T: BaseModel](self, data: dict[str, Any], model: type[T]) -> dict[str, T]:
         return {k: model.model_validate(v) for k, v in data.items()}
@@ -50,6 +53,10 @@ class CardDataManager:
         self._zzz = self._parse_model(await read_yaml(ZZZ_DATA), ZZZTemp1CardData)
         self._zzz2 = self._parse_model(await read_yaml(ZZZ_DATA2), ZZZTemp2CardData)
         self._zzz_spine = await self._load_spine(ZZZ_SPINE_DATA)
+        self._zzz_team_focus = self._parse_model(
+            await read_yaml(ZZZ_TEAM_FOCUS) if await anyio.Path(ZZZ_TEAM_FOCUS).exists() else {},
+            ZZZTeamFocus,
+        )
         self._hsr_spine = {
             template: await self._load_spine(path) for template, path in HSR_SPINE_DATA.items()
         }
@@ -74,6 +81,14 @@ class CardDataManager:
             msg = "ZZZ spine data is not loaded"
             raise ValueError(msg)
         return self._zzz_spine.copy()
+
+    def zzz_team_focus(self, agent_id: int, outfit_id: int | None = None) -> ZZZTeamFocus:
+        """Get where the agent sits in the team card's image, centered if it isn't set."""
+        if self._zzz_team_focus is None:
+            msg = "ZZZ team focus data is not loaded"
+            raise ValueError(msg)
+        key = str(agent_id) if outfit_id is None else f"{agent_id}_{outfit_id}"
+        return self._zzz_team_focus.get(key, ZZZTeamFocus())
 
     @property
     def gi(self) -> dict[str, GICardData]:

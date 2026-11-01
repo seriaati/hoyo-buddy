@@ -30,6 +30,7 @@ __all__ = (
     "SpineData",
     "TopPadding",
     "ZZZDrawData",
+    "ZZZTeamFocus",
     "ZZZTemp1CardData",
     "ZZZTemp2CardData",
 )
@@ -139,6 +140,17 @@ class ZZZTemp2CardData(ZZZTemp1CardData):
     full_name: bool = False
 
 
+class ZZZTeamFocus(BaseModel):
+    """Where an agent sits horizontally in the team card's image, see scripts/zzz_team_focus.py.
+    In percent like CSS's object-position, 0 keeps the art's left edge.
+    """
+
+    image: int = 50
+    """Focus of the agent's static team art."""
+    animation: int = 50
+    """Focus of the agent's pre-rendered animation, see spine.yaml."""
+
+
 class SpineData(BaseModel):
     """A pre-rendered animated character image, see scripts/spine_common.py."""
 
@@ -154,7 +166,10 @@ class SpineData(BaseModel):
 
 
 class CustomAnimation(BaseModel):
-    """A sponsor's animated custom image, see hoyo_buddy/draw/animation.py."""
+    """An animation framed in a card's image mask by zoom and focus, see
+    hoyo_buddy/draw/animation.py. A sponsor's animated custom image, or a pre-rendered animation on
+    a team card.
+    """
 
     url: str
     zoom: int

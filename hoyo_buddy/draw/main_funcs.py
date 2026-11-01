@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import functools
 from typing import TYPE_CHECKING, Literal, NamedTuple, cast
@@ -12,6 +13,8 @@ from discord import File
 from hoyo_buddy.constants import (
     ANIMATED_CARD_METHOD,
     ANIMATED_CARD_QUALITY,
+    ANIMATED_CARD_SCALE,
+    ANIMATED_TEAM_CARD_SCALE,
     HSR_DEFAULT_ART_URL,
     TRAVELER_IDS,
     ZZZ_TEAM_IMAGE_OVERRIDES,
@@ -19,7 +22,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.draw.animation import frame_animation
-from hoyo_buddy.draw.card_data import ASSET_PATH
+from hoyo_buddy.draw.card_data import ASSET_PATH, CARD_DATA
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
@@ -35,7 +38,7 @@ from hoyo_buddy.utils import get_static_img_path
 from .static import ZZZ_V2_GAME_RECORD, download_images
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from io import BytesIO
     from pathlib import Path
 
@@ -82,6 +85,19 @@ ZZZ_ANIMATION_MASKS = {
 }
 """ZZZ build card templates' image masks, by the templates that support animations."""
 
+TEAM_ANIMATION_MASKS = {
+    Game.GENSHIN: "gi-team-card/img_mask.png",
+    Game.STARRAIL: "hsr-team-card/img_mask.png",
+    Game.ZZZ: "zzz-team-card/chara_img.png",
+}
+TEAM_SPINE_FOCUS: dict[Game, tuple[int, int]] = {
+    # The build cards' art areas are taller than the masks, with the head near the top
+    Game.GENSHIN: (50, 0),
+    Game.STARRAIL: (50, 0),
+}
+"""Focus of pre-rendered animations, cropped to build cards' art areas, in team cards' image
+masks, see frame_animation. ZZZ's are per agent, see CardDataManager.zzz_team_focus."""
+
 
 class Animation(NamedTuple):
     path: Path
@@ -92,7 +108,11 @@ class Animation(NamedTuple):
 
 
 async def resolve_animation(
-    draw_input: DrawInput, animation: SpineData | CustomAnimation, *, mask: str
+    draw_input: DrawInput,
+    animation: SpineData | CustomAnimation,
+    *,
+    mask: str,
+    card_scale: float = ANIMATED_CARD_SCALE,
 ) -> Animation:
     """Get a pre-rendered animation, or frame a custom one in the card's image mask.
 
@@ -100,6 +120,7 @@ async def resolve_animation(
         draw_input: The draw input.
         animation: The downloaded animation.
         mask: The card's image mask, relative to the assets folder.
+        card_scale: Scale of the animated card relative to the static card.
     """
     path = get_static_img_path(animation.url)
     if isinstance(animation, CustomAnimation):
@@ -109,10 +130,48 @@ async def resolve_animation(
             ASSET_PATH / mask,
             zoom=animation.zoom,
             focus=(animation.focus_x, animation.focus_y),
+            card_scale=card_scale,
         )
         path, offset = await draw_input.loop.run_in_executor(draw_input.executor, frame)
         return Animation(path, offset, ANIMATED_CARD_QUALITY, ANIMATED_CARD_METHOD)
     return Animation(path, (animation.x, animation.y), animation.quality, animation.method)
+
+
+async def resolve_team_animations[K: str | int](
+    draw_input: DrawInput, animations: Mapping[K, SpineData | CustomAnimation], *, game: Game
+) -> dict[K, tuple[Path, tuple[int, int]]]:
+    """Frame animations in a team card's image masks at ANIMATED_TEAM_CARD_SCALE, pre-rendered
+    ones by TEAM_SPINE_FOCUS.
+
+    Returns:
+        The framed animations' paths and uncropped top-lefts in the mask, by character ID.
+    """
+    framed = []
+    for character_id, animation in animations.items():
+        custom = animation
+        if not isinstance(animation, CustomAnimation):
+            if game is Game.ZZZ:
+                # The art area is the whole card, so the mask shows a slice of the agent
+                focus = (CARD_DATA.zzz_team_focus(int(character_id)).animation, 50)
+            else:
+                focus = TEAM_SPINE_FOCUS[game]
+            custom = CustomAnimation(
+                url=animation.url, zoom=100, focus_x=focus[0], focus_y=focus[1]
+            )
+        framed.append(
+            resolve_animation(
+                draw_input,
+                custom,
+                mask=TEAM_ANIMATION_MASKS[game],
+                card_scale=ANIMATED_TEAM_CARD_SCALE,
+            )
+        )
+
+    results = await asyncio.gather(*framed)
+    return {
+        character_id: (result.path, result.offset)
+        for character_id, result in zip(animations, results, strict=True)
+    }
 
 
 async def draw_item_list_card(
@@ -750,6 +809,11 @@ async def draw_zzz_build_card(
             agents=[agent],
             agent_colors={agent.id: custom_color or card_data.color},
             agent_images={agent.id: image},
+            agent_image_focuses={
+                agent.id: 50
+                if custom_image
+                else CARD_DATA.zzz_team_focus(agent.id, agent.outfit_id).image
+            },
             name_datas=draw_data.name_data,
             disc_icons=draw_data.disc_icons,
             show_substat_rolls={agent.id: show_substat_rolls},
@@ -844,16 +908,19 @@ async def draw_zzz_team_card(
     agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
     agent_colors: dict[int, str],
     agent_custom_images: dict[int, str],
+    agent_image_focuses: dict[int, int],
     show_substat_rolls: dict[int, bool],
     agent_special_stat_map: dict[str, list[int]],
     agent_hl_substat_map: dict[int, list[int]],
     hl_special_stats: dict[int, bool],
+    animations: Mapping[int, SpineData | CustomAnimation],
 ) -> BytesIO:
     draw_data = await fetch_zzz_draw_data(agents, template=3)
 
     urls = list(agent_custom_images.values())
     urls.extend(agent.w_engine.icon for agent in agents if agent.w_engine is not None)
     urls.extend(draw_data.disc_icons.values())
+    urls.extend(animation.url for animation in animations.values())
     await download_images(urls, draw_input.session)
 
     card = funcs.zzz.ZZZTeamCard(
@@ -861,6 +928,7 @@ async def draw_zzz_team_card(
         agents=agents,
         agent_colors=agent_colors,
         agent_images=agent_custom_images,
+        agent_image_focuses=agent_image_focuses,
         name_datas=draw_data.name_data,
         disc_icons=draw_data.disc_icons,
         show_substat_rolls=show_substat_rolls,
@@ -869,6 +937,11 @@ async def draw_zzz_team_card(
         agent_hl_substat_map=agent_hl_substat_map,
         uid=None,
     )
+    if animations:
+        framed = await resolve_team_animations(draw_input, animations, game=Game.ZZZ)
+        return await draw_input.loop.run_in_executor(
+            draw_input.executor, card.draw_animated_team, framed
+        )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
@@ -878,6 +951,7 @@ async def draw_hsr_team_card(
     character_images: dict[str, str],
     character_colors: dict[str, str],
     show_substat_rolls: dict[str, bool],
+    animations: Mapping[str, SpineData | CustomAnimation],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -886,6 +960,7 @@ async def draw_hsr_team_card(
 
         urls.extend(trace.icon for trace in character.traces)
         urls.extend(relic.icon for relic in character.relics)
+    urls.extend(animation.url for animation in animations.values())
 
     await download_images(urls, draw_input.session)
 
@@ -896,6 +971,11 @@ async def draw_hsr_team_card(
         character_colors=character_colors,
         show_substat_rolls=show_substat_rolls,
     )
+    if animations:
+        framed = await resolve_team_animations(draw_input, animations, game=Game.STARRAIL)
+        return await draw_input.loop.run_in_executor(
+            draw_input.executor, card.draw_animated, framed
+        )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 
@@ -904,6 +984,7 @@ async def draw_gi_team_card(
     characters: Sequence[enka.gi.Character | HoyolabGICharacter],
     character_images: dict[str, str],
     show_substat_rolls: dict[str, bool],
+    animations: Mapping[str, SpineData | CustomAnimation],
 ) -> BytesIO:
     urls: list[str] = list(character_images.values())
     for character in characters:
@@ -911,6 +992,7 @@ async def draw_gi_team_card(
         urls.extend(const.icon for const in character.constellations)
         urls.extend(artifact.icon for artifact in character.artifacts)
         urls.append(character.weapon.icon)
+    urls.extend(animation.url for animation in animations.values())
 
     await download_images(urls, draw_input.session)
 
@@ -921,6 +1003,11 @@ async def draw_gi_team_card(
         character_images=character_images,
         show_substat_rolls=show_substat_rolls,
     )
+    if animations:
+        framed = await resolve_team_animations(draw_input, animations, game=Game.GENSHIN)
+        return await draw_input.loop.run_in_executor(
+            draw_input.executor, card.draw_animated, framed
+        )
     return await draw_input.loop.run_in_executor(draw_input.executor, card.draw)
 
 

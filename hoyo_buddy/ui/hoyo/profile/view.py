@@ -91,6 +91,7 @@ if TYPE_CHECKING:
     from genshin.models import PartialGenshinUserStats, RecordCard, StarRailUserStats, ZZZFullAgent
 
     from hoyo_buddy.db import CardSettings, HoyoAccount
+    from hoyo_buddy.models.draw import SpineData
     from hoyo_buddy.types import Character, Interaction
     from hoyo_buddy.ui import Button, Select
 
@@ -814,6 +815,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             loop=i.client.loop,
         )
         characters = [self.characters[char_id] for char_id in self.character_ids]
+        animated = settings.team_card_animated_image and await is_supporter(i.user.id)
 
         if self.game is Game.ZZZ:
             agents: list[ZZZFullAgent | ZZZEnkaCharacter] = []
@@ -857,29 +859,59 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 )
                 for a in agents
             }
+            # Only the default art has a focus, custom images are centered
+            image_focuses = {
+                a.id: 50
+                if agent_card_settings[a.id].current_team_image
+                else CARD_DATA.zzz_team_focus(a.id, a.outfit_id).image
+                for a in agents
+            }
+            agent_animations: dict[int, SpineData | CustomAnimation] = {}
+            if animated:
+                for a in agents:
+                    animation = await self._get_team_animation(
+                        a, agent_card_settings[a.id], user_id=i.user.id, skin_art=None
+                    )
+                    if animation is not None:
+                        agent_animations[a.id] = animation
 
             return await draw_zzz_team_card(
                 draw_input,
                 agents,
                 agent_colors,
                 {int(k): v for k, v in images.items()},
+                image_focuses,
                 show_substat_rolls=show_substat_rolls,
                 agent_special_stat_map=await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON),
                 hl_special_stats=hl_special_stats,
                 agent_hl_substat_map=hl_substats,
+                animations=agent_animations,
             )
 
         # GI and HSR
         images: dict[str, str] = {}
         show_rolls: dict[str, bool] = {}
+        animations: dict[str, SpineData | CustomAnimation] = {}
         for char in characters:
             char_settings = await get_card_settings(i.user.id, str(char.id), game=self.game)
             show_rolls[str(char.id)] = char_settings.show_substat_rolls
-            images[str(char.id)] = (
-                char_settings.current_team_image
-                or await self._get_skin_art(char, char_settings)
-                or get_default_art(char, is_team=True)
+            skin_art = (
+                None
+                if char_settings.current_team_image
+                else await self._get_skin_art(char, char_settings)
             )
+            images[str(char.id)] = (
+                char_settings.current_team_image or skin_art or get_default_art(char, is_team=True)
+            )
+            animation = (
+                await self._get_team_animation(
+                    char, char_settings, user_id=i.user.id, skin_art=skin_art
+                )
+                if animated
+                else None
+            )
+            if animation is not None:
+                animations[str(char.id)] = animation
 
         if self.game is Game.STARRAIL:
             character_colors: dict[str, str] = {}
@@ -917,6 +949,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 images,
                 character_colors,
                 show_rolls,
+                animations=animations,
             )
 
         if self.game is Game.GENSHIN:
@@ -926,6 +959,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 characters,  # pyright: ignore [reportArgumentType]
                 images,
                 show_rolls,
+                animations=animations,
             )
 
         raise FeatureNotImplementedError(game=self.game)
@@ -1034,6 +1068,53 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         return CustomAnimation(
             url=image.url, zoom=image.zoom, focus_x=image.focus_x, focus_y=image.focus_y
         )
+
+    async def _get_team_animation(
+        self,
+        character: Character | ZZZFullAgent,
+        card_settings: CardSettings,
+        *,
+        user_id: int,
+        skin_art: str | None,
+    ) -> SpineData | CustomAnimation | None:
+        """Get the animation the character is drawn with on team cards, if any.
+
+        Args:
+            character: The character, ZZZ agents in the outfit they're drawn in.
+            card_settings: The character's card settings.
+            user_id: The user's ID, who must be a sponsor.
+            skin_art: The GI/HSR character's art for its outfit, see _get_skin_art.
+        """
+        if card_settings.current_team_image is not None:
+            image = await CustomImage.get_or_none(
+                user_id=user_id,
+                character_id=card_settings.character_id,
+                url=card_settings.current_team_image,
+                animated=True,
+            )
+            if image is None:
+                return None
+            return CustomAnimation(
+                url=image.url,
+                zoom=image.team_zoom,
+                focus_x=image.team_focus_x,
+                focus_y=image.team_focus_y,
+            )
+
+        # Animations are rendered from the character's default outfit
+        character_id = str(character.id)
+        if isinstance(character, enka.gi.Character | HoyolabGICharacter):
+            default_art = get_default_art(
+                character.model_copy(update={"costume": None}), is_team=False
+            )
+            return CARD_DATA.gi_spine.get(character_id) if skin_art in {None, default_art} else None
+        if isinstance(character, enka.hsr.Character | HoyolabHSRCharacter):
+            # Template 1's art area is a portrait, like the team card's
+            return CARD_DATA.hsr_spine(1).get(character_id) if skin_art is None else None
+        if self.game is Game.ZZZ:
+            agent = cast("ZZZFullAgent | ZZZEnkaCharacter", character)
+            return CARD_DATA.zzz_spine.get(character_id) if agent.outfit_id is None else None
+        return None
 
     async def _get_skin_art(self, character: Character, card_settings: CardSettings) -> str | None:
         """Get the GI/HSR character's art for its outfit, None for the default art."""

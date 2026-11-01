@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import math
 import pathlib
 from collections import OrderedDict
 from typing import TYPE_CHECKING, Literal, NamedTuple
@@ -17,6 +18,8 @@ from hoyo_buddy.constants import (
     ANIMATED_CARD_METHOD,
     ANIMATED_CARD_QUALITY,
     ANIMATED_CARD_SCALE,
+    ANIMATED_TEAM_CARD_FPS,
+    ANIMATED_TEAM_CARD_MAX_DURATION,
     DC_MAX_FILESIZE,
 )
 from hoyo_buddy.enums import Locale
@@ -27,13 +30,13 @@ from hoyo_buddy.utils import get_static_img_path
 from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable, Iterator
+    from collections.abc import Callable, Iterable, Iterator, Sequence
 
     from hoyo_buddy.l10n import LocaleStr
     from hoyo_buddy.models import DynamicBKInput
     from hoyo_buddy.types import FontStyle
 
-__all__ = ("Drawer",)
+__all__ = ("AnimatedArea", "Drawer")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -108,6 +111,32 @@ class TextBBox(NamedTuple):
         return self.width, self.height
 
 
+class AnimatedArea(NamedTuple):
+    """An animated image on a card, see Drawer.draw_animated_areas."""
+
+    path: pathlib.Path
+    """Path of the animated WEBP, already scaled and cropped to the art area."""
+    offset: tuple[int, int]
+    """The animation's uncropped top-left in the art area."""
+    pos: tuple[int, int] = (0, 0)
+    """The art area's top-left on the card."""
+    mask: Image.Image | None = None
+    """The art area's mask, its alpha is applied to every frame."""
+
+
+def _webp_duration(path: pathlib.Path) -> int:
+    """Total duration of an animated WEBP in ms, read from its frame headers without decoding."""
+    data = path.read_bytes()
+    total, pos = 0, 12  # After the RIFF header
+    while pos + 8 <= len(data):
+        size = int.from_bytes(data[pos + 4 : pos + 8], "little")
+        if data[pos : pos + 4] == b"ANMF":
+            # The frame's duration follows its position and size
+            total += int.from_bytes(data[pos + 20 : pos + 23], "little")
+        pos += 8 + size + (size & 1)
+    return total
+
+
 class Drawer:
     def __init__(
         self,
@@ -148,8 +177,17 @@ class Drawer:
         )
 
     @staticmethod
-    def resize_crop(image: Image.Image, size: tuple[int, int], *, zoom: float = 1.0) -> Image.Image:
-        """Resize an image without changing its aspect ratio."""
+    def resize_crop(
+        image: Image.Image, size: tuple[int, int], *, zoom: float = 1.0, focus_x: float = 50
+    ) -> Image.Image:
+        """Resize an image without changing its aspect ratio.
+
+        Args:
+            image: The image.
+            size: The size to cover and crop to.
+            zoom: Zoom on top of covering the size.
+            focus_x: Horizontal position of the crop in percent, 0 keeps the left edge.
+        """
         # Calculate the target height to maintain the aspect ratio
         width, height = image.size
         ratio = min(width / size[0], height / size[1])
@@ -157,7 +195,7 @@ class Drawer:
         # Calculate the new size and left/top coordinates for cropping
         new_width = round(width / (ratio * zoom))
         new_height = round(height / (ratio * zoom))
-        left = round((new_width - size[0]) / 2)
+        left = round((new_width - size[0]) * focus_x / 100)
         top = round((new_height - size[1]) / 2)
         right = round(left + size[0])
         bottom = round(top + size[1])
@@ -1010,29 +1048,68 @@ class Drawer:
             quality: WEBP quality.
             method: WEBP method.
         """
-        scale = ANIMATED_CARD_SCALE
+        return cls.draw_animated_areas(
+            background,
+            draw_foreground,
+            [AnimatedArea(animation_path, offset, area_pos, mask)],
+            fallback=fallback,
+            quality=quality,
+            method=method,
+        )
+
+    @classmethod
+    def draw_animated_areas(
+        cls,
+        background: Image.Image,
+        draw_foreground: Callable[[Image.Image], None],
+        areas: Sequence[AnimatedArea],
+        *,
+        fallback: Callable[[], io.BytesIO],
+        scale: float = ANIMATED_CARD_SCALE,
+        quality: int = ANIMATED_CARD_QUALITY,
+        method: int = ANIMATED_CARD_METHOD,
+    ) -> io.BytesIO:
+        """Draw a card with animated images between its background and foreground. A single
+        animation keeps its own frames, several are resampled to play together, see
+        _resample_frames.
+
+        Args:
+            background: The card's background.
+            draw_foreground: Draws the card's foreground onto an opaque image the background's size.
+            areas: The animations and their art areas, which mustn't overlap.
+            fallback: Draws the static card, for when the animated one is too big for Discord.
+            scale: Scale of the animated card relative to the static card, which the animations
+                are already at.
+            quality: WEBP quality.
+            method: WEBP method.
+        """
         full_size = background.size
         size = (round(full_size[0] * scale), round(full_size[1] * scale))
 
-        # The art area's edges can fall between pixels at this scale, where the frames leave part
-        # of a pixel to the background, so the first frame is drawn into a band along them like a
-        # static image. Only the band, since the rest would show through where the frames move.
-        with Image.open(animation_path) as animation:
-            first = animation.convert("RGBA")
-        first = first.resize(
-            (round(first.width / scale), round(first.height / scale)), Image.Resampling.LANCZOS
-        )
-        first_pos = (area_pos[0] + max(offset[0], 0), area_pos[1] + max(offset[1], 0))
+        # The art areas' edges can fall between pixels at this scale, where the frames leave part
+        # of a pixel to the background, so the first frames are drawn into a band along them like
+        # static images. Only the band, since the rest would show through where the frames move.
         art = Image.new("RGBA", full_size)
-        art.alpha_composite(first, first_pos)
         area_mask = Image.new("L", full_size)
-        area_mask.paste(255, (*first_pos, first_pos[0] + first.width, first_pos[1] + first.height))
-        if mask is not None:
-            mask_alpha = Image.new("L", full_size)
-            mask_alpha.paste(mask.getchannel("A"), area_pos)
-            area_mask = ImageChops.multiply(area_mask, mask_alpha)
+        for area in areas:
+            with Image.open(area.path) as animation:
+                first = animation.convert("RGBA")
+            first = first.resize(
+                (round(first.width / scale), round(first.height / scale)), Image.Resampling.LANCZOS
+            )
+            local_pos = (max(area.offset[0], 0), max(area.offset[1], 0))
+            first_pos = (area.pos[0] + local_pos[0], area.pos[1] + local_pos[1])
+            art.alpha_composite(first, first_pos)
+            first_box = (*local_pos, local_pos[0] + first.width, local_pos[1] + first.height)
+            if area.mask is None:
+                area_mask.paste(
+                    255, (*first_pos, first_pos[0] + first.width, first_pos[1] + first.height)
+                )
+            else:
+                # Cropping past the mask's edges pads it with transparency
+                area_mask.paste(area.mask.getchannel("A").crop(first_box), first_pos)
         # A band one scaled pixel wide
-        inner = area_mask.filter(ImageFilter.MinFilter(round(2 / scale) + 1))
+        inner = area_mask.filter(ImageFilter.MinFilter(2 * math.ceil(1 / scale) + 1))
         band = ImageChops.subtract(area_mask, inner)
         art.putalpha(ImageChops.multiply(art.getchannel("A"), band))
         background = Image.alpha_composite(background, art).resize(size, Image.Resampling.LANCZOS)
@@ -1046,33 +1123,88 @@ class Drawer:
             layers.append(layer.convert("RGB").resize(size, Image.Resampling.LANCZOS))
         foreground = cls.extract_layer(*layers)
 
-        area_x, area_y = (round(p * scale) for p in area_pos)
-        # The animation is cropped to the art area, so its cropped top-left is clamped to it
-        x, y = (max(round(p * scale), 0) for p in offset)
+        # The animations are cropped to the art areas, so their cropped top-lefts are clamped to them
+        positions = [
+            (
+                round(area.pos[0] * scale) + max(round(area.offset[0] * scale), 0),
+                round(area.pos[1] * scale) + max(round(area.offset[1] * scale), 0),
+            )
+            for area in areas
+        ]
 
         def frames() -> Iterator[tuple[Image.Image, int]]:
-            with Image.open(animation_path) as animation:
-                frame_mask = None
-                if mask is not None:
-                    mask_size = (round(mask.width * scale), round(mask.height * scale))
-                    frame_mask = (
-                        mask.getchannel("A")
-                        .resize(mask_size, Image.Resampling.LANCZOS)
-                        .crop((x, y, x + animation.width, y + animation.height))
-                    )
-                for frame in ImageSequence.Iterator(animation):
-                    im = frame.convert("RGBA")
-                    if frame_mask is not None:
-                        im.putalpha(ImageChops.multiply(im.getchannel("A"), frame_mask))
-                    card = background.copy()
-                    card.alpha_composite(im, (area_x + x, area_y + y))
-                    card.alpha_composite(foreground)
-                    yield card, frame.info["duration"]
+            if len(areas) == 1:
+                area_frames = (
+                    ([im], duration) for im, duration in cls._masked_frames(areas[0], scale)
+                )
+            else:
+                area_frames = cls._resample_frames(areas, scale)
+            for ims, duration in area_frames:
+                card = background.copy()
+                for im, pos in zip(ims, positions, strict=True):
+                    card.alpha_composite(im, pos)
+                card.alpha_composite(foreground)
+                yield card, duration
 
         result = cls.save_animated(frames(), size, quality=quality, method=method)
         if result.getbuffer().nbytes > DC_MAX_FILESIZE:
             return fallback()
         return result
+
+    @staticmethod
+    def _masked_frames(area: AnimatedArea, scale: float) -> Iterator[tuple[Image.Image, int]]:
+        """Decode an animation's frames with its art area's mask applied, and their durations in
+        ms.
+        """
+        x, y = (max(round(p * scale), 0) for p in area.offset)
+        with Image.open(area.path) as animation:
+            frame_mask = None
+            if area.mask is not None:
+                mask_size = (round(area.mask.width * scale), round(area.mask.height * scale))
+                frame_mask = (
+                    area.mask.getchannel("A")
+                    .resize(mask_size, Image.Resampling.LANCZOS)
+                    .crop((x, y, x + animation.width, y + animation.height))
+                )
+            for frame in ImageSequence.Iterator(animation):
+                im = frame.convert("RGBA")
+                if frame_mask is not None:
+                    im.putalpha(ImageChops.multiply(im.getchannel("A"), frame_mask))
+                yield im, frame.info["duration"]
+
+    @classmethod
+    def _looped_frames(cls, area: AnimatedArea, scale: float) -> Iterator[tuple[Image.Image, int]]:
+        """Decode an animation's masked frames forever, with the times they end at in ms."""
+        end = 0
+        while True:
+            for im, duration in cls._masked_frames(area, scale):
+                end += max(duration, 1)
+                yield im, end
+
+    @classmethod
+    def _resample_frames(
+        cls, areas: Sequence[AnimatedArea], scale: float
+    ) -> Iterator[tuple[list[Image.Image], int]]:
+        """Resample animations to ANIMATED_TEAM_CARD_FPS over the longest one's loop, up to
+        ANIMATED_TEAM_CARD_MAX_DURATION, with shorter ones repeating within it. Decodes one frame
+        of each animation at a time.
+
+        Yields:
+            Each animation's frame at the same time, and the frames' duration in ms.
+        """
+        loop = min(
+            max(_webp_duration(area.path) for area in areas), ANIMATED_TEAM_CARD_MAX_DURATION * 1000
+        )
+        interval = 1000 / ANIMATED_TEAM_CARD_FPS
+        streams = [cls._looped_frames(area, scale) for area in areas]
+        current = [next(stream) for stream in streams]
+
+        for i in range(max(round(loop / interval), 1)):
+            start = round(i * interval)
+            for j, stream in enumerate(streams):
+                while start >= current[j][1]:
+                    current[j] = next(stream)
+            yield [im for im, _ in current], round((i + 1) * interval) - start
 
     @staticmethod
     def draw_gradient_background(

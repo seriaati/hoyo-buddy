@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
-from hoyo_buddy.draw.drawer import WHITE, Drawer
+from hoyo_buddy.constants import ANIMATED_TEAM_CARD_METHOD, ANIMATED_TEAM_CARD_SCALE
+from hoyo_buddy.draw.drawer import BLACK, WHITE, AnimatedArea, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     BigBubble,
     LevelBubble,
@@ -18,15 +19,20 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from io import BytesIO
+    from pathlib import Path
 
     import enka
-    from PIL import Image
 
     from hoyo_buddy.models import HoyolabHSRCharacter as HSRCharacter
 
 __all__ = ("HSRTeamCard",)
+
+CARD_PATH = "hoyo-buddy-assets/assets/hsr-team-card/card.png"
+CARD_SIZE = (691, 956)
+IMAGE_POS = (0, 39)
+MASK_PATH = "hoyo-buddy-assets/assets/hsr-team-card/img_mask.png"
 
 
 class HSRTeamCard:
@@ -46,7 +52,7 @@ class HSRTeamCard:
         self._show_substat_rolls = show_substat_rolls
 
     def _draw_character_card(self, character: HSRCharacter | enka.hsr.Character) -> Image.Image:
-        im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/card.png")
+        im = Drawer.open_image(CARD_PATH)
         drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True, sans=True)
 
         primary = drawer.hex_to_rgb(self._character_colors[str(character.id)])
@@ -60,7 +66,16 @@ class HSRTeamCard:
             mask=img_mask,
             background_color=primary,
         )
-        im.alpha_composite(img, (0, 39))
+        im.alpha_composite(img, IMAGE_POS)
+
+        self._draw_character_foreground(im, character)
+        return im
+
+    def _draw_character_foreground(
+        self, im: Image.Image, character: HSRCharacter | enka.hsr.Character
+    ) -> None:
+        drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True, sans=True)
+        primary = drawer.hex_to_rgb(self._character_colors[str(character.id)])
 
         level_block = drawer.open_asset("level_block.png", mask_color=primary)
         im.alpha_composite(level_block, (100, 16))
@@ -196,8 +211,6 @@ class HSRTeamCard:
 
         # Relics
         self._draw_relics(character, im, drawer, primary)
-
-        return im
 
     def _draw_relics(
         self,
@@ -342,17 +355,71 @@ class HSRTeamCard:
             )
             start_pos = (168, 655) if i == 1 else (tbox.right + 20, start_pos[1])
 
-    def draw(self) -> BytesIO:
+    def _open_background(self) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/hsr-team-card/background.png")
         if len(self._characters) < 3:
             im = im.crop((0, 0, im.width, 1068))
+        return im
 
-        start_pos = (51, 58)
-        x_diff = 745
-        y_diff = 1010
+    @staticmethod
+    def _card_pos(index: int) -> tuple[int, int]:
+        return (51 + index % 2 * 745, 58 + index // 2 * 1010)
+
+    def draw(self) -> BytesIO:
+        im = self._open_background()
         for i, character in enumerate(self._characters):
-            card = self._draw_character_card(character)
-            im.alpha_composite(card, start_pos)
-            start_pos = (51, 58 + y_diff) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
-
+            im.alpha_composite(self._draw_character_card(character), self._card_pos(i))
         return Drawer.save_image(im)
+
+    def draw_animated(self, animations: Mapping[str, tuple[Path, tuple[int, int]]]) -> BytesIO:
+        """Draw the card with animated images for the characters that have them.
+
+        Args:
+            animations: Paths of the animations framed in the image mask and their uncropped
+                top-lefts in it, by character ID.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        mask = Drawer.open_image(MASK_PATH)
+        background = self._open_background()
+        areas: list[AnimatedArea] = []
+        animated: list[tuple[HSRCharacter | enka.hsr.Character, tuple[int, int]]] = []
+
+        for i, character in enumerate(self._characters):
+            pos = self._card_pos(i)
+            animation = animations.get(str(character.id))
+            if animation is None:
+                background.alpha_composite(self._draw_character_card(character), pos)
+                continue
+
+            card = Drawer.open_image(CARD_PATH)
+            primary = Drawer.hex_to_rgb(self._character_colors[str(character.id)])
+            card.alpha_composite(
+                Drawer.mask_image_with_image(Image.new("RGBA", mask.size, primary), mask), IMAGE_POS
+            )
+            background.alpha_composite(card, pos)
+            img_pos = (pos[0] + IMAGE_POS[0], pos[1] + IMAGE_POS[1])
+            areas.append(AnimatedArea(*animation, img_pos, mask))
+            animated.append((character, pos))
+
+        # Static images are darkened by Drawer.modify_image_for_build_card
+        overlay = Drawer.mask_image_with_image(
+            Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1)), mask
+        )
+
+        def draw_foreground(im: Image.Image) -> None:
+            for character, pos in animated:
+                card = im.crop((*pos, pos[0] + CARD_SIZE[0], pos[1] + CARD_SIZE[1]))
+                card.alpha_composite(overlay, IMAGE_POS)
+                self._draw_character_foreground(card, character)
+                im.paste(card, pos)
+
+        return Drawer.draw_animated_areas(
+            background,
+            draw_foreground,
+            areas,
+            fallback=self.draw,
+            scale=ANIMATED_TEAM_CARD_SCALE,
+            method=ANIMATED_TEAM_CARD_METHOD,
+        )

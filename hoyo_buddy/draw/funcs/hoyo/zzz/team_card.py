@@ -8,18 +8,20 @@ from genshin.models import ZZZSkillType
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import (
+    ANIMATED_TEAM_CARD_METHOD,
+    ANIMATED_TEAM_CARD_SCALE,
     MAX_DISC_SUBSTAT_ROLLS,
     ZZZ_AGENT_CORE_LEVEL_MAP,
     get_disc_substat_roll_num,
     is_hl_disc_substat,
 )
-from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
+from hoyo_buddy.draw.drawer import BLACK, WHITE, AnimatedArea, Drawer
 from hoyo_buddy.enums import Locale
 
 from .common import SKILL_ORDER, STAT_ICONS, get_props
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from io import BytesIO
     from pathlib import Path
 
@@ -29,6 +31,7 @@ if TYPE_CHECKING:
 
 SINGLE_AGENT_BOX = (54, 48, 1395, 357)
 """Where a single agent's card is on the background, for template 3."""
+CARD_SIZE = (1341, 309)
 
 
 class ZZZTeamCard:
@@ -39,6 +42,7 @@ class ZZZTeamCard:
         agents: Sequence[ZZZFullAgent | ZZZEnkaCharacter],
         agent_colors: dict[int, str],
         agent_images: dict[int, str],
+        agent_image_focuses: dict[int, int],
         name_datas: dict[int, AgentNameData],
         disc_icons: dict[int, str],
         show_substat_rolls: dict[int, bool],
@@ -52,6 +56,7 @@ class ZZZTeamCard:
         self._agents = agents
         self._agent_colors = agent_colors
         self._agent_images = agent_images
+        self._agent_image_focuses = agent_image_focuses
         self._name_datas = name_datas
         self._disc_icons = disc_icons
         self._show_substat_rolls = show_substat_rolls
@@ -85,7 +90,9 @@ class ZZZTeamCard:
         card.alpha_composite(left_blob, (13, -30))
         return card
 
-    def _draw_card(self, *, image_url: str, blob_color: tuple[int, int, int]) -> Image.Image:
+    def _draw_card(
+        self, *, image_url: str, focus_x: int, blob_color: tuple[int, int, int]
+    ) -> Image.Image:
         card = self._draw_card_background(blob_color)
         drawer = Drawer(
             ImageDraw.Draw(card), folder="zzz-team-card", dark_mode=self._dark_mode, sans=True
@@ -93,7 +100,7 @@ class ZZZTeamCard:
 
         chara_img_bg = drawer.open_asset("chara_img.png")
         chara_img = drawer.open_static(image_url)
-        chara_img = drawer.resize_crop(chara_img, chara_img_bg.size)
+        chara_img = drawer.resize_crop(chara_img, chara_img_bg.size, focus_x=focus_x)
         chara_img = drawer.mask_image_with_image(chara_img, chara_img_bg)
         chara_img_bg.alpha_composite(chara_img)
         card.alpha_composite(chara_img_bg)
@@ -102,6 +109,7 @@ class ZZZTeamCard:
     def _draw_agent_card(self, agent: ZZZFullAgent | ZZZEnkaCharacter) -> Image.Image:
         im = self._draw_card(
             image_url=self._agent_images[agent.id],
+            focus_x=self._agent_image_focuses.get(agent.id, 50),
             blob_color=Drawer.hex_to_rgb(self._agent_colors[agent.id]),
         )
         self._draw_agent_foreground(im, agent)
@@ -416,17 +424,21 @@ class ZZZTeamCard:
         )
         return card
 
-    def draw(self) -> BytesIO:
+    def _open_background(self) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")
         if len(self._agents) == 2:
             im = im.crop((0, 0, im.width, im.height - 349))
+        return im
 
-        start_pos = (54, 48)
-        y_diff = 347
-        for agent in self._agents:
+    @staticmethod
+    def _card_pos(index: int) -> tuple[int, int]:
+        return (54, 48 + index * 347)
+
+    def draw(self) -> BytesIO:
+        im = self._open_background()
+        for i, agent in enumerate(self._agents):
             agent_im = self._draw_agent_card(agent)
-            im.paste(agent_im, start_pos, agent_im)
-            start_pos = (start_pos[0], start_pos[1] + y_diff)
+            im.paste(agent_im, self._card_pos(i), agent_im)
 
         if len(self._agents) == 1:
             # Template 3
@@ -470,4 +482,46 @@ class ZZZTeamCard:
             mask=mask,
             quality=quality,
             method=method,
+        )
+
+    def draw_animated_team(self, animations: Mapping[int, tuple[Path, tuple[int, int]]]) -> BytesIO:
+        """Draw a team card with animated images for the agents that have them.
+
+        Args:
+            animations: Paths of the animations framed in the image mask and their uncropped
+                top-lefts in it, by agent ID.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        mask = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/chara_img.png")
+        background = self._open_background()
+        areas: list[AnimatedArea] = []
+        animated: list[tuple[ZZZFullAgent | ZZZEnkaCharacter, tuple[int, int]]] = []
+
+        for i, agent in enumerate(self._agents):
+            pos = self._card_pos(i)
+            animation = animations.get(agent.id)
+            if animation is None:
+                card = self._draw_agent_card(agent)
+            else:
+                card = self._draw_card_background(Drawer.hex_to_rgb(self._agent_colors[agent.id]))
+                card.alpha_composite(mask)
+                areas.append(AnimatedArea(*animation, pos, mask))
+                animated.append((agent, pos))
+            background.paste(card, pos, card)
+
+        def draw_foreground(im: Image.Image) -> None:
+            for agent, pos in animated:
+                card = im.crop((*pos, pos[0] + CARD_SIZE[0], pos[1] + CARD_SIZE[1]))
+                self._draw_agent_foreground(card, agent)
+                im.paste(card, pos)
+
+        return Drawer.draw_animated_areas(
+            background,
+            draw_foreground,
+            areas,
+            fallback=self.draw,
+            scale=ANIMATED_TEAM_CARD_SCALE,
+            method=ANIMATED_TEAM_CARD_METHOD,
         )

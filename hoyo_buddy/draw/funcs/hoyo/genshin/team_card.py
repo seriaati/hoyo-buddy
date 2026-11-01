@@ -5,8 +5,13 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
-from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS, convert_gi_element_to_enka
-from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.constants import (
+    ANIMATED_TEAM_CARD_METHOD,
+    ANIMATED_TEAM_CARD_SCALE,
+    MAX_SUBSTAT_ROLLS,
+    convert_gi_element_to_enka,
+)
+from hoyo_buddy.draw.drawer import BLACK, AnimatedArea, Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.ui.hoyo.profile.image_settings import get_default_art
 
@@ -19,8 +24,9 @@ from .common import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from io import BytesIO
+    from pathlib import Path
 
     import enka
     from enka.gi import Talent
@@ -28,6 +34,10 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import HoyolabGICharacter, HoyolabGITalent
 
 __all__ = ("GITeamCard",)
+
+IMAGE_POS = (37, 44)
+CARD_SIZE = (971, 809)
+MASK_PATH = "hoyo-buddy-assets/assets/gi-team-card/img_mask.png"
 
 
 class GITeamCard:
@@ -47,24 +57,28 @@ class GITeamCard:
         self._show_substat_rolls = show_substat_rolls
         self._theme = "dark" if dark_mode else "light"
 
-    def _draw_character_card(
-        self, character: enka.gi.Character | HoyolabGICharacter
-    ) -> Image.Image:
-        # Colors
-        color_1 = (237, 237, 237) if self._dark_mode else (95, 95, 95)
-        color_2 = (237, 237, 237) if self._dark_mode else (131, 131, 131)
-        color_3 = (255, 255, 255) if self._dark_mode else (104, 104, 104)
-        color_4 = (110, 110, 110) if self._dark_mode else (237, 237, 237)
+    def _open_card(self) -> Image.Image:
+        return Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_card.png")
 
-        im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_card.png")
-        drawer = Drawer(ImageDraw.Draw(im), folder="gi-team-card", dark_mode=self._dark_mode)
-
-        element = (
+    @staticmethod
+    def _get_element(character: enka.gi.Character | HoyolabGICharacter) -> enka.gi.Element:
+        return (
             convert_gi_element_to_enka(character.element)
             if isinstance(character.element, GenshinElement)
             else character.element
         )
-        element_color = drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
+
+    def _element_color(
+        self, character: enka.gi.Character | HoyolabGICharacter
+    ) -> tuple[int, int, int]:
+        element = self._get_element(character)
+        return Drawer.hex_to_rgb(ELEMENT_BG_COLORS[self._dark_mode][element])
+
+    def _draw_character_card(
+        self, character: enka.gi.Character | HoyolabGICharacter
+    ) -> Image.Image:
+        im = self._open_card()
+        drawer = Drawer(ImageDraw.Draw(im), folder="gi-team-card", dark_mode=self._dark_mode)
 
         # Character image
         img_mask = drawer.open_asset("img_mask.png")
@@ -75,11 +89,26 @@ class GITeamCard:
             target_width=img_mask.width,
             target_height=img_mask.height,
             mask=img_mask,
-            background_color=element_color,
+            background_color=self._element_color(character),
             zoom=0.7 if img_url == get_default_art(character, is_team=False) else 1.0,
         )
         img = drawer.mask_image_with_image(img, img_mask)
-        im.alpha_composite(img, (37, 44))
+        im.alpha_composite(img, IMAGE_POS)
+
+        self._draw_character_foreground(im, character)
+        return im
+
+    def _draw_character_foreground(
+        self, im: Image.Image, character: enka.gi.Character | HoyolabGICharacter
+    ) -> None:
+        # Colors
+        color_1 = (237, 237, 237) if self._dark_mode else (95, 95, 95)
+        color_2 = (237, 237, 237) if self._dark_mode else (131, 131, 131)
+        color_3 = (255, 255, 255) if self._dark_mode else (104, 104, 104)
+        color_4 = (110, 110, 110) if self._dark_mode else (237, 237, 237)
+
+        drawer = Drawer(ImageDraw.Draw(im), folder="gi-team-card", dark_mode=self._dark_mode)
+        element = self._get_element(character)
 
         # Character element
         if character.element.name != "NONE":
@@ -352,19 +381,71 @@ class GITeamCard:
 
             start_pos = (564 + x_diff, 35) if i == 2 else (start_pos[0], start_pos[1] + y_diff)
 
-        return im
-
-    def draw(self) -> BytesIO:
+    def _open_background(self) -> Image.Image:
         im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-team-card/{self._theme}_bg.png")
         if len(self._characters) < 3:
             im = im.crop((0, 0, im.width, 922))
+        return im
 
-        start_pos = (50, 60)
-        x_diff = 1025
-        y_diff = 865
+    @staticmethod
+    def _card_pos(index: int) -> tuple[int, int]:
+        return (50 + index % 2 * 1025, 60 + index // 2 * 865)
+
+    def draw(self) -> BytesIO:
+        im = self._open_background()
         for i, character in enumerate(self._characters):
-            card = self._draw_character_card(character)
-            im.alpha_composite(card, start_pos)
-            start_pos = (50, 60 + y_diff) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
-
+            im.alpha_composite(self._draw_character_card(character), self._card_pos(i))
         return Drawer.save_image(im)
+
+    def draw_animated(self, animations: Mapping[str, tuple[Path, tuple[int, int]]]) -> BytesIO:
+        """Draw the card with animated images for the characters that have them.
+
+        Args:
+            animations: Paths of the animations framed in the image mask and their uncropped
+                top-lefts in it, by character ID.
+
+        Returns:
+            The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
+        """
+        mask = Drawer.open_image(MASK_PATH)
+        background = self._open_background()
+        areas: list[AnimatedArea] = []
+        animated: list[tuple[enka.gi.Character | HoyolabGICharacter, tuple[int, int]]] = []
+
+        for i, character in enumerate(self._characters):
+            pos = self._card_pos(i)
+            animation = animations.get(str(character.id))
+            if animation is None:
+                background.alpha_composite(self._draw_character_card(character), pos)
+                continue
+
+            card = self._open_card()
+            card.alpha_composite(
+                Drawer.mask_image_with_image(
+                    Image.new("RGBA", mask.size, self._element_color(character)), mask
+                ),
+                IMAGE_POS,
+            )
+            background.alpha_composite(card, pos)
+            img_pos = (pos[0] + IMAGE_POS[0], pos[1] + IMAGE_POS[1])
+            areas.append(AnimatedArea(*animation, img_pos, mask))
+            animated.append((character, pos))
+
+        def draw_foreground(im: Image.Image) -> None:
+            for character, pos in animated:
+                card = im.crop((*pos, pos[0] + CARD_SIZE[0], pos[1] + CARD_SIZE[1]))
+                # Static images are darkened by Drawer.modify_image_for_build_card
+                if self._dark_mode:
+                    overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
+                    card.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
+                self._draw_character_foreground(card, character)
+                im.paste(card, pos)
+
+        return Drawer.draw_animated_areas(
+            background,
+            draw_foreground,
+            areas,
+            fallback=self.draw,
+            scale=ANIMATED_TEAM_CARD_SCALE,
+            method=ANIMATED_TEAM_CARD_METHOD,
+        )

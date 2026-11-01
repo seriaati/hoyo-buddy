@@ -25,6 +25,12 @@ class CustomImage(BaseModel):
     """Horizontal position of the animated image in the image mask in percent, 0 is left."""
     focus_y = fields.SmallIntField(default=50)
     """Vertical position of the animated image in the image mask in percent, 0 is top."""
+    team_zoom = fields.SmallIntField(default=100)
+    """Like zoom, for team cards."""
+    team_focus_x = fields.SmallIntField(default=50)
+    """Like focus_x, for team cards."""
+    team_focus_y = fields.SmallIntField(default=50)
+    """Like focus_y, for team cards."""
 
     character_id = fields.CharField(max_length=8)
     user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(

@@ -26,6 +26,8 @@ class Settings(CachedModel):
     hsr_card_temp = fields.CharField(max_length=32, default="hb1")
     zzz_card_temp = fields.CharField(max_length=32, default="hb2")
     team_card_dark_mode = fields.BooleanField(default=False)
+    team_card_animated_image = fields.BooleanField(default=True)
+    """Whether to use characters' animated art on team cards, only for sponsors."""
     enable_dyk = fields.BooleanField(default=True)
     show_uid = fields.BooleanField(default=False)
 

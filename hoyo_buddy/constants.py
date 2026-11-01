@@ -577,6 +577,17 @@ ANIMATED_CARD_QUALITY = 75
 ANIMATED_CARD_METHOD = 0
 """Default WEBP method of animated build cards, the fastest. Higher methods compress better but
 encode slower."""
+ANIMATED_TEAM_CARD_SCALE = 0.75
+"""Scale of animated team cards relative to the static card, higher than build cards' since their
+text is smaller."""
+ANIMATED_TEAM_CARD_METHOD = 2
+"""WEBP method of animated team cards, which compresses four animations enough to stay under
+Discord's limit at ANIMATED_TEAM_CARD_SCALE."""
+ANIMATED_TEAM_CARD_FPS = 20
+"""Frame rate the animations on a team card are resampled to, so their frames line up."""
+ANIMATED_TEAM_CARD_MAX_DURATION = 10
+"""Max loop length of animated team cards in seconds. The loop is the longest animation's, shorter
+ones repeat within it."""
 
 LOCALE_TO_ZENLESS_DATA_LANG: dict[Locale, str] = {
     Locale.taiwan_chinese: "CHT",

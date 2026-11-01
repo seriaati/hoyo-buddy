@@ -196,6 +196,24 @@ class TeamCardDarkModeButton(ui.EmojiToggleButton["CardSettingsView"]):
         await self.view.update(i)
 
 
+class TeamCardAnimatedImageButton(ui.EmojiToggleButton["CardSettingsView"]):
+    def __init__(self, *, current: bool, is_supporter: bool) -> None:
+        super().__init__(current=current)
+        self.is_supporter = is_supporter
+
+    async def callback(self, i: Interaction) -> None:
+        if not self.is_supporter:
+            raise SponsorPerkError(message=LocaleStr(key="animated_team_card_sponsor_perk_message"))
+
+        self.current = not self.current
+        self.update_style()
+
+        self.view.settings.team_card_animated_image = self.current
+        await self.view.settings.save(update_fields=("team_card_animated_image",))
+
+        await self.view.update(i)
+
+
 class ApplyTemplateToAllButton(ui.Button["CardSettingsView"]):
     def __init__(self) -> None:
         super().__init__(
@@ -322,6 +340,24 @@ class BulkSettingsButton(ui.Button["CardSettingsView"]):
         from .view import CardSettingsCategory
 
         self.view.category = CardSettingsCategory.BULK
+        await self.view.update(i)
+
+
+class TeamSettingsButton(ui.Button["CardSettingsView"]):
+    def __init__(self) -> None:
+        super().__init__(
+            label=LocaleStr(key="card_settings_team_title"),
+            style=discord.ButtonStyle.blurple,
+            custom_id="card_settings_team",
+            emoji=emojis.SETTINGS,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        # Local import to avoid circular import
+        # ruff:ignore[import-outside-top-level]
+        from .view import CardSettingsCategory
+
+        self.view.category = CardSettingsCategory.TEAM
         await self.view.update(i)
 
 
@@ -525,19 +561,17 @@ class CardSettingsContainer(ui.Container):
                     current=card_settings.dark_mode, disabled=self.disable_dark_mode
                 ),
             ),
-            # Team dark mode
+            # Team card settings
             ui.Section(
                 ui.TextDisplay(
                     LocaleStr(
                         custom_str="### {title}\n{desc}\n{empty}",
-                        title=LocaleStr(key="profile.team_dark_mode.button.label"),
-                        desc=LocaleStr(key="team_card_dark_theme_desc"),
+                        title=LocaleStr(key="card_settings_team_title"),
+                        desc=LocaleStr(key="card_settings_team_button_desc"),
                         empty=EMPTY_CHAR,
                     )
                 ),
-                accessory=TeamCardDarkModeButton(
-                    current=settings.team_card_dark_mode, disabled=self.disable_dark_mode
-                ),
+                accessory=TeamSettingsButton(),
             ),
             # Bulk settings
             ui.Section(
@@ -600,6 +634,50 @@ class CardSettingsContainer(ui.Container):
         if self.game is Game.STARRAIL and template in {"hb1", "hb2"}:
             return character_id not in CARD_DATA.hsr_spine(get_template_num(template))
         return True
+
+
+class TeamCardSettingsContainer(ui.Container):
+    def __init__(self, *, settings: Settings, game: Game, is_supporter: bool) -> None:
+        super().__init__(
+            ui.TextDisplay(
+                LocaleStr(
+                    custom_str="# {title}\n{desc}",
+                    title=LocaleStr(key="card_settings_team_title"),
+                    desc=LocaleStr(key="card_settings_team_desc"),
+                )
+            ),
+            # Team dark mode
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="profile.team_dark_mode.button.label"),
+                        desc=LocaleStr(key="team_card_dark_theme_desc"),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=TeamCardDarkModeButton(
+                    current=settings.team_card_dark_mode,
+                    # Only GI team cards have a dark theme
+                    disabled=game is not Game.GENSHIN,
+                ),
+            ),
+            # Team animated image
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="team_card_animated_image"),
+                        desc=LocaleStr(key="team_card_animated_image_desc"),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=TeamCardAnimatedImageButton(
+                    current=settings.team_card_animated_image and is_supporter,
+                    is_supporter=is_supporter,
+                ),
+            ),
+        )
 
 
 class BulkCardSettingsContainer(ui.Container):

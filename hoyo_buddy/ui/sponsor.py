@@ -35,6 +35,7 @@ async def get_sponsor_perks_message(
         LocaleStr(key="supporter_embed.perk_animated_custom_images"),
         LocaleStr(key="supporter_embed.perk_ai_images", limit=FREE_AI_IMAGE_DAILY_LIMIT),
         LocaleStr(key="supporter_embed.perk_auto_gacha_import"),
+        LocaleStr(key="supporter_embed.perk_mimo"),
         LocaleStr(
             key="supporter_embed.perk_multi_accompany", limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT
         ),

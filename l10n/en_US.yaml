@@ -965,6 +965,7 @@ supporter_embed.perk_animated_team_card: "Animated character art on team cards (
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
 supporter_embed.perk_multi_accompany: "Auto accompany up to {limit} characters per account (free: 1)"
+supporter_embed.perk_mimo: "Better Traveling Mimo automation: auto buy grabs Stellar Jades, Polychrome and Primogems the moment they restock, tasks and purchases run every hour (free: every 4-5 hours), and auto draw can save points for them"
 supporter_embed.perk_discord_role: Sponsor role in the Discord server
 supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server
 supporter_embed.how_to: "Donate any amount, monthly or one-time, to become a sponsor. You stay a sponsor forever, even after your donation ends."

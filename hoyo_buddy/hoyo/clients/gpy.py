@@ -25,6 +25,7 @@ from hoyo_buddy.constants import (
     MANIKEN_BOY_GACHA_ART,
     MANIKEN_GIRL_GACHA_ART,
     MIMO_AUTO_FINISH_TASK_TYPES,
+    MIMO_VALUABLE_KEYWORDS,
     PLAYER_BOY_GACHA_ART,
     PLAYER_GIRL_GACHA_ART,
     POST_REPLIES,
@@ -859,28 +860,50 @@ class GenshinClient(ProxyGenshinClient):
             all(task.status is genshin.models.MimoTaskStatus.CLAIMED for task in tasks),
         )
 
+    async def get_mimo_valuables(
+        self, *, game_id: int, version_id: int
+    ) -> list[genshin.models.MimoShopItem]:
+        """Get the shop's currency items with English names, from most to least expensive."""
+        original_lang = self.lang
+        self.lang = "en-us"
+        try:
+            items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        finally:
+            self.lang = original_lang
+
+        valuables = [
+            item for item in items if any(kw in item.name for kw in MIMO_VALUABLE_KEYWORDS)
+        ]
+        return sorted(valuables, key=lambda item: item.cost, reverse=True)
+
+    async def _localize_mimo_items(
+        self,
+        bought: list[tuple[genshin.models.MimoShopItem, str]],
+        *,
+        game_id: int,
+        version_id: int,
+    ) -> list[tuple[genshin.models.MimoShopItem, str]]:
+        if not bought or self.lang == "en-us":
+            return bought
+
+        items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        localized = {item.id: item for item in items}
+        return [(localized.get(item.id, item), code) for item, code in bought]
+
     async def buy_mimo_valuables(
         self, *, game_id: int, version_id: int
     ) -> list[tuple[genshin.models.MimoShopItem, str]]:
-        result: list[tuple[genshin.models.MimoShopItem, str]] = []
-        bought: list[tuple[int, str]] = []
+        bought: list[tuple[genshin.models.MimoShopItem, str]] = []
 
-        original_lang = self.lang[:]
         points = await self.get_mimo_point_count()
         await sleep("mimo_shop")
 
-        self.lang = "en-us"
-        en_items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
+        items = await self.get_mimo_valuables(game_id=game_id, version_id=version_id)
         await sleep("mimo_shop")
 
-        # Sort items from most expensive to least expensive
-        en_items = sorted(en_items, key=lambda item: item.cost, reverse=True)
-
-        keywords = ("Stellar Jades", "Polychrome")
-        for item in en_items:
+        for item in items:
             if (
-                any(keyword in item.name for keyword in keywords)
-                and item.status is genshin.models.MimoShopItemStatus.EXCHANGEABLE
+                item.status is genshin.models.MimoShopItemStatus.EXCHANGEABLE
                 and item.cost <= points
             ):
                 try:
@@ -889,21 +912,12 @@ class GenshinClient(ProxyGenshinClient):
                     )
                     await sleep("mimo_shop")
                 except genshin.GenshinException as e:
-                    if e.retcode == -502005:  # Insufficient points
+                    # Limit reached, insufficient points, out of stock
+                    if e.retcode in {-502004, -502005, -502006}:
                         continue
                     raise
 
-                bought.append((item.id, code))
+                bought.append((item, code))
                 points -= item.cost
 
-        if bought:
-            self.lang = original_lang
-            if original_lang != "en-us":
-                items = await self.get_mimo_shop_items(game_id=game_id, version_id=version_id)
-            else:
-                items = en_items
-
-            item_mi18n = {item.id: item for item in items}
-            result = [(item_mi18n[item_id], code) for item_id, code in bought]
-
-        return result
+        return await self._localize_mimo_items(bought, game_id=game_id, version_id=version_id)

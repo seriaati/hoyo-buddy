@@ -536,6 +536,8 @@ profile.redraw_card_button_label: Redraw card
 card_settings.footer: "When you're done, click the green button in the message above to redraw the card"
 profile.team_dark_mode.button.label: Team card dark theme
 team_card_dark_theme_desc: "Use a dark color scheme for team cards. This applies to all team cards, no matter which characters are in."
+team_card_animated_image: Animated team card
+team_card_animated_image_desc: "Use characters' animated art on team cards, only available for sponsors. Characters without animated art keep their static art, and animated custom images set as a team card image are used too. Use </sponsor> to learn more."
 profile.character_select.multi.placeholder: Select character(s)...
 zzz_search.agent_info: "Rarity: {rarity}\nSpecialty: {specialty}\nAttack Type: {atk_type}\nFaction: {faction}\nElement: {element}"
 cat_zzz_agents: Agents
@@ -903,6 +905,9 @@ apply_dark_theme_to_all_chars_desc: "All **future and current** characters will 
 apply_animated_image_to_all_chars: Apply current animated image option to all characters
 apply_animated_image_to_all_chars_desc: "All **future and current** characters will have animated image **{status}**."
 card_settings_bulk_title: Bulk settings
+card_settings_team_title: Team card settings
+card_settings_team_button_desc: Dark theme and animated art for team cards.
+card_settings_team_desc: "These settings apply to all team cards, no matter which characters are in."
 card_settings_bulk_button_desc: "Apply this character's template, dark theme, and animated image options to all characters."
 card_settings_bulk_desc: "Apply {name}'s card settings to all **current and future** characters."
 apply_label: Apply
@@ -946,7 +951,8 @@ supporter_embed.perk_auto_task_priority: "Top priority in auto task queues (dail
 supporter_embed.perk_accounts: "Unlimited accounts (free: {limit})"
 supporter_embed.perk_custom_images: "Unlimited custom images per character (free: {limit})"
 supporter_embed.perk_animated_image: "Animated character art on build cards (Genshin Impact, Honkai: Star Rail and Zenless Zone Zero)"
-supporter_embed.perk_animated_custom_images: "Upload your own GIFs, animated WEBPs and MP4s as animated character art on build cards"
+supporter_embed.perk_animated_custom_images: "Upload your own GIFs, animated WEBPs and MP4s as animated character art on build and team cards"
+supporter_embed.perk_animated_team_card: "Animated character art on team cards (Genshin Impact, Honkai: Star Rail and Zenless Zone Zero)"
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
 supporter_embed.perk_multi_accompany: "Auto accompany up to {limit} characters per account (free: 1)"
@@ -959,6 +965,7 @@ sponsor_perks_button_label: View sponsor perks
 sponsor_perk_error_title: Sponsor perk
 animated_image_sponsor_perk_message: Animated character art on build cards is a sponsor perk.
 animated_custom_image_sponsor_perk_message: Uploading GIFs, animated WEBPs and MP4s as character art is a sponsor perk.
+animated_team_card_sponsor_perk_message: Animated character art on team cards is a sponsor perk.
 animation_position_button_label: Position
 animation_position_modal.zoom.label: Zoom (%)
 animation_position_modal.zoom.description: At 100, the animation fills the card's image area

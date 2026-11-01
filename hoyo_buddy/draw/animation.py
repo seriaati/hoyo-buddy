@@ -150,7 +150,12 @@ def convert_animation(data: bytes) -> bytes:
 
 
 def frame_animation(
-    source: Path, mask: Path, *, zoom: int, focus: tuple[int, int]
+    source: Path,
+    mask: Path,
+    *,
+    zoom: int,
+    focus: tuple[int, int],
+    card_scale: float = ANIMATED_CARD_SCALE,
 ) -> tuple[Path, tuple[int, int]]:
     """Scale and crop an animated custom image to a card's image mask, like the pre-rendered
     animations in spine.yaml, see Drawer.draw_animated_card. Cached next to the source.
@@ -163,6 +168,7 @@ def frame_animation(
         mask: Path of the card's image mask.
         zoom: Zoom in percent.
         focus: Horizontal and vertical position in percent.
+        card_scale: Scale of the animated card relative to the static card.
 
     Returns:
         The framed animation's path and its uncropped top-left in the mask.
@@ -178,7 +184,7 @@ def frame_animation(
     y = round((area[1] - height) * focus[1] / 100)
 
     path = source.with_name(
-        f"{source.stem}_{area[0]}x{area[1]}_{zoom}_{focus[0]}_{focus[1]}{source.suffix}"
+        f"{source.stem}_{area[0]}x{area[1]}_{zoom}_{focus[0]}_{focus[1]}_{card_scale}{source.suffix}"
     )
     if path.exists():
         return path, (x, y)
@@ -191,10 +197,7 @@ def frame_animation(
         min(right / scale, source_size[0]),
         min(bottom / scale, source_size[1]),
     )
-    size = (
-        round((right - left) * ANIMATED_CARD_SCALE),
-        round((bottom - top) * ANIMATED_CARD_SCALE),
-    )
+    size = (round((right - left) * card_scale), round((bottom - top) * card_scale))
 
     def frames() -> Iterator[tuple[Image.Image, int]]:
         with Image.open(source) as im:

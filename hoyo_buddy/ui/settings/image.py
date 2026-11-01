@@ -468,11 +468,11 @@ class AnimationPositionModal(ui.Modal):
         component=ui.TextInput(is_digit=True, min_value=0, max_value=100, max_length=3),
     )
 
-    def __init__(self, image: CustomImage) -> None:
+    def __init__(self, zoom: int, focus_x: int, focus_y: int) -> None:
         super().__init__(title=LocaleStr(key="animation_position_button_label"))
-        self.zoom.default = str(image.zoom)
-        self.focus_x.default = str(image.focus_x)
-        self.focus_y.default = str(image.focus_y)
+        self.zoom.default = str(zoom)
+        self.focus_x.default = str(focus_x)
+        self.focus_y.default = str(focus_y)
 
 
 class AnimationPositionButton(ui.Button["CardSettingsView"]):
@@ -491,17 +491,24 @@ class AnimationPositionButton(ui.Button["CardSettingsView"]):
         if image is None:
             return
 
-        modal = AnimationPositionModal(image)
+        is_team = self.view.image_type == "team_card_image"
+        if is_team:
+            modal = AnimationPositionModal(image.team_zoom, image.team_focus_x, image.team_focus_y)
+        else:
+            modal = AnimationPositionModal(image.zoom, image.focus_x, image.focus_y)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
         timed_out = await modal.wait()
         if timed_out:
             return
 
-        image.zoom = int(modal.zoom.value)
-        image.focus_x = int(modal.focus_x.value)
-        image.focus_y = int(modal.focus_y.value)
-        await image.save(update_fields=("zoom", "focus_x", "focus_y"))
+        position = (int(modal.zoom.value), int(modal.focus_x.value), int(modal.focus_y.value))
+        if is_team:
+            image.team_zoom, image.team_focus_x, image.team_focus_y = position
+            await image.save(update_fields=("team_zoom", "team_focus_x", "team_focus_y"))
+        else:
+            image.zoom, image.focus_x, image.focus_y = position
+            await image.save(update_fields=("zoom", "focus_x", "focus_y"))
         await self.view.update(i)
 
 
@@ -540,9 +547,7 @@ class ImageSettingsContainer(ui.Container):
         )
         default_collection = get_default_collection(card_settings.character_id, game=game)
         is_custom = current_image is not None and current_image not in default_collection
-        is_animated = image_type == "build_card_image" and any(
-            img.animated and img.url == current_image for img in custom_images
-        )
+        is_animated = any(img.animated and img.url == current_image for img in custom_images)
         preview_url = current_image or default_art
         icon_url = get_gacha_icon(item_id=int(card_settings.character_id), gacha_data=gacha_data)
 

@@ -154,7 +154,10 @@ class SpineData(BaseModel):
 
 
 class CustomAnimation(BaseModel):
-    """A sponsor's animated custom image, see hoyo_buddy/draw/animation.py."""
+    """An animation framed in a card's image mask by zoom and focus, see
+    hoyo_buddy/draw/animation.py. A sponsor's animated custom image, or a pre-rendered animation on
+    a team card.
+    """
 
     url: str
     zoom: int

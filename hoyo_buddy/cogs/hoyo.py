@@ -23,7 +23,7 @@ from ..commands.geetest import GeetestCommand
 from ..commands.stats import StatsCommand
 from ..constants import HB_GAME_TO_GPY_GAME, get_describe_kwargs, get_rename_kwargs
 from ..enums import Game, GeetestType
-from ..exceptions import CantRedeemCodeError, InvalidQueryError
+from ..exceptions import CantRedeemCodeError, InvalidQueryError, NoAccountFoundError
 from ..hoyo.transformers import HoyoAccountTransformer
 from ..types import Interaction, User
 from ..ui.hoyo.checkin import CheckInUI
@@ -86,10 +86,21 @@ class Hoyo(commands.Cog):
 
         user = user or i.user
         accounts = await self.bot.get_accounts(user.id, COMMANDS["notes"].games)
+        is_author = user.id == i.user.id
+        if not is_author:
+            accounts = [acc for acc in accounts if acc.public]
+            if not accounts:
+                raise NoAccountFoundError(COMMANDS["notes"].games or ())
+
         overview = account is None and len(accounts) > 1
-        account = account or await self.bot.get_account(
-            user.id, COMMANDS["notes"].games, COMMANDS["notes"].platform
-        )
+        if account is None:
+            account = (
+                await self.bot.get_account(
+                    user.id, COMMANDS["notes"].games, COMMANDS["notes"].platform
+                )
+                if is_author
+                else next((acc for acc in accounts if acc.current), accounts[0])
+            )
         settings = await Settings.get(user_id=i.user.id)
 
         view = NotesView(

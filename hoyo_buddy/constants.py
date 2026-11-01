@@ -1289,6 +1289,10 @@ AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
     "mimo_draw": 3600 * 10,  # 10 hours
     "gacha_import": 3600 * 6,  # 6 hours
 }
+SPONSOR_AUTO_TASK_INTERVALS: dict[AutoTaskType, int] = {
+    "mimo_task": 3600,  # 1 hour
+    "mimo_buy": 3600,  # 1 hour
+}
 MIMO_VALUABLE_KEYWORDS = ("Stellar Jades", "Polychrome", "Primogems")
 AUTO_TASK_LAST_TIME_FIELDS: dict[AutoTaskType, str] = {
     "redeem": "last_redeem_time",

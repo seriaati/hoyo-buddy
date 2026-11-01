@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import tortoise.timezone
 from loguru import logger
@@ -12,6 +12,7 @@ from hoyo_buddy.constants import (
     AUTO_TASK_INTERVALS,
     AUTO_TASK_LAST_TIME_FIELDS,
     AUTO_TASK_TOGGLE_FIELDS,
+    SPONSOR_AUTO_TASK_INTERVALS,
     UTC_8,
 )
 from hoyo_buddy.db import models
@@ -29,6 +30,34 @@ if TYPE_CHECKING:
 
 class AutoTaskMixin:
     @staticmethod
+    def _build_interval_query(task_type: AutoTaskType, supporter_ids: list[int]) -> Q | None:
+        """Filter accounts that haven't been processed within the interval or ever."""
+        interval = AUTO_TASK_INTERVALS.get(task_type)
+        if interval is None:
+            logger.error(f"{task_type!r} missing in AUTO_TASK_INTERVALS")
+            return None
+
+        field_name = AUTO_TASK_LAST_TIME_FIELDS.get(task_type)
+        if field_name is None:
+            logger.error(f"{task_type!r} missing in AUTO_TASK_LAST_TIME_FIELDS")
+            return None
+
+        now = tortoise.timezone.now()
+        never_ran: dict[str, Any] = {f"{field_name}__isnull": True}
+        interval_passed: dict[str, Any] = {
+            f"{field_name}__lt": now - datetime.timedelta(seconds=interval)
+        }
+        query = Q(**never_ran) | Q(**interval_passed)
+
+        sponsor_interval = SPONSOR_AUTO_TASK_INTERVALS.get(task_type)
+        if sponsor_interval is not None and supporter_ids:
+            sponsor_interval_passed: dict[str, Any] = {
+                f"{field_name}__lt": now - datetime.timedelta(seconds=sponsor_interval)
+            }
+            query |= Q(user_id__in=supporter_ids) & Q(**sponsor_interval_passed)
+        return query
+
+    @staticmethod
     async def build_auto_task_queue(
         task_type: AutoTaskType,
         *,
@@ -41,23 +70,14 @@ class AutoTaskMixin:
         # Tasks that reset once per day (UTC+8) instead of running on a fixed interval
         daily_task = task_type in {"checkin", "accompany"}
 
-        # Auto task exclusions
+        supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
+        logger.debug(f"Supporter IDs: {supporter_ids}")
+
+        # Interval based auto tasks
         if not daily_task:
-            # Interval based auto tasks
-            interval = AUTO_TASK_INTERVALS.get(task_type)
-            if interval is None:
-                logger.error(f"{task_type!r} missing in AUTO_TASK_INTERVALS")
-            else:
-                field_name = AUTO_TASK_LAST_TIME_FIELDS.get(task_type)
-                if field_name is None:
-                    logger.error(f"{task_type!r} missing in AUTO_TASK_LAST_TIME_FIELDS")
-                else:
-                    # Filter accounts that haven't been processed in the last interval or have never been processed
-                    threshold_time = tortoise.timezone.now() - datetime.timedelta(seconds=interval)
-                    query &= Q(
-                        **{f"{field_name}__lt": threshold_time, f"{field_name}__isnull": True},
-                        join_type="OR",
-                    )
+            interval_query = AutoTaskMixin._build_interval_query(task_type, supporter_ids)
+            if interval_query is not None:
+                query &= interval_query
 
         # Filter accounts that have the auto task toggle enabled
         toggle_field = AUTO_TASK_TOGGLE_FIELDS.get(task_type)
@@ -80,8 +100,14 @@ class AutoTaskMixin:
         if task_type == "accompany":
             query &= ~Q(accompany_characters=[])
 
-        supporter_ids: list[int] = await models.JSONFile.read("supporter_ids.json", default=[])
-        logger.debug(f"Supporter IDs: {supporter_ids}")
+        # Mimo buy/draw: Sponsors only spend points after today's mimo tasks are done
+        if task_type in {"mimo_buy", "mimo_draw"} and supporter_ids:
+            today = get_now().replace(hour=0, minute=0, second=0, microsecond=0)
+            query &= (
+                ~Q(user_id__in=supporter_ids)
+                | Q(mimo_auto_task=False)
+                | Q(last_mimo_task_time__gte=today)
+            )
 
         # Gacha import-specific: Supporter-only, Genshin accounts need cookie_token for authkeys
         if task_type == "gacha_import":

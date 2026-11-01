@@ -29,7 +29,8 @@ class CardSettings(BaseModel):
     """Whether to show the akasha rank of the character, only applies to genshin."""
     show_substat_rolls = fields.BooleanField(default=True)
     highlight_special_stats = fields.BooleanField(default=True)
-    highlight_substats: fields.Field[list[int]] = fields.JSONField(default=[])
+    highlight_substats: fields.Field[list[int] | None] = fields.JSONField(null=True)
+    """Highlighted ZZZ disc substat IDs, None to follow the agent's special stats."""
     use_m3_art = fields.BooleanField(default=False)
     """Whether to use Mindscape 3 art for the ZZZ card."""
     animated_image = fields.BooleanField(default=True)

@@ -18,6 +18,7 @@ from hoyo_buddy.constants import (
     HSR_DEFAULT_ART_URL,
     TRAVELER_IDS,
     ZZZ_TEAM_IMAGE_OVERRIDES,
+    get_hl_disc_substats,
 )
 from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
@@ -765,7 +766,7 @@ async def draw_zzz_build_card(
     template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
     agent_special_stat_map: dict[str, list[int]],
-    hl_substats: list[int],
+    hl_substats: list[int] | None,
     hl_special_stats: bool,
     use_m3_art: bool,
     animation: SpineData | CustomAnimation | None,
@@ -801,6 +802,7 @@ async def draw_zzz_build_card(
         urls.append(animation.url)
 
     agent_special_stats = agent_special_stat_map.get(str(agent.id), [])
+    hl_substats = get_hl_disc_substats(hl_substats, agent_special_stats)
     await download_images(urls, draw_input.session)
 
     if template == 3:
@@ -911,7 +913,7 @@ async def draw_zzz_team_card(
     agent_image_focuses: dict[int, int],
     show_substat_rolls: dict[int, bool],
     agent_special_stat_map: dict[str, list[int]],
-    agent_hl_substat_map: dict[int, list[int]],
+    agent_hl_substat_map: dict[int, list[int] | None],
     hl_special_stats: dict[int, bool],
     animations: Mapping[int, SpineData | CustomAnimation],
 ) -> BytesIO:
@@ -934,7 +936,10 @@ async def draw_zzz_team_card(
         show_substat_rolls=show_substat_rolls,
         agent_special_stat_map=agent_special_stat_map,
         hl_special_stats=hl_special_stats,
-        agent_hl_substat_map=agent_hl_substat_map,
+        agent_hl_substat_map={
+            agent_id: get_hl_disc_substats(hl, agent_special_stat_map.get(str(agent_id), []))
+            for agent_id, hl in agent_hl_substat_map.items()
+        },
         uid=None,
     )
     if animations:

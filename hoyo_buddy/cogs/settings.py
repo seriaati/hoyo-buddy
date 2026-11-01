@@ -7,10 +7,8 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from hoyo_buddy.commands.configs import COMMANDS
-from hoyo_buddy.constants import ZZZ_AVATAR_BATTLE_TEMP_JSON
 from hoyo_buddy.db import Settings as UserSettings
-from hoyo_buddy.db.models.json_file import JSONFile
-from hoyo_buddy.db.utils import get_card_settings, get_locale, set_highlight_substats
+from hoyo_buddy.db.utils import get_card_settings, get_locale
 from hoyo_buddy.enums import Game, Locale
 from hoyo_buddy.exceptions import InvalidQueryError
 from hoyo_buddy.hoyo.character_choices import (
@@ -75,16 +73,6 @@ class Settings(commands.Cog):
 
         card_settings = await get_card_settings(i.user.id, character_id, game=game)
         settings = await UserSettings.get(user_id=i.user.id)
-
-        if not card_settings.highlight_substats:
-            agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
-                ZZZ_AVATAR_BATTLE_TEMP_JSON
-            )
-            await set_highlight_substats(
-                agent_special_stat_map=agent_special_stat_map,
-                card_settings=card_settings,
-                character_id=int(character_id),
-            )
 
         view = CardSettingsView(
             card_settings=card_settings,

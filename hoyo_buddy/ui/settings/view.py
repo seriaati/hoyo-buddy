@@ -7,7 +7,13 @@ import discord
 import genshin
 
 from hoyo_buddy import ui
-from hoyo_buddy.constants import ACCOMPANY_SUPPORT_GAMES, MIMO_SUPPORT_GAMES, locale_to_hoyo_lang
+from hoyo_buddy.constants import (
+    ACCOMPANY_SUPPORT_GAMES,
+    MIMO_SUPPORT_GAMES,
+    ZZZ_AVATAR_BATTLE_TEMP_JSON,
+    get_hl_disc_substats,
+    locale_to_hoyo_lang,
+)
 from hoyo_buddy.db.models import CustomImage, JSONFile, Settings
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.models.notif_settings import AccountNotifSettings
@@ -373,6 +379,9 @@ class CardSettingsView(ui.LayoutView):
                 is_supporter=await is_supporter(i.user.id),
             )
         else:
+            agent_special_stat_map: dict[str, list[int]] = (
+                await JSONFile.read(ZZZ_AVATAR_BATTLE_TEMP_JSON) if self.game is Game.ZZZ else {}
+            )
             container = CardSettingsContainer(
                 card_settings=self.card_settings,
                 settings=self.settings,
@@ -380,6 +389,10 @@ class CardSettingsView(ui.LayoutView):
                 game=self.game,
                 gacha_data=gacha_data,
                 is_supporter=await is_supporter(i.user.id),
+                hl_substats=get_hl_disc_substats(
+                    self.card_settings.highlight_substats,
+                    agent_special_stat_map.get(self.card_settings.character_id, []),
+                ),
             )
 
         container.add_item(

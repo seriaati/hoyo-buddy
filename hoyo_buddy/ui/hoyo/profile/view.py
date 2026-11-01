@@ -29,12 +29,7 @@ from hoyo_buddy.constants import (
     locale_to_zenless_data_lang,
 )
 from hoyo_buddy.db import CustomImage, JSONFile, Settings, draw_locale, get_dyk
-from hoyo_buddy.db.utils import (
-    get_card_settings,
-    get_default_color,
-    is_supporter,
-    set_highlight_substats,
-)
+from hoyo_buddy.db.utils import get_card_settings, get_default_color, is_supporter
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.draw.main_funcs import (
     draw_gi_build_card,
@@ -964,28 +959,6 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
         raise FeatureNotImplementedError(game=self.game)
 
-    async def add_default_hl_substats(self, user_id: int) -> None:
-        character_ids: list[int] = []
-
-        agent_special_stat_map: dict[str, list[int]] = await JSONFile.read(
-            ZZZ_AVATAR_BATTLE_TEMP_JSON
-        )
-        character_ids = [agent.id for agent in self.hoyolab_zzz_characters]
-
-        if self.zzz_data is not None:
-            character_ids.extend([agent.id for agent in self.zzz_data.agents])
-
-        for character_id in character_ids:
-            card_settings = await get_card_settings(user_id, str(character_id), game=Game.ZZZ)
-            if card_settings.highlight_substats:
-                continue
-
-            await set_highlight_substats(
-                agent_special_stat_map=agent_special_stat_map,
-                card_settings=card_settings,
-                character_id=character_id,
-            )
-
     async def _fetch_skins(self) -> dict[str, list[Skin]]:
         if self.game is Game.GENSHIN:
             async with hb_data.GIClient() as client:
@@ -1218,9 +1191,6 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._set_characters()
         self._show_uid = (await Settings.get(user_id=i.user.id)).show_uid
         self._add_items()
-
-        if self.game is Game.ZZZ:
-            await self.add_default_hl_substats(i.user.id)
 
         self.dyk = await get_dyk(i)
         self.render(self.player_embed)

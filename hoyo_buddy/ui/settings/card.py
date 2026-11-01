@@ -408,6 +408,7 @@ class CardSettingsContainer(ui.Container):
         game: Game,
         gacha_data: dict[str, dict[str, str]],
         is_supporter: bool,
+        hl_substats: list[int],
     ) -> None:
         self.card_settings = card_settings
         self.settings = settings
@@ -528,8 +529,7 @@ class CardSettingsContainer(ui.Container):
             ),
             ui.ActionRow(
                 HighlightSubstatSelector(
-                    current=card_settings.highlight_substats,
-                    disabled=self.disable_highlight_substat_selector,
+                    current=hl_substats, disabled=self.disable_highlight_substat_selector
                 )
             ),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),

@@ -7,12 +7,7 @@ from loguru import logger
 from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Q
 
-from hoyo_buddy.constants import (
-    NO_MASKED_LINK_GUILDS,
-    PLATFORM_TO_REGION,
-    ZZZ_AGENT_STAT_TO_DISC_SUBSTAT,
-    ZZZ_DISC_SUBSTATS,
-)
+from hoyo_buddy.constants import NO_MASKED_LINK_GUILDS, PLATFORM_TO_REGION
 from hoyo_buddy.draw.card_data import CARD_DATA
 from hoyo_buddy.enums import Game, Locale, Platform
 from hoyo_buddy.l10n import translator
@@ -208,24 +203,6 @@ def build_account_query(
     if kwargs:
         query &= Q(**kwargs)
     return query
-
-
-async def set_highlight_substats(
-    *,
-    agent_special_stat_map: dict[str, list[int]],
-    card_settings: models.CardSettings,
-    character_id: int,
-) -> None:
-    special_stat_ids = agent_special_stat_map.get(str(character_id), [])
-    special_substat_ids = [
-        ZZZ_AGENT_STAT_TO_DISC_SUBSTAT.get(stat_id) for stat_id in special_stat_ids
-    ]
-
-    hl_substats = [
-        substat_id for _, substat_id in ZZZ_DISC_SUBSTATS if substat_id in special_substat_ids
-    ]
-    card_settings.highlight_substats = hl_substats
-    await card_settings.save(update_fields=("highlight_substats",))
 
 
 async def get_card_settings(user_id: int, character_id: str, *, game: Game) -> models.CardSettings:

@@ -963,6 +963,20 @@ ZZZ_AGENT_STAT_TO_DISC_SUBSTAT = {
     9: 23203,  # PEN
 }
 
+
+def get_hl_disc_substats(
+    hl_substats: list[int] | None, agent_special_stats: list[int]
+) -> list[int]:
+    """Get the highlighted disc substats, defaulting to the agent's special stats if unset."""
+    if hl_substats is not None:
+        return hl_substats
+    return [
+        ZZZ_AGENT_STAT_TO_DISC_SUBSTAT[stat_id]
+        for stat_id in agent_special_stats
+        if stat_id in ZZZ_AGENT_STAT_TO_DISC_SUBSTAT
+    ]
+
+
 BLOCK_COLORS: dict[bool, dict[int | Literal["S", "A", "B", "C", "D"], str]] = {
     True: {
         5: "#9E6D35",

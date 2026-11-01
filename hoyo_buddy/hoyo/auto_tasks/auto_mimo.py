@@ -18,9 +18,10 @@ from hoyo_buddy.constants import (
     MIMO_SUPPORT_GAMES,
 )
 from hoyo_buddy.db.models import DiscordEmbed
+from hoyo_buddy.db.utils import is_supporter
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.emojis import MIMO_POINT_EMOJIS
-from hoyo_buddy.enums import Locale
+from hoyo_buddy.enums import Locale, MimoPointSaving
 from hoyo_buddy.hoyo.auto_tasks.mixin import AutoTaskMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import (
@@ -250,6 +251,23 @@ class AutoMimoMixin(AutoTaskMixin):
         else:
             return embed
 
+    @staticmethod
+    async def _get_saved_points(account: HoyoAccount, *, game_id: int, version_id: int) -> int:
+        """Points sponsors' auto draw saves so currency items can be bought when restocked."""
+        saving = account.mimo_point_saving
+        if (
+            not account.mimo_auto_buy
+            or saving is MimoPointSaving.OFF
+            or not await is_supporter(account.user_id)
+        ):
+            return 0
+
+        valuables = await account.client.get_mimo_valuables(game_id=game_id, version_id=version_id)
+        costs = [item.cost for item in valuables if is_mimo_item_obtainable(item)]
+        if saving is MimoPointSaving.MOST_EXPENSIVE:
+            return max(costs, default=0)
+        return sum(costs)
+
     @classmethod
     async def _draw_lottery(cls, account: HoyoAccount) -> DefaultEmbed | ErrorEmbed | None:
         locale = account.user.settings.locale or Locale.american_english
@@ -271,10 +289,15 @@ class AutoMimoMixin(AutoTaskMixin):
             if count == 0 or point < info.cost:
                 return None
 
+            min_point = max(
+                account.mimo_minimum_point,
+                await cls._get_saved_points(account, game_id=game_id, version_id=version_id),
+            )
+
             results: list[genshin.models.MimoLotteryResult] = []
 
             for _ in range(count):
-                if point < info.cost or (point - info.cost) < account.mimo_minimum_point:
+                if point < info.cost or (point - info.cost) < min_point:
                     break
 
                 try:

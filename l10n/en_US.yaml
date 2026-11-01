@@ -899,6 +899,13 @@ layout_view_edited: "Interactive components have been disabled to save system re
 mimo_title: Traveling Mimo Settings
 mimo_minimum_point_label: Minimum points to keep
 mimo_minimum_point_desc: "When auto drawing, Hoyo Buddy will make sure your points stay above this value, set to 0 to draw whenever possible."
+mimo_point_saving.title: Save points for currency (sponsor perk)
+mimo_point_saving.desc: "When auto buy is on, auto draw keeps enough points to buy Stellar Jades, Polychrome or Primogems when they restock."
+mimo_point_saving.placeholder: Choose which items to save points for
+mimo_point_saving.all: Save for all currency items
+mimo_point_saving.most_expensive: Save for the most expensive item only
+mimo_point_saving.off: "Don't save points"
+mimo_point_saving.sponsor_perk_message: Saving points for currency items is a sponsor perk.
 disable_all_button_label: Disable all notifications
 apply_template_to_all_chars: Apply current template to all characters
 apply_template_to_all_chars_desc: "All **future and current** characters will use **{template}**."

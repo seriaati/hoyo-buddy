@@ -9,7 +9,7 @@ import genshin
 from tortoise import fields
 
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, REGION_TO_PLATFORM, SERVER_RESET_HOURS
-from hoyo_buddy.enums import Game
+from hoyo_buddy.enums import Game, MimoPointSaving
 from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.utils import blur_uid, get_now
 
@@ -47,6 +47,10 @@ class HoyoAccount(BaseModel):
     """Whether this account can be seen by others."""
     notif_settings: fields.BackwardOneToOneRelation[AccountNotifSettings]
     mimo_minimum_point = fields.IntField(default=0)
+    mimo_point_saving = fields.CharEnumField(
+        MimoPointSaving, max_length=16, default=MimoPointSaving.ALL
+    )
+    """Sponsor-only: which shop currency items auto draw saves points for."""
 
     # Auto tasks
     # Future me: Make sure to change AUTO_TASK_TOGGLE_FIELDS in constants.py if you modify this section

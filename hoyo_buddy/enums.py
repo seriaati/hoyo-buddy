@@ -174,6 +174,14 @@ class LeaderboardType(StrEnum):
     THEATER_DMG = "theater_dmg_lb_title"
 
 
+class MimoPointSaving(StrEnum):
+    """Which shop currency items sponsors' auto draw saves points for."""
+
+    ALL = "all"
+    MOST_EXPENSIVE = "most_expensive"
+    OFF = "off"
+
+
 class OpenGameLabel(StrEnum):
     DEFAULT = "open_game_label"
     CLOUD = "open_game_cloud_label"

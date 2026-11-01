@@ -10,7 +10,7 @@ from hoyo_buddy.constants import (
     AUTO_REDEEM_SUPPORT_GAMES,
     MIMO_AUTO_DRAW_SUPPORT_GAMES,
 )
-from hoyo_buddy.enums import Game, Platform
+from hoyo_buddy.enums import Game, MimoPointSaving, Platform
 from hoyo_buddy.exceptions import SponsorPerkError
 from hoyo_buddy.l10n import LocaleStr
 
@@ -50,6 +50,31 @@ class MinimumPointsButton(ui.Button["SettingsView"]):
         self.view.account.mimo_minimum_point = points
         await self.view.account.save(update_fields=("mimo_minimum_point",))
 
+        await self.view.update(i)
+
+
+class MimoPointSavingSelect(ui.Select["SettingsView"]):
+    def __init__(self, *, current: MimoPointSaving, is_supporter: bool) -> None:
+        super().__init__(
+            custom_id="mimo_point_saving_select",
+            options=[
+                ui.SelectOption(
+                    label=LocaleStr(key=f"mimo_point_saving.{saving.value}"),
+                    value=saving.value,
+                    default=is_supporter and saving is current,
+                )
+                for saving in MimoPointSaving
+            ],
+            placeholder=LocaleStr(key="mimo_point_saving.placeholder"),
+        )
+        self.is_supporter = is_supporter
+
+    async def callback(self, i: Interaction) -> None:
+        if not self.is_supporter:
+            raise SponsorPerkError(message=LocaleStr(key="mimo_point_saving.sponsor_perk_message"))
+
+        self.view.account.mimo_point_saving = MimoPointSaving(self.values[0])
+        await self.view.account.save(update_fields=("mimo_point_saving",))
         await self.view.update(i)
 
 
@@ -143,7 +168,7 @@ class AccountSettingsContainer(ui.DefaultContainer["SettingsView"]):
 
 
 class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
-    def __init__(self, *, account: HoyoAccount) -> None:
+    def __init__(self, *, account: HoyoAccount, is_supporter: bool) -> None:
         super().__init__(
             ui.TextDisplay(LocaleStr(custom_str="# {title}", title=LocaleStr(key="mimo_title"))),
             discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
@@ -203,5 +228,18 @@ class MimoSettingsContainer(ui.DefaultContainer["SettingsView"]):
                     )
                 ),
                 accessory=MinimumPointsButton(current=account.mimo_minimum_point),
+            ),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            discord.ui.Separator(visible=False, spacing=discord.SeparatorSpacing.small),
+            ui.TextDisplay(
+                LocaleStr(
+                    custom_str="### {emoji} {title}\n{desc}",
+                    emoji=emojis.MIMO_POINT_EMOJIS[account.game],
+                    title=LocaleStr(key="mimo_point_saving.title"),
+                    desc=LocaleStr(key="mimo_point_saving.desc"),
+                )
+            ),
+            ui.ActionRow(
+                MimoPointSavingSelect(current=account.mimo_point_saving, is_supporter=is_supporter)
             ),
         )

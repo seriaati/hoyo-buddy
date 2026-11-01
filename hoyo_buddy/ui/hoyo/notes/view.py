@@ -31,7 +31,7 @@ from hoyo_buddy.enums import Game
 from hoyo_buddy.exceptions import FeatureNotImplementedError
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.models import DrawInput
-from hoyo_buddy.ui import Button, Select, SelectOption
+from hoyo_buddy.ui import Button, PaginatorSelect, Select, SelectOption
 from hoyo_buddy.ui.reminders.view import RemindersView
 from hoyo_buddy.utils import capture_exception
 
@@ -341,7 +341,7 @@ class NotesView(ui.LayoutView):
         return result
 
 
-class AccountSwitcher(Select[NotesView]):
+class AccountSwitcher(PaginatorSelect[NotesView]):
     def __init__(
         self, accounts: list[HoyoAccount], account: HoyoAccount, *, overview: bool
     ) -> None:
@@ -367,6 +367,10 @@ class AccountSwitcher(Select[NotesView]):
 
     async def callback(self, i: Interaction) -> None:
         assert self.view.accounts is not None
+
+        if self.update_page():
+            await i.response.edit_message(view=self.view)
+            return
 
         await self.set_loading_state(i)
         view = self.view

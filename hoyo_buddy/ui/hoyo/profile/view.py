@@ -571,6 +571,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             animation=animation,
             uid=uid,
             show_substat_rolls=card_settings.show_substat_rolls,
+            show_substat_breakdown=card_settings.show_substat_breakdown,
         )
 
     async def _draw_hb_gi_character_card(
@@ -634,6 +635,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             animation=animation,
             uid=uid,
             show_substat_rolls=card_settings.show_substat_rolls,
+            show_substat_breakdown=card_settings.show_substat_breakdown,
         )
 
     async def _draw_hb_zzz_character_card(
@@ -717,6 +719,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             custom_image=card_settings.current_image,
             template=template_num,
             show_substat_rolls=card_settings.show_substat_rolls,
+            show_substat_breakdown=card_settings.show_substat_breakdown,
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats=card_settings.highlight_special_stats,
             hl_substats=card_settings.highlight_substats,

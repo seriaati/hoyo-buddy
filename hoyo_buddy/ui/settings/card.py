@@ -116,6 +116,20 @@ class SubstatRollButton(ui.EmojiToggleButton["CardSettingsView"]):
         await self.view.update(i)
 
 
+class SubstatBreakdownButton(ui.EmojiToggleButton["CardSettingsView"]):
+    def __init__(self, *, current: bool, disabled: bool) -> None:
+        super().__init__(current=current, disabled=disabled)
+
+    async def callback(self, i: Interaction) -> None:
+        self.current = not self.current
+        self.update_style()
+
+        self.view.card_settings.show_substat_breakdown = self.current
+        await self.view.card_settings.save(update_fields=("show_substat_breakdown",))
+
+        await self.view.update(i)
+
+
 class AnimatedImageButton(ui.EmojiToggleButton["CardSettingsView"]):
     def __init__(self, *, current: bool, disabled: bool, is_supporter: bool) -> None:
         super().__init__(current=current, disabled=disabled)
@@ -503,6 +517,21 @@ class CardSettingsContainer(ui.Container):
                     disabled=self.disable_substat_roll_button,
                 ),
             ),
+            # Substat breakdown
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="### {title}\n{desc}\n{empty}",
+                        title=LocaleStr(key="card_settings_substat_breakdown"),
+                        desc=LocaleStr(key="card_settings_substat_breakdown_desc"),
+                        empty=EMPTY_CHAR,
+                    )
+                ),
+                accessory=SubstatBreakdownButton(
+                    current=card_settings.show_substat_breakdown,
+                    disabled=self.disable_substat_breakdown_button,
+                ),
+            ),
             # Animated image
             ui.Section(
                 ui.TextDisplay(
@@ -618,6 +647,10 @@ class CardSettingsContainer(ui.Container):
             return False
         # Hoyo Buddy and enka.cards templates support substat rolls for GI and HSR
         return get_template_name(self.card_settings.template) not in {"hb", "enka"}
+
+    @property
+    def disable_substat_breakdown_button(self) -> bool:
+        return get_template_name(self.card_settings.template) != "hb"
 
     @property
     def disable_highlight_substat_selector(self) -> bool:

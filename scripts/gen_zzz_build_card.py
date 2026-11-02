@@ -155,6 +155,7 @@ def _build_card(
             disc_icons=disc_icons,
             color=color or card_data.color,
             show_substat_rolls=True,
+            show_substat_breakdown=False,
             agent_special_stats=[],
             hl_substats=[],
             hl_special_stats=False,
@@ -170,6 +171,7 @@ def _build_card(
         color=color,
         template=template,  # pyright: ignore[reportArgumentType]
         show_substat_rolls=True,
+        show_substat_breakdown=False,
         agent_special_stats=[],
         hl_substats=[],
         hl_special_stats=False,

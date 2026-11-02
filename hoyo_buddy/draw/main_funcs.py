@@ -205,6 +205,7 @@ async def draw_hsr_build_card(
     animation: SpineData | CustomAnimation | None,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> BytesIO:
     urls: list[str] = []
     urls.append(image_url)
@@ -243,6 +244,7 @@ async def draw_hsr_build_card(
                 anim.method,
                 uid,
                 show_substat_rolls,
+                show_substat_breakdown,
             )
         return await draw_input.loop.run_in_executor(
             draw_input.executor,
@@ -254,6 +256,7 @@ async def draw_hsr_build_card(
             primary_hex,
             uid,
             show_substat_rolls,
+            show_substat_breakdown,
         )
 
     async with YattaAPIClient(session=draw_input.session) as api:
@@ -268,6 +271,7 @@ async def draw_hsr_build_card(
         en_name=en_name,
         uid=uid,
         show_substat_rolls=show_substat_rolls,
+        show_substat_breakdown=show_substat_breakdown,
     )
     if animation is not None:
         anim = await resolve_animation(draw_input, animation, mask="hsr-build-card2/image_mask.png")
@@ -300,6 +304,7 @@ async def draw_gi_build_card(
     animation: SpineData | CustomAnimation | None,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> BytesIO:
     urls: list[str] = [image_url, character.weapon.icon, character.icon.gacha]
     urls.extend(artifact.icon for artifact in character.artifacts)
@@ -328,6 +333,7 @@ async def draw_gi_build_card(
             rank=rank,
             uid=uid,
             show_substat_rolls=show_substat_rolls,
+            show_substat_breakdown=show_substat_breakdown,
         )
         draw = card.draw
         if animation is not None:
@@ -352,6 +358,7 @@ async def draw_gi_build_card(
             rank,
             uid,
             show_substat_rolls,
+            show_substat_breakdown,
             anim.path,
             anim.offset,
             anim.quality,
@@ -370,6 +377,7 @@ async def draw_gi_build_card(
             rank,
             uid,
             show_substat_rolls,
+            show_substat_breakdown,
         )
     return buffer
 
@@ -765,6 +773,7 @@ async def draw_zzz_build_card(
     custom_image: str | None,
     template: Literal[1, 2, 3, 4],
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
     agent_special_stat_map: dict[str, list[int]],
     hl_substats: list[int] | None,
     hl_special_stats: bool,
@@ -823,6 +832,7 @@ async def draw_zzz_build_card(
             hl_special_stats={agent.id: hl_special_stats},
             agent_hl_substat_map={agent.id: hl_substats},
             uid=uid,
+            show_substat_breakdown=show_substat_breakdown,
         )
     elif template == 4:
         card = funcs.zzz.ZZZAgentCard4(
@@ -833,6 +843,7 @@ async def draw_zzz_build_card(
             disc_icons=draw_data.disc_icons,
             color=custom_color or card_data.color,
             show_substat_rolls=show_substat_rolls,
+            show_substat_breakdown=show_substat_breakdown,
             agent_special_stats=agent_special_stats,
             hl_substats=hl_substats,
             hl_special_stats=hl_special_stats,
@@ -849,6 +860,7 @@ async def draw_zzz_build_card(
             color=custom_color,
             template=template,
             show_substat_rolls=show_substat_rolls,
+            show_substat_breakdown=show_substat_breakdown,
             agent_special_stats=agent_special_stats,
             hl_special_stats=hl_special_stats,
             hl_substats=hl_substats,

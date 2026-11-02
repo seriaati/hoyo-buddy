@@ -14,7 +14,14 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     get_character_stats,
     get_max_substat_rolls,
     get_stat_icon,
+    get_substat_breakdown,
     get_substat_rolls,
+)
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
+    BreakdownStyle,
+    draw_breakdown_grid,
+    draw_panel,
+    extend_image,
 )
 
 if TYPE_CHECKING:
@@ -29,6 +36,45 @@ if TYPE_CHECKING:
 
 CARD_SIZE = (2244, 1297)
 IMAGE_POS = (0, 159)
+BREAKDOWN_HEIGHT = 196
+"""How much taller the substat breakdown makes the card."""
+
+
+def _get_card_size(show_substat_breakdown: bool) -> tuple[int, int]:
+    extra = BREAKDOWN_HEIGHT if show_substat_breakdown else 0
+    return (CARD_SIZE[0], CARD_SIZE[1] + extra)
+
+
+def _open_image_mask(show_substat_breakdown: bool) -> Image.Image:
+    mask = Drawer.open_image("hoyo-buddy-assets/assets/hsr-build-card/img/mask.png")
+    if show_substat_breakdown:
+        mask = extend_image(mask, at=600, height=BREAKDOWN_HEIGHT)
+    return mask
+
+
+def _draw_substat_breakdown(
+    im: Image.Image,
+    drawer: Drawer,
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+    *,
+    primary: tuple[int, int, int],
+    dark_primary: tuple[int, int, int],
+    light_primary: tuple[int, int, int],
+) -> None:
+    draw_panel(im, (770, 1286, 2212, 1458), radius=25, color=(*light_primary, 255))
+    totals = get_substat_breakdown(character)
+    icons = [get_stat_icon(t.stat, size=(38, 38), mask_color=dark_primary) for t in totals]
+    style = BreakdownStyle(
+        value_size=30,
+        value_style="medium",
+        value_color=dark_primary,
+        label_size=19,
+        label_style="bold",
+        label_color=primary,
+        icon_size=38,
+        gap=8,
+    )
+    draw_breakdown_grid(im, drawer, totals, icons, style, box=(806, 1308, 2176, 1436), columns=6)
 
 
 def _get_colors(
@@ -58,6 +104,7 @@ def _draw_foreground(
     light_primary: tuple[int, int, int],
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> None:
     draw = ImageDraw.Draw(im)
     drawer = Drawer(draw, folder="hsr-build-card", dark_mode=dark_mode)
@@ -70,6 +117,8 @@ def _draw_foreground(
     shadow_height = card.height - height
     real_pos = (704, 37)
     pos = (real_pos[0] - shadow_width, real_pos[1] - shadow_height)
+    if show_substat_breakdown:
+        card = extend_image(card, at=900, height=BREAKDOWN_HEIGHT)
     im.paste(card, pos, card)
 
     # character name
@@ -461,6 +510,16 @@ def _draw_foreground(
             x = 1374
             y += height + y_padding
 
+    if show_substat_breakdown:
+        _draw_substat_breakdown(
+            im,
+            drawer,
+            character,
+            primary=primary,
+            dark_primary=dark_primary,
+            light_primary=light_primary,
+        )
+
     # logo
     # filename = "dark_logo.png" if dark_mode else "light_logo.png"
     # logo = drawer.open_asset(f"img/{filename}")
@@ -475,13 +534,20 @@ def draw_hsr_build_card(
     primary_hex: str,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> io.BytesIO:
     primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
 
-    im = Image.new("RGBA", CARD_SIZE, primary)
+    im = Image.new("RGBA", _get_card_size(show_substat_breakdown), primary)
     drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card", dark_mode=dark_mode)
 
     # character image
+    if show_substat_breakdown:
+        # Fill the taller art area like the animated card does, keeping the art's framing
+        mask = _open_image_mask(show_substat_breakdown)
+        im.paste(
+            dark_primary, (*IMAGE_POS, IMAGE_POS[0] + mask.width, IMAGE_POS[1] + mask.height), mask
+        )
     character_im = drawer.open_static(image_url)
     character_im = drawer.modify_image_for_build_card(
         character_im,
@@ -502,6 +568,7 @@ def draw_hsr_build_card(
         light_primary=light_primary,
         uid=uid,
         show_substat_rolls=show_substat_rolls,
+        show_substat_breakdown=show_substat_breakdown,
     )
     return Drawer.save_image(im)
 
@@ -518,6 +585,7 @@ def draw_animated_hsr_build_card(
     method: int,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> io.BytesIO:
     """Draw the card with an animated character image.
 
@@ -533,14 +601,15 @@ def draw_animated_hsr_build_card(
         method: WEBP method.
         uid: The UID to show on the card, if any.
         show_substat_rolls: Whether to draw the relic sub stats' rolls.
+        show_substat_breakdown: Whether to draw the sub stat totals under the relics.
 
     Returns:
         The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
     """
     primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
-    mask = Drawer.open_image("hoyo-buddy-assets/assets/hsr-build-card/img/mask.png")
+    mask = _open_image_mask(show_substat_breakdown)
 
-    background = Image.new("RGBA", CARD_SIZE, primary)
+    background = Image.new("RGBA", _get_card_size(show_substat_breakdown), primary)
     background.paste(
         dark_primary, (*IMAGE_POS, IMAGE_POS[0] + mask.width, IMAGE_POS[1] + mask.height), mask
     )
@@ -560,6 +629,7 @@ def draw_animated_hsr_build_card(
             light_primary=light_primary,
             uid=uid,
             show_substat_rolls=show_substat_rolls,
+            show_substat_breakdown=show_substat_breakdown,
         )
 
     return Drawer.draw_animated_card(
@@ -576,6 +646,7 @@ def draw_animated_hsr_build_card(
             primary_hex,
             uid,
             show_substat_rolls,
+            show_substat_breakdown,
         ),
         area_pos=IMAGE_POS,
         mask=mask,

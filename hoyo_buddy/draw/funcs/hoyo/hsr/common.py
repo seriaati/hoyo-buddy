@@ -1,14 +1,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import enka
 from discord.utils import get as dget
 
 from hoyo_buddy import models as hb_models
-from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS, MAX_SUBSTAT_ROLLS
+from hoyo_buddy.constants import (
+    GPY_TYPE_TO_YATTA_PROP_TYPE,
+    HSR_ELEMENT_DMG_PROPS,
+    MAX_SUBSTAT_ROLLS,
+)
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
+    Substat,
+    SubstatTotal,
+    parse_stat_value,
+    total_substats,
+)
 
 if TYPE_CHECKING:
     from genshin.models.starrail import StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
@@ -491,13 +501,81 @@ def get_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> list[int]:
     return [stat.rolls for stat in relic.sub_stats]
 
 
-def get_max_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> int:
-    """Get the most times one of the relic's sub stats can be rolled."""
+def _get_relic_rarity(relic: enka.hsr.Relic | hb_models.Relic) -> int:
     if isinstance(relic, enka.hsr.Relic):
         # enka-py's rarity falls back to 3 for relics missing from its data, relic IDs start
         # with rarity + 1
-        return MAX_SUBSTAT_ROLLS[int(str(relic.id)[0]) - 1]
-    return MAX_SUBSTAT_ROLLS[relic.rarity]
+        return int(str(relic.id)[0]) - 1
+    return relic.rarity
+
+
+def get_max_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> int:
+    """Get the most times one of the relic's sub stats can be rolled."""
+    return MAX_SUBSTAT_ROLLS[_get_relic_rarity(relic)]
+
+
+MAX_SUBSTAT_ROLL_VALUES: Final[dict[str, dict[int, float]]] = {
+    "HPAddedRatio": {2: 1.728, 3: 2.592, 4: 3.456, 5: 4.32},
+    "HPDelta": {2: 16.935, 3: 25.4025, 4: 33.87, 5: 42.33752},
+    "AttackAddedRatio": {2: 1.728, 3: 2.592, 4: 3.456, 5: 4.32},
+    "AttackDelta": {2: 8.467512, 3: 12.70126, 4: 16.935, 5: 21.16876},
+    "DefenceAddedRatio": {2: 2.16, 3: 3.24, 4: 4.32, 5: 5.4},
+    "DefenceDelta": {2: 8.467512, 3: 12.70126, 4: 16.935, 5: 21.16876},
+    "SpeedDelta": {2: 1.2, 3: 1.4, 4: 2.0, 5: 2.6},
+    "CriticalChance": {2: 1.296, 3: 1.944, 4: 2.592, 5: 3.24},
+    "CriticalDamage": {2: 2.592, 3: 3.888, 4: 5.184, 5: 6.48},
+    "StatusProbability": {2: 1.728, 3: 2.592, 4: 3.456, 5: 4.32},
+    "StatusResistance": {2: 1.728, 3: 2.592, 4: 3.456, 5: 4.32},
+    "BreakDamageAddedRatio": {2: 2.592, 3: 3.888, 4: 5.184, 5: 6.48},
+}
+"""Relic sub stats' highest single roll by relic rarity, keyed by enka stat type, in breakdown
+order."""
+
+FLAT_SUBSTATS: Final = frozenset({"HPDelta", "AttackDelta", "DefenceDelta"})
+
+
+def _get_substat_key(stat: enka.hsr.Stat | hb_models.Stat) -> str:
+    if isinstance(stat, enka.hsr.Stat):
+        return stat.type.value
+    # HoYoLAB property types map to Yatta's names, which are enka's with a lowercase first letter
+    name = GPY_TYPE_TO_YATTA_PROP_TYPE.get(stat.type, "")
+    return name[:1].upper() + name[1:]
+
+
+def _get_substat(
+    stat: enka.hsr.Stat | hb_models.Stat, *, rolls: int, rarity: int
+) -> Substat[str, enka.hsr.Stat | hb_models.Stat]:
+    key = _get_substat_key(stat)
+    if isinstance(stat, enka.hsr.Stat):
+        value = stat.value * 100 if stat.is_percentage else stat.value
+        precise = True
+    else:
+        value = parse_stat_value(stat.formatted_value)
+        # HoYoLAB rounds SPD to a whole number
+        precise = key != "SpeedDelta"
+
+    return Substat(
+        key=key,
+        stat=stat,
+        value=value,
+        is_percent=stat.formatted_value.endswith("%"),
+        decimals=0 if key in FLAT_SUBSTATS or not precise else 1,
+        rolls=rolls,
+        max_roll=MAX_SUBSTAT_ROLL_VALUES.get(key, {}).get(rarity) if precise else None,
+    )
+
+
+def get_substat_breakdown(
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+) -> list[SubstatTotal[enka.hsr.Stat | hb_models.Stat]]:
+    """Total each relic sub stat across the character's relics."""
+    substats = [
+        _get_substat(stat, rolls=rolls, rarity=_get_relic_rarity(relic))
+        for relic in character.relics
+        # enka relics' sub stats and roll counts come from different lists
+        for stat, rolls in zip(relic.sub_stats, get_substat_rolls(relic), strict=False)
+    ]
+    return total_substats(substats, order=MAX_SUBSTAT_ROLL_VALUES)
 
 
 def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:

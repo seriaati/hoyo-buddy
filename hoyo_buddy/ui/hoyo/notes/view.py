@@ -318,6 +318,7 @@ class NotesView(ui.LayoutView):
             file_ = File(self.bytes_obj, filename="notes.webp")
         else:
             file_ = None
+            embed.set_image(url=None)
 
         self.render(embed)
         return [file_] if file_ is not None else []

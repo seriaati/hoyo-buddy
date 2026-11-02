@@ -4,6 +4,7 @@ import contextlib
 from typing import TYPE_CHECKING, Literal
 
 from discord import InteractionType, NotFound, app_commands
+from loguru import logger
 
 from hoyo_buddy.db import get_locale
 from hoyo_buddy.db.models.settings import Settings
@@ -18,7 +19,21 @@ if TYPE_CHECKING:
 __all__ = ("CommandTree",)
 
 
+def _log_context(i: Interaction) -> contextlib.AbstractContextManager[None]:
+    return logger.contextualize(
+        interaction_id=i.id,
+        user_id=i.user.id,
+        guild_id=i.guild_id,
+        command=i.command.qualified_name if i.command else None,
+        locale=i.locale.value,
+    )
+
+
 class CommandTree(app_commands.CommandTree):
+    async def _call(self, i: Interaction) -> None:
+        with _log_context(i):
+            await super()._call(i)
+
     async def interaction_check(self, i: Interaction) -> Literal[True]:
         if i.type not in {InteractionType.application_command, InteractionType.autocomplete}:
             return True
@@ -42,6 +57,10 @@ class CommandTree(app_commands.CommandTree):
         return True
 
     async def on_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
+        with _log_context(i):
+            await self._handle_error(i, e)
+
+    async def _handle_error(self, i: Interaction, e: app_commands.AppCommandError) -> None:
         error = e.original if isinstance(e, app_commands.errors.CommandInvokeError) else e
 
         if should_ignore_error(error):

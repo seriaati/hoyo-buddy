@@ -535,7 +535,7 @@ class CharactersView(LayoutPaginatorView):
     def _add_items(self) -> None:
         if self.show_bangboos:
             self.rows = [
-                [CharactersPerPageButton(), ShowBangboos(current_toggle=True)],
+                [CharactersPerPageButton(), BangbooViewButton(show_bangboos=True)],
                 [ToggleUIButton()],
             ]
             return
@@ -584,11 +584,13 @@ class CharactersView(LayoutPaginatorView):
         if self.game in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}:
             toggles.append(ShowOwnedOnly(current_toggle=self.show_owned_only))
         toggles.append(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
+
+        first_row: list[Button | Select] = [*filter_buttons, CharactersPerPageButton()]
         if self.game is Game.ZZZ:
-            toggles.append(ShowBangboos(current_toggle=False))
+            first_row.append(BangbooViewButton(show_bangboos=False))
 
         self.rows = [
-            [*filter_buttons, CharactersPerPageButton()],
+            first_row,
             toggles,
             [SorterSelector(self.sorter, self.game)],
             [ToggleUIButton()],
@@ -1007,18 +1009,19 @@ class ShowMaxLevelOnly(ToggleButton[CharactersView]):
         await self.view.update(i)
 
 
-class ShowBangboos(ToggleButton[CharactersView]):
-    def __init__(self, *, current_toggle: bool) -> None:
+class BangbooViewButton(Button[CharactersView]):
+    def __init__(self, *, show_bangboos: bool) -> None:
         super().__init__(
-            current_toggle=current_toggle,
-            toggle_label=LocaleStr(key="bangboo", mi18n_game=Game.ZZZ),
-            row=2,
+            label=LocaleStr(key="agent", mi18n_game=Game.ZZZ)
+            if show_bangboos
+            else LocaleStr(key="bangboo", mi18n_game=Game.ZZZ),
+            style=ButtonStyle.blurple,
+            row=1,
         )
 
     async def callback(self, i: Interaction) -> None:
-        await super().callback(i, edit=False)
         await self.set_loading_state(i)
-        self.view.show_bangboos = self.current_toggle
+        self.view.show_bangboos = not self.view.show_bangboos
         if self.view.show_bangboos and self.view.zzz_bangboos is None:
             self.view.zzz_bangboos = await self.view.account.client.get_bangboos()
         await self.view.update(i)

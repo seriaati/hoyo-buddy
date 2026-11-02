@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PIL import Image, ImageDraw
 
 from hoyo_buddy.draw.drawer import TRANSPARENT, WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_starward_string
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import strip_mode_suffix
 from hoyo_buddy.draw.mixins import HSRChallengeUIDMixin
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import get_floor_difficulty
@@ -163,9 +163,7 @@ class MOCCard(HSRChallengeUIDMixin):
         im = Image.new("RGBA", (639, 421), TRANSPARENT)
         drawer = Drawer(ImageDraw.Draw(im), folder="moc", dark_mode=True)
 
-        stage_name = get_floor_difficulty(stage.name, self._season.name).replace(
-            get_starward_string(self._data), ""
-        )
+        stage_name = get_floor_difficulty(strip_mode_suffix(stage.name), self._season.name)
         name_tbox = drawer.write(
             stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
         )

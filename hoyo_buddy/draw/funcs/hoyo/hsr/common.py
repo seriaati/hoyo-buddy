@@ -19,21 +19,28 @@ from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
     parse_stat_value,
     total_substats,
 )
+from hoyo_buddy.enums import Game, Locale
+from hoyo_buddy.l10n import LocaleStr
 
 if TYPE_CHECKING:
-    from genshin.models.starrail import StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
     from PIL import Image
 
 
-def get_starward_string(data: StarRailChallenge | StarRailPureFiction | StarRailAPCShadow) -> str:
-    """Return localized name of 'Starward mode'."""
-    max_floor = data.max_floor  # Stormcleanse (XII)
-    for floor in data.floors:
-        # Stormcleanse (XII)Starward Mode
-        if floor.name.startswith(max_floor):
-            return floor.name[len(max_floor) :]  # Starward Mode
+def strip_mode_suffix(floor_name: str) -> str:
+    """Remove a trailing 'Regular Mode' or 'Starward Mode' label, e.g. '(IV)Starward Mode' -> '(IV)'.
 
-    return ""
+    Labels of every locale are checked since the API can return a different language than the
+    user's locale.
+    """
+    labels = {
+        LocaleStr(key=key, mi18n_game=Game.STARRAIL).translate(locale).strip()
+        for key in ("abyss_standard_mode", "abyss_star_mode")
+        for locale in Locale
+    }
+    for label in sorted(labels, key=len, reverse=True):
+        if label and floor_name.endswith(label):
+            return floor_name.removesuffix(label).strip()
+    return floor_name
 
 
 @dataclass

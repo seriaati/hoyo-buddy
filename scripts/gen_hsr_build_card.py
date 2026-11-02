@@ -107,6 +107,7 @@ async def main() -> None:
         primary_hex=primary_hex,
         uid=None,
         show_substat_rolls=True,
+        show_substat_breakdown=False,
     )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

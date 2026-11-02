@@ -14,7 +14,13 @@ from hoyo_buddy.constants import (
     is_hl_disc_substat,
 )
 from hoyo_buddy.draw.drawer import WHITE, Drawer
-from hoyo_buddy.draw.funcs.hoyo.zzz.common import SKILL_ORDER, STAT_ICONS, get_props
+from hoyo_buddy.draw.funcs.hoyo.zzz.common import (
+    SKILL_ORDER,
+    STAT_ICONS,
+    add_breakdown_band,
+    draw_breakdown_band,
+    get_props,
+)
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.l10n import LocaleStr
 
@@ -27,6 +33,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
 
 IMAGE_POS = (190, 99)
+BREAKDOWN_HEIGHT = 170
+"""How much taller the substat breakdown makes the card."""
 
 
 class ZZZAgentCard4:
@@ -40,6 +48,7 @@ class ZZZAgentCard4:
         name_data: AgentNameData | None,
         color: str,
         show_substat_rolls: bool,
+        show_substat_breakdown: bool,
         agent_special_stats: list[int],
         hl_substats: list[int],
         hl_special_stats: bool,
@@ -52,6 +61,7 @@ class ZZZAgentCard4:
         self._name_data = name_data
         self._color = color
         self._show_substat_rolls = show_substat_rolls
+        self._show_substat_breakdown = show_substat_breakdown
         self._agent_special_stats = agent_special_stats
         self._hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
@@ -459,8 +469,24 @@ class ZZZAgentCard4:
                 anchor="rm",
             )
 
-    def draw(self) -> BytesIO:
+        if self._show_substat_breakdown:
+            # Covers the card base's blobs where they overflow the card
+            draw_breakdown_band(
+                im,
+                self._agent,
+                top=im.height - BREAKDOWN_HEIGHT,
+                height=BREAKDOWN_HEIGHT,
+                padding=130,
+            )
+
+    def _open_card_base(self) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
+        if self._show_substat_breakdown:
+            im = add_breakdown_band(im, BREAKDOWN_HEIGHT)
+        return im
+
+    def draw(self) -> BytesIO:
+        im = self._open_card_base()
         self._set_im(im)
         self._draw_card_base()
         self._draw_img()
@@ -481,7 +507,7 @@ class ZZZAgentCard4:
         Returns:
             The animated WEBP, or the static card if the animation doesn't fit Discord's limit.
         """
-        background = Drawer.open_image("hoyo-buddy-assets/assets/zzz-build-card4/card_base.png")
+        background = self._open_card_base()
         self._set_im(background)
         self._draw_card_base()
         background.alpha_composite(self.drawer.open_asset("img_bk.png"), IMAGE_POS)

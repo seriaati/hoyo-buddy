@@ -17,7 +17,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.draw.drawer import BLACK, Drawer
 from hoyo_buddy.enums import Locale
 
-from .common import SKILL_ORDER, STAT_ICONS, get_props
+from .common import SKILL_ORDER, STAT_ICONS, add_breakdown_band, draw_breakdown_band, get_props
 
 if TYPE_CHECKING:
     from io import BytesIO
@@ -27,6 +27,9 @@ if TYPE_CHECKING:
 
     from hoyo_buddy.models import AgentNameData, ZZZEnkaCharacter
     from hoyo_buddy.models.draw import ZZZTemp1CardData
+
+BREAKDOWN_HEIGHT = 150
+"""How much taller the substat breakdown makes the card."""
 
 
 class ZZZAgentCard:
@@ -42,6 +45,7 @@ class ZZZAgentCard:
         color: str | None,
         template: Literal[1, 2],
         show_substat_rolls: bool,
+        show_substat_breakdown: bool,
         agent_special_stats: list[int],
         hl_substats: list[int],
         hl_special_stats: bool,
@@ -56,6 +60,7 @@ class ZZZAgentCard:
         self._color = color
         self._template = template
         self._show_substat_rolls = show_substat_rolls
+        self._show_substat_breakdown = show_substat_breakdown
         self._agent_special_stats = agent_special_stats
         self.hl_substats = hl_substats
         self._hl_special_stats = hl_special_stats
@@ -102,6 +107,8 @@ class ZZZAgentCard:
                 color=BLACK,
             )
 
+        if self._show_substat_breakdown:
+            card = add_breakdown_band(card, BREAKDOWN_HEIGHT)
         return card
 
     def _draw_agent_image(self, card: Image.Image) -> None:
@@ -445,6 +452,16 @@ class ZZZAgentCard:
                         sub_stat_pos = (sub_stat_pos[0] + 117, sub_stat_pos[1])
 
             start_pos = (521, 597) if i == 2 else (start_pos[0], start_pos[1] + 233)
+
+        if self._show_substat_breakdown:
+            # Covers the agent image where it overflows the card
+            draw_breakdown_band(
+                im,
+                self._agent,
+                top=im.height - BREAKDOWN_HEIGHT,
+                height=BREAKDOWN_HEIGHT,
+                padding=110,
+            )
 
     def draw(self) -> BytesIO:
         im = self._draw_background()

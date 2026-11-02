@@ -9,11 +9,13 @@ from hoyo_buddy.draw.drawer import BLACK, Drawer
 from hoyo_buddy.enums import GenshinElement, Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
+from ..substat_breakdown import BreakdownStyle, draw_breakdown_row, draw_panel, extend_image
 from .common import (
     ADD_HURT_ELEMENTS,
     ARTIFACT_POS,
     ELEMENT_BG_COLORS,
     STATS_ORDER,
+    get_substat_breakdown,
     get_substat_rolls,
 )
 
@@ -30,6 +32,8 @@ __all__ = ("GITempTwoBuildCard",)
 
 IMAGE_POS = (79, 66)
 MASK_PATH = "hoyo-buddy-assets/assets/gi-build-card2/img_mask.png"
+BREAKDOWN_HEIGHT = 178
+"""How much taller the substat breakdown makes the card."""
 
 
 class GITempTwoBuildCard:
@@ -45,6 +49,7 @@ class GITempTwoBuildCard:
         rank: str | None,
         uid: int | None,
         show_substat_rolls: bool,
+        show_substat_breakdown: bool,
         zoom: float = 1.0,
     ) -> None:
         self._locale = locale
@@ -58,9 +63,41 @@ class GITempTwoBuildCard:
         self._rank = rank
         self._uid = uid
         self._show_substat_rolls = show_substat_rolls
+        self._show_substat_breakdown = show_substat_breakdown
 
     def _open_card(self) -> Image.Image:
-        return Drawer.open_image(f"hoyo-buddy-assets/assets/gi-build-card2/{self._theme}_card.png")
+        im = Drawer.open_image(f"hoyo-buddy-assets/assets/gi-build-card2/{self._theme}_card.png")
+        if self._show_substat_breakdown:
+            # Between the bottom panels and the logo
+            im = extend_image(im, at=1845, height=BREAKDOWN_HEIGHT)
+        return im
+
+    def _draw_substat_breakdown(self, im: Image.Image, drawer: Drawer) -> None:
+        dark_mode = self._dark_mode
+        draw_panel(
+            im,
+            (79, 1889, 2781, 2019),
+            radius=50,
+            color=(110, 110, 110, 255) if dark_mode else (237, 237, 237, 255),
+        )
+        color = (230, 230, 230) if dark_mode else (94, 94, 94)
+        totals = get_substat_breakdown(self._character)
+        icons = [
+            drawer.open_asset(f"stats/{total.stat.type.name}.png", size=(42, 42), mask_color=color)
+            for total in totals
+        ]
+        style = BreakdownStyle(
+            value_size=38,
+            value_style="medium",
+            value_color=color,
+            label_size=24,
+            label_style="bold",
+            label_color=(170, 170, 170) if dark_mode else (156, 156, 156),
+            icon_size=42,
+            gap=14,
+            line_width=3,
+        )
+        draw_breakdown_row(im, drawer, totals, icons, style, box=(127, 1889, 2733, 2019))
 
     @property
     def _element_color(self) -> tuple[int, int, int]:
@@ -413,13 +450,16 @@ class GITempTwoBuildCard:
 
             start_pos = (1500, 1470) if i == 1 else (start_pos[0] + x_diff, start_pos[1])
 
+        if self._show_substat_breakdown:
+            self._draw_substat_breakdown(im, drawer)
+
         if self._uid is not None:
             drawer.write(
                 f"UID: {self._uid}",
                 size=32,
                 style="medium",
                 color=color_3,
-                position=(im.width / 2, 1873),
+                position=(im.width / 2, im.height - 34),
                 anchor="mm",
             )
 

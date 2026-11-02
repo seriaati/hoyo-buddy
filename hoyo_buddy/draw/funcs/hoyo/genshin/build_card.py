@@ -8,7 +8,18 @@ from PIL import Image, ImageDraw
 
 from hoyo_buddy.constants import MAX_SUBSTAT_ROLLS
 from hoyo_buddy.draw.drawer import BLACK, Drawer
-from hoyo_buddy.draw.funcs.hoyo.genshin.common import ARTIFACT_POS, STATS_ORDER, get_substat_rolls
+from hoyo_buddy.draw.funcs.hoyo.genshin.common import (
+    ARTIFACT_POS,
+    STATS_ORDER,
+    get_substat_breakdown,
+    get_substat_rolls,
+)
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
+    BreakdownStyle,
+    draw_breakdown_row,
+    draw_panel,
+    extend_image,
+)
 from hoyo_buddy.enums import Locale
 from hoyo_buddy.models import HoyolabGICharacter
 
@@ -26,13 +37,52 @@ __all__ = ("draw_animated_genshin_card", "draw_genshin_card")
 
 IMAGE_POS = (51, 34)
 MASK_PATH = "hoyo-buddy-assets/assets/gi-build-card/mask.png"
+BREAKDOWN_HEIGHT = 114
+"""How much taller the substat breakdown makes the card."""
 
 
-def _draw_background(dark_mode: bool, character: Character | HoyolabGICharacter) -> Image.Image:
+def _draw_background(
+    dark_mode: bool, character: Character | HoyolabGICharacter, show_substat_breakdown: bool
+) -> Image.Image:
     mode = "dark" if dark_mode else "light"
-    return Drawer.open_image(
+    im = Drawer.open_image(
         f"hoyo-buddy-assets/assets/gi-build-card/backgrounds/{mode}_{character.element.name.title()}.png"
     )
+    if show_substat_breakdown:
+        # Below the artifacts' shadows
+        im = extend_image(im, at=1262, height=BREAKDOWN_HEIGHT)
+    return im
+
+
+def _draw_substat_breakdown(
+    im: Image.Image, drawer: Drawer, character: Character | HoyolabGICharacter, *, dark_mode: bool
+) -> None:
+    mode = "dark" if dark_mode else "light"
+    draw_panel(
+        im,
+        (75, 1255, 1508, 1339),
+        radius=12,
+        color=(0, 0, 0, 158) if dark_mode else (255, 255, 255, 176),
+    )
+    totals = get_substat_breakdown(character)
+    icon_color = (255, 255, 255) if dark_mode else (67, 67, 67)
+    icons = [
+        drawer.open_asset(
+            f"fight-props/{mode}_{total.stat.type.name}.png", size=(26, 26), mask_color=icon_color
+        )
+        for total in totals
+    ]
+    style = BreakdownStyle(
+        value_size=24,
+        value_style="medium",
+        value_color=(241, 241, 241) if dark_mode else (33, 33, 33),
+        label_size=15,
+        label_style="bold",
+        label_color=(170, 170, 170) if dark_mode else (107, 107, 107),
+        icon_size=26,
+        gap=7,
+    )
+    draw_breakdown_row(im, drawer, totals, icons, style, box=(87, 1255, 1496, 1339))
 
 
 def _draw_foreground(
@@ -43,6 +93,7 @@ def _draw_foreground(
     rank: str | None,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> None:
     mode = "dark" if dark_mode else "light"
     text_color = (241, 241, 241) if dark_mode else (33, 33, 33)
@@ -296,6 +347,9 @@ def _draw_foreground(
                     gap=4,
                 )
 
+    if show_substat_breakdown:
+        _draw_substat_breakdown(im, drawer, character, dark_mode=dark_mode)
+
 
 def _draw_uid(
     im: Image.Image,
@@ -336,8 +390,9 @@ def draw_genshin_card(
     rank: str | None,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
 ) -> io.BytesIO:
-    im = _draw_background(dark_mode, character)
+    im = _draw_background(dark_mode, character, show_substat_breakdown)
     drawer = Drawer(
         ImageDraw.Draw(im),
         folder="gi-build-card",
@@ -356,7 +411,9 @@ def draw_genshin_card(
     )
     im.paste(character_im, IMAGE_POS, character_im)
 
-    _draw_foreground(im, locale, dark_mode, character, rank, uid, show_substat_rolls)
+    _draw_foreground(
+        im, locale, dark_mode, character, rank, uid, show_substat_rolls, show_substat_breakdown
+    )
     return Drawer.save_image(im)
 
 
@@ -369,6 +426,7 @@ def draw_animated_genshin_card(
     rank: str | None,
     uid: int | None,
     show_substat_rolls: bool,
+    show_substat_breakdown: bool,
     animation_path: Path,
     offset: tuple[int, int],
     quality: int,
@@ -385,6 +443,7 @@ def draw_animated_genshin_card(
         rank: The character's rank text, if any.
         uid: The UID to show on the card, if any.
         show_substat_rolls: Whether to draw the artifact sub stats' rolls.
+        show_substat_breakdown: Whether to draw the sub stat totals under the card.
         animation_path: Path of the character's pre-rendered animated WEBP.
         offset: The animation's uncropped top-left in the image mask.
         quality: WEBP quality.
@@ -400,10 +459,12 @@ def draw_animated_genshin_card(
         if dark_mode:
             overlay = Image.new("RGBA", mask.size, Drawer.apply_color_opacity(BLACK, 0.1))
             im.alpha_composite(Drawer.mask_image_with_image(overlay, mask), IMAGE_POS)
-        _draw_foreground(im, locale, dark_mode, character, rank, uid, show_substat_rolls)
+        _draw_foreground(
+            im, locale, dark_mode, character, rank, uid, show_substat_rolls, show_substat_breakdown
+        )
 
     return Drawer.draw_animated_card(
-        _draw_background(dark_mode, character),
+        _draw_background(dark_mode, character, show_substat_breakdown),
         draw_foreground,
         animation_path=animation_path,
         offset=offset,
@@ -417,6 +478,7 @@ def draw_animated_genshin_card(
             rank,
             uid,
             show_substat_rolls,
+            show_substat_breakdown,
         ),
         area_pos=IMAGE_POS,
         mask=mask,

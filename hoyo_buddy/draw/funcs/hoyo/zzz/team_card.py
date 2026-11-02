@@ -18,7 +18,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.draw.drawer import BLACK, WHITE, AnimatedArea, Drawer
 from hoyo_buddy.enums import Locale
 
-from .common import SKILL_ORDER, STAT_ICONS, get_props
+from .common import SKILL_ORDER, STAT_ICONS, add_breakdown_band, draw_breakdown_band, get_props
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -32,6 +32,8 @@ if TYPE_CHECKING:
 SINGLE_AGENT_BOX = (54, 48, 1395, 357)
 """Where a single agent's card is on the background, for template 3."""
 CARD_SIZE = (1341, 309)
+BREAKDOWN_HEIGHT = 64
+"""How much taller the substat breakdown makes a single agent's card."""
 
 
 class ZZZTeamCard:
@@ -50,6 +52,7 @@ class ZZZTeamCard:
         agent_hl_substat_map: dict[int, list[int]],
         hl_special_stats: dict[int, bool],
         uid: int | None,
+        show_substat_breakdown: bool = False,
     ) -> None:
         self._locale = locale
         self._dark_mode = False
@@ -64,6 +67,7 @@ class ZZZTeamCard:
         self._agent_hl_substat_map = agent_hl_substat_map
         self._hl_special_stats = hl_special_stats
         self._uid = uid
+        self._show_substat_breakdown = show_substat_breakdown
 
     def _draw_card_background(self, blob_color: tuple[int, int, int]) -> Image.Image:
         card = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/card.png")
@@ -424,6 +428,15 @@ class ZZZTeamCard:
         )
         return card
 
+    def _add_substat_breakdown(self, im: Image.Image) -> Image.Image:
+        """Add the substat breakdown under a single agent's card (template 3)."""
+        if not self._show_substat_breakdown:
+            return im
+        top = im.height
+        im = add_breakdown_band(im, BREAKDOWN_HEIGHT)
+        draw_breakdown_band(im, self._agents[0], top=top, height=BREAKDOWN_HEIGHT, padding=24)
+        return im
+
     def _open_background(self) -> Image.Image:
         im = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")
         if len(self._agents) == 2:
@@ -442,7 +455,7 @@ class ZZZTeamCard:
 
         if len(self._agents) == 1:
             # Template 3
-            im = im.crop(SINGLE_AGENT_BOX)
+            im = self._add_substat_breakdown(im.crop(SINGLE_AGENT_BOX))
             if self._uid is not None:
                 im = self._add_uid_footer(im, self._uid)
 
@@ -470,6 +483,7 @@ class ZZZTeamCard:
         background = Drawer.open_image("hoyo-buddy-assets/assets/zzz-team-card/background.png")
         background = background.crop(SINGLE_AGENT_BOX)
         background.alpha_composite(card)
+        background = self._add_substat_breakdown(background)
         if self._uid is not None:
             background = self._add_uid_footer(background, self._uid)
 

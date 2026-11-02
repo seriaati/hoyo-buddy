@@ -12,7 +12,14 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     get_character_stats,
     get_max_substat_rolls,
     get_stat_icon,
+    get_substat_breakdown,
     get_substat_rolls,
+)
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
+    BreakdownStyle,
+    draw_breakdown_row,
+    draw_panel,
+    extend_image,
 )
 from hoyo_buddy.enums import Locale
 
@@ -25,6 +32,8 @@ if TYPE_CHECKING:
     from hoyo_buddy.models import HoyolabHSRCharacter
 
 IMAGE_POS = (61, 65)
+BREAKDOWN_HEIGHT = 178
+"""How much taller the substat breakdown makes the card."""
 
 
 class HSRBuildCard2:
@@ -38,6 +47,7 @@ class HSRBuildCard2:
         en_name: str,
         uid: int | None,
         show_substat_rolls: bool,
+        show_substat_breakdown: bool,
     ) -> None:
         self.character = character
         self.locale = Locale(locale)
@@ -46,6 +56,7 @@ class HSRBuildCard2:
         self.en_name = en_name
         self.uid = uid
         self.show_substat_rolls = show_substat_rolls
+        self.show_substat_breakdown = show_substat_breakdown
 
         self.color1 = (232, 232, 232) if dark_mode else (94, 94, 94)
         self.color2 = (199, 199, 199) if dark_mode else (156, 156, 156)
@@ -56,7 +67,33 @@ class HSRBuildCard2:
 
     def _draw_background(self) -> Image.Image:
         mode = "dark" if self.dark_mode else "light"
-        return Drawer.open_image(f"hoyo-buddy-assets/assets/hsr-build-card2/{mode}.png")
+        im = Drawer.open_image(f"hoyo-buddy-assets/assets/hsr-build-card2/{mode}.png")
+        if self.show_substat_breakdown:
+            # Between the bottom panels and the logo
+            im = extend_image(im, at=1845, height=BREAKDOWN_HEIGHT)
+        return im
+
+    def _draw_substat_breakdown(self, im: Image.Image, drawer: Drawer) -> None:
+        draw_panel(
+            im,
+            (61, 1881, 2856, 2011),
+            radius=50,
+            color=(30, 30, 30, 255) if self.dark_mode else (237, 237, 237, 255),
+        )
+        totals = get_substat_breakdown(self.character)
+        icons = [get_stat_icon(t.stat, size=(40, 40), mask_color=self.color6) for t in totals]
+        style = BreakdownStyle(
+            value_size=36,
+            value_style="medium",
+            value_color=self.color1,
+            label_size=22,
+            label_style="bold",
+            label_color=self.color5,
+            icon_size=40,
+            gap=11,
+            line_width=3,
+        )
+        draw_breakdown_row(im, drawer, totals, icons, style, box=(101, 1881, 2816, 2011))
 
     def _draw_character_image(self, im: Image.Image) -> None:
         drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card2", dark_mode=self.dark_mode)
@@ -384,10 +421,13 @@ class HSRBuildCard2:
             else:
                 start_pos = (start_pos[0], start_pos[1] + 425)
 
+        if self.show_substat_breakdown:
+            self._draw_substat_breakdown(im, drawer)
+
         if self.uid is not None:
             drawer.write(
                 f"UID: {self.uid}",
-                position=(im.width / 2, 1872),
+                position=(im.width / 2, im.height - 35),
                 size=32,
                 color=self.color2,
                 style="medium",

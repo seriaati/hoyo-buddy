@@ -542,13 +542,18 @@ def draw_hsr_build_card(
     drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card", dark_mode=dark_mode)
 
     # character image
-    mask = _open_image_mask(show_substat_breakdown)
+    if show_substat_breakdown:
+        # Fill the taller art area like the animated card does, keeping the art's framing
+        mask = _open_image_mask(show_substat_breakdown)
+        im.paste(
+            dark_primary, (*IMAGE_POS, IMAGE_POS[0] + mask.width, IMAGE_POS[1] + mask.height), mask
+        )
     character_im = drawer.open_static(image_url)
     character_im = drawer.modify_image_for_build_card(
         character_im,
-        target_width=mask.width,
-        target_height=mask.height,
-        mask=mask,
+        target_width=640,
+        target_height=1138,
+        mask=drawer.open_asset("img/mask.png"),
         background_color=dark_primary,
     )
     im.paste(character_im, IMAGE_POS, character_im)

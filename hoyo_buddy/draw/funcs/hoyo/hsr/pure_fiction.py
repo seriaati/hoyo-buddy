@@ -168,7 +168,14 @@ class PureFictionCard(HSRChallengeUIDMixin):
             get_starward_string(self._data), ""
         )
         name_tbox = drawer.write(
-            stage_name, size=44, position=(0, 0), style="bold", color=WHITE, locale=self._locale
+            stage_name,
+            size=44,
+            position=(0, 0),
+            style="bold",
+            color=WHITE,
+            locale=self._locale,
+            max_width=300,
+            dynamic_fontsize=True,
         )
         if stage.is_quick_clear:
             cycle_tbox = drawer.write(

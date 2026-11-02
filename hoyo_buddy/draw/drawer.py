@@ -42,6 +42,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 TRANSPARENT = (0, 0, 0, 0)
 EMPHASIS_OPACITY: dict[str, float] = {"high": 1.0, "medium": 0.6, "low": 0.37}
+MIN_DYNAMIC_FONTSIZE = 10
 
 # Material design colors
 LIGHT_SURFACE = (252, 248, 253)
@@ -160,7 +161,7 @@ class Drawer:
         cls, text: str, max_width: int, max_size: int, font: ImageFont.FreeTypeFont
     ) -> int:
         size = max_size
-        while font.getlength(text) > max_width:
+        while size > MIN_DYNAMIC_FONTSIZE and font.getlength(text) > max_width:
             size -= 1
             font = ImageFont.truetype(font.path, size)
         return size

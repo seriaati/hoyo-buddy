@@ -181,6 +181,7 @@ class CharactersView(LayoutPaginatorView):
         self.characters_per_page = 32
 
         self._page_files: dict[int, bytes] = {}
+        self._characters: Sequence[Character] = []
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
@@ -575,8 +576,7 @@ class CharactersView(LayoutPaginatorView):
         if cached is not None:
             return File(io.BytesIO(cached), filename=self.draw_input.filename)
 
-        characters = self.get_filtered_sorted_characters()
-        chunked_chars = list(itertools.batched(characters, self.characters_per_page))
+        chunked_chars = list(itertools.batched(self._characters, self.characters_per_page))
         chars = chunked_chars[self._current_page]
         file_ = await self._draw_card(chars)
 
@@ -642,6 +642,7 @@ class CharactersView(LayoutPaginatorView):
     async def update(self, i: Interaction) -> None:
         self._page_files.clear()
         characters = self.get_filtered_sorted_characters()
+        self._characters = characters
         embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
         self._set_pages(characters, embed=embed)
         self._add_items()

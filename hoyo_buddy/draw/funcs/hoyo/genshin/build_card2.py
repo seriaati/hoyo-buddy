@@ -454,12 +454,13 @@ class GITempTwoBuildCard:
             self._draw_substat_breakdown(im, drawer)
 
         if self._uid is not None:
+            extra_height = BREAKDOWN_HEIGHT if self._show_substat_breakdown else 0
             drawer.write(
                 f"UID: {self._uid}",
                 size=32,
                 style="medium",
                 color=color_3,
-                position=(im.width / 2, im.height - 34),
+                position=(im.width / 2, 1873 + extra_height),
                 anchor="mm",
             )
 

@@ -61,9 +61,20 @@ def wrap_task_factory() -> None:
     loop.set_task_factory(new_factory)
 
 
+# Generic handlers that log many unrelated problems from one line
+_UNGROUPED_CALL_SITES = {
+    ("asyncio.base_events", "default_exception_handler"),
+    ("hoyo_buddy.bot.bot", "asyncio_erorr_handler"),
+}
+
+
 def _group_logs_by_call_site(event: Event, hint: Hint) -> Event:
     record = hint.get("log_record")
-    if record is not None and "exception" not in event:
+    if (
+        record is not None
+        and "exception" not in event
+        and (record.name, record.funcName) not in _UNGROUPED_CALL_SITES
+    ):
         event["fingerprint"] = [record.name, record.funcName, str(record.lineno)]
     return event
 

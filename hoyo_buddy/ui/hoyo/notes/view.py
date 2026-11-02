@@ -127,7 +127,7 @@ class NotesView(ui.LayoutView):
 
         lines: list[str] = []
         for account, result in zip(accounts, results, strict=True):
-            header = f"{GAME_ICON_EMOJIS[account.game_icon]} **{escape_markdown(account.blurred_display)}**"
+            header = f"## {GAME_ICON_EMOJIS[account.game_icon]} {escape_markdown(account.blurred_display)}"
             if isinstance(result, Exception):
                 embed, recognized = get_error_embed(result, self.locale)
                 if not recognized:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
@@ -112,9 +112,10 @@ def extend_image(im: Image.Image, *, at: int, height: int) -> Image.Image:
 
 def draw_panel(im: Image.Image, box: Box, *, radius: int, color: tuple[int, int, int, int]) -> None:
     """Draw a rounded panel, blending it with what's below when it's translucent."""
-    layer = Image.new("RGBA", im.size)
-    ImageDraw.Draw(layer).rounded_rectangle(box, radius, fill=color)
-    im.alpha_composite(layer)
+    width, height = box[2] - box[0] + 1, box[3] - box[1] + 1
+    layer = Image.new("RGBA", (width, height))
+    ImageDraw.Draw(layer).rounded_rectangle((0, 0, width - 1, height - 1), radius, fill=color)
+    im.alpha_composite(layer, (box[0], box[1]))
 
 
 def _label_texts(total: SubstatTotal) -> tuple[str, str | None]:
@@ -135,22 +136,29 @@ def _label_width(drawer: Drawer, total: SubstatTotal, style: BreakdownStyle) -> 
     )
 
 
-def _entry_width(drawer: Drawer, total: SubstatTotal, style: BreakdownStyle) -> int:
+def _entry_width(
+    drawer: Drawer, total: SubstatTotal, style: BreakdownStyle, *, label_width: int
+) -> int:
     value_width = _text_width(
         drawer, total.formatted_value, size=style.value_size, style=style.value_style
     )
-    return _label_width(drawer, total, style) + style.icon_size + value_width + style.gap * 2
+    return label_width + style.icon_size + value_width + style.gap * 2
+
+
+def _scale_style(style: BreakdownStyle, factor: float) -> BreakdownStyle:
+    return replace(
+        style,
+        value_size=round(style.value_size * factor),
+        label_size=round(style.label_size * factor),
+        icon_size=round(style.icon_size * factor),
+        gap=round(style.gap * factor),
+    )
 
 
 def _draw_label(
-    drawer: Drawer, total: SubstatTotal, style: BreakdownStyle, *, x: int, center_y: int
-) -> int:
-    """Draw the roll value over the roll count as a fraction, or only the roll count.
-
-    Returns:
-        The label's width.
-    """
-    width = _label_width(drawer, total, style)
+    drawer: Drawer, total: SubstatTotal, style: BreakdownStyle, *, x: int, center_y: int, width: int
+) -> None:
+    """Draw the roll value over the roll count as a fraction, or only the roll count."""
     top, bottom = _label_texts(total)
     color = style.label_color
 
@@ -163,7 +171,7 @@ def _draw_label(
             color=color,
             anchor="lm",
         )
-        return width
+        return
 
     pad = max(1, style.label_size // 8)
     line_top = center_y - style.line_width // 2
@@ -181,7 +189,6 @@ def _draw_label(
             color=color,
             anchor=anchor,
         )
-    return width
 
 
 def _draw_entry(
@@ -193,8 +200,10 @@ def _draw_entry(
     *,
     x: int,
     center_y: int,
+    label_width: int,
 ) -> None:
-    x += _draw_label(drawer, total, style, x=x, center_y=center_y) + style.gap
+    _draw_label(drawer, total, style, x=x, center_y=center_y, width=label_width)
+    x += label_width + style.gap
     im.alpha_composite(icon, (x, center_y - icon.height // 2))
     x += icon.width + style.gap
     drawer.write(
@@ -216,13 +225,33 @@ def draw_breakdown_row(
     *,
     box: Box,
 ) -> None:
-    """Draw the substat totals in a row, spaced evenly in the box."""
-    widths = [_entry_width(drawer, total, style) for total in totals]
-    space = (box[2] - box[0] - sum(widths)) / (len(totals) + 1)
+    """Draw the substat totals in a row, spaced evenly in the box, shrunk when they don't fit."""
+    box_width = box[2] - box[0]
+    min_space = style.gap * 2 * (len(totals) + 1)
+    label_widths = [_label_width(drawer, total, style) for total in totals]
+    widths = [
+        _entry_width(drawer, total, style, label_width=w)
+        for total, w in zip(totals, label_widths, strict=True)
+    ]
+    if totals and sum(widths) + min_space > box_width:
+        factor = (box_width - min_space) / sum(widths)
+        style = _scale_style(style, factor)
+        icons = [
+            icon.resize((round(icon.width * factor), round(icon.height * factor))) for icon in icons
+        ]
+        label_widths = [_label_width(drawer, total, style) for total in totals]
+        widths = [
+            _entry_width(drawer, total, style, label_width=w)
+            for total, w in zip(totals, label_widths, strict=True)
+        ]
+
+    space = max(0, (box_width - sum(widths)) / (len(totals) + 1))
     center_y = (box[1] + box[3]) // 2
     x = box[0] + space
-    for total, icon, width in zip(totals, icons, widths, strict=True):
-        _draw_entry(im, drawer, total, icon, style, x=round(x), center_y=center_y)
+    for total, icon, width, label_width in zip(totals, icons, widths, label_widths, strict=True):
+        _draw_entry(
+            im, drawer, total, icon, style, x=round(x), center_y=center_y, label_width=label_width
+        )
         x += width + space
 
 
@@ -237,6 +266,8 @@ def draw_breakdown_grid(
     columns: int,
 ) -> None:
     """Draw the substat totals in a grid filling the box, left-aligned in their cells."""
+    if not totals:
+        return
     rows = math.ceil(len(totals) / columns)
     cell_width = (box[2] - box[0]) / columns
     cell_height = (box[3] - box[1]) / rows
@@ -244,4 +275,5 @@ def draw_breakdown_grid(
         row, column = divmod(index, columns)
         x = round(box[0] + cell_width * column)
         center_y = round(box[1] + cell_height * (row + 0.5))
-        _draw_entry(im, drawer, total, icon, style, x=x, center_y=center_y)
+        label_width = _label_width(drawer, total, style)
+        _draw_entry(im, drawer, total, icon, style, x=x, center_y=center_y, label_width=label_width)

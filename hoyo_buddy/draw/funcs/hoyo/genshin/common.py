@@ -1,9 +1,10 @@
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import Final
 
 import enka
 
-from hoyo_buddy.models import HoyolabGIArtifact
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import SubstatTotal, parse_stat_value
+from hoyo_buddy.models import HoyolabGIArtifact, HoyolabGICharacter, HoyolabGIStat
 
 ELEMENT_BG_COLORS: Final[dict[bool, dict[enka.gi.Element, str]]] = {
     False: {
@@ -86,3 +87,51 @@ def get_substat_rolls(artifact: enka.gi.Artifact | HoyolabGIArtifact) -> list[in
         ARTIFACT_AFFIX_PROP_TYPES.get(id_ // 10 % 100) for id_ in artifact.sub_stat_ids
     )
     return [counts[stat.type] for stat in artifact.sub_stats]
+
+
+MAX_SUBSTAT_ROLL_VALUES: Final[dict[str, float]] = {
+    "FIGHT_PROP_HP_PERCENT": 5.83,
+    "FIGHT_PROP_HP": 298.75,
+    "FIGHT_PROP_ATTACK_PERCENT": 5.83,
+    "FIGHT_PROP_ATTACK": 19.45,
+    "FIGHT_PROP_DEFENSE_PERCENT": 7.29,
+    "FIGHT_PROP_DEFENSE": 23.15,
+    "FIGHT_PROP_ELEMENT_MASTERY": 23.31,
+    "FIGHT_PROP_CRITICAL": 3.89,
+    "FIGHT_PROP_CRITICAL_HURT": 7.77,
+    "FIGHT_PROP_CHARGE_EFFICIENCY": 6.48,
+}
+"""5-star artifact sub stats' highest single roll, keyed by stat type name, in breakdown order."""
+
+
+def get_substat_breakdown(
+    character: enka.gi.Character | HoyolabGICharacter,
+) -> list[SubstatTotal[enka.gi.Stat | HoyolabGIStat]]:
+    """Total each artifact sub stat across the character's artifacts."""
+    stats: dict[str, enka.gi.Stat | HoyolabGIStat] = {}
+    values: defaultdict[str, float] = defaultdict(float)
+    rolls: defaultdict[str, int] = defaultdict(int)
+
+    for artifact in character.artifacts:
+        for stat, stat_rolls in zip(artifact.sub_stats, get_substat_rolls(artifact), strict=True):
+            name = stat.type.name
+            stats[name] = stat
+            values[name] += (
+                stat.value
+                if isinstance(stat, enka.gi.Stat)
+                else parse_stat_value(stat.formatted_value)
+            )
+            rolls[name] += stat_rolls
+
+    return [
+        SubstatTotal(
+            stat=stats[name],
+            value=values[name],
+            is_percent=stats[name].formatted_value.endswith("%"),
+            decimals=1 if stats[name].formatted_value.endswith("%") else 0,
+            rolls=rolls[name],
+            roll_value=values[name] / max_roll,
+        )
+        for name, max_roll in MAX_SUBSTAT_ROLL_VALUES.items()
+        if name in stats
+    ]

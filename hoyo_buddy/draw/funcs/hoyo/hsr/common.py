@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import enka
 from discord.utils import get as dget
 
 from hoyo_buddy import models as hb_models
-from hoyo_buddy.constants import HSR_ELEMENT_DMG_PROPS, MAX_SUBSTAT_ROLLS
+from hoyo_buddy.constants import (
+    GPY_TYPE_TO_YATTA_PROP_TYPE,
+    HSR_ELEMENT_DMG_PROPS,
+    MAX_SUBSTAT_ROLLS,
+)
 from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import SubstatTotal, parse_stat_value
 
 if TYPE_CHECKING:
     from genshin.models.starrail import StarRailAPCShadow, StarRailChallenge, StarRailPureFiction
@@ -498,6 +504,66 @@ def get_max_substat_rolls(relic: enka.hsr.Relic | hb_models.Relic) -> int:
         # with rarity + 1
         return MAX_SUBSTAT_ROLLS[int(str(relic.id)[0]) - 1]
     return MAX_SUBSTAT_ROLLS[relic.rarity]
+
+
+MAX_SUBSTAT_ROLL_VALUES: Final[dict[str, float]] = {
+    "HPAddedRatio": 4.32,
+    "HPDelta": 42.33755,
+    "AttackAddedRatio": 4.32,
+    "AttackDelta": 21.16877,
+    "DefenceAddedRatio": 5.4,
+    "DefenceDelta": 21.16877,
+    "SpeedDelta": 2.6,
+    "CriticalChance": 3.24,
+    "CriticalDamage": 6.48,
+    "StatusProbability": 4.32,
+    "StatusResistance": 4.32,
+    "BreakDamageAddedRatio": 6.48,
+}
+"""5-star relic sub stats' highest single roll, keyed by enka stat type, in breakdown order."""
+
+
+def _get_substat_key(stat: enka.hsr.Stat | hb_models.Stat) -> str:
+    if isinstance(stat, enka.hsr.Stat):
+        return stat.type.value
+    # HoYoLAB property types map to Yatta's names, which are enka's with a lowercase first letter
+    name = GPY_TYPE_TO_YATTA_PROP_TYPE.get(stat.type, "")
+    return name[:1].upper() + name[1:]
+
+
+def _get_substat_value(stat: enka.hsr.Stat | hb_models.Stat) -> float:
+    if isinstance(stat, enka.hsr.Stat):
+        return stat.value * 100 if stat.is_percentage else stat.value
+    return parse_stat_value(stat.formatted_value)
+
+
+def get_substat_breakdown(
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+) -> list[SubstatTotal[enka.hsr.Stat | hb_models.Stat]]:
+    """Total each relic sub stat across the character's relics."""
+    stats: dict[str, enka.hsr.Stat | hb_models.Stat] = {}
+    values: defaultdict[str, float] = defaultdict(float)
+    rolls: defaultdict[str, int] = defaultdict(int)
+
+    for relic in character.relics:
+        for stat, stat_rolls in zip(relic.sub_stats, get_substat_rolls(relic), strict=True):
+            key = _get_substat_key(stat)
+            stats[key] = stat
+            values[key] += _get_substat_value(stat)
+            rolls[key] += stat_rolls
+
+    return [
+        SubstatTotal(
+            stat=stats[key],
+            value=values[key],
+            is_percent=stats[key].formatted_value.endswith("%"),
+            decimals=0 if key in {"HPDelta", "AttackDelta", "DefenceDelta"} else 1,
+            rolls=rolls[key],
+            roll_value=values[key] / max_roll,
+        )
+        for key, max_roll in MAX_SUBSTAT_ROLL_VALUES.items()
+        if key in stats
+    ]
 
 
 def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:

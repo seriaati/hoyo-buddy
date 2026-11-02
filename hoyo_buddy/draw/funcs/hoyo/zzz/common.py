@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import TYPE_CHECKING, Final
 
 from discord import utils as dutils
@@ -10,11 +11,20 @@ from genshin.models import (
     ZZZSkillType,
     ZZZSpecialty,
 )
+from PIL import Image, ImageDraw
 
+from hoyo_buddy.constants import get_disc_substat_roll_num
+from hoyo_buddy.draw.drawer import Drawer
+from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
+    BreakdownStyle,
+    SubstatTotal,
+    draw_breakdown_row,
+    parse_stat_value,
+)
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
-    from genshin.models import ZZZFullAgent
+    from genshin.models import ZZZFullAgent, ZZZProperty
 
     from hoyo_buddy.models import ZZZEnkaCharacter, ZZZStat
 
@@ -184,3 +194,94 @@ def get_props(
             )
 
     return [p for p in props if p is not None and isinstance(p.type, ZZZPropertyType)]
+
+
+SUBSTAT_ORDER: Final[tuple[ZZZPropertyType, ...]] = (
+    ZZZPropertyType.HP_PERCENT,
+    ZZZPropertyType.FLAT_HP,
+    ZZZPropertyType.ATK_PERCENT,
+    ZZZPropertyType.FLAT_ATK,
+    ZZZPropertyType.DEF_PERCENT,
+    ZZZPropertyType.FLAT_DEF,
+    ZZZPropertyType.CRIT_RATE,
+    ZZZPropertyType.CRIT_DMG,
+    ZZZPropertyType.FLAT_PEN,
+    ZZZPropertyType.ANOMALY_PROFICIENCY,
+)
+"""Disc sub stats in breakdown order."""
+
+
+def get_substat_breakdown(
+    agent: ZZZFullAgent | ZZZEnkaCharacter,
+) -> list[SubstatTotal[ZZZPropertyType]]:
+    """Total each disc sub stat across the agent's discs.
+
+    Every roll of a disc sub stat adds the same value, so totals have no roll value.
+    """
+    stats: dict[ZZZPropertyType, ZZZProperty | ZZZStat] = {}
+    values: defaultdict[ZZZPropertyType, float] = defaultdict(float)
+    rolls: defaultdict[ZZZPropertyType, int] = defaultdict(int)
+
+    for disc in agent.discs:
+        for prop in disc.properties:
+            if not isinstance(prop.type, ZZZPropertyType):
+                continue
+            stats[prop.type] = prop
+            values[prop.type] += parse_stat_value(prop.value)
+            rolls[prop.type] += get_disc_substat_roll_num(disc.rarity, prop)
+
+    return [
+        SubstatTotal(
+            stat=prop_type,
+            value=values[prop_type],
+            is_percent=stats[prop_type].value.endswith("%"),
+            decimals=1 if stats[prop_type].value.endswith("%") else 0,
+            rolls=rolls[prop_type],
+            roll_value=None,
+        )
+        for prop_type in SUBSTAT_ORDER
+        if prop_type in stats
+    ]
+
+
+BREAKDOWN_BAND_COLOR: Final = (24, 24, 24)
+
+
+def add_breakdown_band(im: Image.Image, height: int) -> Image.Image:
+    """Add a band under the card for the substat breakdown."""
+    extended = Image.new("RGBA", (im.width, im.height + height), (*BREAKDOWN_BAND_COLOR, 255))
+    extended.paste(im, (0, 0))
+    return extended
+
+
+def draw_breakdown_band(
+    im: Image.Image, agent: ZZZFullAgent | ZZZEnkaCharacter, *, top: int, height: int, padding: int
+) -> None:
+    """Draw the substat breakdown in a band across the card, sized to the band."""
+    bottom = top + height
+    ImageDraw.Draw(im).rectangle((0, top, im.width, bottom), BREAKDOWN_BAND_COLOR)
+    drawer = Drawer(ImageDraw.Draw(im), folder="zzz-build-card", dark_mode=False, sans=True)
+
+    icon_size = round(height / 3)
+    totals = get_substat_breakdown(agent)
+    icons = [
+        drawer.open_asset(
+            f"stat_icons/{STAT_ICONS[total.stat]}",
+            size=(icon_size, icon_size),
+            mask_color=(255, 255, 255),
+        )
+        for total in totals
+    ]
+    style = BreakdownStyle(
+        value_size=round(height * 0.29),
+        value_style="bold",
+        value_color=(255, 255, 255),
+        label_size=round(height * 0.21),
+        label_style="bold",
+        label_color=(140, 140, 140),
+        icon_size=icon_size,
+        gap=round(height * 0.093),
+    )
+    draw_breakdown_row(
+        im, drawer, totals, icons, style, box=(padding, top, im.width - padding, bottom)
+    )

@@ -9,6 +9,7 @@ from loguru import logger
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from sentry_sdk.integrations.asyncpg import AsyncPGIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.loguru import LoguruIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
@@ -16,6 +17,8 @@ from hoyo_buddy.utils.misc import get_project_version, should_ignore_error
 
 if TYPE_CHECKING:
     from collections.abc import Coroutine
+
+    from sentry_sdk.types import Event, Hint
 
 __all__ = ("setup_async_event_loop", "setup_sentry", "wrap_task_factory")
 
@@ -58,6 +61,13 @@ def wrap_task_factory() -> None:
     loop.set_task_factory(new_factory)
 
 
+def _group_logs_by_call_site(event: Event, hint: Hint) -> Event:
+    record = hint.get("log_record")
+    if record is not None and "exception" not in event:
+        event["fingerprint"] = [record.name, record.funcName, str(record.lineno)]
+    return event
+
+
 def setup_sentry(sentry_dsn: str | None) -> None:
     if not CONFIG.sentry:
         logger.info("Sentry is disabled in the configuration.")
@@ -69,6 +79,7 @@ def setup_sentry(sentry_dsn: str | None) -> None:
 
     sentry_sdk.init(
         dsn=sentry_dsn,
+        integrations=[LoguruIntegration(event_format="{name}:{function}:{line} - {message}")],
         disabled_integrations=[
             LoggingIntegration(),  # To avoid duplicate logs with loguru
             RedisIntegration(),  # Too noisy
@@ -78,6 +89,7 @@ def setup_sentry(sentry_dsn: str | None) -> None:
         environment=CONFIG.env,
         release=get_project_version(),
         enable_logs=True,
+        before_send=_group_logs_by_call_site,
     )
 
 

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from io import BytesIO
 
-    from genshin.models import ZZZAgentUpgradeGuide, ZZZPartialAgent
+    from genshin.models import ZZZAgentUpgradeGuide, ZZZBaseBangboo, ZZZPartialAgent
 
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.models import UnownedZZZCharacter
@@ -152,8 +152,13 @@ def draw_big_agent_card(
         for agent in agents
     ]
 
-    card_height = 457
-    card_width = 909
+    return _draw_grid(cards, card_size=(909, 457), dark_mode=dark_mode)
+
+
+def _draw_grid(
+    cards: Sequence[Image.Image], *, card_size: tuple[int, int], dark_mode: bool
+) -> BytesIO:
+    card_width, card_height = card_size
     card_x_padding = 38
     card_y_padding = 45
     card_start_pos = (65, 70)
@@ -185,3 +190,72 @@ def draw_big_agent_card(
         im.paste(card, (x, y), card)
 
     return Drawer.save_image(im)
+
+
+def draw_bangboo_small_card(
+    bangboo: ZZZBaseBangboo,
+    *,
+    dark_mode: bool,
+    locale: Locale,
+    card: Image.Image,
+    circle: Image.Image,
+    level_bar: Image.Image,
+    rank_icons: dict[str, Image.Image],
+) -> Image.Image:
+    im = card.copy()
+    draw = ImageDraw.Draw(im)
+    drawer = Drawer(draw, folder="zzz-characters", dark_mode=dark_mode)
+
+    icon = drawer.open_static(bangboo.icon)
+    icon.thumbnail((360, 360))
+    im.paste(icon, (249 - icon.width // 2, 218 - icon.height // 2), icon)
+
+    im.paste(circle, (29, 29), circle)
+    drawer.write(
+        str(bangboo.star), size=58, position=(69, 69), style="medium", anchor="mm", color=WHITE
+    )
+
+    rank_icon = rank_icons[bangboo.rarity]
+    im.paste(rank_icon, (im.width - 29 - rank_icon.width, 29), rank_icon)
+
+    im.paste(level_bar, (29, 362), level_bar)
+    drawer.write(
+        LevelStr(bangboo.level),
+        size=42,
+        position=(107, 394),
+        style="medium",
+        anchor="mm",
+        color=WHITE,
+        locale=locale,
+    )
+
+    return im
+
+
+def draw_big_bangboo_card(
+    bangboos: Sequence[ZZZBaseBangboo], dark_mode: bool, locale: Locale
+) -> BytesIO:
+    asset_path = "hoyo-buddy-assets/assets/zzz-characters"
+    theme = "dark" if dark_mode else "light"
+
+    card = Drawer.open_image(f"{asset_path}/bangboo_card_{theme}.png")
+    circle = Drawer.open_image(f"{asset_path}/circle_{theme}.png")
+    level_bar = Drawer.open_image(f"{asset_path}/level_bar_{theme}.png")
+    rank_icons = {
+        rarity: Drawer.open_image(f"{asset_path}/rank_{rarity.lower()}.png", size=(77, 80))
+        for rarity in ("S", "A")
+    }
+
+    cards = [
+        draw_bangboo_small_card(
+            bangboo,
+            dark_mode=dark_mode,
+            locale=locale,
+            card=card,
+            circle=circle,
+            level_bar=level_bar,
+            rank_icons=rank_icons,
+        )
+        for bangboo in bangboos
+    ]
+    return _draw_grid(cards, card_size=card.size, dark_mode=dark_mode)

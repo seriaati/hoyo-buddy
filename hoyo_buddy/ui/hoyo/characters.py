@@ -33,6 +33,7 @@ from hoyo_buddy.draw.main_funcs import (
     draw_gi_characters_card,
     draw_honkai_suits_card,
     draw_hsr_characters_card,
+    draw_zzz_bangboos_card,
     draw_zzz_characters_card,
 )
 from hoyo_buddy.embeds import DefaultEmbed
@@ -72,6 +73,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
     from discord import Member, User
+    from genshin.models import ZZZBaseBangboo
 
     from hoyo_buddy.db import HoyoAccount
     from hoyo_buddy.models import DrawInput
@@ -154,6 +156,7 @@ class CharactersView(LayoutPaginatorView):
         self.zzz_characters: list[ZZZCharacter | UnownedZZZCharacter] = []
         self.zzz_agent_guides: dict[int, genshin.models.ZZZAgentUpgradeGuide] = {}
         self.honkai_characters: list[HonkaiCharacter] = []
+        self.zzz_bangboos: Sequence[ZZZBaseBangboo] | None = None
 
         self.filter: GIFilter = GIFilter.NONE
         self.element_filters: list[GenshinElement | HSRElement | ZZZElement] = []
@@ -178,10 +181,11 @@ class CharactersView(LayoutPaginatorView):
 
         self.show_owned_only = True
         self.show_max_level_only = False
+        self.show_bangboos = False
         self.characters_per_page = 32
 
         self._page_files: dict[int, bytes] = {}
-        self._characters: Sequence[Character] = []
+        self._characters: Sequence[Character | ZZZBaseBangboo] = []
 
     async def _get_gi_pc_icons(self) -> dict[str, str]:
         pc_icons: dict[str, str] = await JSONFile.read("pc_icons.json")
@@ -377,8 +381,13 @@ class CharactersView(LayoutPaginatorView):
 
         return characters
 
-    async def _draw_card(self, characters: Sequence[Character]) -> File:
-        if self.game is Game.GENSHIN:
+    async def _draw_card(self, characters: Sequence[Character | ZZZBaseBangboo]) -> File:
+        if self.show_bangboos:
+            file_ = await draw_zzz_bangboos_card(
+                self.draw_input,
+                characters,  # pyright: ignore [reportArgumentType]
+            )
+        elif self.game is Game.GENSHIN:
             pc_icons = await self._get_gi_pc_icons()
 
             async with enka.GenshinClient() as client:
@@ -514,7 +523,23 @@ class CharactersView(LayoutPaginatorView):
 
         return embed
 
+    def _get_bangboo_embed(self, bangboo_num: int) -> DefaultEmbed:
+        embed = DefaultEmbed(self.locale, title=LocaleStr(key="bangboo", mi18n_game=Game.ZZZ))
+        embed.set_image(url="attachment://characters.webp")
+        embed.add_acc_info(self.account)
+        embed.add_field(
+            name=LocaleStr(key="buddy_num", mi18n_game=Game.ZZZ), value=str(bangboo_num)
+        )
+        return embed
+
     def _add_items(self) -> None:
+        if self.show_bangboos:
+            self.rows = [
+                [CharactersPerPageButton(), ShowBangboos(current_toggle=True)],
+                [ToggleUIButton()],
+            ]
+            return
+
         items: list[Select | Button] = [
             RarityFilterSelector(self.available_rarities, self.rarities)
         ]
@@ -559,6 +584,8 @@ class CharactersView(LayoutPaginatorView):
         if self.game in {Game.GENSHIN, Game.STARRAIL, Game.ZZZ}:
             toggles.append(ShowOwnedOnly(current_toggle=self.show_owned_only))
         toggles.append(ShowMaxLevelOnly(current_toggle=self.show_max_level_only))
+        if self.game is Game.ZZZ:
+            toggles.append(ShowBangboos(current_toggle=False))
 
         self.rows = [
             [*filter_buttons, CharactersPerPageButton()],
@@ -567,7 +594,9 @@ class CharactersView(LayoutPaginatorView):
             [ToggleUIButton()],
         ]
 
-    def _set_pages(self, characters: Sequence[Character], *, embed: DefaultEmbed) -> None:
+    def _set_pages(
+        self, characters: Sequence[Character | ZZZBaseBangboo], *, embed: DefaultEmbed
+    ) -> None:
         page_num = len(list(itertools.batched(characters, self.characters_per_page)))
         self.pages = [Page(content=self.dyk, embed=embed) for _ in range(page_num)]
 
@@ -641,10 +670,19 @@ class CharactersView(LayoutPaginatorView):
 
     async def update(self, i: Interaction) -> None:
         self._page_files.clear()
-        characters = self.get_filtered_sorted_characters()
-        self._characters = characters
-        embed = self._get_embed(len([c for c in characters if not isinstance(c, UnownedCharacter)]))
-        self._set_pages(characters, embed=embed)
+        if self.show_bangboos and self.zzz_bangboos is not None:
+            if not self.zzz_bangboos:
+                raise NoCharsFoundError
+
+            self._characters = self.zzz_bangboos
+            embed = self._get_bangboo_embed(len(self.zzz_bangboos))
+        else:
+            characters = self.get_filtered_sorted_characters()
+            self._characters = characters
+            embed = self._get_embed(
+                len([c for c in characters if not isinstance(c, UnownedCharacter)])
+            )
+        self._set_pages(self._characters, embed=embed)
         self._add_items()
         self.current_page = 0
         await super().start(i)
@@ -969,6 +1007,23 @@ class ShowMaxLevelOnly(ToggleButton[CharactersView]):
         await self.view.update(i)
 
 
+class ShowBangboos(ToggleButton[CharactersView]):
+    def __init__(self, *, current_toggle: bool) -> None:
+        super().__init__(
+            current_toggle=current_toggle,
+            toggle_label=LocaleStr(key="bangboo", mi18n_game=Game.ZZZ),
+            row=2,
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        await super().callback(i, edit=False)
+        await self.set_loading_state(i)
+        self.view.show_bangboos = self.current_toggle
+        if self.view.show_bangboos and self.view.zzz_bangboos is None:
+            self.view.zzz_bangboos = await self.view.account.client.get_bangboos()
+        await self.view.update(i)
+
+
 class RarityFilterSelector(Select[CharactersView]):
     def __init__(self, rarities: set[str], current: list[str]) -> None:
         options = [
@@ -1054,9 +1109,12 @@ class CharactersPerPageButton(Button[CharactersView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        modal = CharactersPerPageModal(
-            self.view.characters_per_page, len(self.view.get_filtered_sorted_characters())
+        total = (
+            len(self.view.zzz_bangboos)
+            if self.view.show_bangboos and self.view.zzz_bangboos is not None
+            else len(self.view.get_filtered_sorted_characters())
         )
+        modal = CharactersPerPageModal(self.view.characters_per_page, total)
         modal.translate(self.view.locale)
         await i.response.send_modal(modal)
 

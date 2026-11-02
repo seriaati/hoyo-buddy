@@ -57,6 +57,7 @@ if TYPE_CHECKING:
         StarRailNote,
         StarRailPureFiction,
         ZZZAgentUpgradeGuide,
+        ZZZBaseBangboo,
         ZZZFullAgent,
         ZZZNotes,
         ZZZPartialAgent,
@@ -890,6 +891,20 @@ async def draw_zzz_characters_card(
         funcs.zzz.draw_big_agent_card,
         agents,
         guides,
+        draw_input.dark_mode,
+        draw_input.locale,
+    )
+    buffer.seek(0)
+
+    return File(buffer, filename=draw_input.filename)
+
+
+async def draw_zzz_bangboos_card(draw_input: DrawInput, bangboos: Sequence[ZZZBaseBangboo]) -> File:
+    await download_images([bangboo.icon for bangboo in bangboos], draw_input.session)
+    buffer = await draw_input.loop.run_in_executor(
+        draw_input.executor,
+        funcs.zzz.draw_big_bangboo_card,
+        bangboos,
         draw_input.dark_mode,
         draw_input.locale,
     )

@@ -1,7 +1,7 @@
 from .assault import AssaultCard
 from .build_card import ZZZAgentCard
 from .build_card4 import ZZZAgentCard4
-from .characters import draw_big_agent_card
+from .characters import draw_big_agent_card, draw_big_bangboo_card
 from .gacha_summary import ZZZGachaSummaryCard, resolve_zzz_gacha_summary_art
 from .notes import draw_zzz_notes
 from .shiyu import ShiyuDefenseCard

@@ -120,6 +120,8 @@ def setup_logging(log_dir: str) -> None:
         "compression": CONFIG.log_compression,
         "level": CONFIG.log_level,
         "enqueue": True,
+        "diagnose": CONFIG.is_dev,
+        "backtrace": CONFIG.is_dev,
         "format": _json_formatter,
     }
 

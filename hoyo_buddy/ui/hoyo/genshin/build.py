@@ -376,7 +376,8 @@ class PageSelector(ui.Select[GIBuildView]):
 class BuildSelector(ui.Select[GIBuildView]):
     def __init__(self, gw_data: ambr.GWData) -> None:
         options = [
-            ui.SelectOption(label=build.title, value=build.title) for build in gw_data.builds
+            ui.SelectOption(label=build.title, value=str(index))
+            for index, build in enumerate(gw_data.builds)
         ]
         super().__init__(
             options=options,
@@ -386,9 +387,7 @@ class BuildSelector(ui.Select[GIBuildView]):
         self.builds = gw_data.builds
 
     async def callback(self, i: Interaction) -> None:
-        build = next((b for b in self.builds if b.title == self.values[0]), None)
-        if build is None:
-            return
+        build = self.builds[int(self.values[0])]
 
         self.update_options_defaults()
         with contextlib.suppress(ValueError):

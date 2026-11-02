@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import math
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
 
     from hoyo_buddy.draw.drawer import Drawer
     from hoyo_buddy.types import FontStyle
@@ -35,6 +36,49 @@ class SubstatTotal[T]:
     def formatted_value(self) -> str:
         value = f"{self.value:,.{self.decimals}f}"
         return f"{value}%" if self.is_percent else value
+
+
+@dataclass(kw_only=True, frozen=True)
+class Substat[K, T]:
+    """A sub stat on one piece of gear."""
+
+    key: K
+    """What the sub stat is totalled by."""
+    stat: T
+    value: float
+    is_percent: bool
+    decimals: int
+    rolls: int
+    max_roll: float | None
+    """The gear's highest single roll of the sub stat, None when it has no roll value."""
+
+
+def total_substats[K, T](
+    substats: Iterable[Substat[K, T]], *, order: Iterable[K]
+) -> list[SubstatTotal[T]]:
+    """Total the sub stats by key, in the given order of keys."""
+    groups: defaultdict[K, list[Substat[K, T]]] = defaultdict(list)
+    for substat in substats:
+        groups[substat.key].append(substat)
+
+    totals: list[SubstatTotal[T]] = []
+    for key in order:
+        if not (group := groups.get(key)):
+            continue
+        max_rolls = [s.max_roll for s in group]
+        totals.append(
+            SubstatTotal(
+                stat=group[0].stat,
+                value=sum(s.value for s in group),
+                is_percent=group[0].is_percent,
+                decimals=group[0].decimals,
+                rolls=sum(s.rolls for s in group),
+                roll_value=None
+                if None in max_rolls
+                else sum(s.value / m for s, m in zip(group, max_rolls, strict=True) if m),
+            )
+        )
+    return totals
 
 
 @dataclass(kw_only=True, frozen=True)

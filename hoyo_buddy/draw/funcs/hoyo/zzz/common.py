@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import TYPE_CHECKING, Final
 
 from discord import utils as dutils
@@ -17,14 +16,16 @@ from hoyo_buddy.constants import get_disc_substat_roll_num
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.funcs.hoyo.substat_breakdown import (
     BreakdownStyle,
+    Substat,
     SubstatTotal,
     draw_breakdown_row,
     parse_stat_value,
+    total_substats,
 )
 from hoyo_buddy.enums import Locale
 
 if TYPE_CHECKING:
-    from genshin.models import ZZZFullAgent, ZZZProperty
+    from genshin.models import ZZZFullAgent
 
     from hoyo_buddy.models import ZZZEnkaCharacter, ZZZStat
 
@@ -218,30 +219,21 @@ def get_substat_breakdown(
 
     Every roll of a disc sub stat adds the same value, so totals have no roll value.
     """
-    stats: dict[ZZZPropertyType, ZZZProperty | ZZZStat] = {}
-    values: defaultdict[ZZZPropertyType, float] = defaultdict(float)
-    rolls: defaultdict[ZZZPropertyType, int] = defaultdict(int)
-
-    for disc in agent.discs:
-        for prop in disc.properties:
-            if not isinstance(prop.type, ZZZPropertyType):
-                continue
-            stats[prop.type] = prop
-            values[prop.type] += parse_stat_value(prop.value)
-            rolls[prop.type] += get_disc_substat_roll_num(disc.rarity, prop)
-
-    return [
-        SubstatTotal(
-            stat=prop_type,
-            value=values[prop_type],
-            is_percent=stats[prop_type].value.endswith("%"),
-            decimals=1 if stats[prop_type].value.endswith("%") else 0,
-            rolls=rolls[prop_type],
-            roll_value=None,
+    substats = [
+        Substat(
+            key=prop.type,
+            stat=prop.type,
+            value=parse_stat_value(prop.value),
+            is_percent=prop.value.endswith("%"),
+            decimals=1 if prop.value.endswith("%") else 0,
+            rolls=get_disc_substat_roll_num(disc.rarity, prop),
+            max_roll=None,
         )
-        for prop_type in SUBSTAT_ORDER
-        if prop_type in stats
+        for disc in agent.discs
+        for prop in disc.properties
+        if isinstance(prop.type, ZZZPropertyType)
     ]
+    return total_substats(substats, order=SUBSTAT_ORDER)
 
 
 BREAKDOWN_BAND_COLOR: Final = (24, 24, 24)

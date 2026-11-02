@@ -87,8 +87,13 @@ class CategorySelect(ui.Select["SettingsView"]):
         )
 
     async def callback(self, i: Interaction) -> None:
+        previous = self.view.category
         self.view.category = SettingsCategory(self.values[0])
-        await self.view.update(i)
+        try:
+            await self.view.update(i)
+        except NoAccountFoundError:
+            self.view.category = previous
+            raise
 
 
 class SettingsView(ui.LayoutView):
@@ -171,14 +176,6 @@ class SettingsView(ui.LayoutView):
 
                     account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
 
-                if self.category is SettingsCategory.ACCOMPANY_SETTINGS:
-                    accompany_accounts = [acc for acc in accounts if _is_accompany_account(acc)]
-                    if not accompany_accounts:
-                        raise NoAccountFoundError(list(ACCOMPANY_SUPPORT_GAMES))
-                    account = next(
-                        (acc for acc in accompany_accounts if acc.current), accompany_accounts[0]
-                    )
-
                 if limit_games is not None:
                     limit_game_accounts = [acc for acc in accounts if acc.game in limit_games]
                     if not limit_game_accounts:
@@ -187,6 +184,16 @@ class SettingsView(ui.LayoutView):
                     account = next(
                         (acc for acc in limit_game_accounts if acc.current), limit_game_accounts[0]
                     )
+
+            if self.category is SettingsCategory.ACCOMPANY_SETTINGS and not _is_accompany_account(
+                account
+            ):
+                accompany_accounts = [acc for acc in accounts if _is_accompany_account(acc)]
+                if not accompany_accounts:
+                    raise NoAccountFoundError(list(ACCOMPANY_SUPPORT_GAMES))
+                account = next(
+                    (acc for acc in accompany_accounts if acc.current), accompany_accounts[0]
+                )
 
             if self.category in {
                 SettingsCategory.NOTIFICATION_SETTINGS,

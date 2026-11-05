@@ -712,7 +712,7 @@ akasha_you: あなた
 achievement_lb_title: アチーブメント数ランキング
 planar_fissure_label: 次元界分裂
 planar_fissure_desc: "{hour} 時間後に次元界分裂イベントが開催されます。開拓力を貯めておくことを忘れないでください！"
-notif_modal.hours_before.label: "イベント開始の {hours_before} 時間前に通知"
+notif_modal.hours_before.label: "イベント開始の X 時間前に通知"
 reminder_settings.reminde.set.type5: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：イベント開始の {hours_before} 時間前"
 chest_lb_title: 開放した宝箱数ランキング
 abyss_dmg_lb_title: 深境螺旋・最大ダメージランキング

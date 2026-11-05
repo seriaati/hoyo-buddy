@@ -713,9 +713,9 @@ leaderboard_akasha_command_description: 查看原神角色傷害排行榜（由 
 akasha_you: 你
 achievement_lb_title: 成就數量排行榜
 planar_fissure_label: 次元分裂
-planar_fissure_desc: "次元分裂活動將在 {hours} 小時後開始，記得保存好你的開拓力！"
+planar_fissure_desc: "次元分裂活動將在 {hour} 小時後開始，記得保存好你的開拓力！"
 notif_modal.hours_before.label: 在活動開始的 X 小時前通知
-reminder_settings.reminde.set.type5: "狀態: {status}\n通知間隔: {notify_inverval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 活動開始的 {hours_before} 前"
+reminder_settings.reminde.set.type5: "狀態: {status}\n通知間隔: {notify_interval} 分鐘\n最大通知數: {max_notif_count}\n通知時間: 活動開始的 {hours_before} 小時前"
 chest_lb_title: 寶箱開啟數量排行榜
 abyss_dmg_lb_title: 深境螺旋最強一擊排行榜
 theater_dmg_lb_title: 幻想真境劇詩最強一擊排行榜
@@ -874,7 +874,7 @@ challenge_command_anomaly_desc: 生成異相仲裁卡片
 anomaly_arbitration: 異相仲裁
 account_settings_title: "帳戶設定"
 account_settings_desc: "此處的設定對每個遊戲帳戶都是獨立的。"
-public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 1。"
+public_account_desc: "設置帳戶為公開\n如果啟用，其他人可以在某些指令中查看你的帳戶資料，例如 </profile>。"
 daily_checkin_desc: "自動每日簽到\n自動領取網頁簽到活動的獎勵。"
 redeem_code_desc: "自動兌換碼兌換\n自動兌換直播兌換碼和其他禮包碼。如果你沒有使用電子郵件和密碼登入，此按鈕將被停用，請參閱[常見問題](:docs/FAQ:)了解原因。"
 auto_gacha_import_desc: "自動導入抽卡紀錄\n每 6 小時自動導入新的抽卡紀錄。僅限贊助者使用（詳見 </sponsor>），且僅適用於原神和絕區零的 HoYoLAB 帳戶。原神帳戶需使用電子郵件和密碼登入。"

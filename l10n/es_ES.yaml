@@ -684,7 +684,7 @@ star5_guaranteed: "Estado actual del asegurado: Garantizado"
 star5_no_guaranteed: "Estado actual del asegurado: **NO** garantizado"
 characters_view_show_max_level_only: Mostrar solo personajes con nivel máximo
 characters_embed_max_level_characters: Personajes con nivel máximo
-natlan_reputation: "Reputación Tribal: {tribes}"
+natlan_reputation: "Nivel de Reputación: {reputation}, Tribus: {tribes}"
 shiyu_overview: Resumen
 shiyu_total_clear_time: "Tiempo total de completado:"
 shiyu_clear_time: Tiempo de limpieza
@@ -756,7 +756,7 @@ time_remaining_str: "Tiempo restante del ciclo: {time}"
 banner_selector_placeholder: Selecciona un banner...
 rarity_str: "{rarity} estrella"
 finished_status_field_name: Estado
-unlocks_in_str: "Se desbloquea en {tiempo}"
+unlocks_in_str: "Se desbloquea en {time}"
 challenge_selector_placeholder: Selecciona un desafío...
 upload_cmd_desc: "Sube una imagen y obtén un enlace a ella, ésta puede ser usada como imagen personalizada en /profile"
 not_an_image_error_title: No es una imagen
@@ -792,7 +792,7 @@ mimo_view_shop_button_label: Tienda
 mimo_buy_item_select_placeholder: Selecciona un ítem para comprar...
 mimo_tasks_button_label: Tareas
 mimo_buy_item_amount_label: Cantidad
-mimo_item_available_time: "Recargas en {tiempo}"
+mimo_item_available_time: "Recargas en {time}"
 mimo_auto_task_embed_footer: Usa /settings para configurar tareas automáticas y comprar recompensas
 mimo_auto_task_embed_desc: "Hoyo Buddy completó {finish} tareas y reclamó {claim_point} puntos para ti"
 checkin_reward_embed_footer: Usa /check-in para configurar las notificaciones

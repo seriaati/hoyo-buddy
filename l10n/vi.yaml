@@ -238,7 +238,7 @@ invalid_image_url_error_message: "Đường dẫn ảnh hợp lệ phải là m�
 invalid_image_url_error_title: Dường dẫn ảnh không hợp lệ
 invalid_input.input_needs_to_be_int: "Đầu vào `{input}` cần phải là Số nguyên"
 invalid_input.input_out_of_range.max_value: "Đầu vào `{input}` cần phải nhỏ hơn hoặc bằng {max_value}"
-invalid_input.input_out_of_range.min_value: "Đầu vào `{input}` cần phải lớn hơn hoặc bằng {max_value}"
+invalid_input.input_out_of_range.min_value: "Đầu vào `{input}` cần phải lớn hơn hoặc bằng {min_value}"
 invalid_input_error_title: Đầu vào không hợp lệ
 invalid_query_error_message: "Không thể tìm được tài khoản với truy vấn được cung cấp, vui lòng chọn từ những lựa chọn được cung cấp thay vì tự nhập truy vấn riêng."
 invalid_query_error_title: Truy vấn không hợp lệ

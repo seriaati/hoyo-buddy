@@ -237,7 +237,7 @@ invalid_game_selected: 选择的游戏无效
 invalid_image_url_error_message: "一个有效的图片URL需要的是带有图片拓展名的图片文件直连链接，且可公开访问。"
 invalid_image_url_error_title: 无效图片URL
 invalid_input.input_needs_to_be_int: "输入框 `{input}` 的值需为一个整数"
-invalid_input.input_out_of_range.max_value: "输入框 `{input}` 的值需小于或等于 {min_value}"
+invalid_input.input_out_of_range.max_value: "输入框 `{input}` 的值需小于或等于 {max_value}"
 invalid_input.input_out_of_range.min_value: "输入框 `{input}` 的值需大于或等于 {min_value}"
 invalid_input_error_title: 无效输入
 invalid_query_error_message: "无法通过输入的关键字找到任何内容，请从自动完成的候选条中选择，而不是输入自己的关键字。"
@@ -713,9 +713,9 @@ leaderboard_akasha_command_description: 查看原神角色伤害排行榜（由 
 akasha_you: 你
 achievement_lb_title: 成就数量排行榜
 planar_fissure_label: 位面分裂
-planar_fissure_desc: "位面分裂活动将在 {hours} 小时后开始，记得保存好你的开拓力！"
+planar_fissure_desc: "位面分裂活动将在 {hour} 小时后开始，记得保存好你的开拓力！"
 notif_modal.hours_before.label: 在活动开始的 X 小时前通知
-reminder_settings.reminde.set.type5: "状态: {status}\n通知间隔: {notify_inverval} 分钟\n最大通知数: {max_notif_count}\n通知时间: 活动开始的 {hours_before} 前"
+reminder_settings.reminde.set.type5: "状态: {status}\n通知间隔: {notify_interval} 分钟\n最大通知数: {max_notif_count}\n通知时间: 活动开始的 {hours_before} 小时前"
 chest_lb_title: 宝箱开启数量排行榜
 abyss_dmg_lb_title: 深境螺旋最强一击排行榜
 theater_dmg_lb_title: 幻想真境剧诗最强一击排行榜

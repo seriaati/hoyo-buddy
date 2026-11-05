@@ -487,7 +487,7 @@ invalid_uid_format_title: Ongeldig UID-formaat
 invalid_uid_format_description: "UID moet een getal van 9 tot 10 cijfers zijn"
 zenless_zone_zero: Zenless Zone Zero
 img_theater_large_block_title: Imaginarium Theater
-img_theater_stats_line_five: "Totale Speeltijd: {tijd}"
+img_theater_stats_line_five: "Totale Speeltijd: {time}"
 img_theater_legend_block_support_chara: Ondersteunend Karakter
 img_theater_legend_block_trial_chara: Proefkarakter
 img_theater_fastest_team: " (snelste)"
@@ -546,7 +546,7 @@ team_card_dark_theme_desc: "Gebruik een donker kleurenschema voor teamkaarten. D
 team_card_animated_image: Geanimeerde teamkaart
 team_card_animated_image_desc: Gebruik de geanimeerde kunst van personages op teamkaarten, alleen beschikbaar voor sponsors. Personages zonder geanimeerde kunst behouden hun statische kunst, en geanimeerde aangepaste afbeeldingen die als teamkaartafbeelding zijn ingesteld, worden ook gebruikt. Gebruik </sponsor> voor meer informatie.
 profile.character_select.multi.placeholder: Selecteer karakter(s)...
-zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {speciality}\nAanvalstype: {atk_type}\nFactie: {faction}\nElement: {element}"
+zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {specialty}\nAanvalstype: {atk_type}\nFactie: {faction}\nElement: {element}"
 cat_zzz_agents: Agenten
 cat_zzz_bangboos: Bangboos
 cat_zzz_w_engines: W-engines
@@ -752,7 +752,7 @@ yes_choice: "Ja"
 no_choice: "Nee"
 akasha_guild_mode_not_supported: Gilde-Only Modus Kan Niet Worden Gebruikt
 akasha_guild_mode_not_supported_desc: "Je moet lid zijn van een gilde, het aantal gildeleden moet meer dan 100 zijn en het totale aantal Genshin-accounts van je gildeleden moet meer dan 30 zijn."
-time_remaining_str: "Resterende Tijd: {tijd}"
+time_remaining_str: "Resterende Tijd: {time}"
 banner_selector_placeholder: Selecteer een banner...
 rarity_str: "{rarity} ster"
 finished_status_field_name: Status

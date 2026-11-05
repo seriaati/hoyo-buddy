@@ -64,6 +64,10 @@ class ChallengeHistory(BaseModel):
                 msg = "Both json_data and data are None in ChallengeHistory"
                 raise ValueError(msg)
             challenge = pickle.loads(self.data)
+            # Fields added to the model after the data was pickled are missing
+            for name, field in type(challenge).model_fields.items():
+                if name not in challenge.__dict__ and not field.is_required():
+                    challenge.__dict__[name] = field.get_default(call_default_factory=True)
         else:
             challenge = self.load_data(self.json_data, challenge_type=self.challenge_type)
 

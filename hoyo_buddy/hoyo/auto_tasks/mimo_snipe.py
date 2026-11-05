@@ -53,7 +53,14 @@ class MimoRestockSnipe(AutoMimoMixin):
         client = account.client
         client.use_proxy = True
 
-        game_id, version_id = await client._get_mimo_game_data(HB_GAME_TO_GPY_GAME[account.game])
+        try:
+            game_id, version_id = await client._get_mimo_game_data(
+                HB_GAME_TO_GPY_GAME[account.game]
+            )
+        except ValueError:
+            # The game has no Traveling Mimo event running
+            return None
+
         items = await client.get_mimo_valuables(game_id=game_id, version_id=version_id)
         refresh_times = [
             item.next_refresh_time

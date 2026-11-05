@@ -26,7 +26,6 @@ from hoyo_buddy.constants import (
     ANIMATED_IMAGE_EXTENSIONS,
     HB_BIRTHDAY,
     IMAGE_EXTENSIONS,
-    LOCALE_TO_DOCS_LANG,
     SLEEP_TIMES,
     STATIC_FOLDER,
     TRAVELER_IDS,
@@ -40,7 +39,6 @@ if TYPE_CHECKING:
 
     import genshin
 
-    from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Interaction, SleepTime
 
 
@@ -543,39 +541,6 @@ def shorten_preserving_newlines(text: str, width: int, placeholder: str = "...")
             return paragraph[:max_len].rstrip() + placeholder
 
     return truncated
-
-
-def parse_changelog(content: str) -> dict[str, str]:
-    """
-    Parse a changelog markdown string and return a dictionary:
-    {
-        "v1.16.8": "<raw content for this version>",
-        "v1.16.7": "<raw content for this version>",
-        ...
-    }
-    """
-    changelog = {}
-    version_pattern = re.compile(r"^## (v[0-9.]+)", re.MULTILINE)
-
-    # Find all versions and their start positions
-    versions = [(m.group(1), m.start()) for m in version_pattern.finditer(content)]
-    versions.append((None, len(content)))  # Add endpoint for slicing
-
-    for i in range(len(versions) - 1):
-        version = versions[i][0]
-        start = versions[i][1]
-        end = versions[i + 1][1]
-        # Extract raw content after the version heading
-        raw_content = content[start:end].split("\n", 1)[1].strip()
-        changelog[version] = raw_content
-
-    return changelog
-
-
-def get_changelog_url(locale: Locale | None = None) -> str:
-    """Get the URL for the changelog documentation."""
-    lang = "en" if locale is None else LOCALE_TO_DOCS_LANG.get(locale, "en")
-    return f"https://raw.githubusercontent.com/seriaati/hoyo-buddy-wiki/refs/heads/main/src/content/docs/{lang}/release-notes.md"
 
 
 async def get_game_latest_stable_version(

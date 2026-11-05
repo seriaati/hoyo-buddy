@@ -59,7 +59,6 @@ type CommandName = Literal[
     "search hsr",
     "invite",
     "help",
-    "changelog",
     "sponsor",
     "card_settings genshin",
     "card_settings hsr",
@@ -334,9 +333,6 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         description=locale_str(
             "Need help? View the documentation or join our Discord server", key="help_command_desc"
         )
-    ),
-    "changelog": CommandConfig(
-        description=locale_str("View the latest changes and updates", key="changelog_command_desc")
     ),
     "sponsor": CommandConfig(
         description=locale_str(

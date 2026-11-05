@@ -16,9 +16,7 @@ from hoyo_buddy.db import Settings as UserSettings
 from hoyo_buddy.db import get_dyk
 from hoyo_buddy.db.models.hoyo_account import HoyoAccount
 from hoyo_buddy.db.utils import get_locale
-from hoyo_buddy.ui.paginator import Page, PaginatorView
 from hoyo_buddy.ui.sponsor import get_sponsor_perks_message
-from hoyo_buddy.utils.misc import get_changelog_url, parse_changelog, shorten_preserving_newlines
 
 from ..embeds import DefaultEmbed
 from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
@@ -230,35 +228,6 @@ class Others(commands.Cog):
             status_url="https://status.seria.moe/?category=Hoyo%20Buddy",
         )
         await i.response.send_message(content.translate(locale), ephemeral=True)
-
-    @app_commands.command(
-        name=app_commands.locale_str("changelog"), description=COMMANDS["changelog"].description
-    )
-    async def changelog_command(self, i: Interaction) -> None:
-        locale = await get_locale(i)
-
-        async with self.bot.session.get(get_changelog_url(locale)) as resp:
-            if resp.status != 200:
-                msg = "Failed to fetch changelog"
-                raise ValueError(msg)
-
-            content = await resp.text()
-
-        changelog = parse_changelog(content)
-        pages = [
-            Page(content=f"# {title}\n{shorten_preserving_newlines(body, width=2000)}")
-            for title, body in changelog.items()
-        ]
-
-        paginator = PaginatorView(pages, author=i.user, locale=locale)
-        paginator.add_item(
-            Button(
-                label=LocaleStr(key="changelog_embed_title"),
-                row=4,
-                url=get_docs_url("changelog", locale=locale),
-            )
-        )
-        await paginator.start(i, ephemeral=True)
 
     @app_commands.command(
         name=app_commands.locale_str("sponsor"), description=COMMANDS["sponsor"].description

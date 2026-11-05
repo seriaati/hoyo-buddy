@@ -2,6 +2,7 @@ from .auto_task_result import AutoTaskResult
 from .card_settings import CardSettings
 from .challenge_history import ChallengeHistory
 from .custom_image import CustomImage
+from .diary_history import DiaryHistory
 from .discord_embed import DiscordEmbed
 from .dm_channel import DMChannel
 from .farm_notify import FarmNotify

@@ -298,6 +298,8 @@ notes.elysian_realm: Reino Elysiano
 notes.elysian_realm_value: "Pontuação atual: {cur}/{max}"
 notes_available: "{emoji} Disponível em {in_time}"
 notes_command_description: Ver notas em tempo real
+notes_overview_option_label: Visão Geral
+notes_overview.full_time: Cheio {time}
 notif.embed.footer: Use /reminders para configurar os lembretes
 notif_modal.enabled.label: Ativado
 notif_modal.type_one.description: |
@@ -332,7 +334,11 @@ preservation: Preservação
 prev_page_option_label: Página anterior
 notify_feature: Este lembrete de notas
 profile.add_image.button.label: Adicionar imagem personalizada
+profile.add_image_modal.image_file.label: Arquivo de imagem
+profile.add_image_modal.image_file.description: Patrocinadores também podem enviar GIFs, WEBPs animados e MP4s; os primeiros 10 segundos são usados
 profile.add_image_modal.image_url.label: URL da Imagem
+profile.add_image_modal.image_url.description: Ou cole um link direto para uma imagem em vez de enviar um arquivo
+profile.add_image_modal.no_image: Envie um arquivo de imagem ou insira uma URL de imagem.
 profile.build.select.placeholder: Selecione uma build...
 profile.card_info.embed.description: "- Todos os assets usados nos cards pertencem à Hoyoverse, eu não os possuo.\n- Todas as fanarts usadas nos cards são creditadas aos seus respectivos artistas.\n- Os designs dos templates do Hoyo Buddy são originais, você não tem permissão para modificá-los ou reivindicar que os fez sem minha permissão.\n- Os dados do jogo são fornecidos por {provider}.\n"
 profile.card_info.embed.title: Sobre os Cards de Build de Personagem
@@ -516,6 +522,10 @@ stats_command_description: Ver estatísticas da conta do jogo
 tears_of_themis: Tears of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
+about_command.sponsors: Patrocinadores
+about_command.team_members: Membros da equipe
+about_command.contributors: Contribuidores
+about_command.guide_writers: Autores de guias
 card_settings.modifying_for: "Modificando Configurações do Card para {name}"
 card_settings_modifying_for_desc: Todas as configurações de card são únicas para cada personagem. Alguns templates de card podem não suportar certas configurações.
 card_settings.template: Template
@@ -531,6 +541,8 @@ card_settings.footer: "Quando terminar, clique no botão verde na mensagem acima
 card_settings.description: "Use </upload> para obter um URL de imagem enviando a imagem."
 profile.team_dark_mode.button.label: Tema escuro do card de time
 team_card_dark_theme_desc: "Use um esquema de cores escuro para cards de time. Isso se aplica a todos os cards de time, independentemente de quais personagens estejam neles."
+team_card_animated_image: Card de time animado
+team_card_animated_image_desc: Usa a arte animada dos personagens nos cards de time. Disponível apenas para patrocinadores. Personagens sem arte animada mantêm a arte estática, e imagens personalizadas animadas definidas como imagem do card de time também são usadas. Use </sponsor> para saber mais.
 profile.character_select.multi.placeholder: Selecione personagem(ns)...
 zzz_search.agent_info: "Raridade: {rarity}\nEspecialidade: {specialty}\nTipo de Ataque: {atk_type}\nFacção: {faction}\nElemento: {element}"
 cat_zzz_agents: Agentes
@@ -628,6 +640,28 @@ gacha_log_global_stats_title: Estatísticas Globais
 gacha_log_global_stats_lifetime: "Pulls vitalícios: {lifetime}"
 gacha_log_global_stats_luck: "Sorte de {rarity}★: {luck}"
 win_rate_global_stats: "Taxa de vitória {title}: {win_rate}"
+gacha_summary.latest: Último {rarity}
+gacha_summary.previous: '{rarity} anterior'
+gacha_summary.pulls: pulls
+gacha_summary.won: Ganhou
+gacha_summary.lost: Perdeu
+gacha_summary.guaranteed: Garantido
+gacha_summary.won_title: Ganhou o {title}
+gacha_summary.lost_title: Perdeu o {title}
+gacha_summary.pity: Pity de {rarity}
+gacha_summary.next: Próximo {rarity}
+gacha_summary.next_not_guaranteed: '{title} · não garantido'
+gacha_summary.next_is: O próximo {rarity} é um {title}
+gacha_summary.next_is_guaranteed: O próximo {rarity} é garantido
+gacha_summary.banner_pulls: Pulls do banner
+gacha_summary.lifetime_pulls: Pulls vitalícios
+gacha_summary.win_rate: Taxa de vitória {title}
+gacha_summary.avg_pulls: Média de pulls por {rarity}
+gacha_summary.lifetime_spent: Gasto total
+gacha_summary.total: '{total} no total'
+gacha_summary.wins_of_total: '{wins} de {total}'
+gacha_summary.s_rank: Classe S
+gacha_summary.a_rank: Classe A
 gacha_log_view_full: Ver logs de gacha
 gacha_view_command_description: Ver logs de gacha importados
 gacha_log_view_banner_type_selector_placeholder: Selecione um tipo de banner...
@@ -690,6 +724,8 @@ currently_logged_in_as: "Você está atualmente logado como:"
 not_you_label: "Não é você? Clique para entrar com uma conta diferente"
 profile_show_substat_rolls: Mostrar rolls de substat
 profile_show_substat_rolls_desc: Exibe quantos rolls contribuem para o valor final de um substat.
+card_settings_substat_breakdown: Mostrar detalhamento de substats
+card_settings_substat_breakdown_desc: Adiciona uma faixa abaixo do card com o total de cada substat em todo o equipamento e quantos rolls ele recebeu.
 team_card_settings_embed_title: Modificando Configurações do Card de Time
 team_card_settings_embed_description: "As configurações do card de time são compartilhadas entre diferentes jogos e contas, alterações feitas em algumas configurações podem não ser refletidas no card quando não são suportadas pelo template do card.\nQuando terminar, clique no botão verde na mensagem acima para redesenhar o card."
 characters.filter.rarity.placeholder: Filtrar por raridade...
@@ -783,6 +819,8 @@ mimo_point_history_page_footer: "Página {page}"
 dismissible_hsr_temp2_desc: "Agora você pode usar o novo template Hoyo Buddy 2 para cards de personagem HSR, selecione-o nas configurações do card. É recomendado usar imagens horizontais para este template."
 bounty_commission.embed.description: Comissões de Recompensa ainda não concluídas
 ridu_points.embed.description: Pontos do Semanário ainda não concluídos
+suibian_temple.embed.description: O Templo Suibian precisa da sua atenção
+mimo_task.embed.description: As tarefas do Mimo Viajante ainda não foram concluídas
 changelog_embed_title: Notas de versão
 web_events_notify_toggle_label: Notificar sobre novos eventos web
 web_events_cmd_desc: Ver eventos web em andamento e definir notificador
@@ -817,6 +855,7 @@ hard_challenge_team_composition: "Composição da equipe"
 hard_challenge_combat_statistics: "Estatísticas de combate"
 hard_challenge_strongest_strike: "Ataque Mais Forte"
 hard_challenge_damage_dealt: "Maior Dano Total"
+hard_challenge_challenge_index: Desafio {index}
 hard_challenge_enemy_weakness: "Fraqueza e Força do Inimigo"
 hard_challenge_command_desc: Gerar cartão do Confronto Abissal
 hard_challenge: "Confronto Abissal"
@@ -843,6 +882,7 @@ accompany_button_label: Acompanhamento automático de personagem
 accompany_selected_character: "Acompanhando atualmente: {character}"
 accompany_no_character_selected: "Selecione um personagem abaixo para ativar este recurso."
 accompany_character_select_placeholder: Selecione um personagem para acompanhar
+accompany_characters_select_placeholder: Selecione até {limit} personagens para acompanhar
 accompany_cmd_desc: Veja os personagens de acompanhamento do HoYoLAB e defina o seu
 accompany_cmd_character_param_name: personagem
 accompany_cmd_character_param_desc: "Personagem a visualizar, o padrão é o primeiro disponível"
@@ -857,6 +897,8 @@ accompany_voice_lang_select_placeholder: Selecione um idioma de voz
 accompany_voice_line_select_placeholder: Selecione uma fala
 accompany_view_no_character_set: Você ainda não definiu um personagem de acompanhamento.
 accompany_set_character_button_label: Definir como personagem de acompanhamento
+accompany_add_character_button_label: Adicionar ao acompanhamento automático
+accompany_remove_character_button_label: Remover do acompanhamento automático
 accompany_now_button_label: Acompanhar agora
 accompany_view_character_select_placeholder: Selecione um personagem para visualizar
 user_settings_title: "Configurações do Usuário"
@@ -865,10 +907,20 @@ dark_theme_desc: "Tema escuro\nFaz com que os infográficos usem um esquema de c
 language_desc: "Idioma\nO Hoyo Buddy responderá a você neste idioma. Alguns textos ainda podem estar em inglês, veja a [FAQ](:docs/FAQ:) para saber o porquê."
 language_select_placeholder: Selecione um idioma
 settings_dyk_desc: "Mensagens \"Você sabia?\"\nMostre dicas úteis aleatórias quando você usar comandos do bot."
+settings_show_uid_desc: 'Mostrar UID
+
+  Mostre seu UID no </profile> e nos cards de desafio.'
 layout_view_edited: "Os componentes interativos foram desabilitados para economizar recursos do sistema, execute o comando novamente se quiser usá-los."
 mimo_title: Configurações do Traveling Mimo
 mimo_minimum_point_label: Pontos mínimos para manter
 mimo_minimum_point_desc: "Ao sortear automaticamente, o Hoyo Buddy garantirá que seus pontos permaneçam acima deste valor, defina como 0 para sortear sempre que possível."
+mimo_point_saving.title: Economizar pontos para moedas (benefício de patrocinador)
+mimo_point_saving.desc: Com a compra automática ativada, o sorteio automático guarda pontos suficientes para comprar Jades Estelares, Policromos ou Gemas Essenciais quando forem reabastecidos.
+mimo_point_saving.placeholder: Escolha para quais itens economizar pontos
+mimo_point_saving.all: Economizar para todas as moedas
+mimo_point_saving.most_expensive: Economizar só para o item mais caro
+mimo_point_saving.off: Não economizar pontos
+mimo_point_saving.sponsor_perk_message: Economizar pontos para moedas é um benefício de patrocinador.
 disable_all_button_label: Desabilitar todas as notificações
 apply_template_to_all_chars: Aplicar template atual a todos os personagens
 apply_template_to_all_chars_desc: "Todos os personagens **futuros e atuais** usarão **{template}**."
@@ -877,6 +929,9 @@ apply_dark_theme_to_all_chars_desc: "Todos os personagens **futuros e atuais** t
 apply_animated_image_to_all_chars: Aplicar opção de imagem animada atual a todos os personagens
 apply_animated_image_to_all_chars_desc: "Todos os personagens **futuros e atuais** terão o recurso de imagem animada **{status}**."
 card_settings_bulk_title: Configurações em massa
+card_settings_team_title: Configurações do card de time
+card_settings_team_button_desc: Tema escuro e arte animada para cards de time.
+card_settings_team_desc: Essas configurações se aplicam a todos os cards de time, independentemente de quais personagens estejam neles.
 card_settings_bulk_button_desc: "Aplique as opções de template, tema escuro e imagem animada deste personagem a todos os personagens."
 card_settings_bulk_desc: "Aplique as configurações de card de {name} a todos os personagens **atuais e futuros**."
 apply_label: Aplicar
@@ -919,12 +974,32 @@ supporter_embed.description: "Os patrocinadores ajudam a manter o Hoyo Buddy fun
 supporter_embed.perk_auto_task_priority: "Prioridade máxima nas filas de tarefas automáticas (check-in diário, resgate de códigos, Mimo Viajante etc.)"
 supporter_embed.perk_accounts: "Contas ilimitadas (grátis: {limit})"
 supporter_embed.perk_custom_images: "Imagens personalizadas ilimitadas por personagem (grátis: {limit})"
+supporter_embed.perk_animated_image: 'Arte animada de personagens nos cards de build (Genshin Impact, Honkai: Star Rail e Zenless Zone Zero)'
+supporter_embed.perk_animated_custom_images: Envie seus próprios GIFs, WEBPs animados e MP4s como arte animada de personagens nos cards de build e de time
+supporter_embed.perk_animated_team_card: 'Arte animada de personagens nos cards de time (Genshin Impact, Honkai: Star Rail e Zenless Zone Zero)'
 supporter_embed.perk_ai_images: "Geração ilimitada de imagens com IA (grátis: {limit} por dia)"
 supporter_embed.perk_auto_gacha_import: Importação automática de logs de gacha a cada 6 horas (Genshin Impact e Zenless Zone Zero)
+supporter_embed.perk_multi_accompany: 'Acompanhamento automático de até {limit} personagens por conta (grátis: 1)'
+supporter_embed.perk_mimo: 'Automação melhorada do Mimo Viajante: a compra automática pega Jades Estelares e Policromos assim que são reabastecidos, tarefas e compras rodam a cada hora (grátis: a cada 4-5 horas) e o sorteio automático pode economizar pontos para eles'
 supporter_embed.perk_discord_role: Cargo de patrocinador no servidor do Discord
 supporter_embed.perk_discord_channel: Acesso ao canal exclusivo para patrocinadores no servidor do Discord
+supporter_embed.how_to: Doe qualquer valor, mensal ou único, para se tornar um patrocinador. Você continua patrocinador para sempre, mesmo depois que sua doação terminar.
 supporter_embed.status_supporter: "Você é um patrocinador, obrigado!"
 supporter_embed.status_not_supporter: Você ainda não é um patrocinador.
+sponsor_perks_button_label: Ver benefícios de patrocinador
+sponsor_perk_error_title: Benefício de patrocinador
+animated_image_sponsor_perk_message: A arte animada de personagens nos cards de build é um benefício de patrocinador.
+animated_custom_image_sponsor_perk_message: Enviar GIFs, WEBPs animados e MP4s como arte de personagem é um benefício de patrocinador.
+animated_team_card_sponsor_perk_message: A arte animada de personagens nos cards de time é um benefício de patrocinador.
+animation_position_button_label: Posição
+animation_position_modal.zoom.label: Zoom (%)
+animation_position_modal.zoom.description: Em 100, a animação preenche toda a área de imagem do card
+animation_position_modal.focus_x.label: Posição horizontal (%)
+animation_position_modal.focus_x.description: 0 mostra a borda esquerda da animação; 100, a borda direita
+animation_position_modal.focus_y.label: Posição vertical (%)
+animation_position_modal.focus_y.description: 0 mostra a borda superior da animação; 100, a borda inferior
+auto_gacha_import_sponsor_perk_message: A importação automática de logs de gacha é um benefício de patrocinador.
+multi_accompany_sponsor_perk_message: Acompanhar automaticamente mais de um personagem é um benefício de patrocinador. Patrocinadores podem acompanhar automaticamente até {limit} personagens por conta.
 card_settings_animated_image: Imagem animada
 card_settings_animated_image_desc: "Usa a arte animada do personagem no card. Disponível apenas para patrocinadores, em personagens com arte animada, no Template 1 para GI e ZZZ e nos Templates 1 e 2 para HSR. Os cards de GI usam a arte animada das cartas do Chamado Sagrado dos Sete. Use </sponsor> para saber mais."
 reminders_command_description: "Configure lembretes de notas em tempo real, de farm e de eventos web"
@@ -932,3 +1007,8 @@ reminders_button_label: Lembretes
 farm_reminder_title: Lembretes de Farm
 web_events_reminder_title: Lembretes de Eventos Web
 web_events_reminder_desc: Notifica você via Mensagem Direta quando novos eventos web forem publicados.
+diary_cmd_desc: Veja sua renda mensal de moedas
+diary_primogems: Gemas Essenciais
+diary_mora: Mora
+diary_primogem_sources: Fontes de Gemas Essenciais
+diary_last_month: 'Mês passado: {amount}'

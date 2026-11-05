@@ -300,6 +300,8 @@ notes.elysian_realm: 往世乐土
 notes.elysian_realm_value: "当前积分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 后可用"
 notes_command_description: 查看实时便笺
+notes_overview_option_label: 总览
+notes_overview.full_time: '{time}溢出'
 notif.embed.footer: 使用 /reminders 设置提醒
 notif_modal.enabled.label: 开
 notif_modal.type_one.description: |
@@ -334,7 +336,11 @@ preservation: 存护
 prev_page_option_label: 上一页
 notify_feature: 实时便笺通知
 profile.add_image.button.label: 添加自定义图片
+profile.add_image_modal.image_file.label: 图片文件
+profile.add_image_modal.image_file.description: 赞助者还可上传 GIF、动态 WEBP 和 MP4，只截取前 10 秒
 profile.add_image_modal.image_url.label: 图像URL
+profile.add_image_modal.image_url.description: 也可以不上传文件，直接粘贴图片直链
+profile.add_image_modal.no_image: 请上传图片文件或输入图片 URL。
 profile.build.select.placeholder: 选择一个角色配置…
 profile.card_info.embed.description: "—— 卡片中所使用的素材均归Hoyoverse所有，我并未其拥有权。\n—— 卡片中所使用的同人作品均隶属于各自画师。\n—— Hoyo Buddy 样式为原创，未经我的许可，严禁修改或声称它们是出自于你之手。\n—— 游戏数据由{provider}提供。"
 profile.card_info.embed.title: 关于角色面板卡片
@@ -518,6 +524,10 @@ stats_command_description: 查看游戏账号数据
 tears_of_themis: 未定事件簿
 honkai_suit_rarity: "稀有度 {rarity}"
 about_command.designers: 设计师
+about_command.sponsors: 赞助者
+about_command.team_members: 团队成员
+about_command.contributors: 贡献者
+about_command.guide_writers: 攻略作者
 card_settings.modifying_for: "正在修改{name}的卡片设置"
 card_settings_modifying_for_desc: 所有卡片设置都是每个角色独有的。某些卡片模板可能不支持某些设置。
 card_settings.template: 模板
@@ -533,6 +543,8 @@ card_settings.footer: "修改完毕后, 点击上方信息中的绿色按钮来�
 card_settings.description: "使用</upload>上传图像以获取链接。"
 profile.team_dark_mode.button.label: 队伍卡片深色主题
 team_card_dark_theme_desc: "为队伍卡片使用深色配色方案。这适用于所有队伍卡片，无论其中有哪些角色。"
+team_card_animated_image: 动态队伍卡片
+team_card_animated_image_desc: 在队伍卡片上使用角色的动态立绘，仅赞助者可用。没有动态立绘的角色仍使用静态立绘，设为队伍卡片图片的动态自定义图片也会生效。使用 </sponsor> 了解详情。
 profile.character_select.multi.placeholder: 选择角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻击方式: {atk_type}\n阵营: {faction}\n元素: {element}"
 cat_zzz_agents: 代理人
@@ -630,6 +642,28 @@ gacha_log_global_stats_title: 全服数据
 gacha_log_global_stats_lifetime: "总抽数: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★运气: {luck}"
 win_rate_global_stats: "{title} 胜率: {win_rate}"
+gacha_summary.latest: 最新 {rarity}
+gacha_summary.previous: 以往 {rarity}
+gacha_summary.pulls: 抽
+gacha_summary.won: 不歪
+gacha_summary.lost: 歪了
+gacha_summary.guaranteed: 大保底
+gacha_summary.won_title: '{title} 不歪'
+gacha_summary.lost_title: '{title} 歪了'
+gacha_summary.pity: '{rarity} 保底'
+gacha_summary.next: 下一个 {rarity}
+gacha_summary.next_not_guaranteed: '{title} · 小保底'
+gacha_summary.next_is: 下一个 {rarity} 为 {title}
+gacha_summary.next_is_guaranteed: 下一个 {rarity} 为大保底
+gacha_summary.banner_pulls: 卡池抽数
+gacha_summary.lifetime_pulls: 总抽数
+gacha_summary.win_rate: '{title} 胜率'
+gacha_summary.avg_pulls: 每 {rarity} 平均抽数
+gacha_summary.lifetime_spent: 总花费
+gacha_summary.total: 共 {total}
+gacha_summary.wins_of_total: '{total} 次中 {wins} 次'
+gacha_summary.s_rank: S级
+gacha_summary.a_rank: A级
 gacha_log_view_full: 查看抽卡记录
 gacha_view_command_description: 查看导入的抽卡记录
 gacha_log_view_banner_type_selector_placeholder: 选择一个卡池...
@@ -692,6 +726,8 @@ currently_logged_in_as: "你目前登录的身份为:"
 not_you_label: "不是你吗? 点击以使用其他账户登录"
 profile_show_substat_rolls: 显示副词条档次
 profile_show_substat_rolls_desc: 显示有多少次强化贡献了副词条的最终值。
+card_settings_substat_breakdown: 显示副词条明细
+card_settings_substat_breakdown_desc: 在卡片下方添加一栏，显示每个副词条在所有装备上的总值及强化次数。
 team_card_settings_embed_title: 正在修改队伍卡片设置
 team_card_settings_embed_description: "队伍卡片设置在不同游戏和帐户之间共享，当卡片样式不支持时，对某些设置所做的更改可能不会反映在卡片上。\n完成后，点击上方消息中的绿色按钮即可重新绘制卡片。"
 characters.filter.rarity.placeholder: 筛选稀有度…
@@ -785,6 +821,8 @@ mimo_point_history_page_footer: "第 {page} 页"
 dismissible_hsr_temp2_desc: "你现在可以使用 Hoyo Buddy 样式 2 来生成星穹铁道角色卡片，在「卡片设置」中设置。推荐使用横向图片。"
 bounty_commission.embed.description: 悬赏委托尚未全部完成
 ridu_points.embed.description: 丽都周记任务尚未全部完成
+suibian_temple.embed.description: 随便观需要你处理
+mimo_task.embed.description: 旅行 Mimo 任务尚未完成
 changelog_embed_title: 发行说明
 web_events_notify_toggle_label: 在有新的网页活动时通知
 web_events_cmd_desc: 查看当前正在进行的网页活动及设置通知
@@ -819,6 +857,7 @@ hard_challenge_team_composition: "使用队伍"
 hard_challenge_combat_statistics: "战斗数据"
 hard_challenge_strongest_strike: "最强一击"
 hard_challenge_damage_dealt: "最高总伤害"
+hard_challenge_challenge_index: 挑战 {index}
 hard_challenge_enemy_weakness: "优势增益 & 劣势增益"
 hard_challenge_command_desc: 生成幽境危战卡片
 hard_challenge: "幽境危战"
@@ -845,6 +884,7 @@ accompany_button_label: 自动角色陪伴
 accompany_selected_character: "当前陪伴角色：{character}"
 accompany_no_character_selected: "在下方选择一个角色以启用此功能。"
 accompany_character_select_placeholder: 选择要陪伴的角色
+accompany_characters_select_placeholder: 最多选择 {limit} 个要陪伴的角色
 accompany_cmd_desc: 查看 HoYoLAB 陪伴角色并设置你的陪伴角色
 accompany_cmd_character_param_name: 角色
 accompany_cmd_character_param_desc: "要查看的角色，默认为第一个可用的角色"
@@ -859,6 +899,8 @@ accompany_voice_lang_select_placeholder: 选择语音语言
 accompany_voice_line_select_placeholder: 选择语音台词
 accompany_view_no_character_set: 你还没有设置陪伴角色。
 accompany_set_character_button_label: 设为陪伴角色
+accompany_add_character_button_label: 加入自动陪伴
+accompany_remove_character_button_label: 移出自动陪伴
 accompany_now_button_label: 立即陪伴
 accompany_view_character_select_placeholder: 选择要查看的角色
 user_settings_title: "用户设置"
@@ -867,10 +909,20 @@ dark_theme_desc: "深色主题\n生成信息图时使用深色主题，并不是
 language_desc: "语言\nHoyo Buddy将使用此语言回复你。某些文本可能仍为英文，请参阅[常见问题](:docs/FAQ:)了解原因。"
 language_select_placeholder: 选择一种语言
 settings_dyk_desc: "「你知道吗？」消息\n当你使用机器人命令时随机显示有用的提示。"
+settings_show_uid_desc: '显示 UID
+
+  在 </profile> 和挑战卡片上显示你的 UID。'
 layout_view_edited: "为了节省系统资源，交互组件已被禁用，如果想继续使用，请重新运行命令。"
 mimo_title: 旅行Mimo设置
 mimo_minimum_point_label: 最低保留积分
 mimo_minimum_point_desc: "自动抽奖时，Hoyo Buddy会确保你的积分保持在此值以上，设置为0则尽可能抽奖。"
+mimo_point_saving.title: 为货币类奖励存积分（赞助者福利）
+mimo_point_saving.desc: 开启自动购买后，自动抽奖会预留足够积分，以便星琼、菲林或原石补货时购买。
+mimo_point_saving.placeholder: 选择要为哪些奖励存积分
+mimo_point_saving.all: 为所有货币类奖励存积分
+mimo_point_saving.most_expensive: 只为最贵的奖励存积分
+mimo_point_saving.off: 不存积分
+mimo_point_saving.sponsor_perk_message: 为货币类奖励存积分是赞助者福利。
 disable_all_button_label: 禁用所有通知
 apply_template_to_all_chars: 将当前模板应用于所有角色
 apply_template_to_all_chars_desc: "所有**未来和当前**角色将使用**{template}**。"
@@ -879,6 +931,9 @@ apply_dark_theme_to_all_chars_desc: "所有**未来和当前**角色的深色主
 apply_animated_image_to_all_chars: 将当前动态图片选项应用于所有角色
 apply_animated_image_to_all_chars_desc: "所有**未来和当前**角色的动态图片将设为**{status}**。"
 card_settings_bulk_title: 批量设置
+card_settings_team_title: 队伍卡片设置
+card_settings_team_button_desc: 队伍卡片的深色主题和动态立绘。
+card_settings_team_desc: 这些设置适用于所有队伍卡片，无论其中有哪些角色。
 card_settings_bulk_button_desc: "将此角色的模板、深色主题和动态图片选项应用于所有角色。"
 card_settings_bulk_desc: "将 {name} 的卡片设置应用于所有**当前和未来**角色。"
 apply_label: 应用
@@ -921,12 +976,32 @@ supporter_embed.description: "赞助者帮助 Hoyo Buddy 维持运行、持续�
 supporter_embed.perk_auto_task_priority: "自动任务队列最高优先级（每日签到、兑换码兑换、旅行 Mimo 等）"
 supporter_embed.perk_accounts: "不限账号数量（免费用户：{limit} 个）"
 supporter_embed.perk_custom_images: "每个角色不限自定义图片数量（免费用户：{limit} 张）"
+supporter_embed.perk_animated_image: 面板卡片上的角色动态立绘（原神、崩坏：星穹铁道和绝区零）
+supporter_embed.perk_animated_custom_images: 上传你自己的 GIF、动态 WEBP 和 MP4，作为面板卡片和队伍卡片上的角色动态立绘
+supporter_embed.perk_animated_team_card: 队伍卡片上的角色动态立绘（原神、崩坏：星穹铁道和绝区零）
 supporter_embed.perk_ai_images: "不限 AI 图片生成数量（免费用户：每天 {limit} 张）"
 supporter_embed.perk_auto_gacha_import: 每 6 小时自动导入抽卡记录（原神和绝区零）
+supporter_embed.perk_multi_accompany: 每个账号最多自动陪伴 {limit} 个角色（免费用户：1 个）
+supporter_embed.perk_mimo: 更强的旅行 Mimo 自动化：星琼和菲林一补货就自动购买，任务和购买每小时执行一次（免费用户：每 4-5 小时），自动抽奖还可为它们存积分
 supporter_embed.perk_discord_role: Discord 服务器中的赞助者身份组
 supporter_embed.perk_discord_channel: 可访问 Discord 服务器中的赞助者专属频道
+supporter_embed.how_to: 捐款任意金额（按月或一次性均可）即可成为赞助者。即使捐款结束，你也会永久保留赞助者身份。
 supporter_embed.status_supporter: "你是赞助者，感谢你的支持！"
 supporter_embed.status_not_supporter: 你还不是赞助者。
+sponsor_perks_button_label: 查看赞助者福利
+sponsor_perk_error_title: 赞助者福利
+animated_image_sponsor_perk_message: 面板卡片上的角色动态立绘是赞助者福利。
+animated_custom_image_sponsor_perk_message: 将 GIF、动态 WEBP 和 MP4 上传为角色立绘是赞助者福利。
+animated_team_card_sponsor_perk_message: 队伍卡片上的角色动态立绘是赞助者福利。
+animation_position_button_label: 位置
+animation_position_modal.zoom.label: 缩放（%）
+animation_position_modal.zoom.description: 设为 100 时，动画会填满卡片的图片区域
+animation_position_modal.focus_x.label: 水平位置（%）
+animation_position_modal.focus_x.description: 0 显示动画的左边缘，100 显示右边缘
+animation_position_modal.focus_y.label: 垂直位置（%）
+animation_position_modal.focus_y.description: 0 显示动画的上边缘，100 显示下边缘
+auto_gacha_import_sponsor_perk_message: 自动导入抽卡记录是赞助者福利。
+multi_accompany_sponsor_perk_message: 自动陪伴多个角色是赞助者福利。赞助者每个账号最多可自动陪伴 {limit} 个角色。
 card_settings_animated_image: 动态图片
 card_settings_animated_image_desc: "在卡片上使用角色的动态立绘。仅赞助者可用，且仅适用于有动态立绘的角色：原神和绝区零支持样式 1，星穹铁道支持样式 1 和 2。原神卡片使用七圣召唤的动态卡面。使用 </sponsor> 了解详情。"
 reminders_command_description: 设置实时便笺、刷本和网页活动提醒
@@ -934,3 +1009,8 @@ reminders_button_label: 提醒
 farm_reminder_title: 刷本提醒
 web_events_reminder_title: 网页活动提醒
 web_events_reminder_desc: 有新的网页活动发布时，通过私信通知你。
+diary_cmd_desc: 查看你的每月货币收入
+diary_primogems: 原石
+diary_mora: 摩拉
+diary_primogem_sources: 原石来源
+diary_last_month: 上月：{amount}

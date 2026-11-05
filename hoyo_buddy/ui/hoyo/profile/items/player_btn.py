@@ -36,6 +36,8 @@ class PlayerInfoButton(Button[ProfileView]):
             "profile_build_select",
             "profile_redraw_card",
             "profile_show_uid",
+            "profile_substat_rolls",
+            "profile_substat_breakdown",
         )
         for btn in disable_btns:
             button = self.view.get_item(btn)

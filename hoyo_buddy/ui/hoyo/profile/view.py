@@ -64,7 +64,7 @@ from hoyo_buddy.ui import ToggleUIButton
 from hoyo_buddy.ui.hoyo.profile.player_embed import PlayerEmbedMixin
 from hoyo_buddy.ui.hoyo.profile.templates import TEMPLATES
 from hoyo_buddy.utils import format_float, human_format_number
-from hoyo_buddy.utils.misc import get_template_num
+from hoyo_buddy.utils.misc import get_template_name, get_template_num
 
 from .image_settings import get_default_art, get_default_collection, get_team_image
 from .items.build_select import BuildSelect
@@ -75,6 +75,7 @@ from .items.player_btn import PlayerInfoButton
 from .items.redraw_card_btn import RedrawCardButton
 from .items.show_uid_btn import ShowUIDButton
 from .items.skin_select import DEFAULT_SKIN_ID, SkinSelect
+from .items.substat_btns import SubstatBreakdownButton, SubstatRollsButton
 
 if TYPE_CHECKING:
     import io
@@ -201,7 +202,6 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._owner_hash: str | None = owner.hash if owner is not None else None
         self._build_id: int | Literal["current"] | None = None
         self._rows: list[list[Button | Select]] = []
-        self._show_uid = False
         self.dyk = ""
         self._card_filename = "card.webp"
 
@@ -384,7 +384,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             embed.set_author(name=f"UID: {self.uid}", icon_url=get_game_icon(self.game))
         return embed
 
-    def _add_items(self) -> None:
+    def _add_items(self, settings: Settings) -> None:
         self._rows = [[PlayerInfoButton(row=0), CardSettingsButton(row=0), RedrawCardButton(row=0)]]
 
         if self.characters:
@@ -413,7 +413,13 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         if self.game in SKIN_TEMPLATES:
             self._rows.append([SkinSelect(row=4)])
         self._rows.append(
-            [CardInfoButton(row=4), ShowUIDButton(self._show_uid, row=4), ToggleUIButton()]
+            [
+                CardInfoButton(row=4),
+                ShowUIDButton(settings.show_uid, row=4),
+                SubstatRollsButton(settings.show_substat_rolls, row=4),
+                SubstatBreakdownButton(settings.show_substat_breakdown, row=4),
+                ToggleUIButton(),
+            ]
         )
 
     def render(self, embed: discord.Embed) -> None:
@@ -482,12 +488,12 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         return await self._request_draw_card_api(template, payload=payload, session=session)
 
     async def _draw_enka_cards_card(
-        self, session: aiohttp.ClientSession, character: Character, card_settings: CardSettings
+        self, session: aiohttp.ClientSession, character: Character, *, show_substat_rolls: bool
     ) -> BytesIO:
         """Draw GI/HSR/ZZZ character card using the enka.cards service (enka.network style)."""
         params = {
             "lang": LOCALE_TO_ENKA_CARDS_LANG.get(await self.get_character_locale(character), "en"),
-            "substats": str(card_settings.show_substat_rolls).lower(),
+            "substats": str(show_substat_rolls).lower(),
         }
         # enka.network URLs use the plain avatar ID, without the traveler depot suffix
         character_id = str(character.id).split("-")[0]
@@ -517,6 +523,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         *,
         user_id: int,
         uid: int | None,
+        settings: Settings,
     ) -> BytesIO:
         """Draw Star Rail character card in Hoyo Buddy template."""
         assert isinstance(character, enka.hsr.Character | HoyolabHSRCharacter)
@@ -570,8 +577,8 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             template=template_num,
             animation=animation,
             uid=uid,
-            show_substat_rolls=card_settings.show_substat_rolls,
-            show_substat_breakdown=card_settings.show_substat_breakdown,
+            show_substat_rolls=settings.show_substat_rolls,
+            show_substat_breakdown=settings.show_substat_breakdown,
         )
 
     async def _draw_hb_gi_character_card(
@@ -582,6 +589,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         *,
         user_id: int,
         uid: int | None,
+        settings: Settings,
     ) -> BytesIO:
         """Draw Genshin Impact character card in Hoyo Buddy template."""
         assert isinstance(character, enka.gi.Character | HoyolabGICharacter)
@@ -634,8 +642,8 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             rank=rank,
             animation=animation,
             uid=uid,
-            show_substat_rolls=card_settings.show_substat_rolls,
-            show_substat_breakdown=card_settings.show_substat_breakdown,
+            show_substat_rolls=settings.show_substat_rolls,
+            show_substat_breakdown=settings.show_substat_breakdown,
         )
 
     async def _draw_hb_zzz_character_card(
@@ -646,6 +654,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         *,
         user_id: int,
         uid: int | None,
+        settings: Settings,
     ) -> BytesIO:
         """Draw ZZZ build card in Hoyo Buddy template."""
         assert isinstance(character, ZZZPartialAgent | ZZZEnkaCharacter)
@@ -718,8 +727,8 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             custom_color=card_settings.custom_primary_color,
             custom_image=card_settings.current_image,
             template=template_num,
-            show_substat_rolls=card_settings.show_substat_rolls,
-            show_substat_breakdown=card_settings.show_substat_breakdown,
+            show_substat_rolls=settings.show_substat_rolls,
+            show_substat_breakdown=settings.show_substat_breakdown,
             agent_special_stat_map=agent_special_stat_map,
             hl_special_stats=card_settings.highlight_special_stats,
             hl_substats=card_settings.highlight_substats,
@@ -761,27 +770,43 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
         if self.game is Game.STARRAIL:
             if template == "enka1":
-                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
+                return await self._draw_enka_cards_card(
+                    i.client.session, character, show_substat_rolls=settings.show_substat_rolls
+                )
             if "hb" in template:
                 return await self._draw_hb_hsr_character_card(
-                    character, card_settings, draw_input, user_id=i.user.id, uid=uid
+                    character,
+                    card_settings,
+                    draw_input,
+                    user_id=i.user.id,
+                    uid=uid,
+                    settings=settings,
                 )
             return await self._draw_src_character_card(i.client.session, character, card_settings)
 
         if self.game is Game.GENSHIN:
             if template == "enka1":
-                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
+                return await self._draw_enka_cards_card(
+                    i.client.session, character, show_substat_rolls=settings.show_substat_rolls
+                )
             if "hb" in template:
                 return await self._draw_hb_gi_character_card(
-                    character, card_settings, draw_input, user_id=i.user.id, uid=uid
+                    character,
+                    card_settings,
+                    draw_input,
+                    user_id=i.user.id,
+                    uid=uid,
+                    settings=settings,
                 )
             return await self._draw_enka_card(i.client.session, character, card_settings)
 
         if self.game is Game.ZZZ:
             if template == "enka1":
-                return await self._draw_enka_cards_card(i.client.session, character, card_settings)
+                return await self._draw_enka_cards_card(
+                    i.client.session, character, show_substat_rolls=settings.show_substat_rolls
+                )
             return await self._draw_hb_zzz_character_card(
-                character, card_settings, draw_input, user_id=i.user.id, uid=uid
+                character, card_settings, draw_input, user_id=i.user.id, uid=uid, settings=settings
             )
 
         msg = f"draw_card not implemented for game {self.game} template {template}"
@@ -839,8 +864,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             }
 
             show_substat_rolls = {
-                int(char_id): agent_card_settings[int(char_id)].show_substat_rolls
-                for char_id in self.character_ids
+                int(char_id): settings.show_substat_rolls for char_id in self.character_ids
             }
             hl_special_stats = {
                 int(char_id): agent_card_settings[int(char_id)].highlight_special_stats
@@ -892,7 +916,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         animations: dict[str, SpineData | CustomAnimation] = {}
         for char in characters:
             char_settings = await get_card_settings(i.user.id, str(char.id), game=self.game)
-            show_rolls[str(char.id)] = char_settings.show_substat_rolls
+            show_rolls[str(char.id)] = settings.show_substat_rolls
             skin_art = (
                 None
                 if char_settings.current_team_image
@@ -1183,6 +1207,15 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self.item_states["profile_show_uid"] = show_uid_btn.disabled = (
             is_team or "hb" not in card_settings.template
         )
+        template_name = get_template_name(card_settings.template)
+        rolls_btn: SubstatRollsButton = self.get_item("profile_substat_rolls")
+        self.item_states["profile_substat_rolls"] = rolls_btn.disabled = (
+            not is_team and template_name not in {"hb", "enka"}
+        )
+        breakdown_btn: SubstatBreakdownButton = self.get_item("profile_substat_breakdown")
+        self.item_states["profile_substat_breakdown"] = breakdown_btn.disabled = (
+            is_team or template_name != "hb"
+        )
         self.render(self.card_embed)
 
         if unset_loading_state and item is not None:
@@ -1192,8 +1225,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
 
     async def start(self, i: Interaction) -> None:
         self._set_characters()
-        self._show_uid = (await Settings.get(user_id=i.user.id)).show_uid
-        self._add_items()
+        self._add_items(await Settings.get(user_id=i.user.id))
 
         self.dyk = await get_dyk(i)
         self.render(self.player_embed)

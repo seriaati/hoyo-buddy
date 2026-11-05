@@ -30,6 +30,9 @@ class Settings(CachedModel):
     """Whether to use characters' animated art on team cards, only for sponsors."""
     enable_dyk = fields.BooleanField(default=True)
     show_uid = fields.BooleanField(default=False)
+    show_substat_rolls = fields.BooleanField(default=True)
+    show_substat_breakdown = fields.BooleanField(default=False)
+    """Whether to show the total of each substat across all artifacts, relics or discs."""
 
     gi_dark_mode = fields.BooleanField(default=False)
     hsr_dark_mode = fields.BooleanField(default=False)

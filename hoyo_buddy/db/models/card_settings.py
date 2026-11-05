@@ -27,9 +27,6 @@ class CardSettings(BaseModel):
     template = fields.CharField(max_length=32, default="hb1")
     show_rank = fields.BooleanField(default=True)
     """Whether to show the akasha rank of the character, only applies to genshin."""
-    show_substat_rolls = fields.BooleanField(default=True)
-    show_substat_breakdown = fields.BooleanField(default=False)
-    """Whether to show the total of each substat across all artifacts, relics or discs."""
     highlight_special_stats = fields.BooleanField(default=True)
     highlight_substats: fields.Field[list[int] | None] = fields.JSONField(null=True)
     """Highlighted ZZZ disc substat IDs, None to follow the agent's special stats."""

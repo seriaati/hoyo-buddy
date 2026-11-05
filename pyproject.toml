@@ -51,7 +51,7 @@ license = { file = "LICENSE" }
 name = "hoyo-buddy"
 readme = "README.md"
 requires-python = ">=3.12"
-version = "1.17.0"
+version = "1.18.0"
 
 [dependency-groups]
 dev = ["pyright==1.1.411", "ruff>=0.12.3"]

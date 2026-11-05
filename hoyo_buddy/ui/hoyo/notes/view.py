@@ -164,7 +164,11 @@ class NotesView(ui.LayoutView):
             status = LocaleStr(key="note_already_full", mi18n_game=Game.STARRAIL)
 
         prefix = f"{emoji} " if emoji else ""
-        return f"{prefix}**{cur}/{max_}** · {status.translate(self.locale)}"
+        line = f"{prefix}**{cur}/{max_}** · {status.translate(self.locale)}"
+        if isinstance(notes, genshin.models.StarRailNote):
+            reserve = LocaleStr(key="hsr_note_reserve_stamina", mi18n_game=Game.STARRAIL)
+            line += f"\n-# {reserve.translate(self.locale)}: {notes.current_reserve_stamina:,}"
+        return line
 
     async def _draw_notes_card(self, notes: NotesWithCard, draw_input: DrawInput) -> io.BytesIO:
         if isinstance(notes, genshin.models.Notes):

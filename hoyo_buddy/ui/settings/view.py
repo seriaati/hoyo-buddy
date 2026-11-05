@@ -43,8 +43,6 @@ from hoyo_buddy.ui.settings.user import UserSettingsContainer
 from ._common import AccountSelect
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     from hoyo_buddy.db.models.card_settings import CardSettings
     from hoyo_buddy.enums import Locale
     from hoyo_buddy.types import Character, Interaction, User
@@ -162,28 +160,17 @@ class SettingsView(ui.LayoutView):
                 if not accounts:
                     raise NoAccountFoundError(list(Game))
 
-                limit_games: Iterable[Game] | None = None
                 account = next((acc for acc in accounts if acc.current), accounts[0])
 
-                if self.category in {
-                    SettingsCategory.MIMO_SETTINGS,
-                    SettingsCategory.MIMO_NOTIFICATION_SETTINGS,
-                }:
-                    limit_games = MIMO_SUPPORT_GAMES
-                    mimo_accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
-                    if not mimo_accounts:
-                        raise NoAccountFoundError(MIMO_SUPPORT_GAMES)
-
-                    account = next((acc for acc in mimo_accounts if acc.current), accounts[0])
-
-                if limit_games is not None:
-                    limit_game_accounts = [acc for acc in accounts if acc.game in limit_games]
-                    if not limit_game_accounts:
-                        raise NoAccountFoundError(limit_games)
-
-                    account = next(
-                        (acc for acc in limit_game_accounts if acc.current), limit_game_accounts[0]
-                    )
+            if (
+                self.category
+                in {SettingsCategory.MIMO_SETTINGS, SettingsCategory.MIMO_NOTIFICATION_SETTINGS}
+                and account.game not in MIMO_SUPPORT_GAMES
+            ):
+                mimo_accounts = [acc for acc in accounts if acc.game in MIMO_SUPPORT_GAMES]
+                if not mimo_accounts:
+                    raise NoAccountFoundError(MIMO_SUPPORT_GAMES)
+                account = next((acc for acc in mimo_accounts if acc.current), mimo_accounts[0])
 
             if self.category is SettingsCategory.ACCOMPANY_SETTINGS and not _is_accompany_account(
                 account

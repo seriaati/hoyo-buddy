@@ -26,6 +26,8 @@ class ShowUIDButton(ToggleButton[ProfileView]):
         settings = await Settings.get(user_id=i.user.id)
         settings.show_uid = self.current_toggle
         await settings.save(update_fields=("show_uid",))
+        if self.view._account is not None:
+            self.view._account.show_uid = self.current_toggle
 
         await self.set_loading_state(i)
         await self.view.update(i, self)

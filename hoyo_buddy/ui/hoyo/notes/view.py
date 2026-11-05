@@ -127,7 +127,7 @@ class NotesView(ui.LayoutView):
 
         lines: list[str] = []
         for account, result in zip(accounts, results, strict=True):
-            header = f"### {GAME_ICON_EMOJIS[account.game_icon]} {escape_markdown(account.blurred_display)}"
+            header = f"### {GAME_ICON_EMOJIS[account.game_icon]} {escape_markdown(account.display)}"
             if isinstance(result, Exception):
                 embed, recognized = get_error_embed(result, self.locale)
                 if not recognized:
@@ -348,7 +348,7 @@ class AccountSwitcher(PaginatorSelect[NotesView]):
     ) -> None:
         options = [
             SelectOption(
-                label=acc.blurred_display,
+                label=acc.display,
                 value=f"{acc.uid}_{acc.game}",
                 emoji=get_game_emoji(acc.game),
                 default=not overview and acc == account,

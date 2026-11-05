@@ -49,7 +49,7 @@ class LunarArcanaView(ui.LayoutView):
         self.clear_items()
         self.add_item(
             ui.Container(
-                ui.TextDisplay(f"-# {self.account.blurred_display}"),
+                ui.TextDisplay(f"-# {self.account.display}"),
                 discord.ui.MediaGallery(discord.MediaGalleryItem(self.overview_url)),
                 ui.ActionRow(BrowseCardsButton()),
             )
@@ -67,7 +67,7 @@ class LunarArcanaView(ui.LayoutView):
         self.clear_items()
         self.add_item(
             ui.Container(
-                ui.TextDisplay(f"-# {self.account.blurred_display}"),
+                ui.TextDisplay(f"-# {self.account.display}"),
                 ui.TextDisplay(
                     LocaleStr(
                         custom_str="## {numeral} · {name}\n{status}",

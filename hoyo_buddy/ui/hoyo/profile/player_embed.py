@@ -30,7 +30,9 @@ class PlayerEmbedMixin:
 
     @property
     def uid_str(self) -> str:
-        return blur_uid(self.uid) if self._account is not None else str(self.uid)
+        if self._account is None or self._account.show_uid:
+            return str(self.uid)
+        return blur_uid(self.uid)
 
     @property
     def default(self) -> DefaultEmbed:

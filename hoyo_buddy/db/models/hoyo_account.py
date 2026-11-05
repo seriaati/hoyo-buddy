@@ -14,6 +14,7 @@ from hoyo_buddy.icons import get_game_icon
 from hoyo_buddy.utils import blur_uid, get_now
 
 from .base import BaseModel
+from .settings import Settings
 
 if TYPE_CHECKING:
     from hoyo_buddy.enums import Platform
@@ -85,6 +86,9 @@ class HoyoAccount(BaseModel):
     """Newest gacha record ID fetched from the API per banner type, for incremental imports."""
     mimo_all_claimed_time: fields.Field[datetime.datetime | None] = fields.DatetimeField(null=True)
 
+    show_uid: bool = False
+    """Whether the owner turned on Show UID. Not a DB field, set by `load_show_uid`."""
+
     class Meta:
         unique_together = ("uid", "game", "user")
         ordering = ("uid",)
@@ -92,9 +96,21 @@ class HoyoAccount(BaseModel):
     def __str__(self) -> str:
         return f"{self.nickname or self.username} ({self.uid})"
 
-    @cached_property
-    def blurred_display(self) -> str:
-        return f"{self.nickname or self.username} ({blur_uid(self.uid)})"
+    @property
+    def display(self) -> str:
+        """Nickname and UID, with the UID blurred unless the owner turned on Show UID."""
+        uid = self.uid if self.show_uid else blur_uid(self.uid)
+        return f"{self.nickname or self.username} ({uid})"
+
+    @staticmethod
+    async def load_show_uid(*accounts: HoyoAccount) -> None:
+        """Set `show_uid` on each account from its owner's settings."""
+        show_uids: dict[int, bool] = {}
+        for account in accounts:
+            if account.user_id not in show_uids:
+                settings = await Settings.get_or_none(user_id=account.user_id)
+                show_uids[account.user_id] = settings is not None and settings.show_uid
+            account.show_uid = show_uids[account.user_id]
 
     @cached_property
     def client(self) -> GenshinClient:

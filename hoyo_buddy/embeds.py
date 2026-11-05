@@ -66,7 +66,7 @@ class Embed(discord.Embed):
     def add_acc_info(self, account: HoyoAccount, *, blur: bool = True) -> Self:
         """Add HoyoAccount information to the author field."""
         return self.set_author(
-            name=account.blurred_display if blur else str(account), icon_url=account.game_icon
+            name=account.display if blur else str(account), icon_url=account.game_icon
         )
 
     def copy(self) -> Self:

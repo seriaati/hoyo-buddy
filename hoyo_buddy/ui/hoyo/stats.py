@@ -41,7 +41,7 @@ class StatsView(View):
     ) -> DefaultEmbed:
         embed = DefaultEmbed(
             self.locale,
-            title=self.account.blurred_display,
+            title=self.account.display,
             description=LocaleStr(key="N_level", mi18n_game=Game.GENSHIN, N=level or "?"),
         )
         for key, value in fields.items():
@@ -164,7 +164,7 @@ class AccountSwitcher(Select[StatsView]):
             placeholder=LocaleStr(key="account_select_placeholder"),
             options=[
                 SelectOption(
-                    label=acc.blurred_display,
+                    label=acc.display,
                     value=f"{acc.uid}_{acc.game}",
                     emoji=get_game_emoji(acc.game),
                     default=acc == account,

@@ -192,7 +192,6 @@ class ChallengeView(ui.LayoutView):
         dark_mode: bool,
         challenge_type: ChallengeType,
         *,
-        show_uid: bool,
         author: User | Member,
         locale: Locale,
     ) -> None:
@@ -213,7 +212,6 @@ class ChallengeView(ui.LayoutView):
         self.characters: Sequence[GICharacter] = []
         self.agent_ranks: dict[int, int] = {}
         self.uid = account.uid
-        self.show_uid = show_uid
         self._rows: list[list[Button | Select]] = []
         self.dyk = ""
 
@@ -468,7 +466,7 @@ class ChallengeView(ui.LayoutView):
             loop=loop,
         )
 
-        uid = self.uid if self.show_uid else None
+        uid = self.uid if self.account.show_uid else None
 
         if isinstance(self.challenge, SpiralAbyss):
             return await draw_funcs.draw_spiral_abyss_card(
@@ -506,7 +504,7 @@ class ChallengeView(ui.LayoutView):
             return await draw_funcs.draw_hard_challenge(
                 draw_input,
                 self.challenge,
-                str(self.uid) if self.show_uid else blur_uid(self.uid),
+                str(self.uid) if self.account.show_uid else blur_uid(self.uid),
                 mode=self.hard_challenge_mode,
                 stygian_detail=stygian_detail,
             )
@@ -532,7 +530,7 @@ class ChallengeView(ui.LayoutView):
         if self.challenge_type is ChallengeType.HARD_CHALLENGE:
             self._rows.append([HardChallengeModeSingle(), HardChallengeModeMulti()])
 
-        self._rows.append([ViewBuffs(), ShowUID(self.show_uid)])
+        self._rows.append([ViewBuffs(), ShowUID(self.account.show_uid)])
 
     @property
     def card_embed(self) -> DefaultEmbed:
@@ -593,8 +591,10 @@ class ChallengeView(ui.LayoutView):
         except ValueError:
             pass
         else:
-            self.item_states["show_uid"] = show_uid_button.disabled = not isinstance(
-                self.challenge, ShowUIDChallenge
+            self.item_states["show_uid"] = show_uid_button.disabled = (
+                not isinstance(self.challenge, ShowUIDChallenge)
+                or self.author is None
+                or self.account.user_id != self.author.id
             )
 
     async def start(self, i: Interaction) -> None:
@@ -706,7 +706,7 @@ class ShowUID(ToggleButton[ChallengeView]):
 
     async def callback(self, i: Interaction) -> None:
         await super().callback(i, edit=False)
-        self.view.show_uid = self.current_toggle
+        self.view.account.show_uid = self.current_toggle
 
         settings = await Settings.get(user_id=i.user.id)
         settings.show_uid = self.current_toggle

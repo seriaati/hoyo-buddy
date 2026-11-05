@@ -374,6 +374,16 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
                 break
             self.character_ids.append(character_id)
 
+    def _show_uid(self, settings: Settings) -> bool:
+        """The account owner's Show UID setting, or the author's without a linked account."""
+        return self._account.show_uid if self._account is not None else settings.show_uid
+
+    @property
+    def _can_toggle_uid(self) -> bool:
+        if self._account is None:
+            return True
+        return self.author is not None and self._account.user_id == self.author.id
+
     @property
     def card_embed(self) -> DefaultEmbed:
         embed = DefaultEmbed(self.locale)
@@ -415,7 +425,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         self._rows.append(
             [
                 CardInfoButton(row=4),
-                ShowUIDButton(settings.show_uid, row=4),
+                ShowUIDButton(self._show_uid(settings), row=4),
                 SubstatRollsButton(settings.show_substat_rolls, row=4),
                 SubstatBreakdownButton(settings.show_substat_breakdown, row=4),
                 ToggleUIButton(),
@@ -766,7 +776,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
             loop=i.client.loop,
         )
         settings = await Settings.get(user_id=i.user.id)
-        uid = self.uid if settings.show_uid else None
+        uid = self.uid if self._show_uid(settings) else None
 
         if self.game is Game.STARRAIL:
             if template == "enka1":
@@ -1205,7 +1215,7 @@ class ProfileView(ui.LayoutView, PlayerEmbedMixin):
         # The UID is only drawn on single-character Hoyo Buddy templates
         show_uid_btn: ShowUIDButton = self.get_item("profile_show_uid")
         self.item_states["profile_show_uid"] = show_uid_btn.disabled = (
-            is_team or "hb" not in card_settings.template
+            is_team or "hb" not in card_settings.template or not self._can_toggle_uid
         )
         template_name = get_template_name(card_settings.template)
         rolls_btn: SubstatRollsButton = self.get_item("profile_substat_rolls")

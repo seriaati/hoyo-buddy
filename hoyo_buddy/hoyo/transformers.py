@@ -51,4 +51,5 @@ class HoyoAccountTransformer(app_commands.Transformer):
         if account is None:
             raise AccountNotFoundError
 
+        await HoyoAccount.load_show_uid(account)
         return account

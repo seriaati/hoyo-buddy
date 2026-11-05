@@ -73,6 +73,7 @@ class FarmCommand:
     async def _get_farm_notify(self) -> FarmNotify:
         farm_notify, _ = await FarmNotify.get_or_create(account=self._account)
         await farm_notify.fetch_related("account")
+        farm_notify.account.show_uid = self._account.show_uid
         return farm_notify
 
     async def _update_farm_notify(self, farm_notify: FarmNotify) -> None:

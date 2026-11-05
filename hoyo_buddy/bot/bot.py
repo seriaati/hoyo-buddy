@@ -310,7 +310,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         account: models.HoyoAccount, locale: Locale, *, is_author: bool, show_id: bool
     ) -> str:
         account_id_str = f"[{account.id}] " if show_id else ""
-        account_display = account if is_author else account.blurred_display
+        account_display = account if is_author else account.display
         game_str = translator.translate(EnumStr(account.game), locale)
         current_str = " (✦)" if account.current else ""
         return f"{account_id_str}{account_display} | {game_str}{current_str}"
@@ -345,6 +345,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         accounts = await models.HoyoAccount.filter(query)
         if not is_author:
             accounts = [account for account in accounts if account.public]
+            await models.HoyoAccount.load_show_uid(*accounts)
 
         if not accounts:
             if is_author:
@@ -427,6 +428,7 @@ class HoyoBuddy(commands.AutoShardedBot):
         if not accounts:
             raise NoAccountFoundError(games, platform)
 
+        await models.HoyoAccount.load_show_uid(*accounts)
         return accounts
 
     async def get_account(

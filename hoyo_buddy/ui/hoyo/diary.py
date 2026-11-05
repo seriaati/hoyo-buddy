@@ -249,7 +249,7 @@ class DiaryView(ui.LayoutPaginatorView):
             f"{s.percent}% · {self._translate(s.name)} · {s.amount:,}" for s in summary.sources
         )
 
-        header = f"{GAME_ICON_EMOJIS[self.account.game_icon]} {self.account.blurred_display}"
+        header = f"{GAME_ICON_EMOJIS[self.account.game_icon]} {self.account.display}"
 
         self.clear_items()
         self.add_item(

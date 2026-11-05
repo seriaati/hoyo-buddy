@@ -318,7 +318,7 @@ notif_modal.notify_weekday.label: 通知する曜日
 notif_modal.threshold.label: しきい値
 notif_modal.threshold.description: "閾値に達した後に通知が送信されます。"
 notification_settings_button_label: 通知設定
-mimo_notification_settings: トラベリングミモの通知設定
+mimo_notification_settings: 旅するミモの通知設定
 notification_settings_desc: 受信する通知を設定します。
 notification_settings_note: "注:Hoyo Buddyはダイレクトメッセージで通知を送信します。受信するにはDMを開いておいてください。"
 notify_on_failure_button_label: 失敗時に通知
@@ -779,13 +779,13 @@ card_settings_hl_substat_select_placeholder: 強調表示するサブステー�
 too_many_requests_error_banner_msg: "リクエストが多すぎます。後でもう一度お試しください。詳細については右のボタンをクリックしてください。"
 mimo_task_status_claimable: 受け取り可能
 mimo_finish_and_claim_button_label: タスクを完了してポイントを受け取る
-mimo_info_embed_title: 旅するMimoについて
+mimo_info_embed_title: 旅するミモについて
 mimo_info_embed_desc: "これはHoYoverseによる常設イベントで、タスクを完了してポイントを獲得し、ポイントを使用してゲーム内報酬を購入できます。"
 mimo_auto_finish_and_claim_button_label: 自動でタスクを完了してポイントを受け取る
 mimo_auto_finish_and_claim_desc: Hoyo Buddyは特定のタスクを完了し、完了したすべてのタスクのポイントを自動的に受け取ることができます。
 mimo_auto_buy_button_label: 自動で報酬を購入する
-mimo_auto_buy_desc: "Hoyo Buddyは可能な限り原石/星玉/フィルムを購入します。ポイントを節約しようとはしません！"
-mimo_cmd_desc: 旅するMimoイベント管理
+mimo_auto_buy_desc: "Hoyo Buddyは可能な限り原石/星玉/ポリクロームを購入します。ポイントを節約しようとはしません！"
+mimo_cmd_desc: 旅するミモイベント管理
 mimo_view_shop_button_label: ショップ
 mimo_buy_item_select_placeholder: 購入するアイテムを選択...
 mimo_tasks_button_label: タスク
@@ -796,7 +796,7 @@ mimo_auto_task_embed_desc: "Hoyo Buddyは {finish} 個のタスクを完了し�
 checkin_reward_embed_footer: /check-in を使用して通知を設定します
 mimo_status: "ステータス：{status}"
 mimo_auto_buy_embed_desc: "Hoyo Buddyは {points} ポイントで {item} 個のアイテムを購入しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
-mimo_game_unavailable: "旅するMimoは現在 {game} では利用できません"
+mimo_game_unavailable: "旅するミモは現在 {game} では利用できません"
 generic_error_title: エラー
 on_button_label: "オン"
 off_button_label: "オフ"
@@ -811,7 +811,7 @@ dismissible_card_settings_v2: "カード設定が整理され、使いやすく�
 mimo_lottery_info_hoyolab_decos: "...と {num} 個のHoYoLABデコレーション"
 zzz_deadly_assault: デッドリーアサルト
 challenge_command_assault_desc: デッドリーアサルトカードを生成します
-gi_mimo_start_desc: "まず [HoYoLAB]({url}) で旅するMimoイベントを設定してください"
+gi_mimo_start_desc: "まず [HoYoLAB]({url}) で旅するミモイベントを設定してください"
 mimo_auto_draw_button_label: 自動抽選
 mimo_auto_draw_desc: "Hoyo Buddyは可能な限り抽選を行います。自動購入と自動抽選の両方が有効な場合、まず購入を試み、購入に十分なポイントがない場合に抽選します。"
 mimo_auto_draw_embed_desc: "Hoyo Buddyは {points} ポイントで以下のアイテムを抽選しました。\n以下にギフトコードが表示されている場合は、</redeem> で手動で交換してください。"
@@ -911,7 +911,7 @@ settings_show_uid_desc: 'UIDを表示
 
   </profile> と挑戦カードにUIDを表示します。'
 layout_view_edited: "システムリソースを節約するためにインタラクティブコンポーネントが無効になりました。使用したい場合はコマンドを再実行してください。"
-mimo_title: トラベリングミモ設定
+mimo_title: 旅するミモ設定
 mimo_minimum_point_label: 保持する最小ポイント
 mimo_minimum_point_desc: "自動抽選時、Hoyo Buddyはポイントがこの値を上回るようにします。0に設定すると、可能な限り抽選します。"
 mimo_point_saving.title: 通貨アイテム用にポイントを貯める（スポンサー特典）
@@ -971,7 +971,7 @@ ai_image_limit_error_message: "AI画像は1日に {limit} 枚まで生成でき�
 supporter_command_desc: スポンサー特典と自分のスポンサーステータスを表示します
 supporter_embed.title: スポンサー特典
 supporter_embed.description: "スポンサーはHoyo Buddyの運営と開発を支えています。その感謝のしるしとして、次の特典を受け取れます："
-supporter_embed.perk_auto_task_priority: "自動タスクのキューで最優先（デイリーチェックイン、コード交換、トラベリングミモなど）"
+supporter_embed.perk_auto_task_priority: "自動タスクのキューで最優先（デイリーチェックイン、コード交換、旅するミモなど）"
 supporter_embed.perk_accounts: "アカウント数が無制限（無料：{limit}）"
 supporter_embed.perk_custom_images: "キャラクターごとのカスタム画像が無制限（無料：{limit}）"
 supporter_embed.perk_animated_image: ビルドカードでキャラクターのアニメーションアートを使用（原神、崩壊：スターレイル、ゼンレスゾーンゼロ）

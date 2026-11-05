@@ -632,14 +632,14 @@ gacha_view_filter_size_field_label: 每頁物品數
 gacha_view_page_field_label: 頁數
 gacha_log_stats_title: 抽卡紀錄數據
 gacha_log_personal_stats_title: 個人數據
-gacha_log_personal_stats_lifetime: "生捱總抽數: {pulls} ({currency} {emoji})"
+gacha_log_personal_stats_lifetime: "生涯總抽數: {pulls} ({currency} {emoji})"
 gacha_log_personal_stats_banner_total: "此卡池總抽數: {pulls} ({currency} {emoji})"
 gacha_log_personal_stats_pity: "{rarity}★ 保底: {cur}/{max}"
 gacha_log_personal_stats_rarity_total: "{rarity}★ 總獲得數: {total}"
 gacha_log_personal_stats_rarity_average: "{rarity}★ 平均抽數: {avg}"
 win_rate_stats: "{title} 勝率: {win_rate}% ({wins}/{total})"
 gacha_log_global_stats_title: 全服數據
-gacha_log_global_stats_lifetime: "生捱總抽數: {lifetime}"
+gacha_log_global_stats_lifetime: "生涯總抽數: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★ 運氣: {luck}"
 win_rate_global_stats: "{title} 勝率: {win_rate}"
 gacha_summary.latest: 最新 {rarity}
@@ -786,7 +786,7 @@ mimo_info_embed_desc: "這是一個由 Hoyoverse 推出的永久性活動，你�
 mimo_auto_finish_and_claim_button_label: 自動完成任務並領取積分
 mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自動完成部份任務並領取所有已完成任務的積分。
 mimo_auto_buy_button_label: 自動購買獎勵
-mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買原石/星穹/菲林，它不會把積分存起來！"
+mimo_auto_buy_desc: "只要積分足夠，Hoyo Buddy 便會自動購買原石/星瓊/菲林，它不會把積分存起來！"
 mimo_cmd_desc: 管理旅行 Mimo 活動
 mimo_view_shop_button_label: 商店
 mimo_buy_item_select_placeholder: 選擇一個要購買的商品…

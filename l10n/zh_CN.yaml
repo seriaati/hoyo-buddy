@@ -786,7 +786,7 @@ mimo_info_embed_desc: "这是一个由 Hoyoverse 推出的永久性活动，你�
 mimo_auto_finish_and_claim_button_label: 自动完成任务并领取积分
 mimo_auto_finish_and_claim_desc: Hoyo Buddy 能自动完成部份任务并领取所有已完成任务的积分。
 mimo_auto_buy_button_label: 自动购买奖励
-mimo_auto_buy_desc: "只要积分足够，Hoyo Buddy 便会自动购买原石/星穹/菲林，它不会把积分存起来！"
+mimo_auto_buy_desc: "只要积分足够，Hoyo Buddy 便会自动购买原石/星琼/菲林，它不会把积分存起来！"
 mimo_cmd_desc: 管理旅行 Mimo 活动
 mimo_view_shop_button_label: 商店
 mimo_buy_item_select_placeholder: 选择一个要购买的商品…

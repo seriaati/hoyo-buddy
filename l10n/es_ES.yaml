@@ -786,7 +786,7 @@ mimo_info_embed_desc: "Este es un evento permanente de Hoyoverse, donde puedes c
 mimo_auto_finish_and_claim_button_label: Finalizar tareas automáticamente y reclamar puntos
 mimo_auto_finish_and_claim_desc: Hoyo Buddy puede finalizar ciertas tareas y reclamar puntos de todas las tareas completadas automáticamente.
 mimo_auto_buy_button_label: Compra automática de recompensas
-mimo_auto_buy_desc: "Hoyo Buddy comprará primogemas/jades estelares/policromos siempre que sea posible, ¡no intentará ahorrar puntos!"
+mimo_auto_buy_desc: "Hoyo Buddy comprará protogemas/jades estelares/películas siempre que sea posible, ¡no intentará ahorrar puntos!"
 mimo_cmd_desc: Gestión de eventos de Mimo Viajero
 mimo_view_shop_button_label: Tienda
 mimo_buy_item_select_placeholder: Selecciona un ítem para comprar...

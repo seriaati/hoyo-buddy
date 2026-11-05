@@ -634,7 +634,7 @@ gacha_log_stats_title: Thống kê nhật ký Gacha
 gacha_log_personal_stats_title: Thống kê cá nhân
 gacha_log_personal_stats_lifetime: "Tổng số lần quay: {pulls} ({currency} {emoji})"
 gacha_log_personal_stats_banner_total: "Tổng số lần quay cho banner này: {pulls} ({currency} {emoji})"
-gacha_log_personal_stats_pity: "Xác suất {rarity}★: {cur}/{max}"
+gacha_log_personal_stats_pity: "Bảo hiểm {rarity}★: {cur}/{max}"
 gacha_log_personal_stats_rarity_total: "Tổng {rarity}★: {total}"
 gacha_log_personal_stats_rarity_average: "Trung bình số lần quay cho mỗi {rarity}★: {avg}"
 win_rate_stats: "Tỷ lệ thắng {title}: {win_rate}% ({wins}/{total})"

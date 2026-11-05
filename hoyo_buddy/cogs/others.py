@@ -23,7 +23,7 @@ from ..emojis import DISCORD_WHITE_ICON, GITHUB_WHITE_ICON
 from ..l10n import LocaleStr
 from ..types import Interaction
 from ..ui import Button, View
-from ..utils import ephemeral, get_discord_user_md_link
+from ..utils import get_discord_user_md_link
 
 if TYPE_CHECKING:
     from ..bot import HoyoBuddy
@@ -84,7 +84,7 @@ class Others(commands.Cog):
 
     @app_commands.command(name=locale_str("about"), description=COMMANDS["about"].description)
     async def about_command(self, i: Interaction) -> None:
-        await i.response.defer(ephemeral=ephemeral(i))
+        await i.response.defer(ephemeral=True)
 
         guild = await self.bot.get_or_fetch_guild()
         if guild is None:

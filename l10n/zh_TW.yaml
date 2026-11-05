@@ -1,5 +1,4 @@
 about_command.contribute: 貢獻
-about_command.developer: 開發者
 about_command.discord_server: Discord 伺服器
 about_command.guild_count: 伺服器數量
 about_command.ram_usage: 記憶體使用量
@@ -301,7 +300,7 @@ notes.elysian_realm_value: "當前積分: {cur}/{max}"
 notes_available: "{emoji} 在 {in_time} 後可用"
 notes_command_description: 查看即時便籤
 notes_overview_option_label: 總覽
-notes_overview.full_time: '{time}溢出'
+notes_overview.full_time: "{time}溢出"
 notif.embed.footer: 使用 /reminders 設定通知
 notif_modal.enabled.label: 已啟用
 notif_modal.type_one.description: |
@@ -337,7 +336,7 @@ prev_page_option_label: 上一頁
 notify_feature: 這個即時便籤通知
 profile.add_image.button.label: 新增自定義圖片
 profile.add_image_modal.image_file.label: 圖片檔案
-profile.add_image_modal.image_file.description: 贊助者還可上傳 GIF、動態 WEBP 和 MP4，只擷取前 10 秒
+profile.add_image_modal.image_file.description: "贊助者還可上傳 GIF、動態 WEBP 和 MP4，只擷取前 10 秒"
 profile.add_image_modal.image_url.label: 圖片網址
 profile.add_image_modal.image_url.description: 也可以不上傳檔案，改為貼上圖片的直接連結
 profile.add_image_modal.no_image: 請上傳圖片檔案或輸入圖片網址。
@@ -540,11 +539,10 @@ card_settings.build_card_image: 面板卡片圖片
 card_settings.team_card_image: 隊伍卡片圖片
 profile.redraw_card_button_label: 重新繪製卡片
 card_settings.footer: "修改完畢後，點擊上方訊息中的綠色按鈕來重新繪製卡片"
-card_settings.description: "使用</upload>上傳圖片以取得其連結。"
 profile.team_dark_mode.button.label: 隊伍卡片深色主題
 team_card_dark_theme_desc: "對隊伍卡片使用深色配色方案。此設定適用於所有隊伍卡片，無論其中有哪些角色。"
 team_card_animated_image: 動態隊伍卡片
-team_card_animated_image_desc: 在隊伍卡片上使用角色的動態立繪，此功能僅限贊助者使用。沒有動態立繪的角色仍使用靜態立繪，設為隊伍卡片圖片的動態自訂圖片也會生效。使用 </sponsor> 了解更多。
+team_card_animated_image_desc: "在隊伍卡片上使用角色的動態立繪，此功能僅限贊助者使用。沒有動態立繪的角色仍使用靜態立繪，設為隊伍卡片圖片的動態自訂圖片也會生效。使用 </sponsor> 了解更多。"
 profile.character_select.multi.placeholder: 選擇角色…
 zzz_search.agent_info: "稀有度: {rarity}\n特性: {specialty}\n攻擊方式: {atk_type}\n陣營: {faction}\n元素: {element}"
 cat_zzz_agents: 代理人
@@ -642,26 +640,26 @@ gacha_log_global_stats_title: 全服數據
 gacha_log_global_stats_lifetime: "生涯總抽數: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★ 運氣: {luck}"
 win_rate_global_stats: "{title} 勝率: {win_rate}"
-gacha_summary.latest: 最新 {rarity}
-gacha_summary.previous: 以往 {rarity}
+gacha_summary.latest: "最新 {rarity}"
+gacha_summary.previous: "以往 {rarity}"
 gacha_summary.pulls: 抽
 gacha_summary.won: 不歪
 gacha_summary.lost: 歪了
 gacha_summary.guaranteed: 大保底
-gacha_summary.won_title: '{title} 不歪'
-gacha_summary.lost_title: '{title} 歪了'
-gacha_summary.pity: '{rarity} 保底'
-gacha_summary.next: 下一個 {rarity}
-gacha_summary.next_not_guaranteed: '{title} · 小保底'
-gacha_summary.next_is: 下一個 {rarity} 為 {title}
-gacha_summary.next_is_guaranteed: 下一個 {rarity} 為大保底
+gacha_summary.won_title: "{title} 不歪"
+gacha_summary.lost_title: "{title} 歪了"
+gacha_summary.pity: "{rarity} 保底"
+gacha_summary.next: "下一個 {rarity}"
+gacha_summary.next_not_guaranteed: "{title} · 小保底"
+gacha_summary.next_is: "下一個 {rarity} 為 {title}"
+gacha_summary.next_is_guaranteed: "下一個 {rarity} 為大保底"
 gacha_summary.banner_pulls: 卡池抽數
 gacha_summary.lifetime_pulls: 總抽數
-gacha_summary.win_rate: '{title} 勝率'
-gacha_summary.avg_pulls: 每 {rarity} 平均抽數
+gacha_summary.win_rate: "{title} 勝率"
+gacha_summary.avg_pulls: "每 {rarity} 平均抽數"
 gacha_summary.lifetime_spent: 總花費
-gacha_summary.total: 共 {total}
-gacha_summary.wins_of_total: '{total} 次中 {wins} 次'
+gacha_summary.total: "共 {total}"
+gacha_summary.wins_of_total: "{total} 次中 {wins} 次"
 gacha_summary.s_rank: S級
 gacha_summary.a_rank: A級
 gacha_log_view_full: 查看抽卡紀錄
@@ -758,11 +756,8 @@ rarity_str: "{rarity} 星"
 finished_status_field_name: 狀態
 unlocks_in_str: "在 {time} 後解鎖"
 challenge_selector_placeholder: 選擇一個挑戰…
-upload_cmd_desc: "上傳一張圖片並取得其連結，可以用於 /profile 的自定義圖片功能"
 not_an_image_error_title: 不是一張圖片
 not_an_image_error_message: "上傳的檔案並非一張圖片，請使用一個圖片檔案重試。"
-upload_cmd_image_param_name: 圖片
-upload_cmd_image_param_desc: 要上傳的圖片
 exploration_select_placeholder: 選擇一個區域…
 exploration_show_card_button_label: 顯示探索度卡片
 abyss_stats_const_use_rate: 命座使用率
@@ -851,20 +846,14 @@ anniversary_dyk: "Hoyo Buddy 一週年啦！訪問[週年慶網頁](https://one.
 authkey_timeout_title: Authkey 已過期
 authkey_timeout_message: "獲取一個新的抽卡紀錄網址並再試一次"
 invalid_authkey_title: 無效的 Authkey
-hard_challenge_period: "統計週期：{period}"
-hard_challenge_completion_time: "戰鬥用時"
-hard_challenge_team_composition: "隊伍組成"
-hard_challenge_combat_statistics: "戰鬥數據"
 hard_challenge_strongest_strike: "最強一擊"
 hard_challenge_damage_dealt: "最高總傷害"
-hard_challenge_challenge_index: 挑戰 {index}
-hard_challenge_enemy_weakness: "敵人弱點及強項"
+hard_challenge_challenge_index: "挑戰 {index}"
 hard_challenge_command_desc: 生成幽境危戰卡片
 hard_challenge: "幽境危戰"
 fetching_accounts: 請稍等，正在獲取你的帳戶…
 fetching_accounts_stuck: "如果此頁面長時間沒有跳轉，請嘗試重新執行一次指令，或是聯繫我們來解決問題。"
 aaa_acronym: 閃能自動累積
-changelog_command_desc: 查看最新一期的變更
 account_game_mismatch_error_title: 帳戶遊戲不相符
 account_game_mismatch_error_message: "你正在使用的帳戶不是 {game} 帳戶"
 enka_api_error_title: Enka API 錯誤
@@ -884,7 +873,7 @@ accompany_button_label: 自動角色陪伴
 accompany_selected_character: "目前陪伴角色：{character}"
 accompany_no_character_selected: "在下方選擇一個角色以啟用此功能。"
 accompany_character_select_placeholder: 選擇要陪伴的角色
-accompany_characters_select_placeholder: 最多選擇 {limit} 個要陪伴的角色
+accompany_characters_select_placeholder: "最多選擇 {limit} 個要陪伴的角色"
 accompany_cmd_desc: 查看 HoYoLAB 陪伴角色並設定你的陪伴角色
 accompany_cmd_character_param_name: 角色
 accompany_cmd_character_param_desc: "要查看的角色，預設為第一個可用的角色"
@@ -909,19 +898,17 @@ dark_theme_desc: "深色主題\n讓資訊圖表使用深色配色方案，並非
 language_desc: "語言\nHoyo Buddy 將使用此語言回覆你。某些文字可能仍為英文，請參閱[常見問題](:docs/FAQ:)了解原因。"
 language_select_placeholder: 選擇一種語言
 settings_dyk_desc: "「你知道嗎？」訊息\n當你使用機器人指令時，顯示隨機的實用提示。"
-settings_show_uid_desc: '顯示 UID
-
-  在 </profile> 和挑戰卡片上顯示你的 UID。'
+settings_show_uid_desc: "顯示 UID\n在 </profile> 和挑戰卡片上顯示你的 UID。"
 layout_view_edited: "互動元件已被停用以節省系統資源，如果你想使用它們，請重新執行指令。"
 mimo_title: 旅行 Mimo 設定
 mimo_minimum_point_label: 保持的最低點數
 mimo_minimum_point_desc: "自動抽取時，Hoyo Buddy 會確保你的點數保持在此數值以上，設為 0 則盡可能抽取。"
 mimo_point_saving.title: 為貨幣類獎勵存積分（贊助者福利）
-mimo_point_saving.desc: 開啟自動購買後，自動抽獎會預留足夠積分，以便星瓊、菲林或原石補貨時購買。
+mimo_point_saving.desc: "開啟自動購買後，自動抽獎會預留足夠積分，以便星瓊、菲林或原石補貨時購買。"
 mimo_point_saving.placeholder: 選擇要為哪些獎勵存積分
 mimo_point_saving.all: 為所有貨幣類獎勵存積分
 mimo_point_saving.most_expensive: 只為最貴的獎勵存積分
-mimo_point_saving.off: 不存積分
+mimo_point_saving.off: "不存積分"
 mimo_point_saving.sponsor_perk_message: 為貨幣類獎勵存積分是贊助者福利。
 disable_all_button_label: 停用所有通知
 apply_template_to_all_chars: 將當前樣式套用至所有角色
@@ -933,7 +920,7 @@ apply_animated_image_to_all_chars_desc: "所有**未來和當前**角色的動�
 card_settings_bulk_title: 批次設定
 card_settings_team_title: 隊伍卡片設定
 card_settings_team_button_desc: 隊伍卡片的深色主題和動態立繪。
-card_settings_team_desc: 此設定適用於所有隊伍卡片，無論其中有哪些角色。
+card_settings_team_desc: "此設定適用於所有隊伍卡片，無論其中有哪些角色。"
 card_settings_bulk_button_desc: "將此角色的樣式、深色主題和動態圖片選項套用至所有角色。"
 card_settings_bulk_desc: "將 {name} 的卡片設定套用至所有**當前和未來**的角色。"
 apply_label: 套用
@@ -976,35 +963,35 @@ supporter_embed.description: "贊助者讓 Hoyo Buddy 得以持續運作和開�
 supporter_embed.perk_auto_task_priority: "自動任務佇列的最高優先順序（每日簽到、兌換碼兌換、旅行 Mimo 等）"
 supporter_embed.perk_accounts: "帳戶數量無上限（免費：{limit} 個）"
 supporter_embed.perk_custom_images: "每個角色的自訂圖片數量無上限（免費：{limit} 張）"
-supporter_embed.perk_animated_image: 面板卡片上的角色動態立繪（原神、崩壞：星穹鐵道和絕區零）
-supporter_embed.perk_animated_custom_images: 上傳你自己的 GIF、動態 WEBP 和 MP4，作為面板卡片和隊伍卡片上的角色動態立繪
-supporter_embed.perk_animated_team_card: 隊伍卡片上的角色動態立繪（原神、崩壞：星穹鐵道和絕區零）
+supporter_embed.perk_animated_image: "面板卡片上的角色動態立繪（原神、崩壞：星穹鐵道和絕區零）"
+supporter_embed.perk_animated_custom_images: "上傳你自己的 GIF、動態 WEBP 和 MP4，作為面板卡片和隊伍卡片上的角色動態立繪"
+supporter_embed.perk_animated_team_card: "隊伍卡片上的角色動態立繪（原神、崩壞：星穹鐵道和絕區零）"
 supporter_embed.perk_ai_images: "AI 圖片生成數量無上限（免費：每天 {limit} 張）"
 supporter_embed.perk_auto_gacha_import: 每 6 小時自動導入抽卡紀錄（原神和絕區零）
-supporter_embed.perk_multi_accompany: 每個帳戶最多自動陪伴 {limit} 個角色（免費：1 個）
-supporter_embed.perk_mimo: 更強的旅行 Mimo 自動化：星瓊和菲林一補貨就自動購買，任務和購買每小時執行一次（免費：每 4-5 小時），自動抽獎還可為它們存積分
+supporter_embed.perk_multi_accompany: "每個帳戶最多自動陪伴 {limit} 個角色（免費：1 個）"
+supporter_embed.perk_mimo: "更強的旅行 Mimo 自動化：星瓊和菲林一補貨就自動購買，任務和購買每小時執行一次（免費：每 4-5 小時），自動抽獎還可為它們存積分"
 supporter_embed.perk_discord_role: Discord 伺服器中的贊助者身分組
 supporter_embed.perk_discord_channel: 可進入 Discord 伺服器中的贊助者專屬頻道
-supporter_embed.how_to: 捐款任意金額（每月或一次性皆可）即可成為贊助者。即使捐款結束，你仍會永久保有贊助者身分。
+supporter_embed.how_to: "捐款任意金額（每月或一次性皆可）即可成為贊助者。即使捐款結束，你仍會永久保有贊助者身分。"
 supporter_embed.status_supporter: "你是贊助者，感謝你的支持！"
 supporter_embed.status_not_supporter: 你還不是贊助者。
 sponsor_perks_button_label: 查看贊助者福利
 sponsor_perk_error_title: 贊助者福利
 animated_image_sponsor_perk_message: 面板卡片上的角色動態立繪是贊助者福利。
-animated_custom_image_sponsor_perk_message: 將 GIF、動態 WEBP 和 MP4 上傳為角色立繪是贊助者福利。
+animated_custom_image_sponsor_perk_message: "將 GIF、動態 WEBP 和 MP4 上傳為角色立繪是贊助者福利。"
 animated_team_card_sponsor_perk_message: 隊伍卡片上的角色動態立繪是贊助者福利。
 animation_position_button_label: 位置
 animation_position_modal.zoom.label: 縮放（%）
-animation_position_modal.zoom.description: 設為 100 時，動畫會填滿卡片的圖片區域
+animation_position_modal.zoom.description: "設為 100 時，動畫會填滿卡片的圖片區域"
 animation_position_modal.focus_x.label: 水平位置（%）
-animation_position_modal.focus_x.description: 0 顯示動畫的左邊緣，100 顯示右邊緣
+animation_position_modal.focus_x.description: "0 顯示動畫的左邊緣，100 顯示右邊緣"
 animation_position_modal.focus_y.label: 垂直位置（%）
-animation_position_modal.focus_y.description: 0 顯示動畫的上邊緣，100 顯示下邊緣
+animation_position_modal.focus_y.description: "0 顯示動畫的上邊緣，100 顯示下邊緣"
 auto_gacha_import_sponsor_perk_message: 自動導入抽卡紀錄是贊助者福利。
-multi_accompany_sponsor_perk_message: 自動陪伴多個角色是贊助者福利。贊助者每個帳戶最多可自動陪伴 {limit} 個角色。
+multi_accompany_sponsor_perk_message: "自動陪伴多個角色是贊助者福利。贊助者每個帳戶最多可自動陪伴 {limit} 個角色。"
 card_settings_animated_image: 動態圖片
 card_settings_animated_image_desc: "在卡片上使用角色的動態立繪。此功能僅限贊助者使用，且僅適用於擁有動態立繪的角色：原神和絕區零支援樣式 1，崩壞：星穹鐵道支援樣式 1 和 2。原神卡片使用七聖召喚的動態卡面。使用 </sponsor> 了解更多。"
-reminders_command_description: 設定即時便籤、刷本和網頁活動通知
+reminders_command_description: "設定即時便籤、刷本和網頁活動通知"
 reminders_button_label: 通知
 farm_reminder_title: 刷本通知
 web_events_reminder_title: 網頁活動通知
@@ -1013,4 +1000,4 @@ diary_cmd_desc: 查看你的每月貨幣收入
 diary_primogems: 原石
 diary_mora: 摩拉
 diary_primogem_sources: 原石來源
-diary_last_month: 上月：{amount}
+diary_last_month: "上月：{amount}"

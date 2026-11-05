@@ -82,6 +82,24 @@ class Others(commands.Cog):
     async def before_update_stat_vcs(self) -> None:
         await self.bot.wait_until_ready()
 
+    @staticmethod
+    def _add_role_members_field(
+        embed: DefaultEmbed, guild: discord.Guild, *, role_id: int, key: str
+    ) -> None:
+        role = guild.get_role(role_id)
+        if role is None:
+            return
+
+        value = ""
+        for member in role.members:
+            link = get_discord_user_md_link(member)
+            if len(value) + len(link) + 1 > 1024:
+                break
+            value = f"{value} {link}".strip()
+
+        if value:
+            embed.add_field(name=LocaleStr(key=key), value=value, inline=False)
+
     @app_commands.command(name=locale_str("about"), description=COMMANDS["about"].description)
     async def about_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=True)
@@ -102,36 +120,14 @@ class Others(commands.Cog):
             description=LocaleStr(key="about_embed.description"),
         )
 
-        # developer
-        seria_id = 410036441129943050
-        owner = i.client.get_user(seria_id) or await i.client.fetch_user(seria_id)
-        embed.add_field(
-            name=LocaleStr(key="about_command.developer"),
-            value=get_discord_user_md_link(owner),
-            inline=False,
-        )
-
-        # designer
-        designer_role = guild.get_role(1266651937411960882)
-        if designer_role is not None:
-            designers = [get_discord_user_md_link(designer) for designer in designer_role.members]
-            embed.add_field(
-                name=LocaleStr(key="about_command.designers"),
-                value=" ".join(designers),
-                inline=False,
-            )
-
-        # translators
-        translator_role = guild.get_role(1010181916642787503)
-        if translator_role is not None:
-            translators = [
-                get_discord_user_md_link(translator) for translator in translator_role.members
-            ]
-            embed.add_field(
-                name=LocaleStr(key="about_command.translators"),
-                value=" ".join(translators),
-                inline=False,
-            )
+        for role_id, key in (
+            (1378911459366666260, "about_command.team_members"),
+            (1266651937411960882, "about_command.designers"),
+            (1010181916642787503, "about_command.translators"),
+            (1452445065929560115, "about_command.contributors"),
+            (1117992633827082251, "about_command.sponsors"),
+        ):
+            self._add_role_members_field(embed, guild, role_id=role_id, key=key)
 
         # guild count
         embed.add_field(

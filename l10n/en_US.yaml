@@ -1,5 +1,4 @@
 about_command.contribute: Contribute
-about_command.developer: Developer
 about_command.discord_server: Discord server
 about_command.guild_count: Guild count
 about_command.ram_usage: RAM Usage
@@ -524,6 +523,9 @@ stats_command_description: View game account statistics
 tears_of_themis: Tear of Themis
 honkai_suit_rarity: "Rank {rarity}"
 about_command.designers: Designers
+about_command.sponsors: Sponsors
+about_command.team_members: Team members
+about_command.contributors: Contributors
 card_settings.modifying_for: "Modifying Card Settings for {name}"
 card_settings_modifying_for_desc: All card settings are unique for each character. Some card templates may not support certain settings.
 card_settings.template: Template

@@ -785,7 +785,7 @@ mimo_point_history_page_footer: "Trang {page}"
 dismissible_hsr_temp2_desc: "Giờ bạn có thể dùng mẫu thẻ Hoyo Buddy 2 cho thẻ nhân vật HSR, chọn trong cài đặt thẻ. Đề nghị bạn dùng ảnh dọc ngang cho mẫu thẻ này."
 bounty_commission.embed.description: " Tiến Độ Ủy Thác Trao Thưởng chưa hoàn thành"
 ridu_points.embed.description: " Điểm Số Ridu Hàng Tuần chưa hoàn thành"
-changelog_embed_title: Nhật Ký Thay Đổi
+changelog_embed_title: Ghi Chú Phát Hành
 web_events_notify_toggle_label: Nhắc nhờ về sự kiện Web
 web_events_cmd_desc: Xem các sự kiện web đang diễn ra và đặt thông báo
 web_events_embed_footer: Sử dụng lệnh /web-events để điều chỉnh thông báo

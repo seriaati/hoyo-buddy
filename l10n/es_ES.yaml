@@ -785,7 +785,7 @@ mimo_point_history_page_footer: "Página {page}"
 dismissible_hsr_temp2_desc: "Ahora podés usar la nueva plantilla Hoyo Buddy 2 para las tarjetas de personajes de HSR. Seleccionala en la configuración de tarjetas. Se recomienda usar imágenes horizontales para esta plantilla."
 bounty_commission.embed.description: Encargos de cacería aún no completados
 ridu_points.embed.description: Semanario de Ridu aún no completado
-changelog_embed_title: Registro de cambios
+changelog_embed_title: Notas de la versión
 web_events_notify_toggle_label: Notificar sobre nuevos eventos web
 web_events_cmd_desc: Ver eventos web actuales y configurar notificaciones
 web_events_embed_footer: Usa /web-events para configurar notificaciones

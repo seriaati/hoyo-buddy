@@ -783,7 +783,7 @@ mimo_point_history_page_footer: "ページ {page}"
 dismissible_hsr_temp2_desc: "HSRキャラクターカード用に新しいHoyo Buddyテンプレート2を使用できるようになりました。カード設定で選択してください。このテンプレートには横長の画像を使用することをお勧めします。"
 bounty_commission.embed.description: 依頼任務が完了していません
 ridu_points.embed.description: エリー都週間依頼ポイントが未達成です
-changelog_embed_title: 変更履歴
+changelog_embed_title: リリースノート
 web_events_notify_toggle_label: 新しいウェブイベント時に通知
 web_events_cmd_desc: 開催中のウェブイベントを表示し、通知を設定します
 web_events_embed_footer: /web-events を使用して通知を設定します

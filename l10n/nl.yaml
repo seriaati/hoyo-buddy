@@ -785,7 +785,7 @@ mimo_point_history_page_footer: "Pagina {page}"
 dismissible_hsr_temp2_desc: "Je kunt nu het nieuwe Hoyo Buddy-sjabloon 2 gebruiken voor HSR-karakterkaarten. Selecteer deze in de kaartinstellingen. Het wordt aangeraden om horizontale afbeeldingen te gebruiken voor dit sjabloon."
 bounty_commission.embed.description: Premiecommissies nog niet voltooid
 ridu_points.embed.description: Ridu-weektaken nog niet voltooid
-changelog_embed_title: Changelog
+changelog_embed_title: Release notes
 web_events_notify_toggle_label: Meld nieuwe web-evenementen
 web_events_cmd_desc: Bekijk lopende web-evenementen en stel een melder in
 web_events_embed_footer: Gebruik /web-events om meldingen te configureren

@@ -785,7 +785,7 @@ mimo_point_history_page_footer: "페이지 {page}"
 dismissible_hsr_temp2_desc: "[붕괴: 스타레일] 캐릭터 기록 카드에 신규 [호요 버디 템플릿 2]가 추가되었습니다. 카드 설정 메뉴에서 해당 기능을 활성화할 수 있으며, 최적의 출력을 위해 가로형 이미지 사용을 권장합니다."
 bounty_commission.embed.description: 미완료된 현상 수배 의뢰가 존재합니다.
 ridu_points.embed.description: "미완료된 [뉴에리두 주간 일정]이 존재합니다."
-changelog_embed_title: 체인지 로그
+changelog_embed_title: 릴리스 노트
 web_events_notify_toggle_label: 신규 웹 이벤트 개방 알림 설정
 web_events_cmd_desc: 진행 중인 웹 이벤트 확인 및 알림 설정
 web_events_embed_footer: "[/web-events] 명령어를 통해 웹 이벤트 알림을 설정할 수 있습니다."

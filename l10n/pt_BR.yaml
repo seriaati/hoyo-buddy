@@ -783,7 +783,7 @@ mimo_point_history_page_footer: "Página {page}"
 dismissible_hsr_temp2_desc: "Agora você pode usar o novo template Hoyo Buddy 2 para cards de personagem HSR, selecione-o nas configurações do card. É recomendado usar imagens horizontais para este template."
 bounty_commission.embed.description: Comissões de Recompensa ainda não concluídas
 ridu_points.embed.description: Pontos do Semanário ainda não concluídos
-changelog_embed_title: Changelog
+changelog_embed_title: Notas de versão
 web_events_notify_toggle_label: Notificar sobre novos eventos web
 web_events_cmd_desc: Ver eventos web em andamento e definir notificador
 web_events_embed_footer: Use /web-events para configurar notificações

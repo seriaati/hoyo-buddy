@@ -178,7 +178,7 @@ class Others(commands.Cog):
         view.add_item(
             Button(
                 label=LocaleStr(key="changelog_embed_title"),
-                url=get_docs_url("changelog", locale=locale),
+                url=get_docs_url("release-notes", locale=locale),
                 row=1,
             )
         )

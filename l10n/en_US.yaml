@@ -526,6 +526,7 @@ about_command.designers: Designers
 about_command.sponsors: Sponsors
 about_command.team_members: Team members
 about_command.contributors: Contributors
+about_command.guide_writers: Guide writers
 card_settings.modifying_for: "Modifying Card Settings for {name}"
 card_settings_modifying_for_desc: All card settings are unique for each character. Some card templates may not support certain settings.
 card_settings.template: Template

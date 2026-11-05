@@ -124,6 +124,7 @@ class Others(commands.Cog):
             (1378911459366666260, "about_command.team_members"),
             (1266651937411960882, "about_command.designers"),
             (1010181916642787503, "about_command.translators"),
+            (1459757805442568263, "about_command.guide_writers"),
             (1452445065929560115, "about_command.contributors"),
             (1117992633827082251, "about_command.sponsors"),
         ):

@@ -278,8 +278,9 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         return (
             ui.TextDisplay(
                 LocaleStr(
-                    custom_str="### {title}\n{desc}",
+                    custom_str="### {title}\n{desc}\n-# {hint}",
                     title=LocaleStr(key="accompany_settings_title"),
+                    hint=LocaleStr(key="accompany_settings_hint"),
                     desc=LocaleStr(
                         key="accompany_selected_character",
                         character=", ".join(c.info.name for c in selected),

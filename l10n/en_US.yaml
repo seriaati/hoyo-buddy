@@ -885,6 +885,7 @@ accompany_voice_audio_label: Play audio
 accompany_voice_lang_select_placeholder: Select a voice language
 accompany_voice_line_select_placeholder: Select a voice line
 accompany_view_no_character_set: You haven't set an accompany character yet.
+accompany_settings_hint: "You can also choose your auto accompany characters from a list in </settings>."
 accompany_set_character_button_label: Set as accompany character
 accompany_add_character_button_label: Add to auto accompany
 accompany_remove_character_button_label: Remove from auto accompany

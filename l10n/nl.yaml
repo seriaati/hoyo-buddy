@@ -1,5 +1,4 @@
 about_command.contribute: Draag bij
-about_command.developer: Ontwikkelaar
 about_command.discord_server: Discord-server
 about_command.guild_count: Aantal gilden
 about_command.ram_usage: RAM-gebruik
@@ -301,7 +300,7 @@ notes.elysian_realm_value: "Huidige score: {cur}/{max}"
 notes_available: "{emoji} Beschikbaar in {in_time}"
 notes_command_description: Bekijk real-time notities
 notes_overview_option_label: Overzicht
-notes_overview.full_time: Vol {time}
+notes_overview.full_time: "Vol {time}"
 notif.embed.footer: Gebruik /reminders om herinneringen te configureren
 notif_modal.enabled.label: Ingeschakeld
 notif_modal.type_one.description: |
@@ -337,7 +336,7 @@ prev_page_option_label: Vorige pagina
 notify_feature: Deze notitieherinnering
 profile.add_image.button.label: Afbeelding toevoegen
 profile.add_image_modal.image_file.label: Afbeeldingsbestand
-profile.add_image_modal.image_file.description: Sponsors kunnen ook GIF's, geanimeerde WEBP's en MP4's uploaden, de eerste 10 seconden tellen
+profile.add_image_modal.image_file.description: "Sponsors kunnen ook GIF's, geanimeerde WEBP's en MP4's uploaden, de eerste 10 seconden tellen"
 profile.add_image_modal.image_url.label: Afbeeldings-URL
 profile.add_image_modal.image_url.description: Of plak een directe link naar een afbeelding in plaats van een bestand te uploaden
 profile.add_image_modal.no_image: Upload een afbeeldingsbestand of voer een afbeeldings-URL in.
@@ -540,11 +539,10 @@ card_settings.build_card_image: Bouwkaartafbeelding
 card_settings.team_card_image: Teamkaartafbeelding
 profile.redraw_card_button_label: Kaart opnieuw tekenen
 card_settings.footer: "Als je klaar bent, klik je op de groene knop in het bericht hierboven om de kaart opnieuw te tekenen"
-card_settings.description: "Gebruik </upload> om een URL van een afbeelding te krijgen door de afbeelding te uploaden."
 profile.team_dark_mode.button.label: Teamkaart donker thema
 team_card_dark_theme_desc: "Gebruik een donker kleurenschema voor teamkaarten. Dit geldt voor alle teamkaarten, ongeacht welke personages erin zitten."
 team_card_animated_image: Geanimeerde teamkaart
-team_card_animated_image_desc: Gebruik de geanimeerde kunst van personages op teamkaarten, alleen beschikbaar voor sponsors. Personages zonder geanimeerde kunst behouden hun statische kunst, en geanimeerde aangepaste afbeeldingen die als teamkaartafbeelding zijn ingesteld, worden ook gebruikt. Gebruik </sponsor> voor meer informatie.
+team_card_animated_image_desc: "Gebruik de geanimeerde kunst van personages op teamkaarten, alleen beschikbaar voor sponsors. Personages zonder geanimeerde kunst behouden hun statische kunst, en geanimeerde aangepaste afbeeldingen die als teamkaartafbeelding zijn ingesteld, worden ook gebruikt. Gebruik </sponsor> voor meer informatie."
 profile.character_select.multi.placeholder: Selecteer karakter(s)...
 zzz_search.agent_info: "Zeldzaamheid: {rarity}\nSpecialiteit: {specialty}\nAanvalstype: {atk_type}\nFactie: {faction}\nElement: {element}"
 cat_zzz_agents: Agenten
@@ -642,26 +640,26 @@ gacha_log_global_stats_title: Wereldwijde Statistieken
 gacha_log_global_stats_lifetime: "Levenslange pulls: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★ geluk: {luck}"
 win_rate_global_stats: "{title} Winstpercentage: {win_rate}"
-gacha_summary.latest: Laatste {rarity}
-gacha_summary.previous: Vorige {rarity}
+gacha_summary.latest: "Laatste {rarity}"
+gacha_summary.previous: "Vorige {rarity}"
 gacha_summary.pulls: pulls
 gacha_summary.won: Gewonnen
 gacha_summary.lost: Verloren
 gacha_summary.guaranteed: Gegarandeerd
-gacha_summary.won_title: '{title} gewonnen'
-gacha_summary.lost_title: '{title} verloren'
-gacha_summary.pity: '{rarity} pity'
-gacha_summary.next: Volgende {rarity}
-gacha_summary.next_not_guaranteed: '{title} · niet gegarandeerd'
-gacha_summary.next_is: Volgende {rarity} is een {title}
-gacha_summary.next_is_guaranteed: Volgende {rarity} is gegarandeerd
+gacha_summary.won_title: "{title} gewonnen"
+gacha_summary.lost_title: "{title} verloren"
+gacha_summary.pity: "{rarity} pity"
+gacha_summary.next: "Volgende {rarity}"
+gacha_summary.next_not_guaranteed: "{title} · niet gegarandeerd"
+gacha_summary.next_is: "Volgende {rarity} is een {title}"
+gacha_summary.next_is_guaranteed: "Volgende {rarity} is gegarandeerd"
 gacha_summary.banner_pulls: Bannerpulls
 gacha_summary.lifetime_pulls: Levenslange pulls
-gacha_summary.win_rate: '{title} winstpercentage'
-gacha_summary.avg_pulls: Gem. pulls per {rarity}
+gacha_summary.win_rate: "{title} winstpercentage"
+gacha_summary.avg_pulls: "Gem. pulls per {rarity}"
 gacha_summary.lifetime_spent: Totaal uitgegeven
-gacha_summary.total: '{total} totaal'
-gacha_summary.wins_of_total: '{wins} van {total}'
+gacha_summary.total: "{total} totaal"
+gacha_summary.wins_of_total: "{wins} van {total}"
 gacha_summary.s_rank: S-rang
 gacha_summary.a_rank: A-rang
 gacha_log_view_full: Bekijk gacha-logs
@@ -758,11 +756,8 @@ rarity_str: "{rarity} ster"
 finished_status_field_name: Status
 unlocks_in_str: "Ontgrendelt over {time}"
 challenge_selector_placeholder: Selecteer een uitdaging...
-upload_cmd_desc: "Upload een afbeelding en plak de link ervan als aangepaste afbeelding in /profile"
 not_an_image_error_title: Geen Afbeelding
 not_an_image_error_message: "Het geüploade bestand is geen afbeelding, probeer het opnieuw met een geldig afbeeldingsbestand."
-upload_cmd_image_param_name: afbeelding
-upload_cmd_image_param_desc: Afbeelding om te uploaden
 exploration_select_placeholder: Selecteer een regio...
 exploration_show_card_button_label: Toon verkenningskaart
 abyss_stats_const_use_rate: Constellatieverbruiksratio
@@ -851,20 +846,14 @@ anniversary_dyk: "Hoyo Buddy is 1 jaar oud! Bezoek de [speciale webpagina](<http
 authkey_timeout_title: Authkey Verlopen
 authkey_timeout_message: "Verkrijg een nieuwe gacha-log-URL en probeer het opnieuw"
 invalid_authkey_title: Ongeldige Authkey
-hard_challenge_period: "Periode: {period}"
-hard_challenge_completion_time: "Voltooiingstijd"
-hard_challenge_team_composition: "Teamsamenstelling"
-hard_challenge_combat_statistics: "Gevechtsstatistieken"
 hard_challenge_strongest_strike: "Sterkste Aanval"
 hard_challenge_damage_dealt: "Hoogste Totale Schade"
-hard_challenge_challenge_index: Uitdaging {index}
-hard_challenge_enemy_weakness: "Vijandelijke Zwakte & Kracht"
+hard_challenge_challenge_index: "Uitdaging {index}"
 hard_challenge_command_desc: Genereer Stygian Onslaught-kaart
 hard_challenge: "Stygian Onslaught"
 fetching_accounts: Wacht even terwijl we je accounts ophalen...
 fetching_accounts_stuck: "Als je vastzit op deze pagina, probeer het commando dan opnieuw uit te voeren of neem contact met ons op om het probleem op te lossen."
 aaa_acronym: AAA
-changelog_command_desc: Bekijk de laatste wijzigingen en updates
 account_game_mismatch_error_title: Account-game Conflict
 account_game_mismatch_error_message: "Het account dat je gebruikt is geen {game}-account"
 enka_api_error_title: Enka API-fout
@@ -884,7 +873,7 @@ accompany_button_label: Automatisch karakter vergezellen
 accompany_selected_character: "Momenteel aan het vergezellen: {character}"
 accompany_no_character_selected: "Selecteer hieronder een karakter om deze functie in te schakelen."
 accompany_character_select_placeholder: Selecteer een karakter om te vergezellen
-accompany_characters_select_placeholder: Selecteer tot {limit} karakters om te vergezellen
+accompany_characters_select_placeholder: "Selecteer tot {limit} karakters om te vergezellen"
 accompany_cmd_desc: Bekijk HoYoLAB-vergezelkarakters en stel de jouwe in
 accompany_cmd_character_param_name: karakter
 accompany_cmd_character_param_desc: "Karakter om te bekijken, standaard het eerste beschikbare"
@@ -909,19 +898,17 @@ dark_theme_desc: "Donker thema\nLaat infographics een donker kleurenschema gebru
 language_desc: "Taal\nHoyo Buddy zal in deze taal op je reageren. Sommige teksten kunnen nog steeds in het Engels zijn, zie [FAQ](:docs/FAQ:) voor meer informatie."
 language_select_placeholder: Selecteer een taal
 settings_dyk_desc: "\"Wist je dat?\"-berichten\nToon willekeurige nuttige tips wanneer je botcommando's gebruikt."
-settings_show_uid_desc: 'Toon UID
-
-  Toon je UID op </profile>-kaarten en uitdagingskaarten.'
+settings_show_uid_desc: "Toon UID\nToon je UID op </profile>-kaarten en uitdagingskaarten."
 layout_view_edited: "Interactieve componenten zijn uitgeschakeld om systeembronnen te besparen, voer het commando opnieuw uit als je ze wilt gebruiken."
 mimo_title: Traveling Mimo-instellingen
 mimo_minimum_point_label: Minimale punten om te behouden
 mimo_minimum_point_desc: "Bij automatisch trekken zorgt Hoyo Buddy ervoor dat je punten boven deze waarde blijven. Stel in op 0 om te trekken wanneer mogelijk."
 mimo_point_saving.title: Punten sparen voor valuta (sponsorvoordeel)
-mimo_point_saving.desc: Als automatisch kopen aan staat, houdt automatisch trekken genoeg punten over om Sterrenjades, Polychromen of Primogems te kopen wanneer ze weer worden aangevuld.
+mimo_point_saving.desc: "Als automatisch kopen aan staat, houdt automatisch trekken genoeg punten over om Sterrenjades, Polychromen of Primogems te kopen wanneer ze weer worden aangevuld."
 mimo_point_saving.placeholder: Kies voor welke items je punten wilt sparen
 mimo_point_saving.all: Sparen voor alle valuta-items
 mimo_point_saving.most_expensive: Alleen sparen voor het duurste item
-mimo_point_saving.off: Geen punten sparen
+mimo_point_saving.off: "Geen punten sparen"
 mimo_point_saving.sponsor_perk_message: Punten sparen voor valuta-items is een sponsorvoordeel.
 disable_all_button_label: Schakel alle meldingen uit
 apply_template_to_all_chars: Pas huidig sjabloon toe op alle personages
@@ -933,7 +920,7 @@ apply_animated_image_to_all_chars_desc: "Geanimeerde afbeelding wordt **{status}
 card_settings_bulk_title: Bulkinstellingen
 card_settings_team_title: Team kaart instellingen
 card_settings_team_button_desc: Donker thema en geanimeerde kunst voor teamkaarten.
-card_settings_team_desc: Deze instellingen gelden voor alle teamkaarten, ongeacht welke personages erin zitten.
+card_settings_team_desc: "Deze instellingen gelden voor alle teamkaarten, ongeacht welke personages erin zitten."
 card_settings_bulk_button_desc: "Pas het sjabloon, het donkere thema en de geanimeerde-afbeeldingsoptie van dit personage toe op alle personages."
 card_settings_bulk_desc: "Pas de kaartinstellingen van {name} toe op alle **huidige en toekomstige** personages."
 apply_label: Toepassen
@@ -976,32 +963,32 @@ supporter_embed.description: "Sponsors helpen Hoyo Buddy draaiende en in ontwikk
 supporter_embed.perk_auto_task_priority: "Hoogste prioriteit in wachtrijen voor automatische taken (dagelijks inchecken, code-inwisseling, mimo, enz.)"
 supporter_embed.perk_accounts: "Onbeperkt aantal accounts (gratis: {limit})"
 supporter_embed.perk_custom_images: "Onbeperkt aantal aangepaste afbeeldingen per personage (gratis: {limit})"
-supporter_embed.perk_animated_image: 'Geanimeerde personagekunst op bouwkaarten (Genshin Impact, Honkai: Star Rail en Zenless Zone Zero)'
-supporter_embed.perk_animated_custom_images: Upload je eigen GIF's, geanimeerde WEBP's en MP4's als geanimeerde personagekunst op bouw- en teamkaarten
-supporter_embed.perk_animated_team_card: 'Geanimeerde personagekunst op teamkaarten (Genshin Impact, Honkai: Star Rail en Zenless Zone Zero)'
+supporter_embed.perk_animated_image: "Geanimeerde personagekunst op bouwkaarten (Genshin Impact, Honkai: Star Rail en Zenless Zone Zero)"
+supporter_embed.perk_animated_custom_images: "Upload je eigen GIF's, geanimeerde WEBP's en MP4's als geanimeerde personagekunst op bouw- en teamkaarten"
+supporter_embed.perk_animated_team_card: "Geanimeerde personagekunst op teamkaarten (Genshin Impact, Honkai: Star Rail en Zenless Zone Zero)"
 supporter_embed.perk_ai_images: "Onbeperkt AI-afbeeldingen genereren (gratis: {limit} per dag)"
 supporter_embed.perk_auto_gacha_import: Elke 6 uur automatisch gacha-logs importeren (Genshin Impact en Zenless Zone Zero)
-supporter_embed.perk_multi_accompany: 'Automatisch tot {limit} karakters per account vergezellen (gratis: 1)'
-supporter_embed.perk_mimo: 'Betere Traveling Mimo-automatisering: automatisch kopen pakt Sterrenjades en Polychromen zodra ze weer worden aangevuld, taken en aankopen draaien elk uur (gratis: elke 4-5 uur), en automatisch trekken kan er punten voor sparen'
+supporter_embed.perk_multi_accompany: "Automatisch tot {limit} karakters per account vergezellen (gratis: 1)"
+supporter_embed.perk_mimo: "Betere Traveling Mimo-automatisering: automatisch kopen pakt Sterrenjades en Polychromen zodra ze weer worden aangevuld, taken en aankopen draaien elk uur (gratis: elke 4-5 uur), en automatisch trekken kan er punten voor sparen"
 supporter_embed.perk_discord_role: Sponsorrol in de Discord-server
 supporter_embed.perk_discord_channel: Toegang tot het kanaal voor sponsors in de Discord-server
-supporter_embed.how_to: Doneer elk bedrag, maandelijks of eenmalig, om sponsor te worden. Je blijft voor altijd sponsor, ook nadat je donatie is gestopt.
+supporter_embed.how_to: "Doneer elk bedrag, maandelijks of eenmalig, om sponsor te worden. Je blijft voor altijd sponsor, ook nadat je donatie is gestopt."
 supporter_embed.status_supporter: "Je bent een sponsor, bedankt!"
 supporter_embed.status_not_supporter: Je bent nog geen sponsor.
 sponsor_perks_button_label: Bekijk sponsorvoordelen
 sponsor_perk_error_title: Sponsorvoordeel
 animated_image_sponsor_perk_message: Geanimeerde personagekunst op bouwkaarten is een sponsorvoordeel.
-animated_custom_image_sponsor_perk_message: GIF's, geanimeerde WEBP's en MP4's uploaden als personagekunst is een sponsorvoordeel.
+animated_custom_image_sponsor_perk_message: "GIF's, geanimeerde WEBP's en MP4's uploaden als personagekunst is een sponsorvoordeel."
 animated_team_card_sponsor_perk_message: Geanimeerde personagekunst op teamkaarten is een sponsorvoordeel.
 animation_position_button_label: Positie
 animation_position_modal.zoom.label: Zoom (%)
-animation_position_modal.zoom.description: Bij 100 vult de animatie het afbeeldingsgebied van de kaart
+animation_position_modal.zoom.description: "Bij 100 vult de animatie het afbeeldingsgebied van de kaart"
 animation_position_modal.focus_x.label: Horizontale positie (%)
-animation_position_modal.focus_x.description: 0 toont de linkerrand van de animatie, 100 de rechterrand
+animation_position_modal.focus_x.description: "0 toont de linkerrand van de animatie, 100 de rechterrand"
 animation_position_modal.focus_y.label: Verticale positie (%)
-animation_position_modal.focus_y.description: 0 toont de bovenrand van de animatie, 100 de onderrand
+animation_position_modal.focus_y.description: "0 toont de bovenrand van de animatie, 100 de onderrand"
 auto_gacha_import_sponsor_perk_message: Automatische gacha-log-imports zijn een sponsorvoordeel.
-multi_accompany_sponsor_perk_message: Automatisch meer dan één karakter vergezellen is een sponsorvoordeel. Sponsors kunnen automatisch tot {limit} karakters per account vergezellen.
+multi_accompany_sponsor_perk_message: "Automatisch meer dan één karakter vergezellen is een sponsorvoordeel. Sponsors kunnen automatisch tot {limit} karakters per account vergezellen."
 card_settings_animated_image: Geanimeerde afbeelding
 card_settings_animated_image_desc: "Gebruik de geanimeerde kunst van het personage op de kaart. Alleen beschikbaar voor sponsors, voor personages met geanimeerde kunst, op sjabloon 1 voor GI en ZZZ en sjablonen 1 en 2 voor HSR. GI-kaarten gebruiken de geanimeerde kaartkunst uit Genius Invokation TCG. Gebruik </sponsor> voor meer informatie."
 reminders_command_description: "Configureer herinneringen voor real-time notities, farmen en web-evenementen"
@@ -1013,4 +1000,4 @@ diary_cmd_desc: Bekijk je maandelijkse valuta-inkomsten
 diary_primogems: Primogems
 diary_mora: Mora
 diary_primogem_sources: Primogembronnen
-diary_last_month: 'Vorige maand: {amount}'
+diary_last_month: "Vorige maand: {amount}"

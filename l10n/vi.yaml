@@ -1,5 +1,4 @@
 about_command.contribute: Đóng góp
-about_command.developer: Lập trình viên
 about_command.discord_server: Máy chủ Discord
 about_command.guild_count: Số lượng người dùng
 about_command.ram_usage: RAM sử dụng
@@ -301,7 +300,7 @@ notes.elysian_realm_value: "Điểm số hiện tại: {cur}/{max}"
 notes_available: "{emoji} Có sẵn trong {in_time}"
 notes_command_description: Xem Ghi Chép Thời Gian Thực
 notes_overview_option_label: Tổng quan
-notes_overview.full_time: Đầy {time}
+notes_overview.full_time: "Đầy {time}"
 notif.embed.footer: Dùng /reminders để thiết lập lời nhắc
 notif_modal.enabled.label: Bật
 notif_modal.type_one.description: |
@@ -337,7 +336,7 @@ prev_page_option_label: Trang trước
 notify_feature: Ghi chú này nhắc nhở
 profile.add_image.button.label: Thêm ảnh riêng của bạn
 profile.add_image_modal.image_file.label: Tập tin ảnh
-profile.add_image_modal.image_file.description: Nhà tài trợ cũng có thể tải lên GIF, WEBP động và MP4, sẽ dùng 10 giây đầu tiên
+profile.add_image_modal.image_file.description: "Nhà tài trợ cũng có thể tải lên GIF, WEBP động và MP4, sẽ dùng 10 giây đầu tiên"
 profile.add_image_modal.image_url.label: Link ảnh
 profile.add_image_modal.image_url.description: Hoặc dán link trực tiếp đến ảnh thay vì tải tập tin lên
 profile.add_image_modal.no_image: Hãy tải lên tập tin ảnh hoặc nhập link ảnh.
@@ -540,11 +539,10 @@ card_settings.build_card_image: Hình ảnh thẻ Build
 card_settings.team_card_image: Hình ảnh thẻ đội hình
 profile.redraw_card_button_label: Làm mới thẻ
 card_settings.footer: "Khi đã xong, nhấn nút màu xanh lá ở tin nhắn phía trên để làm mới thẻ"
-card_settings.description: "Sử dụng </upload> để lấy link ảnh bằng cách tải ảnh lên."
 profile.team_dark_mode.button.label: Chủ đề tối thẻ đội
 team_card_dark_theme_desc: "Sử dụng bảng màu tối cho thẻ đội. Điều này áp dụng cho tất cả thẻ đội, bất kể nhân vật nào trong đó."
 team_card_animated_image: Thẻ đội động
-team_card_animated_image_desc: Dùng ảnh động của nhân vật trên thẻ đội, chỉ dành cho nhà tài trợ. Nhân vật không có ảnh động sẽ giữ ảnh tĩnh, và ảnh tự chọn dạng động được đặt làm hình ảnh thẻ đội cũng sẽ được dùng. Dùng </sponsor> để tìm hiểu thêm.
+team_card_animated_image_desc: "Dùng ảnh động của nhân vật trên thẻ đội, chỉ dành cho nhà tài trợ. Nhân vật không có ảnh động sẽ giữ ảnh tĩnh, và ảnh tự chọn dạng động được đặt làm hình ảnh thẻ đội cũng sẽ được dùng. Dùng </sponsor> để tìm hiểu thêm."
 profile.character_select.multi.placeholder: Chon (các) nhân vật...
 zzz_search.agent_info: "Độ Hiếm: {rarity}\nĐặc Tính Tương Thích: {specialty}\nLoại Tấn Công: {atk_type}\nPhe: {faction}\nThuộc Tính: {element}"
 cat_zzz_agents: Người Đại Diện
@@ -642,26 +640,26 @@ gacha_log_global_stats_title: Thống kê toàn cầu
 gacha_log_global_stats_lifetime: "Tổng số lần quay: {lifetime}"
 gacha_log_global_stats_luck: "Vận may {rarity}★: {luck}"
 win_rate_global_stats: "Tỷ lệ thắng {title}: {win_rate}"
-gacha_summary.latest: '{rarity} gần nhất'
-gacha_summary.previous: '{rarity} trước đó'
+gacha_summary.latest: "{rarity} gần nhất"
+gacha_summary.previous: "{rarity} trước đó"
 gacha_summary.pulls: lần quay
 gacha_summary.won: Thắng
 gacha_summary.lost: Thua
 gacha_summary.guaranteed: Bảo đảm
-gacha_summary.won_title: Thắng {title}
-gacha_summary.lost_title: Thua {title}
-gacha_summary.pity: Bảo hiểm {rarity}
-gacha_summary.next: '{rarity} tiếp theo'
-gacha_summary.next_not_guaranteed: '{title} · không bảo đảm'
-gacha_summary.next_is: '{rarity} tiếp theo là {title}'
-gacha_summary.next_is_guaranteed: '{rarity} tiếp theo được bảo đảm'
+gacha_summary.won_title: "Thắng {title}"
+gacha_summary.lost_title: "Thua {title}"
+gacha_summary.pity: "Bảo hiểm {rarity}"
+gacha_summary.next: "{rarity} tiếp theo"
+gacha_summary.next_not_guaranteed: "{title} · không bảo đảm"
+gacha_summary.next_is: "{rarity} tiếp theo là {title}"
+gacha_summary.next_is_guaranteed: "{rarity} tiếp theo được bảo đảm"
 gacha_summary.banner_pulls: Số lần quay banner
 gacha_summary.lifetime_pulls: Tổng số lần quay
-gacha_summary.win_rate: Tỷ lệ thắng {title}
-gacha_summary.avg_pulls: Trung bình số lần quay mỗi {rarity}
+gacha_summary.win_rate: "Tỷ lệ thắng {title}"
+gacha_summary.avg_pulls: "Trung bình số lần quay mỗi {rarity}"
 gacha_summary.lifetime_spent: Tổng đã tiêu
-gacha_summary.total: Tổng {total}
-gacha_summary.wins_of_total: '{wins} trên {total}'
+gacha_summary.total: "Tổng {total}"
+gacha_summary.wins_of_total: "{wins} trên {total}"
 gacha_summary.s_rank: Cấp S
 gacha_summary.a_rank: Cấp A
 gacha_log_view_full: Xem nhật ký gacha
@@ -727,7 +725,7 @@ not_you_label: "Không phải bạn? Nhấn để đăng nhập bằng tài kho�
 profile_show_substat_rolls: Hiển thị cường hóa thuộc tính phụ
 profile_show_substat_rolls_desc: Hiển thị có bao nhiêu lần cường hóa đóng góp vào giá trị cuối cùng của thuộc tính phụ.
 card_settings_substat_breakdown: Hiển thị chi tiết thuộc tính phụ
-card_settings_substat_breakdown_desc: Thêm một dải bên dưới thẻ, hiển thị tổng giá trị của từng thuộc tính phụ trên tất cả trang bị và số lần được cường hóa.
+card_settings_substat_breakdown_desc: "Thêm một dải bên dưới thẻ, hiển thị tổng giá trị của từng thuộc tính phụ trên tất cả trang bị và số lần được cường hóa."
 team_card_settings_embed_title: Chỉnh sửa thiết lập thẻ đội
 team_card_settings_embed_description: "Cài đặt thẻ đội được chia sẻ trên các trò chơi và tài khoản khác nhau, những thay đổi được thực hiện đối với một số cài đặt có thể không được phản ánh trên thẻ khi chúng không được mẫu thẻ hỗ trợ.\nKhi hoàn tất, hãy nhấp vào nút màu xanh lá cây trong thông báo bên trên để làm mới thẻ."
 characters.filter.rarity.placeholder: Lọc theo độ hiếm...
@@ -758,11 +756,8 @@ rarity_str: "{rarity} sao"
 finished_status_field_name: Trạng thái
 unlocks_in_str: "Mở khóa trong {time}"
 challenge_selector_placeholder: Hãy chọn thử thách...
-upload_cmd_desc: "Tải ảnh lên và lấy dường link của nó, để bạn có thể dùng hình ảnh tùy chỉnh trong /profile"
 not_an_image_error_title: Không phải là ảnh
 not_an_image_error_message: "Mục bạn vừa tải lên không phải là ảnh, vui lòng thử lại với tệp hình ảnh hợp lệ."
-upload_cmd_image_param_name: ảnh
-upload_cmd_image_param_desc: Ảnh để tải lên
 exploration_select_placeholder: Hãy chọn vùng...
 exploration_show_card_button_label: Hiển thị thẻ thám hiểm
 abyss_stats_const_use_rate: Tỷ lệ sử dụng Cung Mệnh
@@ -851,20 +846,14 @@ anniversary_dyk: "Hoyo Buddy đã 1 tuổi rồi! Truy cập [trang web đặc b
 authkey_timeout_title: Quá hạn chờ authkey
 authkey_timeout_message: "Hãy lấy URL lịch sử gacha mới và thử lại"
 invalid_authkey_title: Authkey không hợp lệ
-hard_challenge_period: "Kỳ: {period}"
-hard_challenge_completion_time: "Thời gian hoàn thành"
-hard_challenge_team_composition: "Đội Hình Ra Trận"
-hard_challenge_combat_statistics: "Thống Kê Chiến Đấu"
 hard_challenge_strongest_strike: "Một đòn mạnh nhất"
 hard_challenge_damage_dealt: "Sát thương cao nhất"
-hard_challenge_challenge_index: Thử thách {index}
-hard_challenge_enemy_weakness: "Lợi Thế & Bất Lợi"
+hard_challenge_challenge_index: "Thử thách {index}"
 hard_challenge_command_desc: Tạo thẻ Ảo Cảnh Hiểm Ác
 hard_challenge: "Ảo Cảnh Hiểm Ác"
 fetching_accounts: "Đang truy vấn tài khoản, vui lòng chờ..."
 fetching_accounts_stuck: "Nếu bạn bị kẹt tại trang này, hãy thử chạy lại lệnh hoặc liên hệ chúng tôi để xử lý lỗi."
 aaa_acronym: Tự Tích Thiểm Năng
-changelog_command_desc: Xem những thay đổi và cập nhật mới nhất
 account_game_mismatch_error_title: Tài khoản game không khớp
 account_game_mismatch_error_message: "Tài khoản bạn đang sử dụng không phải là tài khoản {game}"
 enka_api_error_title: Lỗi API Enka
@@ -884,7 +873,7 @@ accompany_button_label: Tự động ghé thăm nhân vật
 accompany_selected_character: "Hiện đang ghé thăm: {character}"
 accompany_no_character_selected: "Hãy chọn một nhân vật bên dưới để bật tính năng này."
 accompany_character_select_placeholder: Hãy chọn một nhân vật để ghé thăm
-accompany_characters_select_placeholder: Chọn tối đa {limit} nhân vật để ghé thăm
+accompany_characters_select_placeholder: "Chọn tối đa {limit} nhân vật để ghé thăm"
 accompany_cmd_desc: Xem các nhân vật ghé thăm của HoYoLAB và thiết lập nhân vật của riêng bạn.
 accompany_cmd_character_param_name: nhân-vật
 accompany_cmd_character_param_desc: "Nhân vật để hiển thị, mặc định là nhân vật đầu tiên có sẵn."
@@ -909,19 +898,17 @@ dark_theme_desc: "Chủ đề tối\nLàm cho infographic sử dụng bảng mà
 language_desc: "Ngôn ngữ\nHoyo Buddy sẽ trả lời bạn bằng ngôn ngữ này. Một số văn bản có thể vẫn bằng tiếng Anh, xem [FAQ](:docs/FAQ:) để biết tại sao."
 language_select_placeholder: Chọn một ngôn ngữ
 settings_dyk_desc: "Tin nhắn \"Bạn có biết?\"\nHiển thị các mẹo hữu ích ngẫu nhiên khi bạn sử dụng các lệnh bot."
-settings_show_uid_desc: 'Hiển thị UID
-
-  Hiển thị UID của bạn trên thẻ </profile> và thẻ thử thách.'
+settings_show_uid_desc: "Hiển thị UID\nHiển thị UID của bạn trên thẻ </profile> và thẻ thử thách."
 layout_view_edited: "Các thành phần tương tác đã bị vô hiệu hóa để tiết kiệm tài nguyên hệ thống, chạy lại lệnh nếu bạn muốn sử dụng chúng."
 mimo_title: Cài đặt Mimo Du Lịch
 mimo_minimum_point_label: Điểm tối thiểu cần giữ
 mimo_minimum_point_desc: "Khi tự động rút thưởng, Hoyo Buddy sẽ đảm bảo điểm của bạn luôn trên giá trị này, đặt thành 0 để rút bất cứ khi nào có thể."
 mimo_point_saving.title: Tiết kiệm điểm cho tiền tệ (đặc quyền nhà tài trợ)
-mimo_point_saving.desc: Khi bật tự động mua, tự động rút thưởng sẽ giữ đủ điểm để mua Ngọc Ánh Sao, Film Màu hoặc Nguyên Thạch khi chúng được mở bán lại.
+mimo_point_saving.desc: "Khi bật tự động mua, tự động rút thưởng sẽ giữ đủ điểm để mua Ngọc Ánh Sao, Film Màu hoặc Nguyên Thạch khi chúng được mở bán lại."
 mimo_point_saving.placeholder: Chọn vật phẩm cần tiết kiệm điểm để mua
 mimo_point_saving.all: Tiết kiệm cho tất cả vật phẩm tiền tệ
 mimo_point_saving.most_expensive: Chỉ tiết kiệm cho vật phẩm đắt nhất
-mimo_point_saving.off: Không tiết kiệm điểm
+mimo_point_saving.off: "Không tiết kiệm điểm"
 mimo_point_saving.sponsor_perk_message: Tiết kiệm điểm cho vật phẩm tiền tệ là đặc quyền của nhà tài trợ.
 disable_all_button_label: Tắt tất cả thông báo
 apply_template_to_all_chars: Áp dụng mẫu thẻ hiện tại cho tất cả nhân vật
@@ -933,7 +920,7 @@ apply_animated_image_to_all_chars_desc: "Ảnh động của tất cả nhân v�
 card_settings_bulk_title: Cài đặt hàng loạt
 card_settings_team_title: Thiết lập thẻ đội
 card_settings_team_button_desc: Chủ đề tối và ảnh động cho thẻ đội.
-card_settings_team_desc: Các cài đặt này áp dụng cho tất cả thẻ đội, bất kể có nhân vật nào trong đó.
+card_settings_team_desc: "Các cài đặt này áp dụng cho tất cả thẻ đội, bất kể có nhân vật nào trong đó."
 card_settings_bulk_button_desc: "Áp dụng các tùy chọn mẫu thẻ, chủ đề tối và ảnh động của nhân vật này cho tất cả nhân vật."
 card_settings_bulk_desc: "Áp dụng cài đặt thẻ của {name} cho tất cả nhân vật **hiện tại và tương lai**."
 apply_label: Áp dụng
@@ -976,32 +963,32 @@ supporter_embed.description: "Nhà tài trợ giúp Hoyo Buddy tiếp tục ho�
 supporter_embed.perk_auto_task_priority: "Ưu tiên cao nhất trong hàng đợi tác vụ tự động (điểm danh hằng ngày, đổi mã quà, Mimo Du Lịch, v.v.)"
 supporter_embed.perk_accounts: "Không giới hạn số tài khoản (miễn phí: {limit})"
 supporter_embed.perk_custom_images: "Không giới hạn ảnh tự chọn cho mỗi nhân vật (miễn phí: {limit})"
-supporter_embed.perk_animated_image: 'Ảnh động nhân vật trên thẻ build (Genshin Impact, Honkai: Star Rail và Zenless Zone Zero)'
-supporter_embed.perk_animated_custom_images: Tải lên GIF, WEBP động và MP4 của riêng bạn làm ảnh động nhân vật trên thẻ build và thẻ đội
-supporter_embed.perk_animated_team_card: 'Ảnh động nhân vật trên thẻ đội (Genshin Impact, Honkai: Star Rail và Zenless Zone Zero)'
+supporter_embed.perk_animated_image: "Ảnh động nhân vật trên thẻ build (Genshin Impact, Honkai: Star Rail và Zenless Zone Zero)"
+supporter_embed.perk_animated_custom_images: "Tải lên GIF, WEBP động và MP4 của riêng bạn làm ảnh động nhân vật trên thẻ build và thẻ đội"
+supporter_embed.perk_animated_team_card: "Ảnh động nhân vật trên thẻ đội (Genshin Impact, Honkai: Star Rail và Zenless Zone Zero)"
 supporter_embed.perk_ai_images: "Không giới hạn số lần tạo ảnh AI (miễn phí: {limit} mỗi ngày)"
 supporter_embed.perk_auto_gacha_import: Tự động nhập nhật ký gacha mỗi 6 giờ (Genshin Impact và Zenless Zone Zero)
-supporter_embed.perk_multi_accompany: 'Tự động ghé thăm tối đa {limit} nhân vật mỗi tài khoản (miễn phí: 1)'
-supporter_embed.perk_mimo: 'Tự động hóa Mimo Du Lịch tốt hơn: tự động mua sẽ mua ngay Ngọc Ánh Sao và Film Màu khi vừa mở bán lại, nhiệm vụ và lượt mua chạy mỗi giờ (miễn phí: mỗi 4-5 giờ), và tự động rút thưởng có thể giữ lại điểm để mua chúng'
+supporter_embed.perk_multi_accompany: "Tự động ghé thăm tối đa {limit} nhân vật mỗi tài khoản (miễn phí: 1)"
+supporter_embed.perk_mimo: "Tự động hóa Mimo Du Lịch tốt hơn: tự động mua sẽ mua ngay Ngọc Ánh Sao và Film Màu khi vừa mở bán lại, nhiệm vụ và lượt mua chạy mỗi giờ (miễn phí: mỗi 4-5 giờ), và tự động rút thưởng có thể giữ lại điểm để mua chúng"
 supporter_embed.perk_discord_role: Vai trò Sponsor trong máy chủ Discord
 supporter_embed.perk_discord_channel: Quyền truy cập kênh dành riêng cho Sponsor trong máy chủ Discord
-supporter_embed.how_to: Ủng hộ bất kỳ số tiền nào, hằng tháng hoặc một lần, để trở thành nhà tài trợ. Bạn sẽ là nhà tài trợ mãi mãi, kể cả sau khi ngừng ủng hộ.
+supporter_embed.how_to: "Ủng hộ bất kỳ số tiền nào, hằng tháng hoặc một lần, để trở thành nhà tài trợ. Bạn sẽ là nhà tài trợ mãi mãi, kể cả sau khi ngừng ủng hộ."
 supporter_embed.status_supporter: "Bạn là nhà tài trợ, cảm ơn bạn!"
 supporter_embed.status_not_supporter: Bạn chưa phải là nhà tài trợ.
 sponsor_perks_button_label: Xem đặc quyền nhà tài trợ
 sponsor_perk_error_title: Đặc quyền nhà tài trợ
 animated_image_sponsor_perk_message: Ảnh động nhân vật trên thẻ build là đặc quyền của nhà tài trợ.
-animated_custom_image_sponsor_perk_message: Tải lên GIF, WEBP động và MP4 làm ảnh nhân vật là đặc quyền của nhà tài trợ.
+animated_custom_image_sponsor_perk_message: "Tải lên GIF, WEBP động và MP4 làm ảnh nhân vật là đặc quyền của nhà tài trợ."
 animated_team_card_sponsor_perk_message: Ảnh động nhân vật trên thẻ đội là đặc quyền của nhà tài trợ.
 animation_position_button_label: Vị trí
 animation_position_modal.zoom.label: Thu phóng (%)
-animation_position_modal.zoom.description: Ở mức 100, ảnh động lấp đầy vùng ảnh của thẻ
+animation_position_modal.zoom.description: "Ở mức 100, ảnh động lấp đầy vùng ảnh của thẻ"
 animation_position_modal.focus_x.label: Vị trí ngang (%)
-animation_position_modal.focus_x.description: 0 hiển thị cạnh trái của ảnh động, 100 hiển thị cạnh phải
+animation_position_modal.focus_x.description: "0 hiển thị cạnh trái của ảnh động, 100 hiển thị cạnh phải"
 animation_position_modal.focus_y.label: Vị trí dọc (%)
-animation_position_modal.focus_y.description: 0 hiển thị cạnh trên của ảnh động, 100 hiển thị cạnh dưới
+animation_position_modal.focus_y.description: "0 hiển thị cạnh trên của ảnh động, 100 hiển thị cạnh dưới"
 auto_gacha_import_sponsor_perk_message: Tự động nhập nhật ký gacha là đặc quyền của nhà tài trợ.
-multi_accompany_sponsor_perk_message: Tự động ghé thăm nhiều hơn một nhân vật là đặc quyền của nhà tài trợ. Nhà tài trợ có thể tự động ghé thăm tối đa {limit} nhân vật mỗi tài khoản.
+multi_accompany_sponsor_perk_message: "Tự động ghé thăm nhiều hơn một nhân vật là đặc quyền của nhà tài trợ. Nhà tài trợ có thể tự động ghé thăm tối đa {limit} nhân vật mỗi tài khoản."
 card_settings_animated_image: Ảnh động
 card_settings_animated_image_desc: "Dùng ảnh động của nhân vật trên thẻ. Chỉ dành cho nhà tài trợ, áp dụng với các nhân vật có ảnh động, trên Mẫu thẻ 1 đối với GI và ZZZ, Mẫu thẻ 1 và 2 đối với HSR. Thẻ GI dùng ảnh động từ lá bài Thất Thánh Triệu Hồi. Dùng </sponsor> để tìm hiểu thêm."
 reminders_command_description: "Thiết lập lời nhắc Ghi Chép Thời Gian Thực, cày nguyên liệu và sự kiện web"
@@ -1013,4 +1000,4 @@ diary_cmd_desc: Xem thu nhập tiền tệ hằng tháng của bạn
 diary_primogems: Nguyên Thạch
 diary_mora: Mora
 diary_primogem_sources: Nguồn Nguyên Thạch
-diary_last_month: 'Tháng trước: {amount}'
+diary_last_month: "Tháng trước: {amount}"

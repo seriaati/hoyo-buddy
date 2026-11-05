@@ -16,6 +16,7 @@ from hoyo_buddy.enums import FiftyFiftyResult, GachaItemKind, Game
 from hoyo_buddy.exceptions import NoGachaLogFoundError
 from hoyo_buddy.l10n import BANNER_TYPE_NAMES
 from hoyo_buddy.models.gacha_summary import GachaRank, GachaSummary, GachaSummaryItem
+from hoyo_buddy.utils import blur_uid
 from hoyo_buddy.utils.gacha import calc_five_star_results
 
 if TYPE_CHECKING:
@@ -220,7 +221,7 @@ async def build_gacha_summary(
         banner_type=banner_type,
         banner_name=BANNER_TYPE_NAMES[game][banner_type].translate(locale),
         nickname=account.username,
-        uid=account.uid,
+        uid=str(account.uid) if account.show_uid else blur_uid(account.uid),
         avatar_url=avatar_url,
         five_star_pity=five_star_pity,
         five_star_max_pity=five_star_max_pity,

@@ -44,7 +44,8 @@ class GachaSummary(BaseModel):
     """Already translated."""
 
     nickname: str
-    uid: int
+    uid: str
+    """Blurred unless the account owner turned on Show UID."""
     avatar_url: str
 
     five_star_pity: int

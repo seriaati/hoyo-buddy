@@ -23,7 +23,7 @@ from hoyo_buddy.draw.drawer import Drawer
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-__all__ = ("convert_animation", "frame_animation", "is_animated")
+__all__ = ("convert_animation", "frame_animation", "is_animated", "zoom_animation")
 
 FRAMED_QUALITY = 90
 """WEBP quality of animations framed for a card, re-encoded once more when the card is drawn."""
@@ -186,8 +186,70 @@ def frame_animation(
     path = source.with_name(
         f"{source.stem}_{area[0]}x{area[1]}_{zoom}_{focus[0]}_{focus[1]}_{card_scale}{source.suffix}"
     )
+    _crop_animation(source, path, area=area, scale=scale, pos=(x, y), card_scale=card_scale)
+    return path, (x, y)
+
+
+def zoom_animation(
+    source: Path,
+    offset: tuple[int, int],
+    *,
+    area: tuple[int, int],
+    zoom: float,
+    card_scale: float = ANIMATED_CARD_SCALE,
+) -> tuple[Path, tuple[int, int]]:
+    """Zoom an animation framed in a card's image mask about the mask's top center, and crop it
+    to a new image mask, like a static image covering a taller mask. Cached next to the source.
+
+    Args:
+        source: Path of the framed animation.
+        offset: The animation's uncropped top-left in the image mask.
+        area: The new image mask's size.
+        zoom: The zoom, e.g. the new mask's height over the old one's.
+        card_scale: Scale of the animated card relative to the static card.
+
+    Returns:
+        The zoomed animation's path and its uncropped top-left in the new mask.
+    """
+    center = area[0] / 2
+    x = round(center + (max(offset[0], 0) - center) * zoom)
+    y = round(max(offset[1], 0) * zoom)
+
+    path = source.with_name(
+        f"{source.stem}_{area[0]}x{area[1]}_{offset[0]}_{offset[1]}_{zoom:.4f}{source.suffix}"
+    )
+    _crop_animation(
+        source, path, area=area, scale=zoom / card_scale, pos=(x, y), card_scale=card_scale
+    )
+    return path, (x, y)
+
+
+def _crop_animation(
+    source: Path,
+    path: Path,
+    *,
+    area: tuple[int, int],
+    scale: float,
+    pos: tuple[int, int],
+    card_scale: float,
+) -> None:
+    """Scale an animation, crop it to an image mask and save it, unless it's already saved.
+
+    Args:
+        source: Path of the animation.
+        path: Path to save the cropped animation to.
+        area: The image mask's size.
+        scale: Scale from the animation's pixels to the static card's.
+        pos: The scaled animation's top-left in the mask.
+        card_scale: Scale of the animated card relative to the static card.
+    """
     if path.exists():
-        return path, (x, y)
+        return
+
+    with Image.open(source) as im:
+        source_size = im.size
+    x, y = pos
+    width, height = round(source_size[0] * scale), round(source_size[1] * scale)
 
     left, top = max(0, -x), max(0, -y)
     right, bottom = min(width, area[0] - x), min(height, area[1] - y)
@@ -210,4 +272,3 @@ def frame_animation(
     with tempfile.NamedTemporaryFile(dir=path.parent, suffix=".tmp", delete=False) as f:
         f.write(data.getbuffer())
     Path(f.name).replace(path)
-    return path, (x, y)

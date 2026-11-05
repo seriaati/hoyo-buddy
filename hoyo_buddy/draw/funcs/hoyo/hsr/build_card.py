@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from PIL import Image, ImageDraw
 
+from hoyo_buddy.draw.animation import zoom_animation
 from hoyo_buddy.draw.drawer import BLACK, WHITE, Drawer
 from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     BigBubble,
@@ -603,6 +604,14 @@ def draw_animated_hsr_build_card(
     """
     primary, dark_primary, light_primary = _get_colors(primary_hex, dark_mode=dark_mode)
     mask = _open_image_mask(show_substat_breakdown)
+    if show_substat_breakdown:
+        # Cover the taller mask like the static image does
+        animation_path, offset = zoom_animation(
+            animation_path,
+            offset,
+            area=mask.size,
+            zoom=mask.height / (mask.height - BREAKDOWN_HEIGHT),
+        )
 
     background = Image.new("RGBA", _get_card_size(show_substat_breakdown), primary)
     background.paste(

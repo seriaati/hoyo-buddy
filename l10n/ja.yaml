@@ -1,5 +1,4 @@
 about_command.contribute: 貢献する
-about_command.developer: 開発者
 about_command.discord_server: Discordサーバー
 about_command.guild_count: サーバー数
 about_command.ram_usage: RAM使用量
@@ -299,7 +298,7 @@ notes.elysian_realm_value: "現在のスコア：{cur}/{max}"
 notes_available: "{emoji} {in_time} 後に利用可能"
 notes_command_description: リアルタイムノートを表示します
 notes_overview_option_label: 概要
-notes_overview.full_time: '{time}に満タン'
+notes_overview.full_time: "{time}に満タン"
 notif.embed.footer: リマインダーを設定するには /reminders を使用してください
 notif_modal.enabled.label: 有効
 notif_modal.type_one.description: |
@@ -335,7 +334,7 @@ prev_page_option_label: 前のページ
 notify_feature: このノートリマインダー
 profile.add_image.button.label: カスタム画像を追加
 profile.add_image_modal.image_file.label: 画像ファイル
-profile.add_image_modal.image_file.description: スポンサーはGIF、アニメーションWEBP、MP4もアップロードできます（最初の10秒を使用）
+profile.add_image_modal.image_file.description: "スポンサーはGIF、アニメーションWEBP、MP4もアップロードできます（最初の10秒を使用）"
 profile.add_image_modal.image_url.label: 画像URL
 profile.add_image_modal.image_url.description: ファイルをアップロードする代わりに、画像への直接リンクを貼り付けることもできます
 profile.add_image_modal.no_image: 画像ファイルをアップロードするか、画像URLを入力してください。
@@ -538,11 +537,10 @@ card_settings.build_card_image: ビルドカード画像
 card_settings.team_card_image: チームカード画像
 profile.redraw_card_button_label: カードを再描画
 card_settings.footer: "完了したら、上のメッセージにある緑色のボタンをクリックしてカードを再描画してください"
-card_settings.description: "画像をアップロードして画像URLを取得するには </upload> を使用してください。"
 profile.team_dark_mode.button.label: チームカードダークテーマ
 team_card_dark_theme_desc: "チームカードにダークカラースキームを使用します。これは、どのキャラクターが含まれているかに関係なく、すべてのチームカードに適用されます。"
 team_card_animated_image: アニメーションチームカード
-team_card_animated_image_desc: チームカードにキャラクターのアニメーションアートを使用します。スポンサー限定です。アニメーションアートがないキャラクターは静止画のまま表示され、チームカード画像に設定したアニメーションのカスタム画像も使用されます。詳しくは </sponsor> で確認してください。
+team_card_animated_image_desc: "チームカードにキャラクターのアニメーションアートを使用します。スポンサー限定です。アニメーションアートがないキャラクターは静止画のまま表示され、チームカード画像に設定したアニメーションのカスタム画像も使用されます。詳しくは </sponsor> で確認してください。"
 profile.character_select.multi.placeholder: キャラクターを選択...
 zzz_search.agent_info: "レアリティ：{rarity}\n専門分野：{specialty}\n攻撃タイプ：{atk_type}\n陣営：{faction}\n属性：{element}"
 cat_zzz_agents: エージェント
@@ -640,26 +638,26 @@ gacha_log_global_stats_title: 全体統計
 gacha_log_global_stats_lifetime: "生涯ガチャ回数: {lifetime}"
 gacha_log_global_stats_luck: "{rarity}★運: {luck}"
 win_rate_global_stats: "{title} の50/50勝率：{win_rate}"
-gacha_summary.latest: 最新の{rarity}
-gacha_summary.previous: 過去の{rarity}
+gacha_summary.latest: "最新の{rarity}"
+gacha_summary.previous: "過去の{rarity}"
 gacha_summary.pulls: 回
 gacha_summary.won: 勝ち
 gacha_summary.lost: 負け
 gacha_summary.guaranteed: 確定
-gacha_summary.won_title: '{title}勝ち'
-gacha_summary.lost_title: '{title}負け'
-gacha_summary.pity: '{rarity}天井'
-gacha_summary.next: 次の{rarity}
-gacha_summary.next_not_guaranteed: '{title} · 未確定'
-gacha_summary.next_is: 次の{rarity}は{title}
-gacha_summary.next_is_guaranteed: 次の{rarity}は確定
+gacha_summary.won_title: "{title}勝ち"
+gacha_summary.lost_title: "{title}負け"
+gacha_summary.pity: "{rarity}天井"
+gacha_summary.next: "次の{rarity}"
+gacha_summary.next_not_guaranteed: "{title} · 未確定"
+gacha_summary.next_is: "次の{rarity}は{title}"
+gacha_summary.next_is_guaranteed: "次の{rarity}は確定"
 gacha_summary.banner_pulls: バナーのガチャ回数
 gacha_summary.lifetime_pulls: 生涯ガチャ回数
-gacha_summary.win_rate: '{title}勝率'
-gacha_summary.avg_pulls: '{rarity}あたりの平均ガチャ回数'
+gacha_summary.win_rate: "{title}勝率"
+gacha_summary.avg_pulls: "{rarity}あたりの平均ガチャ回数"
 gacha_summary.lifetime_spent: 累計消費
-gacha_summary.total: 合計 {total}
-gacha_summary.wins_of_total: '{total}回中{wins}回'
+gacha_summary.total: "合計 {total}"
+gacha_summary.wins_of_total: "{total}回中{wins}回"
 gacha_summary.s_rank: Sランク
 gacha_summary.a_rank: Aランク
 gacha_log_view_full: ガチャ履歴全体を表示
@@ -712,7 +710,7 @@ akasha_you: あなた
 achievement_lb_title: アチーブメント数ランキング
 planar_fissure_label: 次元界分裂
 planar_fissure_desc: "{hour} 時間後に次元界分裂イベントが開催されます。開拓力を貯めておくことを忘れないでください！"
-notif_modal.hours_before.label: "イベント開始の X 時間前に通知"
+notif_modal.hours_before.label: イベント開始の X 時間前に通知
 reminder_settings.reminde.set.type5: "ステータス：{status}\n通知間隔：{notify_interval} 分\n最大通知回数：{max_notif_count}\n通知時刻：イベント開始の {hours_before} 時間前"
 chest_lb_title: 開放した宝箱数ランキング
 abyss_dmg_lb_title: 深境螺旋・最大ダメージランキング
@@ -756,11 +754,8 @@ rarity_str: "{rarity}つ星"
 finished_status_field_name: ステータス
 unlocks_in_str: "{time} 後にアンロック"
 challenge_selector_placeholder: 挑戦を選択...
-upload_cmd_desc: "画像をアップロードしてリンクを取得します。これは /profile のカスタム画像で使用できます"
 not_an_image_error_title: 画像ではありません
 not_an_image_error_message: "アップロードされたファイルは画像ではありません。有効な画像ファイルで再試行してください。"
-upload_cmd_image_param_name: 画像
-upload_cmd_image_param_desc: アップロードする画像
 exploration_select_placeholder: 地域を選択...
 exploration_show_card_button_label: 探索カードを表示
 abyss_stats_const_use_rate: 星座使用率
@@ -849,20 +844,14 @@ anniversary_dyk: "Hoyo Buddyは1周年です！[特別なウェブページ](<ht
 authkey_timeout_title: Authkey タイムアウト
 authkey_timeout_message: "新しいガチャログURLを取得して再試行してください"
 invalid_authkey_title: 無効なAuthkey
-hard_challenge_period: "統計周期：{period}"
-hard_challenge_completion_time: "クリア時間"
-hard_challenge_team_composition: "チーム編成"
-hard_challenge_combat_statistics: "戦闘統計"
 hard_challenge_strongest_strike: "最大ダメージ"
 hard_challenge_damage_dealt: " 最大合計ダメージ"
-hard_challenge_challenge_index: 挑戦 {index}
-hard_challenge_enemy_weakness: "敵の弱点と耐性"
+hard_challenge_challenge_index: "挑戦 {index}"
 hard_challenge_command_desc: 幽境の激戦カードを生成
 hard_challenge: "幽境の激戦"
 fetching_accounts: アカウント情報を取得中です。しばらくお待ちください...
 fetching_accounts_stuck: "このページで動作が停止している場合は、コマンドを再実行するか、お問い合わせください。問題を解決いたします。"
 aaa_acronym: アドレナリン回復
-changelog_command_desc: 最新の変更内容とアップデートを確認する
 account_game_mismatch_error_title: アカウントゲームミスマッチ
 account_game_mismatch_error_message: "使用しているアカウントは{game}のアカウントではありません"
 enka_api_error_title: Enka APIエラー
@@ -882,7 +871,7 @@ accompany_button_label: キャラクター自動同行
 accompany_selected_character: "現在の同行キャラクター：{character}"
 accompany_no_character_selected: "この機能を有効にするには、下でキャラクターを選択してください。"
 accompany_character_select_placeholder: 同行するキャラクターを選択
-accompany_characters_select_placeholder: 同行するキャラクターを{limit}人まで選択
+accompany_characters_select_placeholder: "同行するキャラクターを{limit}人まで選択"
 accompany_cmd_desc: HoYoLABの同行キャラクターを閲覧し、自分の同行キャラクターを設定します
 accompany_cmd_character_param_name: キャラクター
 accompany_cmd_character_param_desc: "表示するキャラクター、デフォルトは最初に利用可能なキャラクター"
@@ -907,19 +896,17 @@ dark_theme_desc: "ダークテーマ\nインフォグラフィックがダーク
 language_desc: "言語\nHoyo Buddyはこの言語で応答します。一部のテキストは英語のままである場合があります。理由については[FAQ](:docs/FAQ:)をご覧ください。"
 language_select_placeholder: 言語を選択
 settings_dyk_desc: "「知っていましたか?」メッセージ\nボットコマンドを使用すると、ランダムに役立つヒントが表示されます。"
-settings_show_uid_desc: 'UIDを表示
-
-  </profile> と挑戦カードにUIDを表示します。'
+settings_show_uid_desc: "UIDを表示\n</profile> と挑戦カードにUIDを表示します。"
 layout_view_edited: "システムリソースを節約するためにインタラクティブコンポーネントが無効になりました。使用したい場合はコマンドを再実行してください。"
 mimo_title: 旅するミモ設定
 mimo_minimum_point_label: 保持する最小ポイント
 mimo_minimum_point_desc: "自動抽選時、Hoyo Buddyはポイントがこの値を上回るようにします。0に設定すると、可能な限り抽選します。"
 mimo_point_saving.title: 通貨アイテム用にポイントを貯める（スポンサー特典）
-mimo_point_saving.desc: 自動購入がオンの場合、自動抽選は星玉、ポリクローム、原石が再入荷したときに購入できるだけのポイントを残します。
+mimo_point_saving.desc: "自動購入がオンの場合、自動抽選は星玉、ポリクローム、原石が再入荷したときに購入できるだけのポイントを残します。"
 mimo_point_saving.placeholder: ポイントを貯めておくアイテムを選択
 mimo_point_saving.all: すべての通貨アイテム用に貯める
 mimo_point_saving.most_expensive: 最も高価なアイテム用にのみ貯める
-mimo_point_saving.off: ポイントを貯めない
+mimo_point_saving.off: "ポイントを貯めない"
 mimo_point_saving.sponsor_perk_message: 通貨アイテム用にポイントを貯める機能はスポンサー特典です。
 disable_all_button_label: すべての通知を無効にする
 apply_template_to_all_chars: 現在のテンプレートをすべてのキャラクターに適用
@@ -931,7 +918,7 @@ apply_animated_image_to_all_chars_desc: "すべての**将来および現在の*
 card_settings_bulk_title: 一括設定
 card_settings_team_title: チームカード設定
 card_settings_team_button_desc: チームカードのダークテーマとアニメーションアート。
-card_settings_team_desc: これらの設定は、どのキャラクターが含まれているかに関係なく、すべてのチームカードに適用されます。
+card_settings_team_desc: "これらの設定は、どのキャラクターが含まれているかに関係なく、すべてのチームカードに適用されます。"
 card_settings_bulk_button_desc: "このキャラクターのテンプレート、ダークテーマ、アニメーション画像の設定をすべてのキャラクターに適用します。"
 card_settings_bulk_desc: "{name} のカード設定を**現在および将来の**すべてのキャラクターに適用します。"
 apply_label: 適用
@@ -974,35 +961,35 @@ supporter_embed.description: "スポンサーはHoyo Buddyの運営と開発を�
 supporter_embed.perk_auto_task_priority: "自動タスクのキューで最優先（デイリーチェックイン、コード交換、旅するミモなど）"
 supporter_embed.perk_accounts: "アカウント数が無制限（無料：{limit}）"
 supporter_embed.perk_custom_images: "キャラクターごとのカスタム画像が無制限（無料：{limit}）"
-supporter_embed.perk_animated_image: ビルドカードでキャラクターのアニメーションアートを使用（原神、崩壊：スターレイル、ゼンレスゾーンゼロ）
-supporter_embed.perk_animated_custom_images: 自分のGIF、アニメーションWEBP、MP4をアップロードして、ビルドカードとチームカードのアニメーションアートとして使用
-supporter_embed.perk_animated_team_card: チームカードでキャラクターのアニメーションアートを使用（原神、崩壊：スターレイル、ゼンレスゾーンゼロ）
+supporter_embed.perk_animated_image: "ビルドカードでキャラクターのアニメーションアートを使用（原神、崩壊：スターレイル、ゼンレスゾーンゼロ）"
+supporter_embed.perk_animated_custom_images: "自分のGIF、アニメーションWEBP、MP4をアップロードして、ビルドカードとチームカードのアニメーションアートとして使用"
+supporter_embed.perk_animated_team_card: "チームカードでキャラクターのアニメーションアートを使用（原神、崩壊：スターレイル、ゼンレスゾーンゼロ）"
 supporter_embed.perk_ai_images: "AI画像生成が無制限（無料：1日 {limit} 枚）"
 supporter_embed.perk_auto_gacha_import: 6時間ごとのガチャ履歴自動インポート（原神、ゼンレスゾーンゼロ）
-supporter_embed.perk_multi_accompany: アカウントごとに最大{limit}人のキャラクターに自動同行（無料：1人）
-supporter_embed.perk_mimo: 旅するミモの自動化を強化：自動購入は星玉とポリクロームが再入荷した瞬間に購入、タスクと購入は1時間ごとに実行（無料：4～5時間ごと）、さらに自動抽選でそれらの分のポイントを残しておけます
+supporter_embed.perk_multi_accompany: "アカウントごとに最大{limit}人のキャラクターに自動同行（無料：1人）"
+supporter_embed.perk_mimo: "旅するミモの自動化を強化：自動購入は星玉とポリクロームが再入荷した瞬間に購入、タスクと購入は1時間ごとに実行（無料：4～5時間ごと）、さらに自動抽選でそれらの分のポイントを残しておけます"
 supporter_embed.perk_discord_role: Discordサーバーでのスポンサーロール
 supporter_embed.perk_discord_channel: Discordサーバーのスポンサー限定チャンネルへのアクセス
-supporter_embed.how_to: 金額は自由、毎月でも1回限りでも、寄付するとスポンサーになれます。寄付が終わった後も、ずっとスポンサーのままです。
+supporter_embed.how_to: "金額は自由、毎月でも1回限りでも、寄付するとスポンサーになれます。寄付が終わった後も、ずっとスポンサーのままです。"
 supporter_embed.status_supporter: "スポンサー登録済みです。ありがとうございます！"
 supporter_embed.status_not_supporter: まだスポンサーではありません。
 sponsor_perks_button_label: スポンサー特典を見る
 sponsor_perk_error_title: スポンサー特典
 animated_image_sponsor_perk_message: ビルドカードでのキャラクターのアニメーションアートはスポンサー特典です。
-animated_custom_image_sponsor_perk_message: GIF、アニメーションWEBP、MP4をキャラクターアートとしてアップロードする機能はスポンサー特典です。
+animated_custom_image_sponsor_perk_message: "GIF、アニメーションWEBP、MP4をキャラクターアートとしてアップロードする機能はスポンサー特典です。"
 animated_team_card_sponsor_perk_message: チームカードでのキャラクターのアニメーションアートはスポンサー特典です。
 animation_position_button_label: 位置
 animation_position_modal.zoom.label: ズーム（%）
-animation_position_modal.zoom.description: 100の場合、アニメーションがカードの画像エリア全体に表示されます
+animation_position_modal.zoom.description: "100の場合、アニメーションがカードの画像エリア全体に表示されます"
 animation_position_modal.focus_x.label: 横位置（%）
-animation_position_modal.focus_x.description: 0でアニメーションの左端、100で右端を表示します
+animation_position_modal.focus_x.description: "0でアニメーションの左端、100で右端を表示します"
 animation_position_modal.focus_y.label: 縦位置（%）
-animation_position_modal.focus_y.description: 0でアニメーションの上端、100で下端を表示します
+animation_position_modal.focus_y.description: "0でアニメーションの上端、100で下端を表示します"
 auto_gacha_import_sponsor_perk_message: ガチャ履歴の自動インポートはスポンサー特典です。
-multi_accompany_sponsor_perk_message: 複数のキャラクターへの自動同行はスポンサー特典です。スポンサーはアカウントごとに最大{limit}人のキャラクターに自動同行できます。
+multi_accompany_sponsor_perk_message: "複数のキャラクターへの自動同行はスポンサー特典です。スポンサーはアカウントごとに最大{limit}人のキャラクターに自動同行できます。"
 card_settings_animated_image: アニメーション画像
 card_settings_animated_image_desc: "キャラクターのアニメーションアートをカードに使用します。スポンサー限定で、アニメーションアートがあるキャラクターのみ対象です。原神とZZZはテンプレート1、HSRはテンプレート1と2で利用できます。原神のカードには七聖召喚のアニメーションカードイラストを使用します。詳しくは </sponsor> で確認してください。"
-reminders_command_description: リアルタイムノート、育成、ウェブイベントのリマインダーを設定します
+reminders_command_description: "リアルタイムノート、育成、ウェブイベントのリマインダーを設定します"
 reminders_button_label: リマインダー
 farm_reminder_title: 育成リマインダー
 web_events_reminder_title: ウェブイベントリマインダー
@@ -1011,4 +998,4 @@ diary_cmd_desc: 毎月の通貨収入を表示します
 diary_primogems: 原石
 diary_mora: モラ
 diary_primogem_sources: 原石収入源
-diary_last_month: 先月：{amount}
+diary_last_month: "先月：{amount}"

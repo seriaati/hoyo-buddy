@@ -414,6 +414,8 @@ resin_reminder_modal.title: Resin Reminder Settings
 reward_claimed_title: Daily Check-In Reward Claimed
 accompany_success_title: "Accompanied {character}"
 accompany_success_desc: "Accompany days: {days}\nAccompany points gained: {points}"
+accompany_read_title: "Read articles about {character}"
+accompany_read_success_desc: "Accompany points gained from reading articles: {points}"
 saturday: Saturday
 search_autocomplete_not_setup: "Search autocomplete choices not set up yet, please try again later."
 search_command_category_param_description: Category to search in
@@ -890,6 +892,7 @@ accompany_set_character_button_label: Set as accompany character
 accompany_add_character_button_label: Add to auto accompany
 accompany_remove_character_button_label: Remove from auto accompany
 accompany_now_button_label: Accompany now
+accompany_read_button_label: Read articles
 accompany_view_character_select_placeholder: Select a character to view
 user_settings_title: "User Settings"
 user_settings_desc: "Settings here are linked to your Discord account, they apply to all game accounts."
@@ -968,6 +971,7 @@ supporter_embed.perk_animated_team_card: "Animated character art on team cards (
 supporter_embed.perk_ai_images: "Unlimited AI image generation (free: {limit} per day)"
 supporter_embed.perk_auto_gacha_import: Automatic gacha log imports every 6 hours (Genshin Impact and Zenless Zone Zero)
 supporter_embed.perk_multi_accompany: "Auto accompany up to {limit} characters per account (free: 1)"
+supporter_embed.perk_accompany_read: Auto accompany also reads character articles to complete the daily reading task for extra accompany points
 supporter_embed.perk_mimo: "Better Traveling Mimo automation: auto buy grabs Stellar Jades and Polychrome the moment they restock, tasks and purchases run every hour (free: every 4-5 hours), and auto draw can save points for them"
 supporter_embed.perk_discord_role: Sponsor role in the Discord server
 supporter_embed.perk_discord_channel: Access to the sponsor-only channel in the Discord server

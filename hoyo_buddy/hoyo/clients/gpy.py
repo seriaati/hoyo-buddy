@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import math
 import random
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple, overload
 
@@ -15,6 +17,7 @@ from hoyo_buddy import models
 from hoyo_buddy.bot.error_handler import get_error_embed
 from hoyo_buddy.config import CONFIG
 from hoyo_buddy.constants import (
+    ACCOMPANY_READ_ACTION,
     AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID,
     AMBR_UI_URL,
     DMG_BONUS_IDS,
@@ -24,6 +27,7 @@ from hoyo_buddy.constants import (
     LOCALE_TO_HOYO_LANG,
     MANIKEN_BOY_GACHA_ART,
     MANIKEN_GIRL_GACHA_ART,
+    MAX_ACCOMPANY_READ_ROUNDS,
     MIMO_AUTO_FINISH_TASK_TYPES,
     MIMO_VALUABLE_KEYWORDS,
     PLAYER_BOY_GACHA_ART,
@@ -50,7 +54,7 @@ from hoyo_buddy.utils.game import get_ascension_from_level, get_max_level_from_a
 
 if TYPE_CHECKING:
     import datetime
-    from collections.abc import Mapping, Sequence
+    from collections.abc import AsyncGenerator, AsyncIterator, Mapping, Sequence
 
     import yatta
 
@@ -182,17 +186,109 @@ class GenshinClient(ProxyGenshinClient):
         )
 
     def get_accompany_embed(
-        self, result: genshin.models.AccompanyResult, character_name: str, locale: Locale
+        self,
+        result: genshin.models.AccompanyResult | None,
+        character_name: str,
+        locale: Locale,
+        *,
+        read_points: int | None = None,
     ) -> DefaultEmbed:
-        return DefaultEmbed(
-            locale,
-            title=LocaleStr(key="accompany_success_title", character=character_name),
-            description=LocaleStr(
+        accompany_desc = (
+            LocaleStr(
                 key="accompany_success_desc",
                 days=result.accompany_days,
                 points=result.points_increased,
-            ),
+            )
+            if result is not None
+            else None
+        )
+        read_desc = (
+            LocaleStr(key="accompany_read_success_desc", points=read_points)
+            if read_points is not None
+            else None
+        )
+        if accompany_desc is not None and read_desc is not None:
+            description = LocaleStr(
+                custom_str="{accompany}\n{read}", accompany=accompany_desc, read=read_desc
+            )
+        else:
+            description = accompany_desc or read_desc
+
+        title_key = "accompany_success_title" if result is not None else "accompany_read_title"
+        return DefaultEmbed(
+            locale,
+            title=LocaleStr(key=title_key, character=character_name),
+            description=description,
         ).add_acc_info(self._account, blur=False)
+
+    @staticmethod
+    def get_accompany_read_action(
+        details: genshin.models.AccompanyCharacterDetails,
+    ) -> genshin.models.AccompanyAction | None:
+        if details.award_info is None:
+            return None
+        return next(
+            (a for a in details.award_info.actions if a.action == ACCOMPANY_READ_ACTION), None
+        )
+
+    async def _iter_accompany_post_ids(self, topic_id: int) -> AsyncGenerator[int]:
+        page: genshin.models.AccompanyPostList | None = None
+        while page is None or not page.is_last:
+            page = await self.get_accompany_character_posts(
+                topic_id=topic_id, tab="discussions", sort="new", previous=page
+            )
+            if not page.posts:
+                return
+            for post in page.posts:
+                yield post.id
+
+    async def _browse_accompany_posts(
+        self, post_ids: AsyncIterator[int], *, topic_id: int, count: int
+    ) -> int:
+        browsed = 0
+        async for post_id in post_ids:
+            if browsed > 0:
+                await sleep("accompany_read")
+            await self.browse_accompany_character_post(post_id=post_id, topic_id=topic_id)
+            browsed += 1
+            if browsed >= count:
+                break
+        return browsed
+
+    async def read_accompany_posts(self, details: genshin.models.AccompanyCharacterDetails) -> int:
+        """Read the fewest posts needed to complete a character's daily reading task.
+
+        Returns:
+            The accompany points gained from reading.
+        """
+        topic_id = details.info.topic_id
+        start_points = details.accompany_info.points
+        gained = 0
+
+        async with contextlib.aclosing(self._iter_accompany_post_ids(topic_id)) as post_ids:
+            for _ in range(MAX_ACCOMPANY_READ_ROUNDS):
+                action = self.get_accompany_read_action(details)
+                if action is None or action.done or action.points <= 0:
+                    break
+
+                # The API doesn't expose how many posts were read today, so assume none were;
+                # posts that were already counted are made up for in the next round
+                count = max(1, math.ceil((action.max_points_per_day - gained) / action.points))
+                browsed = await self._browse_accompany_posts(
+                    post_ids, topic_id=topic_id, count=count
+                )
+                if browsed == 0:
+                    break
+
+                await sleep("accompany_read_sync")
+                details = await self.get_accompany_character_details(topic_id=topic_id)
+                previous_gained = gained
+                gained = details.accompany_info.points - start_points
+                # Stop if reading made no progress, the server isn't counting reads
+                if browsed < count or gained <= previous_gained:
+                    break
+
+        return gained
 
     @staticmethod
     def _convert_character_id_to_enka_format(character_id: str) -> str:

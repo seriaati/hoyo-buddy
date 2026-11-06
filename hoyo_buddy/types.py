@@ -87,6 +87,8 @@ type AutoTaskType = Literal[
 type SleepTime = Literal[
     "checkin",
     "accompany",
+    "accompany_read",
+    "accompany_read_sync",
     "dm",
     "redeem",
     "mimo_task",

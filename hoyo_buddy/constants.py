@@ -54,6 +54,8 @@ FREE_ACCOUNT_LIMIT = 6
 FREE_CUSTOM_IMAGE_LIMIT = 5
 FREE_AI_IMAGE_DAILY_LIMIT = 5
 SPONSOR_ACCOMPANY_CHARACTER_LIMIT = 10
+ACCOMPANY_READ_ACTION = "AccompanyActionViewPost"
+MAX_ACCOMPANY_READ_ROUNDS = 3
 
 TRAVELER_IDS = {10000005, 10000007}
 AMBR_TRAVELER_ID_TO_ENKA_TRAVELER_ID = {
@@ -1352,6 +1354,8 @@ SLEEP_TIMES: dict[SleepTime, float] = {
     "search_autofill": 0.1,
     "checkin": 2.5,
     "accompany": 2.5,
+    "accompany_read": 1.0,
+    "accompany_read_sync": 3.0,
     "notes_check": 1.2,
     "dm": 0.1,
     "gacha_import": 1.0,

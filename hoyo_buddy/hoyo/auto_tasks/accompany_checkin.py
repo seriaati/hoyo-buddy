@@ -104,9 +104,8 @@ class AccompanyCheckin(AutoTaskMixin):
     @classmethod
     async def _accompany(cls, account: HoyoAccount) -> list[DefaultEmbed | ErrorEmbed]:
         locale = account.user.settings.locale or Locale.american_english
-        characters = account.get_accompany_characters(
-            is_supporter=await is_supporter(account.user_id)
-        )
+        supporter = await is_supporter(account.user_id)
+        characters = account.get_accompany_characters(is_supporter=supporter)
         embeds: list[DefaultEmbed | ErrorEmbed] = []
 
         client = account.client
@@ -121,16 +120,24 @@ class AccompanyCheckin(AutoTaskMixin):
                 details = await client.get_accompany_character_details(
                     topic_id=character["topic_id"]
                 )
-                if details.accompany_info.accompanied_today:
+                read_points = await client.read_accompany_posts(details) if supporter else 0
+
+                result = None
+                if not details.accompany_info.accompanied_today:
+                    result = await client.accompany_character(
+                        role_id=character["role_id"], topic_id=character["topic_id"]
+                    )
+                    if result.points_increased == 0:
+                        result = None
+
+                if result is None and read_points == 0:
                     continue
 
-                result = await client.accompany_character(
-                    role_id=character["role_id"], topic_id=character["topic_id"]
+                embeds.append(
+                    client.get_accompany_embed(
+                        result, details.info.name, locale, read_points=read_points or None
+                    )
                 )
-                if result.points_increased == 0:
-                    continue
-
-                embeds.append(client.get_accompany_embed(result, details.info.name, locale))
             except Exception as e:
                 embed, recognized = get_error_embed(e, locale)
                 if not recognized:

@@ -9,6 +9,7 @@ from hoyo_buddy import ui
 from hoyo_buddy.constants import SPONSOR_ACCOMPANY_CHARACTER_LIMIT, locale_to_hoyo_lang
 from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION
 from hoyo_buddy.exceptions import SponsorPerkError
+from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils.misc import is_valid_hex_color, shorten_preserving_newlines
 
@@ -124,7 +125,9 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
                     discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
                     self._build_accompany_info(details.accompany_info),
                     discord.ui.Separator(spacing=discord.SeparatorSpacing.small, visible=False),
-                    ui.ActionRow(AccompanyNowButton(details=details)),
+                    ui.ActionRow(
+                        AccompanyNowButton(details=details), ReadPostsButton(details=details)
+                    ),
                 )
             )
 
@@ -435,6 +438,29 @@ class AccompanyNowButton(ui.Button["AccompanyView"]):
             role_id=character.info.role_id, topic_id=character.info.topic_id
         )
         embed = account.client.get_accompany_embed(result, character.info.name, self.view.locale)
+
+        await self.view.update(i, refetch=True)
+        await i.followup.send(embed=embed, ephemeral=True)
+
+
+class ReadPostsButton(ui.Button["AccompanyView"]):
+    def __init__(self, *, details: genshin.models.AccompanyCharacterDetails) -> None:
+        action = GenshinClient.get_accompany_read_action(details)
+        super().__init__(
+            label=LocaleStr(key="accompany_read_button_label"),
+            style=discord.ButtonStyle.primary,
+            disabled=action is None or action.done,
+        )
+        self.details = details
+
+    async def callback(self, i: Interaction) -> None:
+        await self.set_loading_state(i)
+
+        client = self.view.account.client
+        points = await client.read_accompany_posts(self.details)
+        embed = client.get_accompany_embed(
+            None, self.view.character.info.name, self.view.locale, read_points=points
+        )
 
         await self.view.update(i, refetch=True)
         await i.followup.send(embed=embed, ephemeral=True)

@@ -39,6 +39,7 @@ async def get_sponsor_perks_message(
         LocaleStr(
             key="supporter_embed.perk_multi_accompany", limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT
         ),
+        LocaleStr(key="supporter_embed.perk_accompany_read"),
         LocaleStr(key="supporter_embed.perk_discord_role"),
         LocaleStr(key="supporter_embed.perk_discord_channel"),
     )

@@ -236,7 +236,7 @@ dependencies = [
 [[package]]
 name = "ambr-py"
 version = "1.9.0"
-source = { git = "https://github.com/seriaati/ambr#92b349dc4d8aa48b14cc50daf51a56ea94102605" }
+source = { git = "https://github.com/seriaati/ambr#8b359e79feb772287fe89f6ceb9f91d8fa1c69fc" }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiohttp" },

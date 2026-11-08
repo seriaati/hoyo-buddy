@@ -7,7 +7,7 @@ from loguru import logger
 
 from hoyo_buddy import ui
 from hoyo_buddy.constants import SPONSOR_ACCOMPANY_CHARACTER_LIMIT, locale_to_hoyo_lang
-from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION
+from hoyo_buddy.emojis import CHECK, CLOSE, FREE_CANCELLATION, LEFT, RIGHT
 from hoyo_buddy.exceptions import SponsorPerkError
 from hoyo_buddy.hoyo.clients.gpy import GenshinClient
 from hoyo_buddy.l10n import LocaleStr
@@ -26,6 +26,22 @@ if TYPE_CHECKING:
 MAX_GALLERY_ITEMS = 10
 MAX_VIDEO_LINKS = 5
 MAX_VOICE_TEXT_LENGTH = 500
+OVERVIEW_VALUE = "overview"
+OVERVIEW_PAGE_SIZE = 8
+
+
+def get_selected_characters(
+    account: HoyoAccount,
+    characters: Sequence[genshin.models.AccompanyCharacter],
+    *,
+    is_supporter: bool,
+) -> list[genshin.models.AccompanyCharacter]:
+    characters_by_id = {c.info.role_id: c for c in characters}
+    return [
+        characters_by_id[c["role_id"]]
+        for c in account.get_accompany_characters(is_supporter=is_supporter)
+        if c["role_id"] in characters_by_id
+    ]
 
 
 class AccompanyView(ui.LayoutView):
@@ -51,6 +67,8 @@ class AccompanyView(ui.LayoutView):
         self.voice_lang: str | None = None
         self.voice_index = 0
         self.voice_page_index = 0
+        self.overview = False
+        self.overview_page_index = 0
 
     async def _fetch_details(self) -> None:
         try:
@@ -67,6 +85,18 @@ class AccompanyView(ui.LayoutView):
 
     def _rebuild(self) -> None:
         self.clear_items()
+        if self.overview:
+            self.add_item(
+                AccompanyOverviewContainer(
+                    account=self.account,
+                    characters=self.characters,
+                    page_index=self.overview_page_index,
+                    character_page_index=self.character_page_index,
+                    is_supporter=self.is_supporter,
+                )
+            )
+            return
+
         self.add_item(
             AccompanyContainer(
                 account=self.account,
@@ -276,8 +306,7 @@ class AccompanyContainer(ui.Container["AccompanyView"]):
         selected_role_ids = [
             c["role_id"] for c in account.get_accompany_characters(is_supporter=is_supporter)
         ]
-        characters_by_id = {c.info.role_id: c for c in characters}
-        selected = [characters_by_id[r] for r in selected_role_ids if r in characters_by_id]
+        selected = get_selected_characters(account, characters, is_supporter=is_supporter)
         return (
             ui.TextDisplay(
                 LocaleStr(
@@ -328,16 +357,23 @@ class CharacterSwitchSelect(ui.PaginatorSelect["AccompanyView"]):
         self,
         *,
         characters: Sequence[genshin.models.AccompanyCharacter],
-        current_role_id: int,
+        current_role_id: int | None,
         page_index: int,
     ) -> None:
         options = [
             ui.SelectOption(
-                label=character.info.name,
-                value=f"{character.info.role_id}:{character.info.topic_id}",
-                default=character.info.role_id == current_role_id,
-            )
-            for character in characters
+                label=LocaleStr(key="notes_overview_option_label"),
+                value=OVERVIEW_VALUE,
+                default=current_role_id is None,
+            ),
+            *(
+                ui.SelectOption(
+                    label=character.info.name,
+                    value=f"{character.info.role_id}:{character.info.topic_id}",
+                    default=character.info.role_id == current_role_id,
+                )
+                for character in characters
+            ),
         ]
         super().__init__(
             options=options,
@@ -355,12 +391,17 @@ class CharacterSwitchSelect(ui.PaginatorSelect["AccompanyView"]):
             self.view.character_page_index -= 1
             await self.view.update(i)
             return
+        if self.values[0] == OVERVIEW_VALUE:
+            self.view.overview = True
+            await self.view.update(i)
+            return
 
         role_id = int(self.values[0].split(":")[0])
         character = next((c for c in self.view.characters if c.info.role_id == role_id), None)
         if character is None:
             return
 
+        self.view.overview = False
         self.view.character = character
         await self.view.update(i, refetch=True)
 
@@ -518,4 +559,138 @@ class AutoAccompanyToggleButton(ui.EmojiToggleButton["AccompanyView"]):
         account = self.view.account
         account.accompany_checkin = not self.current
         await account.save(update_fields=("accompany_checkin",))
+        await self.view.update(i)
+
+
+class AccompanyOverviewContainer(ui.DefaultContainer["AccompanyView"]):
+    def __init__(
+        self,
+        *,
+        account: HoyoAccount,
+        characters: Sequence[genshin.models.AccompanyCharacter],
+        page_index: int,
+        character_page_index: int,
+        is_supporter: bool,
+    ) -> None:
+        selected = get_selected_characters(account, characters, is_supporter=is_supporter)
+        selected_role_ids = {c.info.role_id for c in selected}
+        is_full = is_supporter and len(account.accompany_characters) >= (
+            SPONSOR_ACCOMPANY_CHARACTER_LIMIT
+        )
+
+        total_pages = max(1, -(-len(characters) // OVERVIEW_PAGE_SIZE))
+        page_index = min(page_index, total_pages - 1)
+        start = page_index * OVERVIEW_PAGE_SIZE
+
+        rows = [
+            ui.Section(
+                ui.TextDisplay(f"{index}. {character.info.name}"),
+                accessory=AccompanyCharacterToggleButton(
+                    character=character,
+                    current=character.info.role_id in selected_role_ids,
+                    is_supporter=is_supporter,
+                    is_full=is_full,
+                ),
+            )
+            for index, character in enumerate(
+                characters[start : start + OVERVIEW_PAGE_SIZE], start=start + 1
+            )
+        ]
+
+        super().__init__(
+            ui.TextDisplay(
+                LocaleStr(
+                    custom_str="# {title}\n{desc}",
+                    title=LocaleStr(key="accompany_settings_title"),
+                    desc=LocaleStr(
+                        key="accompany_selected_character",
+                        character=", ".join(c.info.name for c in selected),
+                    )
+                    if selected
+                    else LocaleStr(key="accompany_view_no_character_set"),
+                )
+            ),
+            ui.Section(
+                ui.TextDisplay(
+                    LocaleStr(
+                        custom_str="{emoji} {title}",
+                        emoji=FREE_CANCELLATION,
+                        title=LocaleStr(key="accompany_button_label"),
+                    )
+                ),
+                accessory=AutoAccompanyToggleButton(
+                    current=account.accompany_checkin, disabled=not account.accompany_characters
+                ),
+            ),
+            discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
+            *rows,
+            discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
+            ui.ActionRow(
+                OverviewPageButton(delta=-1, emoji=LEFT, disabled=page_index == 0),
+                ui.Button(
+                    label=LocaleStr(
+                        key="page_footer", current_page=page_index + 1, total_pages=total_pages
+                    ),
+                    disabled=True,
+                ),
+                OverviewPageButton(delta=1, emoji=RIGHT, disabled=page_index >= total_pages - 1),
+            ),
+            discord.ui.Separator(spacing=discord.SeparatorSpacing.large),
+            ui.ActionRow(
+                CharacterSwitchSelect(
+                    characters=characters, current_role_id=None, page_index=character_page_index
+                )
+            ),
+        )
+
+
+class OverviewPageButton(ui.Button["AccompanyView"]):
+    def __init__(self, *, delta: int, emoji: str, disabled: bool) -> None:
+        super().__init__(emoji=emoji, style=discord.ButtonStyle.blurple, disabled=disabled)
+        self.delta = delta
+
+    async def callback(self, i: Interaction) -> None:
+        self.view.overview_page_index += self.delta
+        await self.view.update(i)
+
+
+class AccompanyCharacterToggleButton(ui.EmojiToggleButton["AccompanyView"]):
+    def __init__(
+        self,
+        *,
+        character: genshin.models.AccompanyCharacter,
+        current: bool,
+        is_supporter: bool,
+        is_full: bool,
+    ) -> None:
+        super().__init__(current=current, disabled=not current and is_full)
+        self.character = character
+        self.is_supporter = is_supporter
+
+    async def callback(self, i: Interaction) -> None:
+        account = self.view.account
+        info = self.character.info
+
+        if not self.is_supporter:
+            if not self.current and account.get_accompany_characters(is_supporter=False):
+                raise SponsorPerkError(
+                    message=LocaleStr(
+                        key="multi_accompany_sponsor_perk_message",
+                        limit=SPONSOR_ACCOMPANY_CHARACTER_LIMIT,
+                    )
+                )
+            account.accompany_characters = (
+                [] if self.current else [{"role_id": info.role_id, "topic_id": info.topic_id}]
+            )
+        elif self.current:
+            account.accompany_characters = [
+                c for c in account.accompany_characters if c["role_id"] != info.role_id
+            ]
+        else:
+            account.accompany_characters = [
+                *account.accompany_characters,
+                {"role_id": info.role_id, "topic_id": info.topic_id},
+            ]
+
+        await account.save(update_fields=("accompany_characters",))
         await self.view.update(i)

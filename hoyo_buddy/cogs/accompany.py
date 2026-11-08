@@ -124,7 +124,7 @@ class Accompany(commands.Cog):
     )
     @app_commands.describe(
         character=app_commands.locale_str(
-            "Character to view, defaults to the first available one",
+            "Character to view, defaults to the overview of all characters",
             key="accompany_cmd_character_param_desc",
         ),
         **get_describe_kwargs(account=True),
@@ -174,6 +174,7 @@ class Accompany(commands.Cog):
             is_supporter=await is_supporter(account.user_id),
             author=i.user,
             locale=locale,
+            overview=character is None,
         )
         await view.start(i)
 

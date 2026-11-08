@@ -54,6 +54,7 @@ class AccompanyView(ui.LayoutView):
         is_supporter: bool,
         author: User,
         locale: Locale,
+        overview: bool = False,
     ) -> None:
         super().__init__(author=author, locale=locale)
 
@@ -67,7 +68,7 @@ class AccompanyView(ui.LayoutView):
         self.voice_lang: str | None = None
         self.voice_index = 0
         self.voice_page_index = 0
-        self.overview = False
+        self.overview = overview
         self.overview_page_index = 0
 
     async def _fetch_details(self) -> None:
@@ -112,7 +113,8 @@ class AccompanyView(ui.LayoutView):
         )
 
     async def start(self, i: Interaction) -> None:
-        await self._fetch_details()
+        if not self.overview:
+            await self._fetch_details()
         self._rebuild()
         self.message = await i.edit_original_response(view=self)
 

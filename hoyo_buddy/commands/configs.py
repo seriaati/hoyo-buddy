@@ -257,7 +257,7 @@ COMMANDS: dict[CommandName, CommandConfig] = {
         ),
     ),
     "diary": CommandConfig(
-        games=(Game.GENSHIN, Game.ZZZ),
+        games=(Game.GENSHIN, Game.STARRAIL, Game.ZZZ),
         platform=Platform.HOYOLAB,
         description=locale_str("View your monthly currency income", key="diary_cmd_desc"),
     ),

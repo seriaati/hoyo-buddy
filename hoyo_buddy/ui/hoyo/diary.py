@@ -16,7 +16,13 @@ from hoyo_buddy import ui
 from hoyo_buddy.constants import HB_GAME_TO_GPY_GAME, SERVER_RESET_HOURS
 from hoyo_buddy.db import DiaryHistory
 from hoyo_buddy.embeds import DefaultEmbed
-from hoyo_buddy.emojis import BACK, GAME_ICON_EMOJIS, POLYCHROME_EMOJI, PRIMOGEM_EMOJI
+from hoyo_buddy.emojis import (
+    BACK,
+    GAME_ICON_EMOJIS,
+    POLYCHROME_EMOJI,
+    PRIMOGEM_EMOJI,
+    STELLAR_JADE_EMOJI,
+)
 from hoyo_buddy.enums import Game
 from hoyo_buddy.l10n import LocaleStr, translator
 from hoyo_buddy.utils.misc import get_now
@@ -31,18 +37,27 @@ ZZZ_LOG_PAGE_SIZE = 100
 
 TITLES: dict[Game, LocaleStr] = {
     Game.GENSHIN: LocaleStr(key="genshin_tool_travelers_note", mi18n_game=Game.GENSHIN),
+    Game.STARRAIL: LocaleStr(key="diary_trailblaze_calendar"),
     Game.ZZZ: LocaleStr(key="note_book", mi18n_game=Game.ZZZ),
 }
 SOURCES_TITLES: dict[Game, LocaleStr] = {
     Game.GENSHIN: LocaleStr(key="diary_primogem_sources"),
+    Game.STARRAIL: LocaleStr(key="diary_stellar_jade_sources"),
     Game.ZZZ: LocaleStr(key="income_composition", mi18n_game=Game.ZZZ),
 }
-GI_CURRENCY_NAMES: dict[str, LocaleStr] = {
+HSR_CURRENCY_TYPES: dict[str, genshin.models.StarRailDiaryType] = {
+    "hcoin": genshin.models.StarRailDiaryType.STELLARJADE,
+    "rails_pass": genshin.models.StarRailDiaryType.STARRAILPASS,
+}
+CURRENCY_NAMES: dict[str, LocaleStr] = {
     str(genshin.models.DiaryType.PRIMOGEMS.value): LocaleStr(key="diary_primogems"),
     str(genshin.models.DiaryType.MORA.value): LocaleStr(key="diary_mora"),
+    "hcoin": LocaleStr(key="diary_stellar_jade"),
+    "rails_pass": LocaleStr(key="diary_star_rail_pass"),
 }
 CURRENCY_EMOJIS: dict[str, str] = {
     str(genshin.models.DiaryType.PRIMOGEMS.value): PRIMOGEM_EMOJI,
+    "hcoin": STELLAR_JADE_EMOJI,
     genshin.models.ZZZCurrencyType.POLYCHROME.value: POLYCHROME_EMOJI,
 }
 
@@ -51,7 +66,7 @@ CURRENCY_EMOJIS: dict[str, str] = {
 class Currency:
     id: str
     name: str
-    """Currency name from the API, Genshin currencies use `GI_CURRENCY_NAMES` instead."""
+    """Currency name from the API, GI and HSR currencies use `CURRENCY_NAMES` instead."""
     amount: int
     last_amount: int | None = None
     today: int | None = None
@@ -60,7 +75,7 @@ class Currency:
 @dataclass(kw_only=True)
 class IncomeSource:
     name: str
-    """Action name from the API for Genshin, `PolychromeIncomeType` value for ZZZ."""
+    """Action name from the API for GI and HSR, `PolychromeIncomeType` value for ZZZ."""
     amount: int
     percent: int
 
@@ -200,6 +215,37 @@ class DiaryView(ui.LayoutPaginatorView):
             ],
         )
 
+    async def _fetch_hsr_summary(self, month: str | None) -> DiarySummary:
+        diary = await self.client.get_starrail_diary(self.account.uid, month=month)
+        self._api_months = list(diary.optional_month)
+        data_month = str(diary.month)
+        is_current = data_month == max(self._api_months)
+
+        return DiarySummary(
+            month=data_month,
+            days=self._days(data_month),
+            currencies=[
+                Currency(
+                    id="hcoin",
+                    name="",
+                    amount=diary.data.current_hcoin,
+                    last_amount=diary.data.last_hcoin,
+                    today=diary.day_data.current_hcoin if is_current else None,
+                ),
+                Currency(
+                    id="rails_pass",
+                    name="",
+                    amount=diary.data.current_rails_pass,
+                    last_amount=diary.data.last_rails_pass,
+                    today=diary.day_data.current_rails_pass if is_current else None,
+                ),
+            ],
+            sources=[
+                IncomeSource(name=c.name, amount=c.amount, percent=c.percentage)
+                for c in diary.data.categories
+            ],
+        )
+
     async def _get_zzz_last_amounts(self, month: str) -> dict[str, int]:
         if (summary := self._complete_summary(month)) is not None:
             return {c.id: c.amount for c in summary.currencies}
@@ -235,6 +281,8 @@ class DiaryView(ui.LayoutPaginatorView):
     async def _fetch_api_summary(self, month: str | None) -> DiarySummary:
         if self.account.game is Game.GENSHIN:
             summary = await self._fetch_gi_summary(month)
+        elif self.account.game is Game.STARRAIL:
+            summary = await self._fetch_hsr_summary(month)
         else:
             summary = await self._fetch_zzz_summary(month)
 
@@ -280,6 +328,12 @@ class DiaryView(ui.LayoutPaginatorView):
         ).flatten()
         return [LogEntry(name=a.action, time=a.time, amount=a.amount) for a in actions]
 
+    async def _fetch_hsr_log(self, currency_id: str) -> list[LogEntry]:
+        actions = await self.client.starrail_diary_log(
+            self.account.uid, type=HSR_CURRENCY_TYPES[currency_id], month=self.month
+        ).flatten()
+        return [LogEntry(name=a.action_name, time=a.time, amount=a.amount) for a in actions]
+
     async def _fetch_zzz_log(self, currency_id: str) -> list[LogEntry]:
         items: list[genshin.models.ZZZDiaryDetailItem] = []
         page = 1
@@ -310,6 +364,8 @@ class DiaryView(ui.LayoutPaginatorView):
         if key not in self._logs:
             if self.account.game is Game.GENSHIN:
                 self._logs[key] = await self._fetch_gi_log(currency_id)
+            elif self.account.game is Game.STARRAIL:
+                self._logs[key] = await self._fetch_hsr_log(currency_id)
             else:
                 self._logs[key] = await self._fetch_zzz_log(currency_id)
         return self._logs[key]
@@ -323,7 +379,7 @@ class DiaryView(ui.LayoutPaginatorView):
         return self._translate(LocaleStr(key="diary_per_day", amount=f"{amount:,.0f}"))
 
     def _currency_text(self, currency: Currency) -> str:
-        name = self._translate(GI_CURRENCY_NAMES.get(currency.id, currency.name))
+        name = self._translate(CURRENCY_NAMES.get(currency.id, currency.name))
         emoji = CURRENCY_EMOJIS.get(currency.id)
         per_day = currency.amount / self.summary.days
         lines = [f"{f'{emoji} ' if emoji else ''}**{name}**: {currency.amount:,}"]
@@ -375,7 +431,7 @@ class DiaryView(ui.LayoutPaginatorView):
         )
 
     def _get_log_pages(self, currency: Currency, entries: list[LogEntry]) -> list[ui.Page]:
-        name = self._translate(GI_CURRENCY_NAMES.get(currency.id, currency.name))
+        name = self._translate(CURRENCY_NAMES.get(currency.id, currency.name))
         title = f"{name} · {self._translate(_month_name(self.month))}"
         chunks = split_list_to_chunks(entries, ROWS_PER_PAGE) or [[]]
 
@@ -462,7 +518,7 @@ class CurrencySelect(ui.Select[DiaryView]):
         super().__init__(
             options=[
                 ui.SelectOption(
-                    label=GI_CURRENCY_NAMES.get(c.id, c.name),
+                    label=CURRENCY_NAMES.get(c.id, c.name),
                     value=c.id,
                     emoji=CURRENCY_EMOJIS.get(c.id),
                     default=c.id == current,

@@ -754,23 +754,12 @@ class GenshinClient(ProxyGenshinClient):
 
             await super().redeem_code(code)
         except genshin.InvalidCookies:
-            # cookie token is invalid
-            if "stoken" in self._account.dict_cookies and "ltmid_v2" in self._account.dict_cookies:
-                # cookie token can be refreshed
-                try:
-                    await self.update_cookie_token()
-                except genshin.InvalidCookies:
-                    # cookie token refresh failed
-                    msg = self._handle_redeem_error(
-                        genshin.GenshinException({"retcode": 1000}), locale
-                    )
-                else:
-                    # cookie token refresh succeeded, redeem code again
-                    await sleep("redeem")
-                    return await self.redeem_code(code, locale=locale)
-            else:
-                # cookie token can't be refreshed
-                msg = self._handle_redeem_error(genshin.GenshinException({"retcode": 999}), locale)
+            # genshin.py already tried refreshing the cookie token with stoken
+            can_refresh = "stoken" in self._account.dict_cookies and (
+                "ltmid_v2" in self._account.dict_cookies
+            )
+            retcode = 1000 if can_refresh else 999
+            msg = self._handle_redeem_error(genshin.GenshinException({"retcode": retcode}), locale)
         except genshin.RedemptionCooldown:
             # sleep then retry
             await sleep("redeem")

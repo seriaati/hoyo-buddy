@@ -15,6 +15,8 @@ from hoyo_buddy.models.gacha import GIBanner, HSRBanner, ZZZBanner
 HSR_BANNER_URL = "https://starrailstation.com/api/v1/warp_config"
 ZZZ_BANNER_URL = "https://zzz.rng.moe/api/v1/gacha/config?game=zzz"
 GI_BANNER_URL = "https://raw.githubusercontent.com/MadeBaruna/paimon-moe-api/refs/heads/main/src/data/banners.ts"
+# paimon.moe banner IDs are 6 digits with the banner kind as the leading digit
+GI_BANNER_ID_PREFIXES = {100: 1, 200: 2, 301: 3, 400: 3, 302: 4, 500: 5}
 
 
 def zzz_rank_type_to_rarity(rank_type: int) -> int:
@@ -152,7 +154,11 @@ async def calc_five_star_results(
 
     async with aiohttp.ClientSession() as session:
         if account.game is Game.GENSHIN:
-            gi_banners = await fetch_gi_banners(session)
+            gi_banners = [
+                b
+                for b in await fetch_gi_banners(session)
+                if b.id // 100_000 == GI_BANNER_ID_PREFIXES.get(banner_type)
+            ]
             gi_data: dict[str, dict[str, str]] = await JSONFile.read(
                 "gi_gacha_data_en-us.json", default={}
             )

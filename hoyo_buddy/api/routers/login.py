@@ -208,6 +208,24 @@ async def geetest_callback(
         return LoginFlowResponse(next_step="finish")
 
     if gt_type == "on_email_send":
+        str_action_ticket = login_flow.get("action_ticket")
+        if not str_action_ticket:
+            raise HTTPException(status_code=400, detail="Missing action ticket in session")
+
+        action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
+        client = ProxyGenshinClient(proxy_url=CONFIG.residential_proxy)
+        try:
+            logger.debug(f"[{user_id}] Resending verification email after geetest")
+            email_result = await client._send_verification_email(
+                action_ticket, mmt_result=parsed_mmt_result
+            )
+        except Exception as exc:
+            logger.debug(f"[{user_id}] Failed to resend verification email: {exc}")
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        if email_result is not None:
+            raise HTTPException(status_code=400, detail="Geetest verification failed")
+
         return LoginFlowResponse(next_step="email_verify")
 
     if gt_type == "on_otp_send":
@@ -275,6 +293,44 @@ async def email_verify(
     cookies = result.to_str()
     login_flow["encrypted_cookies"] = encrypt_string(cookies)
     return LoginFlowResponse(next_step="finish")
+
+
+@router.post("/email-resend", response_model=LoginFlowResponse)
+async def email_resend(
+    session: Annotated[dict[str, Any], Depends(get_session)],
+    user_id: Annotated[int, Depends(require_auth)],
+) -> LoginFlowResponse:
+    """Resend the verification email, which always requires a geetest first."""
+    login_flow = _get_login_flow(session)
+
+    str_action_ticket = login_flow.get("action_ticket")
+    if not str_action_ticket:
+        raise HTTPException(status_code=400, detail="Missing action ticket in session")
+
+    action_ticket = genshin.models.ActionTicket(**orjson.loads(str_action_ticket.encode()))
+    client = ProxyGenshinClient(proxy_url=CONFIG.residential_proxy)
+    try:
+        email_result = await client._send_verification_email(action_ticket)
+    except Exception as exc:
+        logger.debug(f"[{user_id}] Failed to resend verification email: {exc}")
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    if isinstance(email_result, genshin.models.SessionMMTv4):
+        login_flow["gt_type"] = "on_email_send"
+        login_flow["gt_version"] = 4
+        return LoginFlowResponse(
+            next_step="geetest",
+            gt_version=4,
+            api_server="gcaptcha4.captchami.com",
+            mmt=email_result.model_dump(),
+        )
+
+    if isinstance(email_result, genshin.models.SessionMMT):
+        login_flow["gt_type"] = "on_email_send"
+        login_flow["gt_version"] = 3
+        return LoginFlowResponse(next_step="geetest", gt_version=3, mmt=email_result.model_dump())
+
+    return LoginFlowResponse(next_step="email_verify")
 
 
 # ── Mobile OTP ────────────────────────────────────────────────────────────────

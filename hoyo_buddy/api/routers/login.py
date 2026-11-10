@@ -128,21 +128,7 @@ async def email_password_login(
         logger.debug(f"[{user_id}] Login requires email verification")
         login_flow["encrypted_email"] = encrypt_string(body.email)
         login_flow["encrypted_password"] = encrypt_string(body.password)
-        try:
-            email_result = await client._send_verification_email(result)
-        except Exception as exc:
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-        if isinstance(email_result, genshin.models.SessionMMT):
-            logger.debug(f"[{user_id}] Geetest v3 required before sending verification email")
-            login_flow["gt_type"] = "on_email_send"
-            login_flow["gt_version"] = 3
-            login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
-            return LoginFlowResponse(
-                next_step="geetest", gt_version=3, mmt=email_result.model_dump()
-            )
-
-        logger.debug(f"[{user_id}] Verification email sent successfully")
+        # HoYoLAB sends the verification email itself when it issues the action ticket
         login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
         return LoginFlowResponse(next_step="email_verify")
 
@@ -213,21 +199,8 @@ async def geetest_callback(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         if isinstance(result, genshin.models.ActionTicket):
+            logger.debug(f"[{user_id}] Login requires email verification")
             login_flow["action_ticket"] = orjson.dumps(result.model_dump()).decode()
-            try:
-                logger.debug(f"[{user_id}] Sending verification email after geetest")
-                email_result = await client._send_verification_email(result)
-            except Exception as exc:
-                logger.debug(f"[{user_id}] Failed to send verification email: {exc}")
-                raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-            if isinstance(email_result, genshin.models.SessionMMT):
-                login_flow["gt_type"] = "on_email_send"
-                login_flow["gt_version"] = 3
-                return LoginFlowResponse(
-                    next_step="geetest", gt_version=3, mmt=email_result.model_dump()
-                )
-
             return LoginFlowResponse(next_step="email_verify")
 
         cookies = result.to_str()

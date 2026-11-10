@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 from hoyo_buddy.draw.drawer import Drawer
 from hoyo_buddy.draw.fonts import NOTO_SANS_FONT_MAPPING
@@ -373,8 +373,11 @@ class _Renderer:
         art = Drawer.open_static(item.art_url)
         if _is_missing(art):
             return
-        art = art.resize((_s(1150), _s(1150)), Image.Resampling.LANCZOS)
-        self.paste(art, 605, -130)
+        box = _s(1150)
+        art = ImageOps.contain(art, (box, box), Image.Resampling.LANCZOS)
+        self.im.paste(
+            art, (_s(605) + (box - art.width) // 2, _s(-130) + (box - art.height) // 2), art
+        )
 
     def _draw_tilted_card(
         self, art: Image.Image, cx: float, cy: float, size: tuple[float, float]

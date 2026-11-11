@@ -712,3 +712,11 @@ def get_character_skills(
         bubbles_with_traces.append(group_with_traces)
 
     return bubbles_with_traces
+
+
+def get_ex_eidolon_icon(
+    character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
+) -> str | None:
+    if isinstance(character, hb_models.HoyolabHSRCharacter) and character.ex_eidolon is not None:
+        return character.ex_eidolon.icon
+    return None

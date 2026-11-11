@@ -10,6 +10,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     LevelBubble,
     get_character_skills,
     get_character_stats,
+    get_ex_eidolon_icon,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_breakdown,
@@ -64,6 +65,7 @@ class HSRBuildCard2:
         self.color4 = (230, 230, 230) if dark_mode else WHITE
         self.color5 = (128, 128, 128) if dark_mode else (160, 160, 160)
         self.color6 = (204, 204, 204) if dark_mode else (109, 109, 109)
+        self.color7 = (30, 30, 30) if dark_mode else (237, 237, 237)
 
     def _draw_background(self) -> Image.Image:
         mode = "dark" if self.dark_mode else "light"
@@ -94,6 +96,41 @@ class HSRBuildCard2:
             line_width=3,
         )
         draw_breakdown_row(im, drawer, totals, icons, style, box=(101, 1881, 2816, 2011))
+
+    def _draw_eidolons(self, im: Image.Image, drawer: Drawer) -> None:
+        icons = [(e.icon, e.unlocked) for e in self.character.eidolons]
+        ex_eidolon_icon = get_ex_eidolon_icon(self.character)
+        if ex_eidolon_icon is None:
+            # The background has 6 eidolon circles built in
+            for i, (icon_url, unlocked) in enumerate(icons):
+                icon = drawer.open_static(
+                    icon_url, size=(110, 110), mask_color=self.color4 if unlocked else self.color5
+                )
+                im.alpha_composite(icon, (81, 1060 + i * 130))
+            return
+
+        # Cover the built-in circles to fit a 7th slot for the EX eidolon
+        draw = ImageDraw.Draw(im)
+        draw.rectangle((80, 1058, 192, 1822), self.color7)
+
+        circle_size, icon_size = 94, 103
+        icons.append((ex_eidolon_icon, True))
+
+        circle = Drawer.open_image(
+            "hoyo-buddy-assets/assets/circular_mask.png",
+            (circle_size, circle_size),
+            mask_color=self.color3,
+        )
+        offset = (icon_size - circle_size) // 2
+        for i, (icon_url, unlocked) in enumerate(icons):
+            y = 1064 + i * 110
+            im.alpha_composite(circle, (89, y))
+            icon = drawer.open_static(
+                icon_url,
+                size=(icon_size, icon_size),
+                mask_color=self.color4 if unlocked else self.color5,
+            )
+            im.alpha_composite(icon, (89 - offset, y - offset))
 
     def _draw_character_image(self, im: Image.Image) -> None:
         drawer = Drawer(ImageDraw.Draw(im), folder="hsr-build-card2", dark_mode=self.dark_mode)
@@ -171,16 +208,7 @@ class HSRBuildCard2:
         )
         im.alpha_composite(star_im, (2501, 378))
 
-        # Eidolons
-        start_pos = (81, 1060)
-        for eidolon in character.eidolons:
-            icon = drawer.open_static(
-                eidolon.icon,
-                size=(110, 110),
-                mask_color=self.color4 if eidolon.unlocked else self.color5,
-            )
-            im.alpha_composite(icon, start_pos)
-            start_pos = (start_pos[0], start_pos[1] + 130)
+        self._draw_eidolons(im, drawer)
 
         # Light cone
         lc = character.light_cone

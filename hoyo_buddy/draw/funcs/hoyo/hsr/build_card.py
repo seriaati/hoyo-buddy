@@ -13,6 +13,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     SmallBubble,
     get_character_skills,
     get_character_stats,
+    get_ex_eidolon_icon,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_breakdown,
@@ -171,6 +172,25 @@ def _draw_foreground(
         style="medium",
         anchor="mm",
     )
+
+    ex_eidolon_icon = get_ex_eidolon_icon(character)
+    if ex_eidolon_icon is not None:
+        box_x += width + padding
+        width = 210
+        icon_size = 76
+        draw.rounded_rectangle((box_x, box_y, box_x + width, box_y + height), radius, primary)
+        icon = drawer.open_static(
+            ex_eidolon_icon, size=(icon_size, icon_size), mask_color=BLACK if dark_mode else WHITE
+        )
+        im.alpha_composite(icon, (box_x + 22, round(box_y + (height - icon_size) / 2)))
+        drawer.write(
+            "EX",
+            size=64,
+            position=(box_x + 22 + icon_size + 12, box_y + height / 2),
+            color=BLACK if dark_mode else WHITE,
+            style="medium",
+            anchor="lm",
+        )
 
     # uid
     if uid is not None:

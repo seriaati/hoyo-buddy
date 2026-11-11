@@ -12,6 +12,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     SmallBubble,
     get_character_skills,
     get_character_stats,
+    get_ex_eidolon_icon,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_rolls,
@@ -77,21 +78,34 @@ class HSRTeamCard:
         drawer = Drawer(ImageDraw.Draw(im), folder="hsr-team-card", dark_mode=True, sans=True)
         primary = drawer.hex_to_rgb(self._character_colors[str(character.id)])
 
-        level_block = drawer.open_asset("level_block.png", mask_color=primary)
-        im.alpha_composite(level_block, (100, 16))
-        drawer.write(
-            f"Lv.{character.level}", size=32, position=(161, 39), style="medium", anchor="mm"
-        )
+        # Shift the level and eidolon tabs left to make room for the EX eidolon tab
+        ex_eidolon_icon = get_ex_eidolon_icon(character)
+        shift = 0 if ex_eidolon_icon is None else 64
 
-        eidolon_block = drawer.open_asset("eidolon_block.png", mask_color=primary)
-        im.alpha_composite(eidolon_block, (231, 16))
+        level_block = drawer.open_asset("level_block.png", mask_color=primary)
+        im.alpha_composite(level_block, (100 - shift, 16))
         drawer.write(
-            f"E{character.eidolons_unlocked}",
+            f"Lv.{character.level}",
             size=32,
-            position=(258, 39),
+            position=(161 - shift, 39),
             style="medium",
             anchor="mm",
         )
+
+        eidolon_block = drawer.open_asset("eidolon_block.png", mask_color=primary)
+        im.alpha_composite(eidolon_block, (231 - shift, 16))
+        drawer.write(
+            f"E{character.eidolons_unlocked}",
+            size=32,
+            position=(258 - shift, 39),
+            style="medium",
+            anchor="mm",
+        )
+
+        if ex_eidolon_icon is not None:
+            im.alpha_composite(eidolon_block, (231, 16))
+            icon = drawer.open_static(ex_eidolon_icon, size=(36, 36), mask_color=WHITE)
+            im.alpha_composite(icon, (241, 21))
 
         drawer.write(
             character.name,

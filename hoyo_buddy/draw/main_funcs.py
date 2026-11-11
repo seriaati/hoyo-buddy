@@ -24,6 +24,7 @@ from hoyo_buddy.db.models import JSONFile
 from hoyo_buddy.draw import funcs
 from hoyo_buddy.draw.animation import frame_animation
 from hoyo_buddy.draw.card_data import ASSET_PATH, CARD_DATA
+from hoyo_buddy.draw.funcs.hoyo.hsr.common import get_ex_eidolon_icon
 from hoyo_buddy.enums import Game
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.models import (
@@ -221,6 +222,8 @@ async def draw_hsr_build_card(
 
     if template == 2:
         urls.extend(e.icon for e in character.eidolons)
+    if (ex_eidolon_icon := get_ex_eidolon_icon(character)) is not None:
+        urls.append(ex_eidolon_icon)
     if animation is not None:
         urls.append(animation.url)
 
@@ -992,6 +995,8 @@ async def draw_hsr_team_card(
 
         urls.extend(trace.icon for trace in character.traces)
         urls.extend(relic.icon for relic in character.relics)
+        if (ex_eidolon_icon := get_ex_eidolon_icon(character)) is not None:
+            urls.append(ex_eidolon_icon)
     urls.extend(animation.url for animation in animations.values())
 
     await download_images(urls, draw_input.session)

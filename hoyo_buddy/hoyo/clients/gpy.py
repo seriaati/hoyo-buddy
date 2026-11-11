@@ -560,6 +560,14 @@ class GenshinClient(ProxyGenshinClient):
                 models.Eidolon(icon=eidolon.icon, unlocked=eidolon.is_unlocked)
                 for eidolon in c.ranks
             ],
+            ex_eidolon=next(
+                (
+                    models.Eidolon(icon=rank.icon, unlocked=True)
+                    for rank in c.ex_ranks
+                    if rank.is_unlocked
+                ),
+                None,
+            ),
             max_level=get_max_level_from_ascension(
                 get_ascension_from_level(c.level, ascended=True, game=Game.STARRAIL), Game.STARRAIL
             ),

@@ -82,6 +82,7 @@ class HoyolabHSRCharacter:
     stats: list[Stat]
     traces: list[Trace]
     eidolons: list[Eidolon]
+    ex_eidolon: Eidolon | None = None
     element: str
     max_level: int
     rarity: int

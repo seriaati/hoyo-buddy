@@ -717,6 +717,6 @@ def get_character_skills(
 def get_ex_eidolon_icon(
     character: enka.hsr.Character | hb_models.HoyolabHSRCharacter,
 ) -> str | None:
-    if isinstance(character, hb_models.HoyolabHSRCharacter) and character.ex_eidolon is not None:
-        return character.ex_eidolon.icon
-    return None
+    if isinstance(character, hb_models.HoyolabHSRCharacter):
+        return character.ex_eidolon.icon if character.ex_eidolon is not None else None
+    return character.affinitive_eidolons[0].icon if character.affinitive_eidolons else None

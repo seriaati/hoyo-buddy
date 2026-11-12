@@ -46,7 +46,7 @@ from hoyo_buddy.constants import (
 from hoyo_buddy.db import JSONFile
 from hoyo_buddy.embeds import DefaultEmbed
 from hoyo_buddy.enums import Game, GenshinElement, Locale
-from hoyo_buddy.exceptions import HoyoBuddyError
+from hoyo_buddy.exceptions import HoyoBuddyError, NoCardDataError
 from hoyo_buddy.hoyo.clients.yatta import YattaAPIClient
 from hoyo_buddy.l10n import LocaleStr
 from hoyo_buddy.utils import capture_exception, get_now, sleep
@@ -578,6 +578,10 @@ class GenshinClient(ProxyGenshinClient):
     @staticmethod
     def convert_zzz_character(agent: enka.zzz.Agent) -> models.ZZZEnkaCharacter:
         """Convert Agent from enka.zzz to ZZZEnkaCharacter that's used for drawing cards."""
+        # enka leaves stats empty when asset data for the agent or its gear is missing
+        if not agent.stats:
+            raise NoCardDataError(agent.name or str(agent.id), str(agent.id))
+
         w_engine: models.WEngine | None = None
         if agent.w_engine is not None:
             w_engine = models.WEngine(

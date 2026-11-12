@@ -13,7 +13,7 @@ from sentry_sdk.integrations.loguru import LoguruIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from hoyo_buddy.config import CONFIG
-from hoyo_buddy.utils.misc import get_project_version, should_ignore_error
+from hoyo_buddy.utils.misc import get_project_version, should_capture_error
 
 if TYPE_CHECKING:
     from collections.abc import Coroutine
@@ -33,7 +33,7 @@ def wrap_task_factory() -> None:
         try:
             return await coro
         except Exception as e:
-            if not should_ignore_error(e):
+            if should_capture_error(e):
                 name = coro_name or getattr(coro, "__name__", str(coro))
                 if CONFIG.sentry:
                     logger.warning(f"Error in task {name!r}: {e}, capturing exception")

@@ -14,7 +14,9 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import unquote, urlparse
 
 import aiohttp
+import aiohttp_socks
 import discord
+import genshin
 import orjson
 import sentry_sdk
 import toml
@@ -36,8 +38,6 @@ from hoyo_buddy.enums import Game
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
-
-    import genshin
 
     from hoyo_buddy.types import Interaction, SleepTime
 
@@ -116,11 +116,30 @@ def should_ignore_error(e: Exception) -> bool:
 
     # 10062: Unknown interaction
     # 10008: Unknown message
+    # 10015: Unknown webhook (the interaction token expired)
     # 40060: Interaction has already been acknowledged
-    if isinstance(e, discord.HTTPException) and e.code in {10062, 10008, 40060}:  # ruff:ignore[needless-bool]
+    if isinstance(e, discord.HTTPException) and e.code in {10062, 10008, 10015, 40060}:  # ruff:ignore[needless-bool]
         return True
 
     return False
+
+
+def should_capture_error(e: Exception) -> bool:
+    # ruff:ignore[import-outside-top-level]
+    from hoyo_buddy.exceptions import DownloadImageFailedError
+
+    if should_ignore_error(e):
+        return False
+
+    # Expected or transient: not worth reporting, but unlike ignored errors still shown to users
+    expected_errors = (
+        genshin.InvalidCookies,
+        DownloadImageFailedError,
+        aiohttp.ClientOSError,
+        aiohttp.WSServerHandshakeError,
+        aiohttp_socks.ProxyTimeoutError,
+    )
+    return not isinstance(e, expected_errors)
 
 
 def format_timedelta(td: datetime.timedelta) -> str:
@@ -497,7 +516,7 @@ def is_hb_birthday() -> bool:
 
 
 def capture_exception(e: Exception) -> None:
-    if should_ignore_error(e):
+    if not should_capture_error(e):
         return
 
     if not CONFIG.sentry:

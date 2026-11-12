@@ -100,6 +100,9 @@ class AkashaLbPaginator(BaseAkashaLbPaginator):
             p = ""
         elif type_ == "last":
             p = "gt|-100000000"
+        elif not self.lbs:
+            # The previous page came back empty, so there is no cursor to continue from
+            return Page(embed=self.get_page_embed(self.lbs))
         elif type_ == "prev":
             p = f"gt|{self.lbs[0].calculation.result}"
         else:

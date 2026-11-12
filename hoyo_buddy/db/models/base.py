@@ -5,7 +5,7 @@ from typing import Any, ClassVar, Self
 import orjson
 import redis.asyncio as redis
 from loguru import logger
-from tortoise.exceptions import DoesNotExist
+from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise.models import Model
 
 from hoyo_buddy.config import CONFIG
@@ -199,7 +199,11 @@ class CachedModel(BaseModel):
             instance = await cls.get(**kwargs)
         except DoesNotExist:
             logger.debug(f"Cache miss for {cls.__name__} with {kwargs}")
-            instance = await cls.create(**kwargs, **(defaults or {}))
+            try:
+                instance = await cls.create(**kwargs, **(defaults or {}))
+            except IntegrityError:
+                # Another task created the row between the get and the create
+                return await cls.get(**kwargs), False
             asyncio.create_task(instance._cache_set())
             return instance, True
         else:

@@ -677,14 +677,18 @@ class ViewBuffs(Button[ChallengeView]):
         )
 
     async def callback(self, i: Interaction) -> Any:
-        assert isinstance(self.view.challenge, ChallengeWithBuff)
+        challenge = self.view.challenge
+        # Switching to a challenge type without data leaves the button in its previous state
+        if not isinstance(challenge, ChallengeWithBuff):
+            self.disabled = True
+            return await i.response.edit_message(view=self.view)
 
         try:
-            season = self.view.get_season(self.view.challenge)
+            season = self.view.get_season(challenge)
         except TypeError:
             season = None
 
-        view = BuffView(self.view.challenge, season, author=i.user, locale=self.view.locale)
+        view = BuffView(challenge, season, author=i.user, locale=self.view.locale)
         if not view.buffs:
             self.disabled = True
             return await i.response.edit_message(view=self.view)

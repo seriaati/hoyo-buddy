@@ -589,6 +589,13 @@ def get_stat_icon_filename(stat: enka.hsr.Stat | hb_models.Stat) -> str:
     return stat.type.value if isinstance(stat, enka.hsr.Stat) else stat.icon
 
 
+def get_light_cone_name(light_cone: enka.hsr.LightCone | hb_models.LightCone) -> str:
+    # enka leaves the text map hash as the name when the light cone's asset data is missing
+    if isinstance(light_cone, enka.hsr.LightCone) and light_cone.path is enka.hsr.Path.NONE:
+        return "???"
+    return light_cone.name
+
+
 def get_stat_icon(
     stat: StatOrTrace | None = None,
     filename: str | None = None,
@@ -654,8 +661,10 @@ def get_character_stats(
                 continue
             stats[get_stat_icon_filename(stat)] = stat.formatted_value
 
-        max_dmg_add = character.highest_dmg_bonus_stat
-        stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
+        # enka leaves stats empty when asset data is missing, the property is then a zero placeholder
+        max_dmg_add = character.highest_dmg_bonus_stat if character.stats else None
+        if max_dmg_add is not None:
+            stats[get_stat_icon_filename(max_dmg_add)] = max_dmg_add.formatted_value
     else:
         attr_types = (1, 2, 5, 10, 58, 9, 3, 4, 6, 11, 7, 71)
         for attr_type in attr_types:

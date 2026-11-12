@@ -11,6 +11,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     get_character_skills,
     get_character_stats,
     get_ex_eidolon_icon,
+    get_light_cone_name,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_breakdown,
@@ -221,7 +222,7 @@ class HSRBuildCard2:
             im.alpha_composite(stars_im, (279, 1126))
 
             # Name
-            text = lc.name
+            text = get_light_cone_name(lc)
             lines = drawer.wrap_text(
                 text,
                 max_width=425,

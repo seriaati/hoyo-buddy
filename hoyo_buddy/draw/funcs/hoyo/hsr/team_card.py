@@ -13,6 +13,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     get_character_skills,
     get_character_stats,
     get_ex_eidolon_icon,
+    get_light_cone_name,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_rolls,
@@ -346,7 +347,7 @@ class HSRTeamCard:
 
         # Light cone name
         drawer.write(
-            lc.name,
+            get_light_cone_name(lc),
             size=26,
             position=(168, 500),
             style="bold",

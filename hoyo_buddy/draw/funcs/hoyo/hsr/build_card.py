@@ -14,6 +14,7 @@ from hoyo_buddy.draw.funcs.hoyo.hsr.common import (
     get_character_skills,
     get_character_stats,
     get_ex_eidolon_icon,
+    get_light_cone_name,
     get_max_substat_rolls,
     get_stat_icon,
     get_substat_breakdown,
@@ -350,7 +351,7 @@ def _draw_foreground(
         # light cone name
         max_width = 459
         textbbox = drawer.write(
-            cone.name,
+            get_light_cone_name(cone),
             size=48,
             position=(light_cone_icon_right_pos + 28, icon_top_pos + 45),
             color=primary,

@@ -479,7 +479,8 @@ class HoyoBuddy(commands.AutoShardedBot):
             hb_data.HSRClient() as hsr_client,
             hb_data.ZZZClient() as zzz_client,
         ):
-            await asyncio.gather(
+            # One failing source must not abort the rest or close the clients mid-download
+            results = await asyncio.gather(
                 # Update enka.py assets
                 enka_gi.update_assets(),
                 enka_hsr.update_assets(),
@@ -496,7 +497,12 @@ class HoyoBuddy(commands.AutoShardedBot):
                 gi_client.download(force=True),
                 hsr_client.download(force=True),
                 zzz_client.download(force=True),
+                return_exceptions=True,
             )
+
+        for result in results:
+            if isinstance(result, Exception):
+                self.capture_exception(result)
 
     async def update_zzz_assets(self) -> None:
         async with asyncio.TaskGroup() as tg:

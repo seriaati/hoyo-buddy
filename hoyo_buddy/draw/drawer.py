@@ -27,6 +27,7 @@ from hoyo_buddy.l10n import translator
 from hoyo_buddy.models import TopPadding
 from hoyo_buddy.utils import get_static_img_path
 
+from .fallback_font import FallbackFont
 from .fonts import *  # ruff:ignore[undefined-local-with-import-star]
 
 if TYPE_CHECKING:
@@ -163,7 +164,7 @@ class Drawer:
         size = max_size
         while size > MIN_DYNAMIC_FONTSIZE and font.getlength(text) > max_width:
             size -= 1
-            font = ImageFont.truetype(font.path, size)
+            font = font.font_variant(size=size)
         return size
 
     @classmethod
@@ -653,6 +654,35 @@ class Drawer:
         # No specific script detected
         return None
 
+    def _get_write_font(
+        self,
+        text: str,
+        size: int,
+        style: FontStyle,
+        *,
+        locale: Locale | None,
+        sans: bool,
+        gothic: bool,
+    ) -> ImageFont.FreeTypeFont:
+        font = self.get_font(size, style, locale=locale, sans=sans, gothic=gothic)
+        tt_font = TTFont(font.path)  # pyright: ignore[reportArgumentType]
+
+        if any(not self.has_glyph(tt_font, char) for char in text):
+            font = self.get_font(size, style, locale=locale)
+            tt_font = TTFont(font.path)  # pyright: ignore[reportArgumentType]
+
+        missing = {c for c in text if c.isprintable() and not self.has_glyph(tt_font, c)}
+        if not missing:
+            return font
+
+        # CJK fonts cover symbols like ★ that the Latin, Thai and Arabic fonts lack
+        fallback = self.get_font(size, style, locale=Locale.japanese, sans=sans, gothic=gothic)
+        fallback_tt_font = TTFont(fallback.path)  # pyright: ignore[reportArgumentType]
+        fallback_chars = frozenset(c for c in missing if self.has_glyph(fallback_tt_font, c))
+        if not fallback_chars:
+            return font
+        return FallbackFont(font, fallback, fallback_chars)
+
     def write(
         self,
         text: LocaleStr | str,
@@ -708,14 +738,14 @@ class Drawer:
                 translated_text,
                 max_width=max_width,
                 max_size=size,
-                font=self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic),
+                font=self._get_write_font(
+                    translated_text, size, style, locale=target_locale, sans=sans, gothic=gothic
+                ),
             )
 
-        font = self.get_font(size, style, locale=target_locale, sans=sans, gothic=gothic)
-        tt_font = TTFont(font.path)  # pyright: ignore[reportArgumentType]
-
-        if any(not self.has_glyph(tt_font, char) for char in translated_text):
-            font = self.get_font(size, style, locale=target_locale)
+        font = self._get_write_font(
+            translated_text, size, style, locale=target_locale, sans=sans, gothic=gothic
+        )
 
         if max_width is not None and not dynamic_fontsize:
             translated_text = self.wrap_text(

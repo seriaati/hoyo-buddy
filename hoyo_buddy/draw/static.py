@@ -21,6 +21,8 @@ __all__ = ("download_images",)
 ZZZ_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/zzz/")
 NAP_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/nap/")
 ZZZ_V2_GAME_RECORD = URL("https://act-webstatic.hoyoverse.com/game_record/zzzv2/")
+ENKA_LC_FIGURE = URL("https://enka.network/ui/hsr/SpriteOutput/LightConeFigures/")
+YATTA_LC_LARGE = URL("https://sr.yatta.moe/hsr/assets/UI/equipment/large/")
 
 
 async def download_image_task(
@@ -38,6 +40,12 @@ async def download_image_task(
             if str(NAP_GAME_RECORD) in image_url:
                 image_url = image_url.replace(str(NAP_GAME_RECORD), str(ZZZ_V2_GAME_RECORD))
                 return await download_image_task(image_url, file_path, session)
+            # enka uploads new light cone figures late, Yatta's large icon is the same art
+            if str(ENKA_LC_FIGURE) in image_url:
+                image_url = image_url.replace(str(ENKA_LC_FIGURE), str(YATTA_LC_LARGE))
+                return await download_image_task(
+                    image_url, file_path, session, ignore_error=ignore_error
+                )
 
             if ignore_error:
                 return None

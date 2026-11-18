@@ -323,14 +323,16 @@ class HSRTeamCard:
         lc_mask = drawer.open_asset("lc_mask.png")
         lc_icon = drawer.open_static(lc.icon.image)
         border_width = 15
-        lc_icon = lc_icon.crop(
-            (
-                border_width,
-                border_width,
-                lc_icon.width - border_width,
-                lc_icon.height - border_width,
+        # open_static returns a 1x1 placeholder when the image is missing
+        if min(lc_icon.size) > border_width * 2:
+            lc_icon = lc_icon.crop(
+                (
+                    border_width,
+                    border_width,
+                    lc_icon.width - border_width,
+                    lc_icon.height - border_width,
+                )
             )
-        )
         lc_icon = drawer.resize_crop(lc_icon, (128, 178))
         lc_icon = drawer.mask_image_with_image(lc_icon, lc_mask)
         im.alpha_composite(lc_icon, (19, 503))

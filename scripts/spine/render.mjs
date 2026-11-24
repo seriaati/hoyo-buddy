@@ -1,4 +1,4 @@
-// Render a Spine 4.0 or 4.1 animation loop to transparent PNG frames with spine-webgl in headless
+// Render a Spine 4.0, 4.1 or 4.3 animation loop to transparent PNG frames with spine-webgl in headless
 // Chrome, picking the runtime by the skeleton's version.
 // Usage: node render.mjs <skel> <atlas> <out_dir> [--anim <name>] [--fps 30] [--height 1500]
 //     [--frames <count>] [--crop <left,top,width,height>] [--view <x,y,width,height>]
@@ -58,7 +58,11 @@ const layers = layerPaths.map(([skel, atlas]) => {
 // The binary starts with an 8 byte hash, then the version string prefixed by its length + 1
 const skel = layers.at(-1).skel;
 const version = skel.subarray(9, 8 + skel[8]).toString();
-const runtime = version.startsWith("4.0.") ? "spine-webgl-4.0" : "@esotericsoftware/spine-webgl";
+const runtimes = { "4.0": "spine-webgl-4.0", "4.1": "@esotericsoftware/spine-webgl", "4.3": "spine-webgl-4.3" };
+const runtime = runtimes[version.split(".").slice(0, 2).join(".")];
+if (!runtime) throw new Error(`Unsupported Spine version ${version}`);
+// 4.3 takes whether a texture is premultiplied when uploading it, not when drawing
+const pmaOnUpload = runtime === "spine-webgl-4.3";
 
 const browser = await puppeteer.launch({
   executablePath: process.env.CHROME_PATH ?? "/usr/bin/google-chrome",
@@ -71,7 +75,7 @@ try {
   await page.addScriptTag({ path: require.resolve(`${runtime}/dist/iife/spine-webgl.js`) });
 
   const info = await page.evaluate(
-    async ({ layers, textures, background, fps, height, anim, crop, view, untintFlags }) => {
+    async ({ layers, textures, background, fps, height, anim, crop, view, untintFlags, pmaOnUpload }) => {
       const canvas = document.getElementById("c");
       const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
       const context = new spine.ManagedWebGLRenderingContext(gl);
@@ -85,7 +89,10 @@ try {
       const skeletons = [];
       for (const { skelB64, atlasText } of layers) {
         const atlas = new spine.TextureAtlas(atlasText);
-        for (const p of atlas.pages) p.setTexture(new spine.GLTexture(context, await loadImage(textures[p.name])));
+        for (const p of atlas.pages) {
+          const image = await loadImage(textures[p.name]);
+          p.setTexture(pmaOnUpload ? new spine.GLTexture(context, image, p.pma) : new spine.GLTexture(context, image));
+        }
         const bytes = Uint8Array.from(atob(skelB64), (c) => c.charCodeAt(0));
         const data = new spine.SkeletonBinary(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(bytes);
         const skeleton = new spine.Skeleton(data);
@@ -112,7 +119,8 @@ try {
       const frameCount = Math.max(1, Math.round(duration * fps));
       const pose = (frame) => {
         for (const { data, skeleton, state } of skeletons) {
-          skeleton.setToSetupPose();
+          if (skeleton.setupPose) skeleton.setupPose();
+          else skeleton.setToSetupPose();
           state.clearTracks();
           if (data.findAnimation(animation.name)) {
             state.setAnimation(0, animation.name, true);
@@ -120,12 +128,13 @@ try {
             state.apply(skeleton);
           }
           if (untintFlags) {
-            for (const { color } of skeleton.slots) {
+            for (const slot of skeleton.slots) {
+              const { color } = slot.pose ?? slot;
               const rgb = [color.r, color.g, color.b];
               if (rgb.every((v) => v === 0 || v === 1) && rgb.includes(1)) color.set(1, 1, 1, color.a);
             }
           }
-          skeleton.updateWorldTransform();
+          skeleton.updateWorldTransform(spine.Physics?.none);
         }
       };
 
@@ -179,7 +188,8 @@ try {
         gl.clear(gl.COLOR_BUFFER_BIT);
         renderer.begin();
         for (const { atlas, skeleton } of skeletons) {
-          renderer.drawSkeleton(skeleton, atlas.pages.some((p) => p.pma));
+          if (pmaOnUpload) renderer.drawSkeleton(skeleton);
+          else renderer.drawSkeleton(skeleton, atlas.pages.some((p) => p.pma));
         }
         renderer.end();
         if (!backgroundImage) return canvas.toDataURL("image/png").split(",")[1];
@@ -197,6 +207,7 @@ try {
       textures,
       background: opt.background ? dataUrl(opt.background) : null,
       untintFlags: opt["untint-flags"] === true,
+      pmaOnUpload,
     },
   );
 

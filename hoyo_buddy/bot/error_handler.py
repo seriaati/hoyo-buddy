@@ -185,8 +185,9 @@ def get_error_embed(error: Exception, locale: Locale) -> tuple[ErrorEmbed | Defa
         if isinstance(error, ge.GenshinException):
             err_info = _get_gpy_error_info(error)
 
-            if isinstance(error, ge.VisitsTooFrequently):
-                # Set as not recognized to get traceback in Sentry
+            # -500001 is HoYo's transient "network error, try again later". Not recognizing it
+            # makes auto tasks retry instead of disabling the task, and sends it to Sentry
+            if isinstance(error, ge.VisitsTooFrequently) or error.retcode == -500001:
                 recognized = False
 
             if isinstance(error, ge.AlreadyClaimed):

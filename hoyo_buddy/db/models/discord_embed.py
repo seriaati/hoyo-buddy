@@ -70,6 +70,10 @@ class DiscordEmbed(BaseModel):
 
         if isinstance(embed, ErrorEmbed):
             await HoyoAccount.filter(id=account_id).update(**{toggle_field: False})
+            logger.warning(
+                f"Disabled {toggle_field} for account {account_id} (user {user_id}): "
+                f"{embed.title} - {embed.description}"
+            )
 
         try:
             notif_settings, _ = await AccountNotifSettings.get_or_create(account_id=account_id)
